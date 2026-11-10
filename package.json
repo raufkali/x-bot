@@ -1,0 +1,26 @@
+{
+  "name": "x_bot",
+  "version": "1.0.0",
+  "description": "X_BOT — AI Multilingual Content Generation Engine for X (Twitter)",
+  "main": "src/index.js",
+  "type": "module",
+  "scripts": {
+    "start": "node src/index.js",
+    "test": "node test/test-generator.js"
+  },
+  "keywords": [
+    "x",
+    "twitter",
+    "grok",
+    "multilingual",
+    "urdu",
+    "roman-urdu",
+    "ai-content"
+  ],
+  "author": "X_BOT Team",
+  "license": "ISC",
+  "dependencies": {
+    "dotenv": "^18.0.10",
+    "playwright": "^1.65.0"
+  }
+}
