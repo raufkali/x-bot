@@ -1,207 +1,257 @@
 /**
  * Unified AI Service for X_BOT
  * Supports:
- * 1. Free Groq API (console.groq.com - fast, high quality, free tier)
- * 2. Paid xAI Grok API (api.x.ai - grok-beta, grok-2)
- * 3. Free Built-in Trending Synthesizer (instant out-of-the-box fallback)
+ * - Creating rich, substantial English posts for X
+ * - Generating Roman Urdu from English post
+ * - Generating Plain Urdu (اردو) from English post
+ * - Dual Engine: Groq API (Free) / xAI Grok API (Paid) / Built-in Synthesizer
  */
 
 import Groq from 'groq-sdk';
 import { calculateXCharacterCount } from '../utils/validation.js';
 
-// Curated rotation of trending topics for instant auto-generation
-export const TRENDING_TOPICS = [
+// Curated pool of rich, substantial topics for X
+export const LONG_TOPICS = [
   {
-    topic: 'Future of global power by 2035 (AI, data, minerals, food, and digital currency)',
+    topic: 'The 5 Pillars of Global Power by 2035',
     english: {
-      text: 'By 2035, global power will not belong to a single nation. AI will be like electricity, currency digital, and minerals the new oil. The 5 pillars of future power: data, energy, minerals, food, and digital payments.',
-      hashtags: '#AI #FutureOfTechnology #GlobalPower'
+      text: 'By 2035, global power will not belong to any single superpower. Instead, power will be shared across multiple nations and defined by 5 pillars: ubiquitous AI, digitized money, critical battery minerals replacing oil, resilient food supply chains, and sovereign digital payment rails.',
+      hashtags: '#AI #Geopolitics #FutureTech #GlobalPower'
     },
     romanUrdu: {
-      text: '2035 tak duniya par kisi aik mulk ka raaj nahi hoga. AI bijli ki tarah aam hogi, paisa digital hoga, aur minerals naye petrol banenge. Mustaqbil ki taqat 5 cheezon par hogi: data, energy, minerals, khana aur digital payments.',
-      hashtags: '#AI #Mustaqbil #Technology'
+      text: '2035 tak duniya par kisi aik super-power ka raaj nahi hoga. Mukhtalif mumalik taqat share karenge aur asal ikhtiyar 5 bunyadi cheezon ke gird ghoomay ga: har jagah phaili AI, digital currency, tail ki jagah lenay walay battery minerals, khana aur digital payment systems.',
+      hashtags: '#AI #Mustaqbil #Technology #Geopolitics'
     },
     plainUrdu: {
-      text: '۲۰۳۵ تک دنیا پر صرف ایک ملک کا کنٹرول نہیں ہوگا۔ مصنوعی ذہانت بجلی کی مانند ضروری ہوگی، کرنسی مکمل ڈیجیٹل ہوگی اور معدنیات نئے تیل کی جگہ لیں گی۔ مستقبل کی اصل طاقت پانچ چیزوں پر منحصر ہوگی: ڈیٹا، توانائی، معدنیات، خوراک اور ادائیگی کے نظام۔',
-      hashtags: '#AI #مستقبل #ٹیکنالوجی'
+      text: '۲۰۳۵ تک دنیا پر کسی ایک سپر پاور کی اجارہ داری نہیں رہے گی بلکہ طاقت پانچ ستونوں میں تقسیم ہوگی: عام فہم مصنوعی ذہانت، مکمل ڈیجیٹل کرنسی، تیل کا نعم البدل بننے والی نایاب معدنیات، پائیدار غذائی نظام اور خود مختار ڈیجیٹل ادائیگی کے نیٹ ورکس۔',
+      hashtags: '#مصنوعی_ذہانت #مستقبل #عالمی_سیاست #ٹیکنالوجی'
     }
   },
   {
-    topic: 'Autonomous AI Agents replacing routine knowledge work in 2026',
+    topic: 'How Autonomous AI Agents Transform High-Value Knowledge Work in 2026',
     english: {
-      text: 'AI agents are no longer just chatbots; they now execute workflows, write production code, and manage operations autonomously. The professionals who thrive in 2026 are not competing against AI, but orchestrating teams of specialized agents.',
-      hashtags: '#AIAgents #FutureOfWork #TechTrends'
+      text: 'In 2026, AI is no longer a passive prompt-and-reply tool. Autonomous agents now independently write software, verify security flaws, handle customer logic, and run marketing pipelines. The highest-paid operators are no longer coders, but architects who direct fleets of specialized AI agents.',
+      hashtags: '#AIAgents #FutureOfWork #SoftwareEngineering'
     },
     romanUrdu: {
-      text: 'AI agents ab sirf baat cheet tak mehdood nahi rahay, balkay coding, tasks aur business workflows khud handle kar rahay hain. 2026 mein kamyab wahi hoga jo AI se larnay ke bajaye AI agents ki team ko lead karna seekh jaye.',
-      hashtags: '#AIAgents #Technology #UrduTech'
+      text: '2026 mein AI ab sirf sawal jawab tak mehdood nahi raha. AI agents ab khud code likh rahay hain, security bugs theek kar rahay hain aur business operations chala rahay hain. Sab se kamyab log wo hain jo AI se darrnay ke bajaye un agents ko lead kar rahay hain.',
+      hashtags: '#AIAgents #FutureOfWork #Technology #Urdu'
     },
     plainUrdu: {
-      text: 'مصنوعی ذہانت کے ایجنٹس اب صرف چیٹ بوٹس نہیں رہے بلکہ پیچیدہ کام، کوڈنگ اور کاروباری عمل خود سنبھال رہے ہیں۔ ۲۰۲۶ میں وہی لوگ کامیاب ہوں گے جو اے آئی سے مقابلہ کرنے کے بجائے ان جدید ایجنٹس کی رہنمائی کرنا سیکھیں گے۔',
-      hashtags: '#اے_آئی #ٹیکنالوجی #مستقبل'
+      text: '۲۰۲۶ میں مصنوعی ذہانت محض جوابات دینے کا ذریعہ نہیں رہی بلکہ خودکار ایجنٹس خود سافٹ ویئر بنا رہے ہیں، سیکیورٹی نقائص دور کر رہے ہیں اور کاروباری نظام چلا رہے ہیں۔ سب سے کامیاب افراد وہ ہیں جو ان جدید ایجنٹس کے نظام کی نگرانی اور رہنمائی کر رہے ہیں۔',
+      hashtags: '#اے_آئی #مستقبل #ٹیکنالوجی #سافٹ_ویئر'
     }
   },
   {
-    topic: 'Decentralized Finance (DeFi) vs Traditional Banking rails',
+    topic: 'Why Programmable Digital Money is Disrupting Legacy Banking',
     english: {
-      text: 'Traditional finance operates on 3-day settlement cycles and arbitrary gatekeepers. Programmable money moves in seconds, globally, 24/7. The transition to decentralized financial rails is no longer ideological—it is purely technological efficiency.',
-      hashtags: '#FinTech #DeFi #CryptoEconomy'
+      text: 'Traditional banking is shackled to 3-day clearing windows, opaque wire fees, and bureaucratic friction. Programmable digital currency settles in seconds across borders with mathematical certainty. The future of global commerce belongs to open, automated financial infrastructure.',
+      hashtags: '#FinTech #DigitalFinance #DeFi #FutureOfMoney'
     },
     romanUrdu: {
-      text: 'Purana banking nizam abhi tak 3 din ke transfer par atka hai, jabkay digital currency chand seconds mein dunya bhar mein transfer ho sakti hai. Paisay ka mustaqbil ab banks ki marzi par nahi balkay smart code par chalega.',
-      hashtags: '#Paisa #DigitalFinance #TechUrdu'
+      text: 'Purana banking nizam abhi tak 3 din ke transfers aur mehangay charges mein phansa hua hai. Jabkay programmable digital currency chand lamhon mein border ke paar transfer ho jati hai. Mustaqbil ki maeeshat ab bankon ke dastakhat par nahi, computer code par chalegi.',
+      hashtags: '#FinTech #Paisa #DigitalFinance #Tech'
     },
     plainUrdu: {
-      text: 'روایتی بینکاری نظام ابھی تک دنوں میں لین دین کرتا ہے جبکہ جدید ڈیجیٹل فنانس چند سیکنڈز میں دنیا بھر میں کام کرتا ہے۔ مالیاتی نظام کا مستقبل اب پرانے طریقوں پر نہیں بلکہ شفاف اور خودکار ٹیکنالوجی پر منحصر ہے۔',
-      hashtags: '#ڈیجیٹل_فنانس #ٹیکنالوجی #معیشت'
+      text: 'روایتی بینکاری نظام اب بھی دنوں پر محیط تصدیقی مراحل اور بھاری فیسوں میں الجھا ہوا ہے۔ اس کے برعکس جدید پروگرام ایبل کرنسی سیکنڈوں میں بین الاقوامی سطح پر منتقل ہو جاتی ہے۔ عالمی تجارت کا مستقبل اب خودکار اور شفاف مالیاتی ڈھانچے سے وابستہ ہے۔',
+      hashtags: '#ڈیجیٹل_کرنسی #مالیات #معیشت #ٹیکنالوجی'
     }
   },
   {
-    topic: 'Next-Generation Renewable Energy and Grid Storage',
+    topic: 'The Clean Energy Paradigm: From Generation to Grid Battery Storage',
     english: {
-      text: 'The biggest bottleneck in clean energy is no longer generation—it is energy storage. Next-gen grid batteries and smart distribution networks are turning renewable energy into steady baseload power faster than projected.',
-      hashtags: '#CleanEnergy #Renewables #TechInnovation'
+      text: 'Generating solar and wind power is now cheaper than fossil fuels. The true technological frontier is long-duration energy storage. Solid-state grid batteries and smart thermal grids are turning intermittent green energy into 24/7 reliable baseload power for the planet.',
+      hashtags: '#CleanEnergy #Batteries #Innovation #Sustainability'
     },
     romanUrdu: {
-      text: 'Clean energy ka sab se bara masla ab bijli banana nahi balkay usay mehfooz rakhna (storage) hai. Nayi batteries aur smart grid system ke zariye mustaqbil ki bijli sasti aur har waqt dastyab hogi.',
-      hashtags: '#Energy #Mustaqbil #Innovation'
+      text: 'Sooraj aur hawa se bijli banana ab tail aur koylay se bhi sasta ho chuka hai. Asal challenge is bijli ko lambay arsay tak store karna hai. Nayi solid-state batteries aur smart grid systems ab din raat sasti aur saaf bijli dastyab kar rahay hain.',
+      hashtags: '#CleanEnergy #Technology #Mustaqbil #Urdu'
     },
     plainUrdu: {
-      text: 'صاف توانائی کا سب سے بڑا چیلنج اب بجلی پیدا کرنا نہیں بلکہ اسے محفوظ رکھنا ہے۔ جدید بیٹری ٹیکنالوجی اور سمارٹ گرڈز مستقبل میں مسلسل اور سستی بجلی کی فراہمی کو یقینی بنا رہے ہیں۔',
-      hashtags: '#توانائی #جدید_ٹیکنالوجی #مستقبل'
+      text: 'شمسی اور ہوائی توانائی پیدا کرنا اب روایتی ایندھن سے سستا ہو چکا ہے، اصل معرکہ اس توانائی کو محفوظ بنانا ہے۔ جدید سالڈ اسٹیٹ بیٹریاں اور اسمارٹ گرڈز ماحول دوست توانائی کو بلا تعطل اور ہمہ وقت دستیاب بجلی میں تبدیل کر رہے ہیں۔',
+      hashtags: '#توانائی #جدت #ماحول #مستقبل'
     }
   }
 ];
 
-let topicIndex = 0;
+let topicCounter = 0;
 
-/**
- * Builds the prompt required for structured 3-language generation
- */
-function buildPrompt(topic) {
-  return `You are an expert multilingual social media strategist for X (Twitter).
-Convert the following topic into an engaging post for X in 3 versions:
-TOPIC: ${topic}
-
-CRITICAL INSTRUCTIONS:
-1. ENGLISH: Simple, natural, human tone, strong hook, under 250 characters.
-2. ROMAN URDU: Natural Pakistani conversational Urdu in English alphabets, easy everyday vocabulary, under 250 characters.
-3. PLAIN URDU: Proper Urdu script (اردو), grammatically correct Pakistani Urdu, under 250 characters.
-4. Each version must include 2-3 relevant hashtags.
-5. All three must communicate the exact same core message.
-
-Return ONLY a valid JSON object with this exact structure:
-{
-  "topic": "${topic}",
-  "english": {
-    "text": "English post body text",
-    "hashtags": "#Tag1 #Tag2"
-  },
-  "romanUrdu": {
-    "text": "Roman Urdu post body text",
-    "hashtags": "#Tag1 #Tag2"
-  },
-  "plainUrdu": {
-    "text": "Plain Urdu script post body text",
-    "hashtags": "#ٹیگ1 #ٹیگ2"
-  }
-}`;
+function formatEntry(text, hashtags) {
+  const full = hashtags ? `${text}\n\n${hashtags}` : text;
+  const count = calculateXCharacterCount(full);
+  return {
+    text,
+    hashtags,
+    fullPost: full,
+    charCount: count.charCount,
+    weightedCount: count.weightedCount,
+    isOverLimit: count.isOverLimit
+  };
 }
 
 /**
- * Generates multilingual post using available provider
- * Priority:
- * 1. Paid xAI Grok API (if GROK_API_KEY or XAI_API_KEY is present)
- * 2. Free Groq API (if GROQ_API_KEY is present)
- * 3. Free Built-in Synthesizer
- *
+ * Generates a rich, substantial English post for X
  * @param {string} [customTopic]
- * @returns {Promise<{ topic: string, provider: string, english: object, romanUrdu: object, plainUrdu: object }>}
+ * @returns {Promise<{ topic: string, english: object, provider: string }>}
  */
-export async function generateMultilingualPost(customTopic = '') {
-  const chosenTopic = customTopic || TRENDING_TOPICS[topicIndex % TRENDING_TOPICS.length].topic;
-  topicIndex++;
+export async function generateEnglishPost(customTopic = '') {
+  const chosenTopic = customTopic || LONG_TOPICS[topicCounter % LONG_TOPICS.length].topic;
+  topicCounter++;
 
   const xaiKey = process.env.GROK_API_KEY || process.env.XAI_API_KEY;
   const groqKey = process.env.GROQ_API_KEY;
 
-  // 1. Try Paid xAI Grok API if key provided
+  const prompt = `You are a top-tier social media content strategist for X (Twitter).
+Create a rich, substantial, and highly engaging post on this topic:
+"${chosenTopic}"
+
+RULES:
+- Informative opening hook.
+- Substantial body explaining key takeaways.
+- Include 3-4 relevant hashtags.
+- Keep the overall length concise and strictly under 270 characters so it fits comfortably on X.
+- Avoid generic AI intro phrases like "In today's world...".
+
+Return ONLY valid JSON:
+{
+  "topic": "${chosenTopic}",
+  "text": "English post text here",
+  "hashtags": "#Tag1 #Tag2 #Tag3"
+}`;
+
   if (xaiKey) {
     try {
-      const result = await callXaiGrokApi(chosenTopic, xaiKey);
-      if (result) return { ...result, provider: 'xAI Grok API (Paid)' };
-    } catch (err) {
-      console.warn(`[Grok API Warning] ${err.message}. Falling back...`);
+      const res = await callXai(prompt, 'grok-beta');
+      if (res) return { topic: res.topic || chosenTopic, english: formatEntry(res.text, res.hashtags), provider: 'xAI Grok API (Paid)' };
+    } catch (e) {
+      console.warn(`[Grok API] ${e.message}, falling back...`);
     }
   }
 
-  // 2. Try Free Groq API if key provided
   if (groqKey) {
     try {
-      const result = await callGroqApi(chosenTopic, groqKey);
-      if (result) return { ...result, provider: 'Groq Cloud API (Free Tier)' };
-    } catch (err) {
-      console.warn(`[Groq API Warning] ${err.message}. Falling back...`);
+      const res = await callGroq(prompt, groqKey);
+      if (res) return { topic: res.topic || chosenTopic, english: formatEntry(res.text, res.hashtags), provider: 'Groq Cloud API (Free)' };
+    } catch (e) {
+      console.warn(`[Groq API] ${e.message}, falling back...`);
     }
   }
 
-  // 3. Built-in instant generator (guaranteed to work, zero latency, 100% reliable)
-  const item = TRENDING_TOPICS.find(t => t.topic.toLowerCase() === chosenTopic.toLowerCase()) ||
-               TRENDING_TOPICS[(topicIndex - 1) % TRENDING_TOPICS.length];
-
-  const formatVersion = (data) => {
-    const full = `${data.text}\n\n${data.hashtags}`;
-    const counts = calculateXCharacterCount(full);
-    return {
-      text: data.text,
-      hashtags: data.hashtags,
-      fullPost: full,
-      charCount: counts.charCount,
-      weightedCount: counts.weightedCount,
-      isOverLimit: counts.isOverLimit
-    };
-  };
+  // Built-in high-quality synthesizer
+  const found = LONG_TOPICS.find(t => t.topic.toLowerCase() === chosenTopic.toLowerCase()) ||
+                LONG_TOPICS[(topicCounter - 1) % LONG_TOPICS.length];
 
   return {
     topic: chosenTopic,
-    provider: 'Free Engine (Instant Multilingual)',
-    english: formatVersion(item.english),
-    romanUrdu: formatVersion(item.romanUrdu),
-    plainUrdu: formatVersion(item.plainUrdu)
+    english: formatEntry(found.english.text, found.english.hashtags),
+    provider: 'Free Engine'
   };
 }
 
 /**
- * Calls Free Groq Cloud API
+ * Regenerates / converts English post into natural Pakistani Roman Urdu
  */
-async function callGroqApi(topic, apiKey) {
+export async function generateRomanUrduFromEnglish(englishPost, topic = '') {
+  const xaiKey = process.env.GROK_API_KEY || process.env.XAI_API_KEY;
+  const groqKey = process.env.GROQ_API_KEY;
+
+  const prompt = `Convert the following English X post into natural Pakistani conversational Roman Urdu (Urdu written in English alphabets):
+English Post: "${englishPost.text}"
+
+RULES:
+- Use natural Pakistani conversational Urdu (familiar everyday expressions).
+- Do not translate word-by-word; convey the full meaning, depth, and punchy hook.
+- Include 2-3 relevant hashtags (e.g. #Mustaqbil #Technology #Urdu).
+- Keep strictly under 270 characters.
+
+Return ONLY valid JSON:
+{
+  "text": "Roman Urdu text here",
+  "hashtags": "#Tag1 #Tag2"
+}`;
+
+  if (xaiKey) {
+    try {
+      const res = await callXai(prompt, 'grok-beta');
+      if (res) return formatEntry(res.text, res.hashtags);
+    } catch (_) {}
+  }
+
+  if (groqKey) {
+    try {
+      const res = await callGroq(prompt, groqKey);
+      if (res) return formatEntry(res.text, res.hashtags);
+    } catch (_) {}
+  }
+
+  // Built-in fallback
+  const found = LONG_TOPICS.find(t => t.english.text === englishPost.text) ||
+                LONG_TOPICS[(topicCounter - 1) % LONG_TOPICS.length];
+  return formatEntry(found.romanUrdu.text, found.romanUrdu.hashtags);
+}
+
+/**
+ * Regenerates / converts English post into proper Plain Urdu script (اردو)
+ */
+export async function generatePlainUrduFromEnglish(englishPost, topic = '') {
+  const xaiKey = process.env.GROK_API_KEY || process.env.XAI_API_KEY;
+  const groqKey = process.env.GROQ_API_KEY;
+
+  const prompt = `Convert the following English X post into proper, grammatically correct Pakistani Urdu script (اردو):
+English Post: "${englishPost.text}"
+
+RULES:
+- Proper Urdu script (اردو).
+- Maintain original depth, intellectual weight, and natural Pakistani vocabulary.
+- Include 2-3 relevant Urdu hashtags (e.g. #ٹیکنالوجی #مستقبل).
+- Keep strictly under 270 characters.
+
+Return ONLY valid JSON:
+{
+  "text": "Plain Urdu script text here",
+  "hashtags": "#ٹیگ1 #ٹیگ2"
+}`;
+
+  if (xaiKey) {
+    try {
+      const res = await callXai(prompt, 'grok-beta');
+      if (res) return formatEntry(res.text, res.hashtags);
+    } catch (_) {}
+  }
+
+  if (groqKey) {
+    try {
+      const res = await callGroq(prompt, groqKey);
+      if (res) return formatEntry(res.text, res.hashtags);
+    } catch (_) {}
+  }
+
+  // Built-in fallback
+  const found = LONG_TOPICS.find(t => t.english.text === englishPost.text) ||
+                LONG_TOPICS[(topicCounter - 1) % LONG_TOPICS.length];
+  return formatEntry(found.plainUrdu.text, found.plainUrdu.hashtags);
+}
+
+async function callGroq(prompt, apiKey) {
   const groq = new Groq({ apiKey });
   const model = process.env.AI_MODEL || 'llama-3.3-70b-versatile';
 
   const completion = await groq.chat.completions.create({
     model,
     messages: [
-      { role: 'system', content: 'You are a multilingual social media strategist for X.' },
-      { role: 'user', content: buildPrompt(topic) }
+      { role: 'system', content: 'You are an expert social media strategist for X.' },
+      { role: 'user', content: prompt }
     ],
     response_format: { type: 'json_object' },
-    temperature: 0.7,
-    max_tokens: 800
+    temperature: 0.7
   });
 
   const rawJson = completion.choices[0]?.message?.content;
-  if (!rawJson) throw new Error('Empty response from Groq');
-
-  const parsed = JSON.parse(rawJson);
-  return formatParsedOutput(topic, parsed);
+  return JSON.parse(rawJson);
 }
 
-/**
- * Calls Paid xAI Grok API
- */
-async function callXaiGrokApi(topic, apiKey) {
-  const model = process.env.AI_MODEL || 'grok-beta';
-
+async function callXai(prompt, model = 'grok-beta') {
+  const apiKey = process.env.GROK_API_KEY || process.env.XAI_API_KEY;
   const response = await fetch('https://api.x.ai/v1/chat/completions', {
     method: 'POST',
     headers: {
@@ -209,51 +259,19 @@ async function callXaiGrokApi(topic, apiKey) {
       'Content-Type': 'application/json'
     },
     body: JSON.stringify({
-      model,
+      model: process.env.AI_MODEL || model,
       messages: [
-        { role: 'system', content: 'You are a multilingual social media strategist for X.' },
-        { role: 'user', content: buildPrompt(topic) }
+        { role: 'system', content: 'You are an expert social media strategist for X.' },
+        { role: 'user', content: prompt }
       ],
       temperature: 0.7
     })
   });
 
-  if (!response.ok) {
-    const errorText = await response.text();
-    throw new Error(`xAI Grok API error ${response.status}: ${errorText}`);
-  }
-
+  if (!response.ok) throw new Error(`xAI error ${response.status}`);
   const json = await response.json();
   const content = json.choices[0]?.message?.content || '';
-
-  // Extract JSON block if surrounded by markdown fences
-  const jsonMatch = content.match(/\{[\s\S]*\}/);
-  if (!jsonMatch) throw new Error('Could not parse JSON from Grok response');
-
-  const parsed = JSON.parse(jsonMatch[0]);
-  return formatParsedOutput(topic, parsed);
-}
-
-function formatParsedOutput(topic, parsed) {
-  const format = (section) => {
-    const text = section?.text || '';
-    const hashtags = section?.hashtags || '';
-    const full = hashtags ? `${text}\n\n${hashtags}` : text;
-    const counts = calculateXCharacterCount(full);
-    return {
-      text,
-      hashtags,
-      fullPost: full,
-      charCount: counts.charCount,
-      weightedCount: counts.weightedCount,
-      isOverLimit: counts.isOverLimit
-    };
-  };
-
-  return {
-    topic: parsed.topic || topic,
-    english: format(parsed.english),
-    romanUrdu: format(parsed.romanUrdu),
-    plainUrdu: format(parsed.plainUrdu)
-  };
+  const match = content.match(/\{[\s\S]*\}/);
+  if (!match) throw new Error('No JSON in Grok response');
+  return JSON.parse(match[0]);
 }

@@ -1,42 +1,69 @@
 /**
- * Direct Instant Generation Flow for X_BOT
- * As soon as `npm start` runs:
- * 1. Auto-generates a post.
- * 2. Displays all 3 versions: [1] English, [2] Roman Urdu, [3] Plain Urdu.
- * 3. Prompts user to select:
- *    1: Keep English
- *    2: Keep Roman Urdu
- *    3: Keep Plain Urdu
- *    4: Retry (Regenerate new post)
- *    5: Discard / Exit
+ * Direct Workflow for X_BOT:
+ * 1. Automatically creates a rich, substantial English post on `npm start`.
+ * 2. Displays the English post.
+ * 3. Lets you generate / regenerate Roman Urdu or Plain Urdu directly from it.
+ * 4. Lets you select which version to finalize and post to X.
  */
 
-import { generateMultilingualPost } from '../generator/aiService.js';
-import { calculateXCharacterCount } from '../utils/validation.js';
+import {
+  generateEnglishPost,
+  generateRomanUrduFromEnglish,
+  generatePlainUrduFromEnglish
+} from '../generator/aiService.js';
 import { ansi } from '../utils/ansi.js';
 import { askQuestion, createInterface } from './input.js';
 
 export class MenuController {
   constructor() {
     this.rl = null;
-    this.currentPost = null;
+    this.currentTopic = '';
+    this.provider = '';
+    this.english = null;
+    this.romanUrdu = null;
+    this.plainUrdu = null;
   }
 
   async start() {
     this.rl = createInterface();
 
-    // Check optional custom topic passed from CLI arguments (e.g. npm start "Bitcoin Halving")
     const customTopic = process.argv.slice(2).join(' ').trim();
-
     this.showBanner();
 
     let keepRunning = true;
-    while (keepRunning) {
-      await this.runGenerationCycle(customTopic);
 
-      const decision = await this.promptAction();
-      if (decision === 'exit') {
+    // 1. Automatically generate the initial rich English post
+    await this.generateEnglish(customTopic);
+
+    // 2. Interactive action loop
+    while (keepRunning) {
+      this.displayCurrentState();
+
+      console.log(`\n${ansi.boldText('CHOOSE AN ACTION:')}`);
+      console.log(`  ${ansi.emeraldText('1.')} Generate / Regenerate in Roman Urdu`);
+      console.log(`  ${ansi.emeraldText('2.')} Generate / Regenerate in Plain Urdu (اردو)`);
+      console.log(`  ${ansi.emeraldText('3.')} Generate Both Roman Urdu & Plain Urdu`);
+      console.log(`  ${ansi.yellowText('4.')} Regenerate English Post (New angle / topic)`);
+      console.log(`  ${ansi.cyanText('5.')} Select Post to Publish to X`);
+      console.log(`  ${ansi.redText('6.')} Discard / Exit\n`);
+
+      const choice = await askQuestion(this.rl, `${ansi.emeraldText('Choose an option')} [1-6]: `);
+
+      if (choice === '1') {
+        await this.generateRomanUrdu();
+      } else if (choice === '2') {
+        await this.generatePlainUrdu();
+      } else if (choice === '3') {
+        await this.generateBothUrdu();
+      } else if (choice === '4') {
+        await this.generateEnglish();
+      } else if (choice === '5') {
+        const next = await this.handlePostOption();
+        if (next === 'exit') keepRunning = false;
+      } else if (choice === '6' || choice.toLowerCase() === 'exit' || choice.toLowerCase() === 'q') {
         keepRunning = false;
+      } else {
+        console.log(ansi.yellowText('Invalid option. Please choose between 1 and 6.'));
       }
     }
 
@@ -61,125 +88,138 @@ export class MenuController {
       console.log(`  AI Engine: ${ansi.badge('Groq Cloud API (Free Tier)', ansi.emeraldBg)}`);
     } else {
       console.log(`  AI Engine: ${ansi.badge('Free Multilingual Engine', ansi.emeraldBg)}`);
-      console.log(ansi.dimText('  (Tip: Add free GROQ_API_KEY or paid GROK_API_KEY to .env for live API generation)'));
+      console.log(ansi.dimText('  (Tip: Set GROQ_API_KEY for free Groq or GROK_API_KEY for paid Grok in .env)'));
     }
     console.log(ansi.separator('=', 64, ansi.emerald) + '\n');
   }
 
-  async runGenerationCycle(customTopic = '') {
-    console.log(`${ansi.emeraldText('⚡ Auto-generating multilingual post...')}\n`);
+  async generateEnglish(customTopic = '') {
+    console.log(`${ansi.emeraldText('⚡ Creating substantial English post...')}\n`);
+    const res = await generateEnglishPost(customTopic);
+    this.currentTopic = res.topic;
+    this.english = res.english;
+    this.provider = res.provider;
+    this.romanUrdu = null;
+    this.plainUrdu = null;
+  }
 
-    this.currentPost = await generateMultilingualPost(customTopic);
+  async generateRomanUrdu() {
+    console.log(`\n${ansi.emeraldText('⚡ Generating conversational Roman Urdu version from English post...')}`);
+    this.romanUrdu = await generateRomanUrduFromEnglish(this.english, this.currentTopic);
+    console.log(ansi.emeraldText('✓ Roman Urdu version ready!'));
+  }
 
+  async generatePlainUrdu() {
+    console.log(`\n${ansi.emeraldText('⚡ Generating proper Plain Urdu script (اردو) version from English post...')}`);
+    this.plainUrdu = await generatePlainUrduFromEnglish(this.english, this.currentTopic);
+    console.log(ansi.emeraldText('✓ Plain Urdu version ready!'));
+  }
+
+  async generateBothUrdu() {
+    console.log(`\n${ansi.emeraldText('⚡ Generating both Roman Urdu and Plain Urdu versions...')}`);
+    this.romanUrdu = await generateRomanUrduFromEnglish(this.english, this.currentTopic);
+    this.plainUrdu = await generatePlainUrduFromEnglish(this.english, this.currentTopic);
+    console.log(ansi.emeraldText('✓ Both Urdu versions generated successfully!'));
+  }
+
+  displayCurrentState() {
+    console.log('\n' + ansi.separator('=', 64, ansi.cyan));
+    console.log(ansi.boldText(`  TOPIC: ${ansi.cyanText(this.currentTopic)}`));
+    console.log(`  Provider: ${ansi.dimText(this.provider)}`);
     console.log(ansi.separator('=', 64, ansi.cyan));
-    console.log(ansi.boldText(`  TOPIC: ${ansi.cyanText(this.currentPost.topic)}`));
-    console.log(`  Provider: ${ansi.dimText(this.currentPost.provider)}`);
-    console.log(ansi.separator('=', 64, ansi.cyan));
 
-    // [1] ENGLISH
-    this.renderVersionCard(
-      '[1] ENGLISH',
-      this.currentPost.english.text,
-      this.currentPost.english.hashtags,
-      this.currentPost.english.weightedCount,
-      this.currentPost.english.isOverLimit
-    );
+    // [1] ENGLISH POST
+    this.renderCard('[1] ENGLISH POST', this.english);
 
-    console.log(ansi.separator('-', 64, ansi.gray));
+    // [2] ROMAN URDU (if generated)
+    if (this.romanUrdu) {
+      console.log(ansi.separator('-', 64, ansi.gray));
+      this.renderCard('[2] ROMAN URDU', this.romanUrdu);
+    }
 
-    // [2] ROMAN URDU
-    this.renderVersionCard(
-      '[2] ROMAN URDU',
-      this.currentPost.romanUrdu.text,
-      this.currentPost.romanUrdu.hashtags,
-      this.currentPost.romanUrdu.weightedCount,
-      this.currentPost.romanUrdu.isOverLimit
-    );
-
-    console.log(ansi.separator('-', 64, ansi.gray));
-
-    // [3] PLAIN URDU
-    this.renderVersionCard(
-      '[3] PLAIN URDU (اردو)',
-      this.currentPost.plainUrdu.text,
-      this.currentPost.plainUrdu.hashtags,
-      this.currentPost.plainUrdu.weightedCount,
-      this.currentPost.plainUrdu.isOverLimit
-    );
+    // [3] PLAIN URDU (if generated)
+    if (this.plainUrdu) {
+      console.log(ansi.separator('-', 64, ansi.gray));
+      this.renderCard('[3] PLAIN URDU (اردو)', this.plainUrdu);
+    }
 
     console.log(ansi.separator('=', 64, ansi.cyan));
   }
 
-  renderVersionCard(title, text, hashtags, count, isOverLimit) {
+  renderCard(title, postData) {
+    if (!postData) return;
     console.log(`\n  ${ansi.boldText(title)}`);
 
-    // Indent text
-    const indented = text.split('\n').map(l => `    ${l}`).join('\n');
+    const indented = postData.text.split('\n').map(l => `    ${l}`).join('\n');
     console.log(indented);
 
-    if (hashtags) {
-      console.log(`\n    ${ansi.cyanText(hashtags)}`);
+    if (postData.hashtags) {
+      console.log(`\n    ${ansi.cyanText(postData.hashtags)}`);
     }
 
-    const counter = isOverLimit
-      ? ansi.redText(`[OVER LIMIT: ${count}/280 chars]`)
-      : ansi.emeraldText(`[${count}/280 chars]`);
+    const counter = postData.isOverLimit
+      ? ansi.cyanText(`[${postData.weightedCount} chars — Long-Form X Post / Thread]`)
+      : ansi.emeraldText(`[${postData.weightedCount}/280 chars — Fits Standard X Post]`);
 
     console.log(`\n  ${ansi.dimText('Length:')} ${counter}`);
   }
 
-  async promptAction() {
-    console.log(`\n${ansi.boldText('SELECT AN OPTION:')}`);
-    console.log(`  ${ansi.emeraldText('1.')} Keep English`);
-    console.log(`  ${ansi.emeraldText('2.')} Keep Roman Urdu`);
-    console.log(`  ${ansi.emeraldText('3.')} Keep Plain Urdu`);
-    console.log(`  ${ansi.yellowText('4.')} Retry (Auto-generate another post)`);
-    console.log(`  ${ansi.redText('5.')} Discard / Exit\n`);
-
-    while (true) {
-      const choice = await askQuestion(this.rl, `${ansi.emeraldText('Choose an option')} [1-5]: `);
-
-      if (choice === '1') {
-        this.displayKeptPost('ENGLISH', this.currentPost.english);
-        return await this.askNextStep();
-      } else if (choice === '2') {
-        this.displayKeptPost('ROMAN URDU', this.currentPost.romanUrdu);
-        return await this.askNextStep();
-      } else if (choice === '3') {
-        this.displayKeptPost('PLAIN URDU', this.currentPost.plainUrdu);
-        return await this.askNextStep();
-      } else if (choice === '4' || choice.toLowerCase() === 'retry' || choice.toLowerCase() === 'r') {
-        console.log(`\n${ansi.yellowText('Retrying with a fresh post...')}\n`);
-        return 'retry';
-      } else if (choice === '5' || choice.toLowerCase() === 'discard' || choice.toLowerCase() === 'exit' || choice.toLowerCase() === 'q') {
-        console.log(`\n${ansi.dimText('Post discarded.')}`);
-        return 'exit';
-      } else {
-        console.log(ansi.yellowText('Invalid option. Please enter 1, 2, 3, 4, or 5.'));
-      }
-    }
-  }
-
-  displayKeptPost(language, postData) {
+  async handlePostOption() {
     console.log('\n' + ansi.separator('=', 64, ansi.emerald));
-    console.log(ansi.boldText(`  ✓ KEPT ${language} VERSION  ${ansi.badge('APPROVED FOR X', ansi.emeraldBg)}`));
+    console.log(ansi.boldText(`         ${ansi.emeraldText('SELECT A VERSION TO POST ON X')}`));
     console.log(ansi.separator('=', 64, ansi.emerald));
-    console.log('\n' + ansi.boldText('Post ready to publish to X:'));
+
+    console.log(`  ${ansi.emeraldText('1.')} Post English version`);
+    if (this.romanUrdu) {
+      console.log(`  ${ansi.emeraldText('2.')} Post Roman Urdu version`);
+    } else {
+      console.log(`  ${ansi.dimText('2. Roman Urdu (Not generated yet — choose option 1 in main menu)')}`);
+    }
+    if (this.plainUrdu) {
+      console.log(`  ${ansi.emeraldText('3.')} Post Plain Urdu version`);
+    } else {
+      console.log(`  ${ansi.dimText('3. Plain Urdu (Not generated yet — choose option 2 in main menu)')}`);
+    }
+    console.log(`  ${ansi.dimText('4. Back to menu')}`);
+
+    const pick = await askQuestion(this.rl, `\n${ansi.emeraldText('Choose version')} [1-4]: `);
+
+    let chosen = null;
+    let label = '';
+
+    if (pick === '1' && this.english) {
+      chosen = this.english;
+      label = 'ENGLISH';
+    } else if (pick === '2' && this.romanUrdu) {
+      chosen = this.romanUrdu;
+      label = 'ROMAN URDU';
+    } else if (pick === '3' && this.plainUrdu) {
+      chosen = this.plainUrdu;
+      label = 'PLAIN URDU';
+    } else if (pick === '4') {
+      return 'menu';
+    } else {
+      console.log(ansi.yellowText('Selected version is not generated yet.'));
+      return 'menu';
+    }
+
+    console.log('\n' + ansi.separator('=', 64, ansi.emerald));
+    console.log(ansi.boldText(`  ✓ FINALIZED ${label} POST  ${ansi.badge('APPROVED FOR X', ansi.emeraldBg)}`));
+    console.log(ansi.separator('=', 64, ansi.emerald));
+    console.log('\n' + ansi.boldText('Ready to publish on X:'));
     console.log(ansi.separator('-', 64, ansi.gray));
-    console.log(postData.text);
-    if (postData.hashtags) {
-      console.log('\n' + ansi.cyanText(postData.hashtags));
+    console.log(chosen.text);
+    if (chosen.hashtags) {
+      console.log('\n' + ansi.cyanText(chosen.hashtags));
     }
     console.log(ansi.separator('-', 64, ansi.gray));
-    console.log(`  Character Count: ${postData.weightedCount}/280 chars`);
+    console.log(`  Length: ${chosen.weightedCount}/280 chars`);
     console.log(ansi.separator('=', 64, ansi.emerald));
-  }
 
-  async askNextStep() {
-    const next = await askQuestion(this.rl, '\nGenerate another post? (y/N): ');
+    const next = await askQuestion(this.rl, '\nWould you like to start a new post? (y/N): ');
     if (next.toLowerCase() === 'y' || next.toLowerCase() === 'yes') {
-      console.log('\n');
-      return 'retry';
+      await this.generateEnglish();
+      return 'menu';
     }
     return 'exit';
   }
