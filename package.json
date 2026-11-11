@@ -5,10 +5,12 @@
   "main": "src/index.js",
   "type": "module",
   "scripts": {
-    "start": "node src/index.js",
-    "webhook": "node src/whatsapp/server.js",
-    "send:whatsapp": "node -e \"import('./src/whatsapp/workflow.js').then(m => m.generateAndSendToWhatsApp())\"",
-    "test": "node test/test-generator.js"
+    "start": "node --dns-result-order=ipv4first src/index.js",
+    "webhook": "node --dns-result-order=ipv4first src/whatsapp/server.js",
+    "send:whatsapp": "node --dns-result-order=ipv4first -e \"import('./src/whatsapp/workflow.js').then(m => m.generateAndSendToWhatsApp())\"",
+    "send:template": "node --dns-result-order=ipv4first -e \"import('./src/whatsapp/client.js').then(m => m.whatsappClient.sendTemplate(process.env.OWNER_PHONE_NUMBER || '923435022880')).then(r => console.log('✓ Template Result:', r)).catch(e => console.error('✕ Template Error:', e.message))\"",
+    "test": "node --dns-result-order=ipv4first test/test-generator.js",
+    "test:whatsapp": "node --dns-result-order=ipv4first test/test-whatsapp.js"
   },
   "keywords": [
     "x",

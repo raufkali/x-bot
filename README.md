@@ -232,10 +232,14 @@ X_BOT includes an **Express Webhook Server** ready to connect with Meta's offici
 
 ### 1. Environment Variables (`.env`)
 ```env
-WHATSAPP_TOKEN=your_meta_access_token
-WHATSAPP_PHONE_NUMBER_ID=your_phone_number_id
-WHATSAPP_BUSINESS_ACCOUNT_ID=your_waba_id
-OWNER_PHONE_NUMBER=923001234567 # Your WhatsApp number with country code
+WHATSAPP_APP_ID=1538340228340646
+WHATSAPP_TOKEN=your_system_user_access_token
+WHATSAPP_PHONE_NUMBER_ID=1395242077013903
+WHATSAPP_BUSINESS_ACCOUNT_ID=3192689014264130
+OWNER_PHONE_NUMBER=923435022880 # Your WhatsApp number with country code (E.164 without +)
+GRAPH_API_VERSION=v25.0
+WHATSAPP_TEMPLATE_NAME=3p_direct_integration_test_template
+WHATSAPP_TEMPLATE_LANG=en_US
 WEBHOOK_VERIFY_TOKEN=xbot_verify_token_2026
 PORT=3000
 ```
@@ -249,35 +253,75 @@ This runs the Express server listening on `http://localhost:3000`.
 - **Webhook URL for Meta Dashboard:** `https://your-domain-or-ngrok/webhook`
 - **Verify Token:** `xbot_verify_token_2026` (or whatever you set in `WEBHOOK_VERIFY_TOKEN`)
 
-### 3. Trigger Post Generation and Send to WhatsApp
-To generate a fresh post and send it directly to your WhatsApp for approval:
+### 3. Send Pre-Approved Template Message
+To dispatch a pre-approved Meta WhatsApp template message (e.g. `3p_direct_integration_test_template`):
 ```bash
-npm run send:whatsapp
+npm run send:template
 ```
 Or via HTTP POST request:
 ```bash
-curl -X POST http://localhost:3000/generate -H "Content-Type: application/json" -d '{"topic": "Future of AI in 2035"}'
+curl -X POST http://localhost:3000/send-template \
+  -H "Content-Type: application/json" \
+  -d '{"to": "923435022880", "template": "3p_direct_integration_test_template", "language": "en_US"}'
 ```
 
-### 4. Approving from WhatsApp
-When the post arrives on your WhatsApp, simply reply:
-- **`1`** ➔ Approves **English** version
-- **`2`** ➔ Approves **Roman Urdu** version
-- **`3`** ➔ Approves **Plain Urdu** version
-- **`4`** ➔ Retries and generates a fresh post
-- **`5`** ➔ Discards the post
+### 4. Interactive WhatsApp Bot Flow
 
-### 5. Check Approval Status
+1. **Wake Up the Bot:**
+   - Send any message (e.g., `Hi`, `Hello`, `Wake up`) from your WhatsApp.
+   - The bot replies:
+     ```
+     HI, welcome to your X Assistant press 1 to generate new post
+     ```
+
+2. **Generate the Post:**
+   - Reply **`1`** (or send `topic: your custom topic`).
+   - The bot generates English, Roman Urdu, and Plain Urdu versions and sends them to you for review.
+
+3. **Approve / Decide:**
+   - Reply **`1`** ➔ Approves **English** version
+   - Reply **`2`** ➔ Approves **Roman Urdu** version
+   - Reply **`3`** ➔ Approves **Plain Urdu** version
+   - Reply **`4`** ➔ Retries and generates a fresh post
+   - Reply **`5`** ➔ Discards the post
+
+---
+
+### 5. API Trigger Endpoints
+
+* **Synchronous Trigger (Generates & WAITS for owner's WhatsApp response):**
+  ```bash
+  curl -X POST http://localhost:3000/trigger \
+    -H "Content-Type: application/json" \
+    -d '{"topic": "Future of AI in 2026", "timeoutMs": 300000}'
+  ```
+  *This holds the HTTP connection until you reply on WhatsApp, then returns the approved post!*
+
+* **Asynchronous Trigger (Generates & sends immediately):**
+  ```bash
+  curl -X POST http://localhost:3000/generate \
+    -H "Content-Type: application/json" \
+    -d '{"topic": "Future of AI in 2035"}'
+  ```
+
+* **Simulate / Direct Owner Response over HTTP:**
+  ```bash
+  curl -X POST http://localhost:3000/respond \
+    -H "Content-Type: application/json" \
+    -d '{"reply": "2"}'
+  ```
+
+### 6. Check Approval Status
 ```bash
 curl http://localhost:3000/status
 ```
 
 ---
 
-## 🧪 Testing WhatsApp Webhooks
+## 🧪 Testing WhatsApp Webhooks & Templates
 
 Run the automated test suite for the WhatsApp webhook server:
 ```bash
-node test/test-whatsapp.js
+npm run test:whatsapp
 ```
 All tests verify the Meta verification handshake, token validation, inbound message parsing, and in-memory approval state transitions.

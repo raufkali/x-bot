@@ -86,14 +86,71 @@ app.post('/webhook', async (req, res) => {
 });
 
 // ============================================================
-// 3. TRIGGER POST GENERATION (POST /generate)
-// Endpoint to trigger a new post and send it to WhatsApp.
+// 3. TRIGGER POST & WAIT FOR OWNER DECISION (POST /trigger)
+// Generates post, sends it to WhatsApp, and WAITS for owner's response
+// ============================================================
+app.post('/trigger', async (req, res) => {
+  try {
+    const customTopic = req.body?.topic || '';
+    const timeoutMs = Number(req.body?.timeoutMs || req.query?.timeout || 300000);
+
+    console.log(`\n⚡ [/trigger] Request received for topic: "${customTopic || 'Auto'}"`);
+    console.log(`   Waiting up to ${Math.round(timeoutMs / 1000)}s for owner WhatsApp response...`);
+
+    const result = await whatsappWorkflow.generateSendAndWait(customTopic, timeoutMs);
+    res.status(200).json(result);
+  } catch (err) {
+    res.status(500).json({ success: false, error: err.message });
+  }
+});
+
+// ============================================================
+// 4. TRIGGER POST GENERATION ASYNC (POST /generate)
+// Endpoint to trigger a new post and send it immediately without waiting
 // ============================================================
 app.post('/generate', async (req, res) => {
   try {
     const customTopic = req.body?.topic || '';
     const result = await whatsappWorkflow.generateAndSend(customTopic);
     res.status(200).json(result);
+  } catch (err) {
+    res.status(500).json({ success: false, error: err.message });
+  }
+});
+
+// ============================================================
+// 5. OWNER DIRECT RESPONSE / SIMULATION (POST /respond)
+// Trigger an owner response directly over HTTP (e.g. for testing)
+// ============================================================
+app.post('/respond', async (req, res) => {
+  try {
+    const reply = req.body?.reply || req.body?.action || req.body?.text || '1';
+    const from = req.body?.from || config.ownerPhoneNumber;
+
+    const result = await whatsappWorkflow.handleOwnerReply(reply, from);
+    res.status(200).json({ success: true, result });
+  } catch (err) {
+    res.status(500).json({ success: false, error: err.message });
+  }
+});
+
+// ============================================================
+// 4. TRIGGER TEMPLATE MESSAGE (POST /send-template)
+// Endpoint to send pre-approved template message to recipient
+// ============================================================
+app.post('/send-template', async (req, res) => {
+  try {
+    const to = req.body?.to || config.ownerPhoneNumber;
+    const templateName = req.body?.template || config.whatsappTemplateName;
+    const language = req.body?.language || config.whatsappTemplateLang;
+    const components = req.body?.components || [];
+
+    if (!to) {
+      return res.status(400).json({ success: false, error: 'Recipient phone number is required.' });
+    }
+
+    const result = await whatsappClient.sendTemplate(to, templateName, language, components);
+    res.status(200).json({ success: true, result });
   } catch (err) {
     res.status(500).json({ success: false, error: err.message });
   }

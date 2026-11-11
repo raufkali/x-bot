@@ -13,6 +13,12 @@ console.log('====================================================\n');
 
 const TEST_PORT = 3999;
 config.ownerPhoneNumber = '923001234567';
+
+// Mock outbound WhatsApp network calls for unit testing
+import { whatsappClient } from '../src/whatsapp/client.js';
+whatsappClient.sendPostForReview = async (to, post) => ({ messages: [{ id: 'mock_wamid_123' }] });
+whatsappClient.sendApprovalConfirmation = async (to, lang, post) => ({ messages: [{ id: 'mock_wamid_456' }] });
+
 const server = startServer(TEST_PORT);
 
 async function runTests() {
@@ -106,6 +112,56 @@ async function runTests() {
     assert.strictEqual(statusJson.state.status, 'APPROVED');
     assert.strictEqual(statusJson.state.approvedPost.language, 'Roman Urdu');
     console.log('✓ TEST 6 PASSED: Status endpoint accurately reports in-memory approval state.\n');
+
+    // TEST 7: Template Configuration & Method
+    console.log('TEST 7: Testing WhatsApp Template Endpoint Configuration...');
+    assert.strictEqual(config.whatsappTemplateName, '3p_direct_integration_test_template');
+    assert.strictEqual(config.whatsappTemplateLang, 'en_US');
+    assert.strictEqual(config.whatsappAppId, '1538340228340646');
+    console.log('✓ TEST 7 PASSED: Template name, language, and app ID verified.\n');
+
+    // TEST 8: Waking the Bot with Initial SMS ("Hi")
+    console.log('TEST 8: Simulating Owner Sending "Hi" to Wake Bot...');
+    whatsappWorkflow.currentPendingPost = null;
+    whatsappWorkflow.status = 'IDLE';
+    const wakeResult = await whatsappWorkflow.handleOwnerReply('Hello there!', config.ownerPhoneNumber);
+    assert.strictEqual(wakeResult.action, 'GREETING_SENT');
+    assert.strictEqual(wakeResult.status, 'AWAITING_GENERATE');
+    assert.strictEqual(wakeResult.message, 'HI, welcome to your X Assistant press 1 to generate new post');
+    console.log('✓ TEST 8 PASSED: Initial SMS greeted owner with "HI, welcome to your X Assistant press 1 to generate new post"\n');
+
+    // TEST 9: Owner Pressing "1" to Generate New Post
+    console.log('TEST 9: Simulating Owner Pressing "1" to Generate Post...');
+    const generateResult = await whatsappWorkflow.handleOwnerReply('1', config.ownerPhoneNumber);
+    assert.strictEqual(generateResult.success, true);
+    assert.strictEqual(whatsappWorkflow.status, 'AWAITING_APPROVAL');
+    assert.ok(whatsappWorkflow.currentPendingPost, 'New post is generated and awaiting review');
+    console.log('✓ TEST 9 PASSED: Pressing 1 triggered multilingual post generation!\n');
+
+    // TEST 10: Testing POST /trigger endpoint (Synchronous wait for owner response)
+    console.log('TEST 10: Testing POST /trigger waiting for owner response via POST /respond...');
+    const triggerPromise = fetch(`${baseUrl}/trigger`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ topic: 'Test Trigger AI', timeoutMs: 5000 })
+    }).then(r => r.json());
+
+    // Allow trigger to start and enter waiting state
+    await new Promise(r => setTimeout(r, 200));
+
+    // Simulate owner approving English via POST /respond
+    const respondRes = await fetch(`${baseUrl}/respond`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ reply: '1' })
+    });
+    assert.strictEqual(respondRes.status, 200);
+
+    const triggerResult = await triggerPromise;
+    assert.strictEqual(triggerResult.status, 'APPROVED');
+    assert.strictEqual(triggerResult.language, 'English');
+    assert.ok(triggerResult.approvedPost.text, 'Approved post text returned by /trigger');
+    console.log('✓ TEST 10 PASSED: POST /trigger waited and resolved with owner approval!\n');
 
     console.log('====================================================');
     console.log('   ALL WHATSAPP WEBHOOK TESTS PASSED! (100%)');

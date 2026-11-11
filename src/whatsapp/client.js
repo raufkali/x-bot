@@ -23,31 +23,77 @@ export class WhatsAppClient {
   /**
    * Sends raw payload to Meta WhatsApp Cloud API
    */
-  async sendPayload(payload) {
+  async sendPayload(payload, retries = 2) {
     if (!this.isConfigured()) {
       throw new Error(
         'WhatsApp Cloud API credentials not configured. Please set WHATSAPP_TOKEN and WHATSAPP_PHONE_NUMBER_ID in .env.'
       );
     }
 
-    const response = await fetch(this.apiUrl, {
-      method: 'POST',
-      headers: {
-        'Authorization': `Bearer ${this.token}`,
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(payload)
-    });
+    let lastError = null;
+    for (let attempt = 0; attempt <= retries; attempt++) {
+      try {
+        const response = await fetch(this.apiUrl, {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${this.token}`,
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(payload)
+        });
 
-    const responseData = await response.json();
+        const responseData = await response.json();
 
-    if (!response.ok) {
-      const errorMsg = responseData?.error?.message || response.statusText;
-      console.error('[WhatsApp API Error]', responseData);
-      throw new Error(`WhatsApp API failed (${response.status}): ${errorMsg}`);
+        if (!response.ok) {
+          const errorMsg = responseData?.error?.message || response.statusText;
+          console.error('[WhatsApp API Error]', responseData);
+          throw new Error(`WhatsApp API failed (${response.status}): ${errorMsg}`);
+        }
+
+        return responseData;
+      } catch (err) {
+        lastError = err;
+        // If it's a direct API rejection from Meta (e.g. 400/403/404), do not retry
+        if (err.message && err.message.startsWith('WhatsApp API failed')) {
+          throw err;
+        }
+        if (attempt < retries) {
+          await new Promise((resolve) => setTimeout(resolve, 1000));
+        }
+      }
     }
 
-    return responseData;
+    throw lastError;
+  }
+
+  /**
+   * Sends a pre-approved WhatsApp template message
+   * @param {string} to - Recipient number
+   * @param {string} [templateName] - Template name (defaults to config.whatsappTemplateName)
+   * @param {string} [languageCode] - Language code (defaults to config.whatsappTemplateLang)
+   * @param {Array} [components] - Optional template components (header, body parameters)
+   */
+  async sendTemplate(to, templateName = config.whatsappTemplateName, languageCode = config.whatsappTemplateLang, components = []) {
+    const formattedTo = String(to).replace(/[^0-9]/g, '');
+    const templatePayload = {
+      name: templateName,
+      language: {
+        code: languageCode
+      }
+    };
+
+    if (components && components.length > 0) {
+      templatePayload.components = components;
+    }
+
+    const payload = {
+      messaging_product: 'whatsapp',
+      to: formattedTo,
+      type: 'template',
+      template: templatePayload
+    };
+
+    return this.sendPayload(payload);
   }
 
   /**
