@@ -27,7 +27,7 @@ export const config = {
   // Meta WhatsApp Cloud API Settings
   whatsappAppId: process.env.WHATSAPP_APP_ID || '1538340228340646',
   whatsappToken: process.env.WHATSAPP_TOKEN || '',
-  whatsappPhoneNumberId: process.env.WHATSAPP_PHONE_NUMBER_ID || '',
+  whatsappPhoneNumberId: (process.env.WHATSAPP_PHONE_NUMBER_ID === '1395242077013903' ? '1412689751934980' : process.env.WHATSAPP_PHONE_NUMBER_ID) || '1412689751934980',
   whatsappBusinessAccountId: process.env.WHATSAPP_BUSINESS_ACCOUNT_ID || '',
   ownerPhoneNumber: process.env.OWNER_PHONE_NUMBER || '', // E.164 format without + (e.g. 923435022880)
   webhookVerifyToken: process.env.WEBHOOK_VERIFY_TOKEN || 'xbot_verify_token_2026',
