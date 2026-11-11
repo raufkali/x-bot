@@ -151,58 +151,93 @@ export class WhatsAppClient {
   }
 
   /**
-   * Formats and sends a generated 3-language post for owner review
+   * Formats and sends 1 good English post with the 5 options:
+   * 1- generate in Roman Urdu
+   * 2- generate in Urdu
+   * 3- Post directly in English
+   * 4- Discard post
+   * 5- regenerate the post
    * @param {string} to 
    * @param {object} post 
    */
-  async sendPostForReview(to, post) {
-    const message = `🤖 *X_BOT — New Post Approval Request*
+  async sendEnglishPostForReview(to, post) {
+    const english = post.english || post;
+    const message = `🇬🇧 *NEW POST (ENGLISH)*
 
-📌 *Topic:* ${post.topic}
-
-━━━━━━━━━━━━━━━━━━━━
-🇬🇧 *[1] ENGLISH POST:*
-${post.english.text}
-
-${post.english.hashtags}
-_Length: ${post.english.weightedCount}/280 chars_
+📌 *Topic:* ${post.topic || 'Trending Topic'}
 
 ━━━━━━━━━━━━━━━━━━━━
-🇵🇰 *[2] ROMAN URDU:*
+${english.text}
+
+${english.hashtags || ''}
+━━━━━━━━━━━━━━━━━━━━
+_Length: ${english.weightedCount}/280 chars_
+
+Reply with:
+• *1* ➔ Generate in Roman Urdu
+• *2* ➔ Generate in Urdu
+• *3* ➔ Post directly in English
+• *4* ➔ Discard post
+• *5* ➔ Regenerate the post`;
+
+    return this.sendText(to, message);
+  }
+
+  /**
+   * Sends Roman Urdu version with action options
+   */
+  async sendRomanUrduVersion(to, post) {
+    const message = `🇵🇰 *ROMAN URDU VERSION*
+
+📌 *Topic:* ${post.topic || ''}
+
+━━━━━━━━━━━━━━━━━━━━
 ${post.romanUrdu.text}
 
-${post.romanUrdu.hashtags}
+${post.romanUrdu.hashtags || ''}
+━━━━━━━━━━━━━━━━━━━━
 _Length: ${post.romanUrdu.weightedCount}/280 chars_
 
+Reply with:
+• *1* ➔ Approve & Post Roman Urdu
+• *2* ➔ Generate in Urdu (اردو)
+• *3* ➔ Post English directly
+• *4* ➔ Discard post
+• *5* ➔ Regenerate Roman Urdu`;
+
+    return this.sendText(to, message);
+  }
+
+  /**
+   * Sends Plain Urdu version with action options
+   */
+  async sendPlainUrduVersion(to, post) {
+    const message = `🇵🇰 *URDU VERSION (اردو)*
+
+📌 *Topic:* ${post.topic || ''}
+
 ━━━━━━━━━━━━━━━━━━━━
-🇵🇰 *[3] PLAIN URDU (اردو):*
 ${post.plainUrdu.text}
 
-${post.plainUrdu.hashtags}
+${post.plainUrdu.hashtags || ''}
+━━━━━━━━━━━━━━━━━━━━
 _Length: ${post.plainUrdu.weightedCount}/280 chars_
 
-━━━━━━━━━━━━━━━━━━━━
-*Select an action:*
 Reply with:
-• *1* ➔ Approve English
-• *2* ➔ Approve Roman Urdu
-• *3* ➔ Approve Plain Urdu
-• *4* ➔ Retry / Regenerate
-• *5* ➔ Discard`;
+• *1* ➔ Approve & Post Urdu
+• *2* ➔ Generate in Roman Urdu
+• *3* ➔ Post English directly
+• *4* ➔ Discard post
+• *5* ➔ Regenerate Urdu`;
 
-    // Try interactive buttons first (Approve English, Roman Urdu, Plain Urdu)
-    try {
-      const buttons = [
-        { id: 'approve_english', title: '1. Approve English' },
-        { id: 'approve_roman', title: '2. Approve Roman' },
-        { id: 'approve_urdu', title: '3. Approve Urdu' }
-      ];
-      return await this.sendInteractiveButtons(to, message, buttons);
-    } catch (err) {
-      // If interactive buttons fail (e.g. 24h window or tier restriction), fallback to plain text message
-      console.warn('[WhatsApp] Falling back to standard text message for review...');
-      return await this.sendText(to, message);
-    }
+    return this.sendText(to, message);
+  }
+
+  /**
+   * Alias for backward compatibility
+   */
+  async sendPostForReview(to, post) {
+    return this.sendEnglishPostForReview(to, post);
   }
 
   /**

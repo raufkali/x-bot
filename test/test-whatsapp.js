@@ -17,7 +17,11 @@ config.ownerPhoneNumber = '923001234567';
 // Mock outbound WhatsApp network calls for unit testing
 import { whatsappClient } from '../src/whatsapp/client.js';
 whatsappClient.sendPostForReview = async (to, post) => ({ messages: [{ id: 'mock_wamid_123' }] });
+whatsappClient.sendEnglishPostForReview = async (to, post) => ({ messages: [{ id: 'mock_wamid_123' }] });
+whatsappClient.sendRomanUrduVersion = async (to, post) => ({ messages: [{ id: 'mock_wamid_roman' }] });
+whatsappClient.sendPlainUrduVersion = async (to, post) => ({ messages: [{ id: 'mock_wamid_urdu' }] });
 whatsappClient.sendApprovalConfirmation = async (to, lang, post) => ({ messages: [{ id: 'mock_wamid_456' }] });
+whatsappClient.sendText = async (to, text) => ({ messages: [{ id: 'mock_wamid_txt' }] });
 
 const server = startServer(TEST_PORT);
 
@@ -51,19 +55,18 @@ async function runTests() {
     assert.strictEqual(healthJson.status, 'healthy');
     console.log('✓ TEST 3 PASSED: Health endpoint OK.\n');
 
-    // TEST 4: Post Generation into Memory Workflow
-    console.log('TEST 4: Generating a Post into Memory Workflow...');
+    // TEST 4: 1 English Post Generation into Memory Workflow
+    console.log('TEST 4: Generating 1 English Post into Memory Workflow...');
     await whatsappWorkflow.generateAndSend('Test Autonomous AI topic');
     const state = whatsappWorkflow.getCurrentState();
     assert.strictEqual(state.status, 'AWAITING_APPROVAL');
     assert.ok(state.currentPendingPost, 'Pending post should exist in memory');
     assert.ok(state.currentPendingPost.english.text, 'English text should exist');
-    assert.ok(state.currentPendingPost.romanUrdu.text, 'Roman Urdu text should exist');
-    assert.ok(state.currentPendingPost.plainUrdu.text, 'Plain Urdu text should exist');
-    console.log('✓ TEST 4 PASSED: Post generated into memory workflow.\n');
+    assert.strictEqual(state.currentPendingPost.activeView, 'ENGLISH');
+    console.log('✓ TEST 4 PASSED: 1 English post generated with 5 options ready.\n');
 
-    // TEST 5: Owner Approving Roman Urdu via Inbound Webhook
-    console.log('TEST 5: Simulating Owner Replying "2" (Roman Urdu Approval)...');
+    // TEST 5: Owner Replying "3" (Post directly in English)
+    console.log('TEST 5: Simulating Owner Replying "3" (Post directly in English)...');
     const metaWebhookPayload = {
       object: 'whatsapp_business_account',
       entry: [
@@ -80,7 +83,7 @@ async function runTests() {
                     id: 'wamid_test_msg_id',
                     timestamp: '1600000000',
                     type: 'text',
-                    text: { body: '2' }
+                    text: { body: '3' }
                   }
                 ]
               },
@@ -101,16 +104,16 @@ async function runTests() {
     // Check state update
     const approvedState = whatsappWorkflow.getCurrentState();
     assert.strictEqual(approvedState.status, 'APPROVED', 'Post status must be APPROVED');
-    assert.strictEqual(approvedState.approvedPost.language, 'Roman Urdu', 'Language should be Roman Urdu');
+    assert.strictEqual(approvedState.approvedPost.language, 'English', 'Language should be English');
     assert.ok(approvedState.approvedPost.content.text, 'Content text should be present');
-    console.log('✓ TEST 5 PASSED: Inbound WhatsApp reply "2" successfully approved Roman Urdu!\n');
+    console.log('✓ TEST 5 PASSED: Inbound WhatsApp reply "3" successfully approved English directly!\n');
 
     // TEST 6: Status API
     console.log('TEST 6: Testing GET /status endpoint...');
     const statusRes = await fetch(`${baseUrl}/status`);
     const statusJson = await statusRes.json();
     assert.strictEqual(statusJson.state.status, 'APPROVED');
-    assert.strictEqual(statusJson.state.approvedPost.language, 'Roman Urdu');
+    assert.strictEqual(statusJson.state.approvedPost.language, 'English');
     console.log('✓ TEST 6 PASSED: Status endpoint accurately reports in-memory approval state.\n');
 
     // TEST 7: Template Configuration & Method
@@ -149,11 +152,11 @@ async function runTests() {
     // Allow trigger to start and enter waiting state
     await new Promise(r => setTimeout(r, 200));
 
-    // Simulate owner approving English via POST /respond
+    // Simulate owner approving English via POST /respond (Option 3 on English view)
     const respondRes = await fetch(`${baseUrl}/respond`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ reply: '1' })
+      body: JSON.stringify({ reply: '3' })
     });
     assert.strictEqual(respondRes.status, 200);
 

@@ -4,7 +4,11 @@
  */
 
 import { EventEmitter } from 'events';
-import { generateMultilingualPost } from '../generator/aiService.js';
+import {
+  generateEnglishPost,
+  generateRomanUrduFromEnglish,
+  generatePlainUrduFromEnglish
+} from '../generator/aiService.js';
 import { whatsappClient } from './client.js';
 import { config } from '../config.js';
 import { ansi } from '../utils/ansi.js';
@@ -12,40 +16,47 @@ import { ansi } from '../utils/ansi.js';
 class WhatsAppWorkflowManager extends EventEmitter {
   constructor() {
     super();
-    this.currentPendingPost = null;
+    this.currentPendingPost = null; // { topic, english, romanUrdu, plainUrdu, activeView }
     this.approvedPost = null;
     this.status = 'IDLE'; // IDLE | AWAITING_GENERATE | AWAITING_APPROVAL | APPROVED | DISCARDED
   }
 
   /**
-   * Generates a new post and dispatches it to owner's WhatsApp
+   * Generates 1 good English post and dispatches it to owner's WhatsApp with 5 options
    * @param {string} [customTopic]
    */
   async generateAndSend(customTopic = '') {
-    console.log(ansi.emeraldText('⚡ Generating fresh multilingual post for WhatsApp review...'));
+    console.log(ansi.emeraldText('⚡ Generating 1 high-quality English post for WhatsApp review...'));
 
-    const post = await generateMultilingualPost(customTopic);
-    this.currentPendingPost = post;
+    const gen = await generateEnglishPost(customTopic);
+    this.currentPendingPost = {
+      topic: gen.topic,
+      english: gen.english,
+      romanUrdu: null,
+      plainUrdu: null,
+      activeView: 'ENGLISH', // ENGLISH | ROMAN_URDU | PLAIN_URDU
+      generatedAt: new Date().toISOString()
+    };
     this.status = 'AWAITING_APPROVAL';
 
-    console.log(`Topic: ${post.topic}`);
+    console.log(`Topic: ${gen.topic}`);
     console.log(`Sending to owner WhatsApp: ${config.ownerPhoneNumber || '[NOT CONFIGURED]'}`);
 
     if (!config.ownerPhoneNumber) {
       console.log(ansi.yellowText('[Notice] OWNER_PHONE_NUMBER is not set in .env. Post generated and waiting in memory.'));
-      return { success: true, post, sent: false, reason: 'OWNER_PHONE_NOT_SET' };
+      return { success: true, post: this.currentPendingPost, sent: false, reason: 'OWNER_PHONE_NOT_SET' };
     }
 
     if (!whatsappClient.isConfigured()) {
       console.log(ansi.yellowText('[Notice] WhatsApp credentials not configured yet. Post generated and stored in memory.'));
-      return { success: true, post, sent: false, reason: 'WHATSAPP_NOT_CONFIGURED' };
+      return { success: true, post: this.currentPendingPost, sent: false, reason: 'WHATSAPP_NOT_CONFIGURED' };
     }
 
     let sendResult = null;
     let sendError = null;
     try {
-      sendResult = await whatsappClient.sendPostForReview(config.ownerPhoneNumber, post);
-      console.log(ansi.emeraldText('✓ Post sent to your WhatsApp! Awaiting your reply (1, 2, 3, 4, or 5)...'));
+      sendResult = await whatsappClient.sendEnglishPostForReview(config.ownerPhoneNumber, this.currentPendingPost);
+      console.log(ansi.emeraldText('✓ English post sent to WhatsApp with 5 action options!'));
     } catch (err) {
       sendError = err.message;
       console.error(ansi.yellowText(`[WhatsApp Send Notice] ${err.message}`));
@@ -53,7 +64,7 @@ class WhatsAppWorkflowManager extends EventEmitter {
 
     return {
       success: true,
-      post,
+      post: this.currentPendingPost,
       sent: !sendError,
       messageId: sendResult?.messages?.[0]?.id,
       error: sendError
@@ -118,7 +129,7 @@ class WhatsAppWorkflowManager extends EventEmitter {
     }
 
     // ------------------------------------------------------------
-    // SCENARIO 1: NO POST IS CURRENTLY PENDING
+    // SCENARIO 1: NO PENDING POST
     // ------------------------------------------------------------
     if (!this.currentPendingPost) {
       // If user sends "1", "new", "generate", "start", or "topic:..."
@@ -130,7 +141,7 @@ class WhatsAppWorkflowManager extends EventEmitter {
         console.log(ansi.emeraldText('\n⟳ [WhatsApp Action] Owner pressed 1 to generate a new post...'));
         if (whatsappClient.isConfigured() && fromNumber) {
           try {
-            await whatsappClient.sendText(fromNumber, '⚡ Generating a fresh multilingual post for you. Stand by...');
+            await whatsappClient.sendText(fromNumber, '⚡ Generating 1 good English post for you. Stand by...');
           } catch (e) {
             console.warn('[WhatsApp Send Warning]', e.message);
           }
@@ -159,151 +170,292 @@ class WhatsAppWorkflowManager extends EventEmitter {
     }
 
     // ------------------------------------------------------------
-    // SCENARIO 2: A POST IS AWAITING APPROVAL
+    // SCENARIO 2: PENDING POST EXISTS (Menu with 5 options)
     // ------------------------------------------------------------
     const post = this.currentPendingPost;
 
-    // 1. APPROVE ENGLISH
-    if (input === '1' || input.includes('english') || input === 'approve_english') {
-      this.approvedPost = {
-        language: 'English',
-        content: post.english,
-        topic: post.topic,
-        approvedAt: new Date().toISOString()
-      };
-      this.status = 'APPROVED';
-      this.currentPendingPost = null;
-      console.log(ansi.emeraldText('\n✓ [WhatsApp Action] Owner APPROVED the ENGLISH version!'));
-
-      if (whatsappClient.isConfigured() && fromNumber) {
-        try {
-          await whatsappClient.sendApprovalConfirmation(fromNumber, 'English', post.english);
-        } catch (e) {
-          console.warn('[WhatsApp Send Warning]', e.message);
+    // --- VIEW: ENGLISH POST ACTIVE ---
+    if (!post.activeView || post.activeView === 'ENGLISH') {
+      // Option 1: Generate in Roman Urdu
+      if (input === '1' || input.includes('roman')) {
+        console.log(ansi.emeraldText('\n⟳ [WhatsApp Action] Generating Roman Urdu from English post...'));
+        if (!post.romanUrdu) {
+          post.romanUrdu = await generateRomanUrduFromEnglish(post.english, post.topic);
         }
+        post.activeView = 'ROMAN_URDU';
+
+        if (whatsappClient.isConfigured() && fromNumber) {
+          try {
+            await whatsappClient.sendRomanUrduVersion(fromNumber, post);
+          } catch (e) {
+            console.warn('[WhatsApp Send Warning]', e.message);
+          }
+        }
+        return { action: 'VIEW_ROMAN_URDU', post };
       }
 
-      const decision = {
-        action: 'APPROVED',
-        status: 'APPROVED',
-        language: 'English',
-        approvedPost: post.english,
-        topic: post.topic,
-        approvedAt: this.approvedPost.approvedAt
-      };
-      this.emit('owner_decision', decision);
-      return decision;
-    }
-
-    // 2. APPROVE ROMAN URDU
-    if (input === '2' || input.includes('roman') || input === 'approve_roman') {
-      this.approvedPost = {
-        language: 'Roman Urdu',
-        content: post.romanUrdu,
-        topic: post.topic,
-        approvedAt: new Date().toISOString()
-      };
-      this.status = 'APPROVED';
-      this.currentPendingPost = null;
-      console.log(ansi.emeraldText('\n✓ [WhatsApp Action] Owner APPROVED the ROMAN URDU version!'));
-
-      if (whatsappClient.isConfigured() && fromNumber) {
-        try {
-          await whatsappClient.sendApprovalConfirmation(fromNumber, 'Roman Urdu', post.romanUrdu);
-        } catch (e) {
-          console.warn('[WhatsApp Send Warning]', e.message);
+      // Option 2: Generate in Urdu (Plain Urdu)
+      if (input === '2' || input.includes('urdu')) {
+        console.log(ansi.emeraldText('\n⟳ [WhatsApp Action] Generating Plain Urdu from English post...'));
+        if (!post.plainUrdu) {
+          post.plainUrdu = await generatePlainUrduFromEnglish(post.english, post.topic);
         }
+        post.activeView = 'PLAIN_URDU';
+
+        if (whatsappClient.isConfigured() && fromNumber) {
+          try {
+            await whatsappClient.sendPlainUrduVersion(fromNumber, post);
+          } catch (e) {
+            console.warn('[WhatsApp Send Warning]', e.message);
+          }
+        }
+        return { action: 'VIEW_PLAIN_URDU', post };
       }
 
-      const decision = {
-        action: 'APPROVED',
-        status: 'APPROVED',
-        language: 'Roman Urdu',
-        approvedPost: post.romanUrdu,
-        topic: post.topic,
-        approvedAt: this.approvedPost.approvedAt
-      };
-      this.emit('owner_decision', decision);
-      return decision;
-    }
+      // Option 3: Post directly in English
+      if (input === '3' || input.includes('post') || input.includes('direct')) {
+        this.approvedPost = {
+          language: 'English',
+          content: post.english,
+          topic: post.topic,
+          approvedAt: new Date().toISOString()
+        };
+        this.status = 'APPROVED';
+        this.currentPendingPost = null;
+        console.log(ansi.emeraldText('\n✓ [WhatsApp Action] Owner APPROVED & POSTED ENGLISH directly!'));
 
-    // 3. APPROVE PLAIN URDU
-    if (input === '3' || input.includes('urdu') || input === 'approve_urdu') {
-      this.approvedPost = {
-        language: 'Plain Urdu',
-        content: post.plainUrdu,
-        topic: post.topic,
-        approvedAt: new Date().toISOString()
-      };
-      this.status = 'APPROVED';
-      this.currentPendingPost = null;
-      console.log(ansi.emeraldText('\n✓ [WhatsApp Action] Owner APPROVED the PLAIN URDU version!'));
-
-      if (whatsappClient.isConfigured() && fromNumber) {
-        try {
-          await whatsappClient.sendApprovalConfirmation(fromNumber, 'Plain Urdu', post.plainUrdu);
-        } catch (e) {
-          console.warn('[WhatsApp Send Warning]', e.message);
+        if (whatsappClient.isConfigured() && fromNumber) {
+          try {
+            await whatsappClient.sendApprovalConfirmation(fromNumber, 'English', post.english);
+          } catch (e) {
+            console.warn('[WhatsApp Send Warning]', e.message);
+          }
         }
+
+        const decision = {
+          action: 'APPROVED',
+          status: 'APPROVED',
+          language: 'English',
+          approvedPost: post.english,
+          topic: post.topic,
+          approvedAt: this.approvedPost.approvedAt
+        };
+        this.emit('owner_decision', decision);
+        return decision;
       }
 
-      const decision = {
-        action: 'APPROVED',
-        status: 'APPROVED',
-        language: 'Plain Urdu',
-        approvedPost: post.plainUrdu,
-        topic: post.topic,
-        approvedAt: this.approvedPost.approvedAt
-      };
-      this.emit('owner_decision', decision);
-      return decision;
-    }
+      // Option 4: Discard post
+      if (input === '4' || input.includes('discard') || input.includes('cancel')) {
+        this.status = 'DISCARDED';
+        this.currentPendingPost = null;
+        console.log(ansi.dimText('\n✕ [WhatsApp Action] Owner DISCARDED the post.'));
 
-    // 4. RETRY / REGENERATE
-    if (input === '4' || input.includes('retry') || input === 'retry_post') {
-      console.log(ansi.yellowText('\n⟳ [WhatsApp Action] Owner requested REGENERATION. Generating fresh post...'));
-      if (whatsappClient.isConfigured() && fromNumber) {
-        try {
-          await whatsappClient.sendText(fromNumber, '⚡ Generating a fresh post for review. Stand by...');
-        } catch (e) {
-          console.warn('[WhatsApp Send Warning]', e.message);
+        if (whatsappClient.isConfigured() && fromNumber) {
+          try {
+            await whatsappClient.sendText(
+              fromNumber,
+              '🗑️ Post discarded. Send any message or press 1 to generate a new post.'
+            );
+          } catch (e) {
+            console.warn('[WhatsApp Send Warning]', e.message);
+          }
         }
-      }
-      return await this.generateAndSend();
-    }
 
-    // 5. DISCARD
-    if (input === '5' || input.includes('discard') || input.includes('cancel')) {
-      this.status = 'DISCARDED';
-      this.currentPendingPost = null;
-      console.log(ansi.dimText('\n✕ [WhatsApp Action] Owner DISCARDED the post.'));
-
-      if (whatsappClient.isConfigured() && fromNumber) {
-        try {
-          await whatsappClient.sendText(
-            fromNumber,
-            '🗑️ Post discarded. Send any message or press 1 to start again.'
-          );
-        } catch (e) {
-          console.warn('[WhatsApp Send Warning]', e.message);
-        }
+        const decision = { action: 'DISCARDED', status: 'DISCARDED', topic: post.topic };
+        this.emit('owner_decision', decision);
+        return decision;
       }
 
-      const decision = { action: 'DISCARDED', status: 'DISCARDED', topic: post.topic };
-      this.emit('owner_decision', decision);
-      return decision;
+      // Option 5: Regenerate the post
+      if (input === '5' || input.includes('retry') || input.includes('regen') || input.includes('new')) {
+        console.log(ansi.yellowText('\n⟳ [WhatsApp Action] Owner requested REGENERATION of English post...'));
+        if (whatsappClient.isConfigured() && fromNumber) {
+          try {
+            await whatsappClient.sendText(fromNumber, '⚡ Regenerating fresh English post. Stand by...');
+          } catch (e) {
+            console.warn('[WhatsApp Send Warning]', e.message);
+          }
+        }
+        return await this.generateAndSend();
+      }
     }
 
-    // Unknown command while post is pending
+    // --- VIEW: ROMAN URDU ACTIVE ---
+    if (post.activeView === 'ROMAN_URDU') {
+      // 1: Approve & Post Roman Urdu
+      if (input === '1' || input.includes('approve') || input.includes('post')) {
+        this.approvedPost = {
+          language: 'Roman Urdu',
+          content: post.romanUrdu,
+          topic: post.topic,
+          approvedAt: new Date().toISOString()
+        };
+        this.status = 'APPROVED';
+        this.currentPendingPost = null;
+        console.log(ansi.emeraldText('\n✓ [WhatsApp Action] Owner APPROVED & POSTED ROMAN URDU!'));
+
+        if (whatsappClient.isConfigured() && fromNumber) {
+          try {
+            await whatsappClient.sendApprovalConfirmation(fromNumber, 'Roman Urdu', post.romanUrdu);
+          } catch (e) {}
+        }
+        const decision = { action: 'APPROVED', status: 'APPROVED', language: 'Roman Urdu', approvedPost: post.romanUrdu, topic: post.topic };
+        this.emit('owner_decision', decision);
+        return decision;
+      }
+
+      // 2: Generate / Switch to Urdu (Plain Urdu)
+      if (input === '2' || input.includes('urdu')) {
+        if (!post.plainUrdu) {
+          post.plainUrdu = await generatePlainUrduFromEnglish(post.english, post.topic);
+        }
+        post.activeView = 'PLAIN_URDU';
+        if (whatsappClient.isConfigured() && fromNumber) {
+          try {
+            await whatsappClient.sendPlainUrduVersion(fromNumber, post);
+          } catch (e) {}
+        }
+        return { action: 'VIEW_PLAIN_URDU', post };
+      }
+
+      // 3: Post English directly
+      if (input === '3' || input.includes('english')) {
+        this.approvedPost = {
+          language: 'English',
+          content: post.english,
+          topic: post.topic,
+          approvedAt: new Date().toISOString()
+        };
+        this.status = 'APPROVED';
+        this.currentPendingPost = null;
+        if (whatsappClient.isConfigured() && fromNumber) {
+          try {
+            await whatsappClient.sendApprovalConfirmation(fromNumber, 'English', post.english);
+          } catch (e) {}
+        }
+        const decision = { action: 'APPROVED', status: 'APPROVED', language: 'English', approvedPost: post.english, topic: post.topic };
+        this.emit('owner_decision', decision);
+        return decision;
+      }
+
+      // 4: Discard
+      if (input === '4' || input.includes('discard')) {
+        this.status = 'DISCARDED';
+        this.currentPendingPost = null;
+        if (whatsappClient.isConfigured() && fromNumber) {
+          try {
+            await whatsappClient.sendText(fromNumber, '🗑️ Post discarded. Send any message or press 1 to generate a new post.');
+          } catch (e) {}
+        }
+        const decision = { action: 'DISCARDED', status: 'DISCARDED', topic: post.topic };
+        this.emit('owner_decision', decision);
+        return decision;
+      }
+
+      // 5: Regenerate Roman Urdu
+      if (input === '5' || input.includes('retry')) {
+        post.romanUrdu = await generateRomanUrduFromEnglish(post.english, post.topic);
+        if (whatsappClient.isConfigured() && fromNumber) {
+          try {
+            await whatsappClient.sendRomanUrduVersion(fromNumber, post);
+          } catch (e) {}
+        }
+        return { action: 'VIEW_ROMAN_URDU', post };
+      }
+    }
+
+    // --- VIEW: PLAIN URDU ACTIVE ---
+    if (post.activeView === 'PLAIN_URDU') {
+      // 1: Approve & Post Plain Urdu
+      if (input === '1' || input.includes('approve') || input.includes('post')) {
+        this.approvedPost = {
+          language: 'Plain Urdu',
+          content: post.plainUrdu,
+          topic: post.topic,
+          approvedAt: new Date().toISOString()
+        };
+        this.status = 'APPROVED';
+        this.currentPendingPost = null;
+        console.log(ansi.emeraldText('\n✓ [WhatsApp Action] Owner APPROVED & POSTED PLAIN URDU!'));
+
+        if (whatsappClient.isConfigured() && fromNumber) {
+          try {
+            await whatsappClient.sendApprovalConfirmation(fromNumber, 'Plain Urdu', post.plainUrdu);
+          } catch (e) {}
+        }
+        const decision = { action: 'APPROVED', status: 'APPROVED', language: 'Plain Urdu', approvedPost: post.plainUrdu, topic: post.topic };
+        this.emit('owner_decision', decision);
+        return decision;
+      }
+
+      // 2: Generate / Switch to Roman Urdu
+      if (input === '2' || input.includes('roman')) {
+        if (!post.romanUrdu) {
+          post.romanUrdu = await generateRomanUrduFromEnglish(post.english, post.topic);
+        }
+        post.activeView = 'ROMAN_URDU';
+        if (whatsappClient.isConfigured() && fromNumber) {
+          try {
+            await whatsappClient.sendRomanUrduVersion(fromNumber, post);
+          } catch (e) {}
+        }
+        return { action: 'VIEW_ROMAN_URDU', post };
+      }
+
+      // 3: Post English directly
+      if (input === '3' || input.includes('english')) {
+        this.approvedPost = {
+          language: 'English',
+          content: post.english,
+          topic: post.topic,
+          approvedAt: new Date().toISOString()
+        };
+        this.status = 'APPROVED';
+        this.currentPendingPost = null;
+        if (whatsappClient.isConfigured() && fromNumber) {
+          try {
+            await whatsappClient.sendApprovalConfirmation(fromNumber, 'English', post.english);
+          } catch (e) {}
+        }
+        const decision = { action: 'APPROVED', status: 'APPROVED', language: 'English', approvedPost: post.english, topic: post.topic };
+        this.emit('owner_decision', decision);
+        return decision;
+      }
+
+      // 4: Discard
+      if (input === '4' || input.includes('discard')) {
+        this.status = 'DISCARDED';
+        this.currentPendingPost = null;
+        if (whatsappClient.isConfigured() && fromNumber) {
+          try {
+            await whatsappClient.sendText(fromNumber, '🗑️ Post discarded. Send any message or press 1 to generate a new post.');
+          } catch (e) {}
+        }
+        const decision = { action: 'DISCARDED', status: 'DISCARDED', topic: post.topic };
+        this.emit('owner_decision', decision);
+        return decision;
+      }
+
+      // 5: Regenerate Urdu
+      if (input === '5' || input.includes('retry')) {
+        post.plainUrdu = await generatePlainUrduFromEnglish(post.english, post.topic);
+        if (whatsappClient.isConfigured() && fromNumber) {
+          try {
+            await whatsappClient.sendPlainUrduVersion(fromNumber, post);
+          } catch (e) {}
+        }
+        return { action: 'VIEW_PLAIN_URDU', post };
+      }
+    }
+
+    // Default help response
     if (whatsappClient.isConfigured() && fromNumber) {
       try {
         await whatsappClient.sendText(
           fromNumber,
-          `🤖 *X_BOT Command Options:*\n• *1* ➔ Approve English\n• *2* ➔ Approve Roman Urdu\n• *3* ➔ Approve Plain Urdu\n• *4* ➔ Retry / Generate New\n• *5* ➔ Discard`
+          `🤖 *Options:*\n• *1* ➔ Generate in Roman Urdu\n• *2* ➔ Generate in Urdu\n• *3* ➔ Post directly in English\n• *4* ➔ Discard post\n• *5* ➔ Regenerate the post`
         );
-      } catch (e) {
-        console.warn('[WhatsApp Send Warning]', e.message);
-      }
+      } catch (e) {}
     }
     return { action: 'HELP_SENT' };
   }
