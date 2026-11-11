@@ -6,6 +6,7 @@
  */
 
 import { MenuController } from './cli/menu.js';
+import { startServer } from './whatsapp/server.js';
 import { ansi } from './utils/ansi.js';
 
 process.on('SIGINT', () => {
@@ -18,6 +19,13 @@ process.on('unhandledRejection', (reason) => {
 });
 
 async function main() {
+  // If running in cloud hosting (Render, Railway) or non-interactive container
+  if (process.env.RENDER || (process.env.PORT && !process.stdin.isTTY)) {
+    console.log('[X_BOT] Cloud server environment detected. Starting WhatsApp Webhook HTTP Server...');
+    startServer(process.env.PORT || 3000);
+    return;
+  }
+
   const menu = new MenuController();
   await menu.start();
 }

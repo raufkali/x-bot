@@ -1,0 +1,13 @@
+services:
+  - type: web
+    name: x-bot
+    runtime: node
+    plan: free
+    buildCommand: npm install
+    startCommand: npm run webhook
+    healthCheckPath: /health
+    envVars:
+      - key: PORT
+        value: 10000
+      - key: WEBHOOK_VERIFY_TOKEN
+        value: xbot_verify_token_2026
