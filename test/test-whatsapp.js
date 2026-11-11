@@ -6,6 +6,7 @@ import assert from 'assert';
 import app, { startServer } from '../src/whatsapp/server.js';
 import { whatsappWorkflow } from '../src/whatsapp/workflow.js';
 import { postScheduler } from '../src/utils/scheduler.js';
+import { keepAliveService } from '../src/utils/keepAlive.js';
 import { config } from '../src/config.js';
 
 console.log('====================================================');
@@ -190,6 +191,7 @@ async function runTests() {
     console.log('====================================================\n');
   } finally {
     postScheduler.stop();
+    keepAliveService.stop();
     server.close();
   }
 }
@@ -197,6 +199,7 @@ async function runTests() {
 runTests().catch((err) => {
   console.error('[Test Failed]', err);
   postScheduler.stop();
+  keepAliveService.stop();
   server.close();
   process.exit(1);
 });

@@ -135,6 +135,24 @@ class WhatsAppWorkflowManager extends EventEmitter {
     }
 
     // ------------------------------------------------------------
+    // GLOBAL COMMAND: EXIT / SLEEP
+    // ------------------------------------------------------------
+    if (input === 'exit' || input === 'quit' || input === 'sleep' || input === 'stop') {
+      this.status = 'IDLE';
+      this.currentPendingPost = null;
+      console.log(ansi.dimText('\n😴 [WhatsApp Action] Bot entered SLEEP mode by owner command.'));
+      const sleepMsg = '😴 X Assistant is now sleeping. Send any message whenever you want to wake me up again!';
+      if (whatsappClient.isConfigured() && fromNumber) {
+        try {
+          await whatsappClient.sendText(fromNumber, sleepMsg);
+        } catch (e) {
+          console.warn('[WhatsApp Send Warning]', e.message);
+        }
+      }
+      return { action: 'SLEEPING', status: 'IDLE', message: sleepMsg };
+    }
+
+    // ------------------------------------------------------------
     // SCENARIO 1: NO PENDING POST
     // ------------------------------------------------------------
     if (!this.currentPendingPost) {

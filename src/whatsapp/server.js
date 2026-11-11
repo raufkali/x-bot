@@ -12,6 +12,7 @@ import { config } from '../config.js';
 import { whatsappWorkflow } from './workflow.js';
 import { whatsappClient } from './client.js';
 import { postScheduler } from '../utils/scheduler.js';
+import { keepAliveService } from '../utils/keepAlive.js';
 import { ansi } from '../utils/ansi.js';
 
 const app = express();
@@ -203,6 +204,9 @@ app.get('/health', (req, res) => {
 export function startServer(port = config.serverPort) {
   // Start the background post scheduler
   postScheduler.start();
+
+  // Start the self-ping keep-alive service to prevent free Render from sleeping
+  keepAliveService.start();
 
   return app.listen(port, () => {
     console.log(ansi.separator('=', 64, ansi.emerald));
