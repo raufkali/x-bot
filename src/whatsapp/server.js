@@ -11,6 +11,7 @@ import express from 'express';
 import { config } from '../config.js';
 import { whatsappWorkflow } from './workflow.js';
 import { whatsappClient } from './client.js';
+import { postScheduler } from '../utils/scheduler.js';
 import { ansi } from '../utils/ansi.js';
 
 const app = express();
@@ -46,6 +47,7 @@ app.post('/webhook', async (req, res) => {
 
   try {
     const body = req.body;
+    console.log(`\n📩 [Inbound Webhook Received]:`, JSON.stringify(body));
 
     if (body.object !== 'whatsapp_business_account') {
       return;
@@ -69,12 +71,16 @@ app.post('/webhook', async (req, res) => {
           } else if (message.type === 'interactive') {
             incomingText =
               message.interactive?.button_reply?.id ||
+              message.interactive?.button_reply?.title ||
               message.interactive?.list_reply?.id ||
+              message.interactive?.list_reply?.title ||
               '';
+          } else if (message.type === 'button') {
+            incomingText = message.button?.text || message.button?.payload || '';
           }
 
           if (incomingText) {
-            console.log(`\n📩 [Inbound WhatsApp] From: ${from} | Text: "${incomingText}"`);
+            console.log(`\n📩 [Inbound WhatsApp Message] From: ${from} | Text: "${incomingText}"`);
             await whatsappWorkflow.handleOwnerReply(incomingText, from);
           }
         }
@@ -157,7 +163,24 @@ app.post('/send-template', async (req, res) => {
 });
 
 // ============================================================
-// 4. STATUS & HEALTH ENDPOINTS
+// 6. SCHEDULER ENDPOINTS (GET/POST /schedule)
+// View or update daily automatic post generation schedule
+// ============================================================
+app.get('/schedule', (req, res) => {
+  res.status(200).json(postScheduler.getStatus());
+});
+
+app.post('/schedule', (req, res) => {
+  try {
+    const updated = postScheduler.updateConfig(req.body);
+    res.status(200).json({ success: true, schedule: updated });
+  } catch (err) {
+    res.status(500).json({ success: false, error: err.message });
+  }
+});
+
+// ============================================================
+// 7. STATUS & HEALTH ENDPOINTS
 // ============================================================
 app.get('/status', (req, res) => {
   res.json({
@@ -165,6 +188,7 @@ app.get('/status', (req, res) => {
     version: config.appVersion,
     whatsappConfigured: whatsappClient.isConfigured(),
     ownerNumberConfigured: Boolean(config.ownerPhoneNumber),
+    schedule: postScheduler.getStatus(),
     state: whatsappWorkflow.getCurrentState()
   });
 });
@@ -177,6 +201,9 @@ app.get('/health', (req, res) => {
 // START SERVER
 // ============================================================
 export function startServer(port = config.serverPort) {
+  // Start the background post scheduler
+  postScheduler.start();
+
   return app.listen(port, () => {
     console.log(ansi.separator('=', 64, ansi.emerald));
     console.log(ansi.boldText(`       ${ansi.emeraldText('X_BOT — WHATSAPP WEBHOOK SERVER RUNNING')}`));

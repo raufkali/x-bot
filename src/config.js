@@ -34,5 +34,10 @@ export const config = {
   serverPort: Number(process.env.PORT || 3000),
   graphApiVersion: process.env.GRAPH_API_VERSION || 'v25.0',
   whatsappTemplateName: process.env.WHATSAPP_TEMPLATE_NAME || '3p_direct_integration_test_template',
-  whatsappTemplateLang: process.env.WHATSAPP_TEMPLATE_LANG || 'en_US'
+  whatsappTemplateLang: process.env.WHATSAPP_TEMPLATE_LANG || 'en_US',
+
+  // Automated Post Scheduling Settings
+  scheduleTime: process.env.POST_SCHEDULE_TIME || process.env.DAILY_POST_TIME || '09:00', // HH:MM in 24hr format
+  scheduleTimezone: process.env.SCHEDULE_TIMEZONE || 'Asia/Karachi',
+  scheduleEnabled: String(process.env.SCHEDULE_ENABLED || 'true').toLowerCase() === 'true'
 };

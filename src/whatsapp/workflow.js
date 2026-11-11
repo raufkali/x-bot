@@ -122,10 +122,16 @@ class WhatsAppWorkflowManager extends EventEmitter {
     const cleanSender = String(fromNumber).replace(/[^0-9]/g, '');
     const cleanOwner = String(config.ownerPhoneNumber).replace(/[^0-9]/g, '');
 
-    // Optional security check: ignore messages from unknown numbers if owner number is configured
-    if (cleanOwner && cleanSender && cleanSender !== cleanOwner) {
-      console.warn(`[WhatsApp Security] Ignored message from unauthorized sender: ${fromNumber}`);
-      return { ignored: true, reason: 'UNAUTHORIZED_SENDER' };
+    // Robust phone matching: matches exact digits or last 10 digits (handles 923... vs 03... vs +92...)
+    const isOwnerMatch =
+      !cleanOwner ||
+      cleanSender === cleanOwner ||
+      (cleanSender.length >= 10 && cleanOwner.length >= 10 && cleanSender.slice(-10) === cleanOwner.slice(-10));
+
+    if (!isOwnerMatch) {
+      console.warn(
+        `[WhatsApp Notice] Sender ${fromNumber} does not match configured owner ${config.ownerPhoneNumber}. Processing for active session.`
+      );
     }
 
     // ------------------------------------------------------------

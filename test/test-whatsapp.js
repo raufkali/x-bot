@@ -5,6 +5,7 @@
 import assert from 'assert';
 import app, { startServer } from '../src/whatsapp/server.js';
 import { whatsappWorkflow } from '../src/whatsapp/workflow.js';
+import { postScheduler } from '../src/utils/scheduler.js';
 import { config } from '../src/config.js';
 
 console.log('====================================================');
@@ -166,16 +167,36 @@ async function runTests() {
     assert.ok(triggerResult.approvedPost.text, 'Approved post text returned by /trigger');
     console.log('✓ TEST 10 PASSED: POST /trigger waited and resolved with owner approval!\n');
 
+    // TEST 11: Daily Scheduler Endpoint
+    console.log('TEST 11: Testing Daily Auto-Post Scheduler Endpoints...');
+    const schedRes = await fetch(`${baseUrl}/schedule`);
+    const schedJson = await schedRes.json();
+    assert.ok('dailyTime' in schedJson, 'dailyTime must be present');
+    assert.ok('currentTime' in schedJson, 'currentTime must be present');
+    assert.ok('timezone' in schedJson, 'timezone must be present');
+
+    const updateSchedRes = await fetch(`${baseUrl}/schedule`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ time: '14:30', timezone: 'Asia/Karachi' })
+    });
+    const updateSchedJson = await updateSchedRes.json();
+    assert.strictEqual(updateSchedJson.schedule.dailyTime, '14:30');
+    assert.strictEqual(updateSchedJson.schedule.timezone, 'Asia/Karachi');
+    console.log('✓ TEST 11 PASSED: Daily auto-post scheduler configured and responsive!\n');
+
     console.log('====================================================');
     console.log('   ALL WHATSAPP WEBHOOK TESTS PASSED! (100%)');
     console.log('====================================================\n');
   } finally {
+    postScheduler.stop();
     server.close();
   }
 }
 
 runTests().catch((err) => {
   console.error('[Test Failed]', err);
+  postScheduler.stop();
   server.close();
   process.exit(1);
 });
