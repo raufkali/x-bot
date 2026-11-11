@@ -232,6 +232,24 @@ Return ONLY valid JSON:
   return formatEntry(found.plainUrdu.text, found.plainUrdu.hashtags);
 }
 
+/**
+ * Generates all 3 language versions of a post in one call
+ * (English, Roman Urdu, and Plain Urdu)
+ * @param {string} [customTopic]
+ */
+export async function generateMultilingualPost(customTopic = '') {
+  const eng = await generateEnglishPost(customTopic);
+  const roman = await generateRomanUrduFromEnglish(eng.english, eng.topic);
+  const plain = await generatePlainUrduFromEnglish(eng.english, eng.topic);
+  return {
+    topic: eng.topic,
+    provider: eng.provider,
+    english: eng.english,
+    romanUrdu: roman,
+    plainUrdu: plain
+  };
+}
+
 async function callGroq(prompt, apiKey) {
   const groq = new Groq({ apiKey });
   const model = process.env.AI_MODEL || 'llama-3.3-70b-versatile';

@@ -226,10 +226,58 @@ TEST 8: Testing Approval & Rejection Simulation...
 
 ---
 
-## 🔮 Roadmap (Future Phases)
+## 📱 Meta WhatsApp Cloud API Integration (Owner Approval)
 
-- **Part 2**: WhatsApp Business bot integration to send posts to the owner's WhatsApp for one-click approval.
-- **Part 2**: Direct X (Twitter) API integration to publish approved posts.
-- **Part 3**: Scheduled automated runs and post analytics.
+X_BOT includes an **Express Webhook Server** ready to connect with Meta's official WhatsApp Cloud API.
 
-*(Part 2 and Part 3 are not included in Part 1 per project requirements).*
+### 1. Environment Variables (`.env`)
+```env
+WHATSAPP_TOKEN=your_meta_access_token
+WHATSAPP_PHONE_NUMBER_ID=your_phone_number_id
+WHATSAPP_BUSINESS_ACCOUNT_ID=your_waba_id
+OWNER_PHONE_NUMBER=923001234567 # Your WhatsApp number with country code
+WEBHOOK_VERIFY_TOKEN=xbot_verify_token_2026
+PORT=3000
+```
+
+### 2. Start the WhatsApp Webhook Server
+```bash
+npm run webhook
+```
+This runs the Express server listening on `http://localhost:3000`.
+
+- **Webhook URL for Meta Dashboard:** `https://your-domain-or-ngrok/webhook`
+- **Verify Token:** `xbot_verify_token_2026` (or whatever you set in `WEBHOOK_VERIFY_TOKEN`)
+
+### 3. Trigger Post Generation and Send to WhatsApp
+To generate a fresh post and send it directly to your WhatsApp for approval:
+```bash
+npm run send:whatsapp
+```
+Or via HTTP POST request:
+```bash
+curl -X POST http://localhost:3000/generate -H "Content-Type: application/json" -d '{"topic": "Future of AI in 2035"}'
+```
+
+### 4. Approving from WhatsApp
+When the post arrives on your WhatsApp, simply reply:
+- **`1`** ➔ Approves **English** version
+- **`2`** ➔ Approves **Roman Urdu** version
+- **`3`** ➔ Approves **Plain Urdu** version
+- **`4`** ➔ Retries and generates a fresh post
+- **`5`** ➔ Discards the post
+
+### 5. Check Approval Status
+```bash
+curl http://localhost:3000/status
+```
+
+---
+
+## 🧪 Testing WhatsApp Webhooks
+
+Run the automated test suite for the WhatsApp webhook server:
+```bash
+node test/test-whatsapp.js
+```
+All tests verify the Meta verification handshake, token validation, inbound message parsing, and in-memory approval state transitions.

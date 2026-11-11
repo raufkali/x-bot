@@ -1,0 +1,122 @@
+/**
+ * Test Suite for WhatsApp Webhook Server and Approval Workflow
+ */
+
+import assert from 'assert';
+import app, { startServer } from '../src/whatsapp/server.js';
+import { whatsappWorkflow } from '../src/whatsapp/workflow.js';
+import { config } from '../src/config.js';
+
+console.log('====================================================');
+console.log('        TESTING WHATSAPP WEBHOOK & WORKFLOW');
+console.log('====================================================\n');
+
+const TEST_PORT = 3999;
+config.ownerPhoneNumber = '923001234567';
+const server = startServer(TEST_PORT);
+
+async function runTests() {
+  try {
+    const baseUrl = `http://localhost:${TEST_PORT}`;
+
+    // TEST 1: Meta Webhook Verification Handshake (Valid token)
+    console.log('TEST 1: Testing Meta Webhook Verification Handshake...');
+    const challengeStr = 'challenge_test_123456';
+    const verifyRes = await fetch(
+      `${baseUrl}/webhook?hub.mode=subscribe&hub.verify_token=${config.webhookVerifyToken}&hub.challenge=${challengeStr}`
+    );
+    assert.strictEqual(verifyRes.status, 200, 'Handshake should return 200 OK');
+    const returnedChallenge = await verifyRes.text();
+    assert.strictEqual(returnedChallenge, challengeStr, 'Challenge string must match exactly');
+    console.log('✓ TEST 1 PASSED: Webhook verification handshake working.\n');
+
+    // TEST 2: Invalid Token Handshake
+    console.log('TEST 2: Testing Invalid Token Rejection...');
+    const invalidRes = await fetch(
+      `${baseUrl}/webhook?hub.mode=subscribe&hub.verify_token=wrong_secret&hub.challenge=test`
+    );
+    assert.strictEqual(invalidRes.status, 403, 'Invalid token should return 403 Forbidden');
+    console.log('✓ TEST 2 PASSED: Invalid token correctly rejected.\n');
+
+    // TEST 3: Health Check
+    console.log('TEST 3: Testing Health Check Endpoint...');
+    const healthRes = await fetch(`${baseUrl}/health`);
+    const healthJson = await healthRes.json();
+    assert.strictEqual(healthJson.status, 'healthy');
+    console.log('✓ TEST 3 PASSED: Health endpoint OK.\n');
+
+    // TEST 4: Post Generation into Memory Workflow
+    console.log('TEST 4: Generating a Post into Memory Workflow...');
+    await whatsappWorkflow.generateAndSend('Test Autonomous AI topic');
+    const state = whatsappWorkflow.getCurrentState();
+    assert.strictEqual(state.status, 'AWAITING_APPROVAL');
+    assert.ok(state.currentPendingPost, 'Pending post should exist in memory');
+    assert.ok(state.currentPendingPost.english.text, 'English text should exist');
+    assert.ok(state.currentPendingPost.romanUrdu.text, 'Roman Urdu text should exist');
+    assert.ok(state.currentPendingPost.plainUrdu.text, 'Plain Urdu text should exist');
+    console.log('✓ TEST 4 PASSED: Post generated into memory workflow.\n');
+
+    // TEST 5: Owner Approving Roman Urdu via Inbound Webhook
+    console.log('TEST 5: Simulating Owner Replying "2" (Roman Urdu Approval)...');
+    const metaWebhookPayload = {
+      object: 'whatsapp_business_account',
+      entry: [
+        {
+          id: 'test_entry_id',
+          changes: [
+            {
+              value: {
+                messaging_product: 'whatsapp',
+                metadata: { display_phone_number: '123', phone_number_id: '456' },
+                messages: [
+                  {
+                    from: config.ownerPhoneNumber || '923001234567',
+                    id: 'wamid_test_msg_id',
+                    timestamp: '1600000000',
+                    type: 'text',
+                    text: { body: '2' }
+                  }
+                ]
+              },
+              field: 'messages'
+            }
+          ]
+        }
+      ]
+    };
+
+    const webhookPostRes = await fetch(`${baseUrl}/webhook`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(metaWebhookPayload)
+    });
+    assert.strictEqual(webhookPostRes.status, 200, 'Webhook should return 200 OK to Meta');
+
+    // Check state update
+    const approvedState = whatsappWorkflow.getCurrentState();
+    assert.strictEqual(approvedState.status, 'APPROVED', 'Post status must be APPROVED');
+    assert.strictEqual(approvedState.approvedPost.language, 'Roman Urdu', 'Language should be Roman Urdu');
+    assert.ok(approvedState.approvedPost.content.text, 'Content text should be present');
+    console.log('✓ TEST 5 PASSED: Inbound WhatsApp reply "2" successfully approved Roman Urdu!\n');
+
+    // TEST 6: Status API
+    console.log('TEST 6: Testing GET /status endpoint...');
+    const statusRes = await fetch(`${baseUrl}/status`);
+    const statusJson = await statusRes.json();
+    assert.strictEqual(statusJson.state.status, 'APPROVED');
+    assert.strictEqual(statusJson.state.approvedPost.language, 'Roman Urdu');
+    console.log('✓ TEST 6 PASSED: Status endpoint accurately reports in-memory approval state.\n');
+
+    console.log('====================================================');
+    console.log('   ALL WHATSAPP WEBHOOK TESTS PASSED! (100%)');
+    console.log('====================================================\n');
+  } finally {
+    server.close();
+  }
+}
+
+runTests().catch((err) => {
+  console.error('[Test Failed]', err);
+  server.close();
+  process.exit(1);
+});
