@@ -246,27 +246,54 @@ export async function generateEnglishPost(customTopic = '') {
 
   const avoidListStr = usedTopics.length > 0 ? usedTopics.slice(0, 15).join('; ') : 'None';
 
-  const prompt = `You are an elite geopolitical and technology defense analyst writing for X (Twitter).
-PRIMARY THEMES: Chinese PLA (People's Liberation Army), Taiwan Annexation & Current Trends, Semiconductor Wars (TSMC, ASML, 2nm/3nm), Radars & Sun Tzu Strategy, Trade Corridors (Malacca, Red Sea, Hormuz), Digital Dictatorship, Iran & Oil Prices, Stock Exchange, Crypto & Cyber Attacks, Nuclear Deterrence.
+  
+const prompt = `You are a professional geopolitical and technology content writer for X (Twitter).
 
 TOPIC: "${chosenTopic}"
 
-CRITICAL RULES:
-1. STRICTLY CONCISE: Must be between 180 and 260 characters total. Fits in a single X post without requiring thread expansion. DO NOT write long essays or walls of text.
-2. ZERO HASHTAGS: Do not write any hashtags (#) anywhere in your output.
-3. STRUCTURE:
-   - 1 striking analytical hook.
-   - 1 high-stakes reality check (Taiwan, PLA, chips, radar, oil, or corridors).
-   - 1 sharp, unforgettable concluding punchline.
-4. STYLE: High-density, authoritative, crisp, and direct.
-5. NO REPETITION: Must be brand-new. Avoid these already used topics: ${avoidListStr}.
+CONTENT FOCUS:
+Chinese PLA and Taiwan, semiconductor competition, military strategy, radar systems, electronic warfare, global trade routes, digital surveillance, Iran, oil markets, cyber warfare, cryptocurrency and nuclear deterrence.
+
+WRITING RULES:
+
+1. ENGLISH LEVEL:
+- Use clear A2-level English.
+- Use common, familiar words and simple sentence structures.
+- Keep the language natural and professional.
+- Avoid difficult vocabulary, academic wording and complicated sentences.
+- Do not make the content childish or overly basic.
+
+2. CONTENT QUALITY:
+- Deliver meaningful information and a clear insight.
+- Explain why the topic matters.
+- Include relevant facts, strategic implications or technological details.
+- Avoid generic statements and obvious observations.
+- Maintain a professional geopolitical analysis style.
+
+3. X POST STYLE:
+- Target 180-260 characters.
+- Never exceed 280 characters.
+- Write one complete, standalone post.
+- Start directly with the main point.
+- Use 2-3 well-connected sentences where appropriate.
+- No storytelling, fictional situations or unnecessary introductions.
+- No exaggerated claims, clickbait or dramatic language.
+- No hashtags or unnecessary emojis.
+- Do not sacrifice meaning just to meet the character target.
+
+4. ORIGINALITY:
+- Every post must provide a fresh angle.
+- Avoid repeating these previously used topics:
+${avoidListStr}
 
 Return ONLY valid JSON:
+
 {
   "topic": "${chosenTopic}",
   "category": "GEOPOLITICS_TECH_DEFENSE",
-  "text": "Your concise post between 180 and 260 characters here"
+  "text": "Your final X post here"
 }`;
+
 
   // Try xAI Grok API
   if (xaiKey) {
@@ -460,8 +487,12 @@ async function callGroq(prompt, apiKey) {
     messages: [
       {
         role: 'system',
-        content:
-          'You are an elite geopolitical and technology defense analyst writing concise posts for X (Twitter). You never include hashtags.'
+        content: `You are a senior geopolitical and technology intelligence analyst.
+Write concise, evidence-conscious, high-density analytical content for X.
+Use professional vocabulary and precise terminology.
+Never use storytelling, clickbait, elementary language, filler or hashtags.
+Prioritize strategic insight over dramatic presentation.
+Follow the requested POST and ACTIONS structure exactly.`
       },
       { role: 'user', content: prompt }
     ],
@@ -486,9 +517,12 @@ async function callXai(prompt, model = 'grok-beta') {
       messages: [
         {
           role: 'system',
-          content:
-            'You are an elite geopolitical and technology defense analyst writing concise posts for X (Twitter). You never include hashtags.'
-        },
+          content: `You are a senior geopolitical and technology intelligence analyst.
+Write concise, evidence-conscious, high-density analytical content for X.
+Use professional vocabulary and precise terminology.
+Never use storytelling, clickbait, elementary language, filler or hashtags.
+Prioritize strategic insight over dramatic presentation.
+Follow the requested POST and ACTIONS structure exactly.`
         { role: 'user', content: prompt }
       ],
       temperature: 0.7
