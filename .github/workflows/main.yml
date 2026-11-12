@@ -1,0 +1,61 @@
+name: Auto Generate & Send X Posts to WhatsApp
+
+on:
+  # Daily scheduled triggers at 9:00 AM, 2:00 PM, and 8:00 PM Pakistan Time (PKT / UTC+5)
+  # 9:00 AM PKT = 04:00 UTC
+  # 2:00 PM PKT = 09:00 UTC
+  # 8:00 PM PKT = 15:00 UTC
+  schedule:
+    - cron: '0 4,9,15 * * *'
+
+  # Allows manual execution anytime via the GitHub Actions UI ("Run workflow" button)
+  workflow_dispatch:
+    inputs:
+      custom_topic:
+        description: 'Optional custom topic to generate (leave empty for auto trending theme)'
+        required: false
+        default: ''
+
+jobs:
+  trigger-post-generation:
+    name: Generate Post & Send to WhatsApp
+    runs-on: ubuntu-latest
+    steps:
+      - name: Display Trigger Info
+        run: |
+          echo "=========================================================="
+          echo "⏰ X_BOT Auto-Post Trigger"
+          echo "Timestamp UTC: $(date -u)"
+          echo "Schedule: 9:00 AM, 2:00 PM, 8:00 PM PKT"
+          echo "=========================================================="
+
+      - name: Send Post Request to Render Bot Server
+        run: |
+          RENDER_URL="https://x-bot-7p2s.onrender.com"
+          TOPIC="${{ github.event.inputs.custom_topic }}"
+
+          echo "Target Endpoint: $RENDER_URL/generate"
+
+          # Prepare JSON payload
+          if [ -n "$TOPIC" ]; then
+            PAYLOAD="{\"topic\": \"$TOPIC\"}"
+          else
+            PAYLOAD="{}"
+          fi
+
+          echo "Sending POST request..."
+          RESPONSE=$(curl -s -S -X POST "$RENDER_URL/generate" \
+            -H "Content-Type: application/json" \
+            -d "$PAYLOAD" \
+            --max-time 180)
+
+          echo "Response from X_BOT server:"
+          echo "$RESPONSE"
+
+          # Verify response contains success
+          if echo "$RESPONSE" | grep -q '"success":true'; then
+            echo "✓ Success! Post generated and sent to Owner WhatsApp."
+          else
+            echo "⚠ Warning: Server did not return success:true or timed out."
+            echo "Raw response: $RESPONSE"
+          fi
