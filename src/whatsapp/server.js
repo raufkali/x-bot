@@ -429,6 +429,26 @@ app.get('/auth/x/status', async (req, res) => {
   }
 });
 
+// Direct X Tweet Publishing (POST /publish)
+app.post('/publish', async (req, res) => {
+  try {
+    const text = req.body?.text;
+    if (!text) {
+      return res.status(400).json({ success: false, error: 'Request body must include a "text" field.' });
+    }
+    const result = await xService.publishTweet(text);
+    const status = await xService.getStatus();
+    const username = status?.user?.username || 'MussawerSafi';
+    res.status(200).json({
+      success: true,
+      tweet: result,
+      url: `https://x.com/${username}/status/${result.id}`
+    });
+  } catch (err) {
+    res.status(500).json({ success: false, error: err.message });
+  }
+});
+
 // ============================================================
 // 9. STATUS, POSTS & HEALTH ENDPOINTS
 // ============================================================

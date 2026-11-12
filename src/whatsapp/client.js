@@ -282,23 +282,46 @@ Reply with:
   }
 
   /**
-   * Sends confirmation when owner approves a version
+   * Sends confirmation when owner approves a version (with live X URL or error status)
    */
-  async sendApprovalConfirmation(to, language, approvedVersion) {
-    const confirmation = `✅ *POST APPROVED FOR X (TWITTER)!*
+  async sendApprovalConfirmation(to, language, approvedVersion, tweetDetails = null) {
+    let confirmation;
+    const bodyContent = approvedVersion.fullPost || `${approvedVersion.text}\n\n${approvedVersion.hashtags || ''}`.trim();
+    const lengthCount = approvedVersion.weightedCount || approvedVersion.charCount || 240;
 
-Language: *${language}*
+    if (tweetDetails && tweetDetails.url) {
+      const username = tweetDetails.username ? `@${tweetDetails.username}` : 'X';
+      confirmation = `🚀 *POST PUBLISHED TO X (TWITTER)!*
+
+👤 *Account:* ${username}
+🌐 *Language:* ${language}
+🔗 *Live Tweet:* ${tweetDetails.url}
+
+━━━━━━━━━━━━━━━━━━━━
+${bodyContent}
+━━━━━━━━━━━━━━━━━━━━
+_Length: ${lengthCount}/280 chars_`;
+    } else if (tweetDetails && tweetDetails.error) {
+      confirmation = `⚠️ *POST APPROVED BUT FAILED TO PUBLISH TO X*
+
+🌐 *Language:* ${language}
+❌ *Error:* ${tweetDetails.error}
+💡 *Fix:* Visit https://x-bot-7p2s.onrender.com/auth/x to reconnect.
+
+━━━━━━━━━━━━━━━━━━━━
+${bodyContent}
+━━━━━━━━━━━━━━━━━━━━`;
+    } else {
+      confirmation = `✅ *POST APPROVED FOR X (TWITTER)!*
+
+🌐 *Language:* ${language}
 Status: *Ready for Publishing*
 
 ━━━━━━━━━━━━━━━━━━━━
-*Content:*
-${approvedVersion.text}
-
-${approvedVersion.hashtags}
+${bodyContent}
 ━━━━━━━━━━━━━━━━━━━━
-_Length: ${approvedVersion.weightedCount}/280 chars_
-
-_(In Part 2 this will automatically post to your X account.)_`;
+_Length: ${lengthCount}/280 chars_`;
+    }
 
     return this.sendText(to, confirmation);
   }

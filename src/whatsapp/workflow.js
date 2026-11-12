@@ -14,6 +14,7 @@ import { config } from '../config.js';
 import { ansi } from '../utils/ansi.js';
 import { keepAliveService } from '../utils/keepAlive.js';
 import { markPostApproved, markPostDiscarded } from '../db/postModel.js';
+import { xService } from '../x/xService.js';
 
 class WhatsAppWorkflowManager extends EventEmitter {
   constructor() {
@@ -113,6 +114,44 @@ class WhatsAppWorkflowManager extends EventEmitter {
         }, timeoutMs);
       }
     });
+  }
+
+  /**
+   * Publishes approved post directly to live X (Twitter) account
+   * @param {string} language - English | Roman Urdu | Plain Urdu
+   * @param {object} versionObj - Approved language object
+   * @param {string} topic
+   */
+  async publishToX(language, versionObj, topic) {
+    const tweetText = (versionObj.fullPost || `${versionObj.text}\n\n${versionObj.hashtags || ''}`).trim();
+    let tweetDetails = null;
+
+    try {
+      console.log(ansi.boldText(`\n🚀 [Publishing to X] Posting ${language} version to live X account...`));
+      console.log(`   Text preview: "${tweetText.slice(0, 100)}..."`);
+
+      const tweetResult = await xService.publishTweet(tweetText);
+      const xStatus = await xService.getStatus();
+      const username = xStatus?.user?.username || 'MussawerSafi';
+      const tweetUrl = `https://x.com/${username}/status/${tweetResult.id}`;
+
+      console.log(ansi.emeraldText(`✓ [X Published] Successfully posted to X! Tweet ID: ${tweetResult.id}`));
+      console.log(ansi.cyanText(`   Live Tweet URL: ${tweetUrl}`));
+
+      tweetDetails = {
+        id: tweetResult.id,
+        username,
+        url: tweetUrl,
+        publishedAt: new Date().toISOString()
+      };
+    } catch (err) {
+      console.error(ansi.redText(`✕ [X Publish Error] ${err.message}`));
+      tweetDetails = {
+        error: err.message
+      };
+    }
+
+    return tweetDetails;
   }
 
   /**
@@ -254,9 +293,13 @@ class WhatsAppWorkflowManager extends EventEmitter {
         markPostApproved(post.topic, 'English').catch(() => {});
         console.log(ansi.emeraldText('\n✓ [WhatsApp Action] Owner APPROVED & POSTED ENGLISH directly!'));
 
+        // Publish to real X account in production
+        const tweetDetails = await this.publishToX('English', post.english, post.topic);
+        this.approvedPost.tweet = tweetDetails;
+
         if (whatsappClient.isConfigured() && fromNumber) {
           try {
-            await whatsappClient.sendApprovalConfirmation(fromNumber, 'English', post.english);
+            await whatsappClient.sendApprovalConfirmation(fromNumber, 'English', post.english, tweetDetails);
           } catch (e) {
             console.warn('[WhatsApp Send Warning]', e.message);
           }
@@ -268,6 +311,7 @@ class WhatsAppWorkflowManager extends EventEmitter {
           language: 'English',
           approvedPost: post.english,
           topic: post.topic,
+          tweet: tweetDetails,
           approvedAt: this.approvedPost.approvedAt
         };
         this.emit('owner_decision', decision);
@@ -328,12 +372,16 @@ class WhatsAppWorkflowManager extends EventEmitter {
         markPostApproved(post.topic, 'Roman Urdu').catch(() => {});
         console.log(ansi.emeraldText('\n✓ [WhatsApp Action] Owner APPROVED & POSTED ROMAN URDU!'));
 
+        // Publish to real X account in production
+        const tweetDetails = await this.publishToX('Roman Urdu', post.romanUrdu, post.topic);
+        this.approvedPost.tweet = tweetDetails;
+
         if (whatsappClient.isConfigured() && fromNumber) {
           try {
-            await whatsappClient.sendApprovalConfirmation(fromNumber, 'Roman Urdu', post.romanUrdu);
+            await whatsappClient.sendApprovalConfirmation(fromNumber, 'Roman Urdu', post.romanUrdu, tweetDetails);
           } catch (e) {}
         }
-        const decision = { action: 'APPROVED', status: 'APPROVED', language: 'Roman Urdu', approvedPost: post.romanUrdu, topic: post.topic };
+        const decision = { action: 'APPROVED', status: 'APPROVED', language: 'Roman Urdu', approvedPost: post.romanUrdu, topic: post.topic, tweet: tweetDetails };
         this.emit('owner_decision', decision);
         return decision;
       }
@@ -364,12 +412,18 @@ class WhatsAppWorkflowManager extends EventEmitter {
         this.currentPendingPost = null;
         keepAliveService.setWaitingForResponse(false);
         markPostApproved(post.topic, 'English').catch(() => {});
+        console.log(ansi.emeraldText('\n✓ [WhatsApp Action] Owner APPROVED & POSTED ENGLISH directly!'));
+
+        // Publish to real X account in production
+        const tweetDetails = await this.publishToX('English', post.english, post.topic);
+        this.approvedPost.tweet = tweetDetails;
+
         if (whatsappClient.isConfigured() && fromNumber) {
           try {
-            await whatsappClient.sendApprovalConfirmation(fromNumber, 'English', post.english);
+            await whatsappClient.sendApprovalConfirmation(fromNumber, 'English', post.english, tweetDetails);
           } catch (e) {}
         }
-        const decision = { action: 'APPROVED', status: 'APPROVED', language: 'English', approvedPost: post.english, topic: post.topic };
+        const decision = { action: 'APPROVED', status: 'APPROVED', language: 'English', approvedPost: post.english, topic: post.topic, tweet: tweetDetails };
         this.emit('owner_decision', decision);
         return decision;
       }
@@ -418,12 +472,16 @@ class WhatsAppWorkflowManager extends EventEmitter {
         markPostApproved(post.topic, 'Plain Urdu').catch(() => {});
         console.log(ansi.emeraldText('\n✓ [WhatsApp Action] Owner APPROVED & POSTED PLAIN URDU!'));
 
+        // Publish to real X account in production
+        const tweetDetails = await this.publishToX('Plain Urdu', post.plainUrdu, post.topic);
+        this.approvedPost.tweet = tweetDetails;
+
         if (whatsappClient.isConfigured() && fromNumber) {
           try {
-            await whatsappClient.sendApprovalConfirmation(fromNumber, 'Plain Urdu', post.plainUrdu);
+            await whatsappClient.sendApprovalConfirmation(fromNumber, 'Plain Urdu', post.plainUrdu, tweetDetails);
           } catch (e) {}
         }
-        const decision = { action: 'APPROVED', status: 'APPROVED', language: 'Plain Urdu', approvedPost: post.plainUrdu, topic: post.topic };
+        const decision = { action: 'APPROVED', status: 'APPROVED', language: 'Plain Urdu', approvedPost: post.plainUrdu, topic: post.topic, tweet: tweetDetails };
         this.emit('owner_decision', decision);
         return decision;
       }
@@ -454,12 +512,18 @@ class WhatsAppWorkflowManager extends EventEmitter {
         this.currentPendingPost = null;
         keepAliveService.setWaitingForResponse(false);
         markPostApproved(post.topic, 'English').catch(() => {});
+        console.log(ansi.emeraldText('\n✓ [WhatsApp Action] Owner APPROVED & POSTED ENGLISH directly!'));
+
+        // Publish to real X account in production
+        const tweetDetails = await this.publishToX('English', post.english, post.topic);
+        this.approvedPost.tweet = tweetDetails;
+
         if (whatsappClient.isConfigured() && fromNumber) {
           try {
-            await whatsappClient.sendApprovalConfirmation(fromNumber, 'English', post.english);
+            await whatsappClient.sendApprovalConfirmation(fromNumber, 'English', post.english, tweetDetails);
           } catch (e) {}
         }
-        const decision = { action: 'APPROVED', status: 'APPROVED', language: 'English', approvedPost: post.english, topic: post.topic };
+        const decision = { action: 'APPROVED', status: 'APPROVED', language: 'English', approvedPost: post.english, topic: post.topic, tweet: tweetDetails };
         this.emit('owner_decision', decision);
         return decision;
       }
