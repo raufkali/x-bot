@@ -15,6 +15,7 @@ import { postScheduler } from '../utils/scheduler.js';
 import { keepAliveService } from '../utils/keepAlive.js';
 import { initMongo, isMongoConnected } from '../db/mongo.js';
 import { PostModel } from '../db/postModel.js';
+import { xService } from '../x/xService.js';
 import { ansi } from '../utils/ansi.js';
 
 const app = express();
@@ -335,14 +336,111 @@ app.get('/api/debug-whatsapp', async (req, res) => {
 });
 
 // ============================================================
-// 8. STATUS, POSTS & HEALTH ENDPOINTS
+// 8. X (TWITTER) OAUTH 2.0 PKCE ENDPOINTS
+// Handles user authorization & callback for direct timeline publishing
 // ============================================================
-app.get('/status', (req, res) => {
+
+// Initiate X Authorization
+app.get('/auth/x', (req, res) => {
+  try {
+    const { url } = xService.getAuthorizationUrl();
+    console.log(ansi.emeraldText(`\n🔗 [X Auth] Redirecting user to X OAuth authorization...`));
+    res.redirect(url);
+  } catch (err) {
+    res.status(500).send(`Error initiating X authorization: ${err.message}`);
+  }
+});
+
+// X OAuth 2.0 Callback URL
+app.get('/auth/x/callback', async (req, res) => {
+  const { code, state, error, error_description } = req.query;
+
+  if (error) {
+    console.warn(`[X Auth Error] ${error}: ${error_description}`);
+    return res.status(400).send(`
+      <!DOCTYPE html>
+      <html>
+        <head><title>X Auth Failed</title></head>
+        <body style="font-family: -apple-system, sans-serif; padding: 40px; text-align: center; background: #000; color: #fff;">
+          <h1 style="color: #f4212e;">✕ Authorization Denied</h1>
+          <p>${error_description || error}</p>
+          <a href="/auth/x" style="color: #1d9bf0;">Click here to try again</a>
+        </body>
+      </html>
+    `);
+  }
+
+  if (!code || !state) {
+    return res.status(400).send('Missing authorization code or state parameter.');
+  }
+
+  try {
+    const tokenRecord = await xService.handleCallback(code, state);
+    const username = tokenRecord.user?.username || 'Owner';
+
+    res.status(200).send(`
+      <!DOCTYPE html>
+      <html>
+        <head>
+          <title>X Connected Successfully</title>
+          <meta name="viewport" content="width=device-width, initial-scale=1">
+          <style>
+            body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background: #000; color: #e7e9ea; display: flex; align-items: center; justify-content: center; height: 100vh; margin: 0; }
+            .card { background: #16181c; border: 1px solid #2f3336; border-radius: 16px; padding: 36px; max-width: 440px; text-align: center; box-shadow: 0 8px 32px rgba(0,0,0,0.6); }
+            .badge { display: inline-block; background: #00ba7c22; color: #00ba7c; border: 1px solid #00ba7c55; border-radius: 20px; padding: 6px 14px; font-weight: 600; font-size: 14px; margin-bottom: 16px; }
+            h1 { font-size: 24px; margin: 0 0 12px 0; color: #fff; }
+            p { color: #71767b; font-size: 15px; line-height: 1.5; margin: 0 0 20px 0; }
+            .handle { color: #1d9bf0; font-weight: bold; }
+          </style>
+        </head>
+        <body>
+          <div class="card">
+            <div class="badge">✓ Connected</div>
+            <h1>X Account Linked!</h1>
+            <p>Successfully authenticated as <span class="handle">@${username}</span>.<br><br>X_BOT is now authorized to publish approved posts directly to your X timeline.</p>
+            <p style="font-size: 13px; color: #536471;">You can close this tab and return to WhatsApp.</p>
+          </div>
+        </body>
+      </html>
+    `);
+  } catch (err) {
+    console.error('[X Callback Error]', err);
+    res.status(500).send(`
+      <!DOCTYPE html>
+      <html>
+        <head><title>X Auth Error</title></head>
+        <body style="font-family: -apple-system, sans-serif; padding: 40px; text-align: center; background: #000; color: #fff;">
+          <h1 style="color: #f4212e;">✕ Authentication Failed</h1>
+          <p>${err.message}</p>
+          <a href="/auth/x" style="color: #1d9bf0;">Click here to retry</a>
+        </body>
+      </html>
+    `);
+  }
+});
+
+// X Connection Status
+app.get('/auth/x/status', async (req, res) => {
+  try {
+    const status = await xService.getStatus();
+    res.status(200).json(status);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// ============================================================
+// 9. STATUS, POSTS & HEALTH ENDPOINTS
+// ============================================================
+app.get('/status', async (req, res) => {
+  const xStatus = await xService.getStatus().catch(() => null);
   res.json({
     app: config.appName,
     version: config.appVersion,
     whatsappConfigured: whatsappClient.isConfigured(),
     ownerNumberConfigured: Boolean(config.ownerPhoneNumber),
+    xConnected: xStatus?.connected || false,
+    xUser: xStatus?.user?.username ? `@${xStatus.user.username}` : null,
     database: {
       connected: isMongoConnected(),
       cluster: 'MongoDB Atlas (cluster0.jsxyhxh.mongodb.net)',

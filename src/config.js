@@ -52,6 +52,14 @@ export const config = {
   // MongoDB Atlas Database (Set via MONGODB_URI in .env or Render dashboard)
   mongoUri: process.env.MONGODB_URI || '',
 
+  // X (Twitter) Developer API & OAuth 2.0 Settings
+  xApiKey: process.env.X_API_KEY || '',
+  xApiSecret: process.env.X_API_SECRET || '',
+  xBearerToken: process.env.X_BEARER_TOKEN || '',
+  xClientId: process.env.X_CLIENT_ID || 'eldpTmpRbnVLRGk1RXN3ZnNfSXA6MTpjaQ',
+  xClientSecret: process.env.X_CLIENT_SECRET || 'a6Fg0i4agDmIulwW9C4kfGT-TzpK1lyXLuxWECQd3LqQlxw1J0',
+  xCallbackUrl: process.env.X_CALLBACK_URL || 'https://x-bot-7p2s.onrender.com/auth/x/callback',
+
   // Content Generation Profile
   englishLevel: 'A2',
   contentThemes: 'Geopolitics, Global Power Shifts, Future Forecastings 2035, AI Technology, Economics & Strategic Resources, Global Political Documentary'
