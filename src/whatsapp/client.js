@@ -68,7 +68,14 @@ export class WhatsAppClient {
             console.warn(ansi.yellowText('   3. Ensure System User Token has active "whatsapp_business_messaging" permission.'));
           }
 
-          throw new Error(`WhatsApp API failed (${response.status}): ${errorMsg}`);
+          const errorDetails =
+            responseData?.error?.error_data?.details ||
+            responseData?.error?.error_user_msg ||
+            responseData?.error?.error_subcode ||
+            '';
+          const errorSummary = errorDetails ? `${errorMsg} (${errorDetails})` : errorMsg;
+
+          throw new Error(`WhatsApp API failed (${response.status}): ${errorSummary}`);
         }
 
         return responseData;

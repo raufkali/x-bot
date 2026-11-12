@@ -241,7 +241,101 @@ app.post('/schedule', (req, res) => {
 });
 
 // ============================================================
-// 7. STATUS, POSTS & HEALTH ENDPOINTS
+// 7. DIAGNOSTICS & WHATSAPP META INSPECTOR (GET /api/debug-whatsapp)
+// Returns raw Meta Graph API inspection data for debugging
+// ============================================================
+app.get('/api/debug-whatsapp', async (req, res) => {
+  const targetNumber = String(req.query.to || config.ownerPhoneNumber || '').replace(/[^0-9]/g, '');
+  const pId = config.whatsappPhoneNumberId;
+  const token = config.whatsappToken;
+  const version = config.graphApiVersion;
+
+  const diagnostics = {
+    configured: {
+      phoneNumberId: pId,
+      ownerNumber: targetNumber,
+      apiVersion: version,
+      hasToken: Boolean(token),
+      tokenPrefix: token ? token.slice(0, 15) + '...' : 'none'
+    },
+    metaPhoneNumberInfo: null,
+    testTextAttempt: null,
+    testTemplateAttempt: null
+  };
+
+  try {
+    const infoUrl = `https://graph.facebook.com/${version}/${pId}?fields=verified_name,code_verification_status,display_phone_number,quality_rating,status,throughput`;
+    const infoRes = await fetch(infoUrl, {
+      headers: { 'Authorization': `Bearer ${token}` }
+    });
+    diagnostics.metaPhoneNumberInfo = {
+      httpStatus: infoRes.status,
+      response: await infoRes.json()
+    };
+  } catch (err) {
+    diagnostics.metaPhoneNumberInfo = { error: err.message };
+  }
+
+  try {
+    const msgUrl = `https://graph.facebook.com/${version}/${pId}/messages`;
+    const textPayload = {
+      messaging_product: 'whatsapp',
+      recipient_type: 'individual',
+      to: targetNumber,
+      type: 'text',
+      text: { body: 'X_BOT test ping' }
+    };
+    const textRes = await fetch(msgUrl, {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(textPayload)
+    });
+    diagnostics.testTextAttempt = {
+      httpStatus: textRes.status,
+      payloadSent: textPayload,
+      response: await textRes.json()
+    };
+  } catch (err) {
+    diagnostics.testTextAttempt = { error: err.message };
+  }
+
+  try {
+    const msgUrl = `https://graph.facebook.com/${version}/${pId}/messages`;
+    const templatePayload = {
+      messaging_product: 'whatsapp',
+      recipient_type: 'individual',
+      to: targetNumber,
+      type: 'template',
+      template: {
+        name: 'hello_world',
+        language: { code: 'en_US' }
+      }
+    };
+    const tmplRes = await fetch(msgUrl, {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(templatePayload)
+    });
+    diagnostics.testTemplateAttempt = {
+      httpStatus: tmplRes.status,
+      payloadSent: templatePayload,
+      response: await tmplRes.json()
+    };
+  } catch (err) {
+    diagnostics.testTemplateAttempt = { error: err.message };
+  }
+
+  res.status(200).json(diagnostics);
+});
+
+// ============================================================
+// 8. STATUS, POSTS & HEALTH ENDPOINTS
 // ============================================================
 app.get('/status', (req, res) => {
   res.json({
