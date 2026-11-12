@@ -12,10 +12,11 @@ class PostScheduler {
   constructor() {
     this.timer = null;
     this.enabled = config.scheduleEnabled;
-    this.dailyTime = config.scheduleTime; // e.g. "09:00"
+    this.dailyTimes = config.scheduleTimes || ['09:00', '14:00', '20:00']; // 9am, 2pm, 8pm
+    this.dailyTime = config.scheduleTime || this.dailyTimes[0];
     this.timezone = config.scheduleTimezone; // e.g. "Asia/Karachi"
     this.lastRun = null;
-    this.lastTriggeredDateStr = '';
+    this.lastTriggeredKey = '';
   }
 
   /**
@@ -57,9 +58,9 @@ class PostScheduler {
 
     console.log(ansi.separator('-', 64, ansi.cyan));
     console.log(ansi.boldText(`⏰ [Scheduler] Auto-Post Daily Timer Activated`));
-    console.log(`   Scheduled Time: ${ansi.emeraldText(this.dailyTime)} (${this.timezone})`);
-    console.log(`   Current Time:   ${ansi.cyanText(this.getCurrentTimeInTimezone())} (${this.timezone})`);
-    console.log(`   Status:         ${this.enabled ? ansi.emeraldText('ACTIVE') : ansi.yellowText('PAUSED')}`);
+    console.log(`   Scheduled Times: ${ansi.emeraldText(this.dailyTimes.join(', '))} (${this.timezone})`);
+    console.log(`   Current Time:    ${ansi.cyanText(this.getCurrentTimeInTimezone())} (${this.timezone})`);
+    console.log(`   Status:          ${this.enabled ? ansi.emeraldText('ACTIVE') : ansi.yellowText('PAUSED')}`);
     console.log(ansi.separator('-', 64, ansi.cyan));
 
     this.timer = setInterval(() => this.check(), 30000);
@@ -76,7 +77,7 @@ class PostScheduler {
   }
 
   /**
-   * Evaluates if it is time to generate and send
+   * Evaluates if it is time to generate and send (9:00 AM, 2:00 PM, 8:00 PM)
    */
   async check() {
     if (!this.enabled) return;
@@ -84,15 +85,18 @@ class PostScheduler {
     const currentTime = this.getCurrentTimeInTimezone();
     const currentDate = this.getCurrentDateInTimezone();
 
-    // Check if time matches HH:MM and hasn't already fired on this date
-    if (currentTime === this.dailyTime && this.lastTriggeredDateStr !== currentDate) {
-      this.lastTriggeredDateStr = currentDate;
+    // Check if current time matches any of the scheduled times
+    const isScheduledTime = this.dailyTimes.includes(currentTime) || currentTime === this.dailyTime;
+    const triggerKey = `${currentDate}_${currentTime}`;
+
+    if (isScheduledTime && this.lastTriggeredKey !== triggerKey) {
+      this.lastTriggeredKey = triggerKey;
       this.lastRun = new Date().toISOString();
 
-      console.log(`\n⏰ [Scheduler Triggered] Auto-generating daily post at ${currentTime} (${this.timezone})...`);
+      console.log(`\n⏰ [Scheduler Triggered] Auto-generating scheduled post at ${currentTime} (${this.timezone})...`);
       try {
         const result = await whatsappWorkflow.generateAndSend();
-        console.log(ansi.emeraldText('✓ [Scheduler] Daily post successfully generated and sent to WhatsApp!'));
+        console.log(ansi.emeraldText('✓ [Scheduler] Scheduled post successfully generated and sent to WhatsApp!'));
         return result;
       } catch (err) {
         console.error('[Scheduler Error]', err.message);
@@ -103,12 +107,13 @@ class PostScheduler {
   /**
    * Updates schedule settings at runtime
    */
-  updateConfig({ time, timezone, enabled }) {
+  updateConfig({ time, times, timezone, enabled }) {
     if (time) this.dailyTime = String(time).trim();
+    if (Array.isArray(times) && times.length > 0) this.dailyTimes = times.map(t => String(t).trim());
     if (timezone) this.timezone = String(timezone).trim();
     if (typeof enabled === 'boolean') this.enabled = enabled;
 
-    console.log(`⏰ [Scheduler Updated] Time: ${this.dailyTime} | Timezone: ${this.timezone} | Enabled: ${this.enabled}`);
+    console.log(`⏰ [Scheduler Updated] Times: ${this.dailyTimes.join(', ')} | Timezone: ${this.timezone} | Enabled: ${this.enabled}`);
     return this.getStatus();
   }
 
@@ -119,6 +124,7 @@ class PostScheduler {
     return {
       enabled: this.enabled,
       dailyTime: this.dailyTime,
+      dailyTimes: this.dailyTimes,
       timezone: this.timezone,
       currentTime: this.getCurrentTimeInTimezone(),
       currentDate: this.getCurrentDateInTimezone(),

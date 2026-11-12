@@ -45,7 +45,11 @@ This repository is an independent project inspired by the structured social post
 - **Character Counter & Unicode Weighting**: Real-time calculation using X's character weighting algorithm (280-character limit warning).
 - **Independent Regeneration**: Regenerate English, Roman Urdu, or Plain Urdu individually with custom feedback (e.g., *"Make it shorter and use simpler words"*) without affecting the other two languages.
 - **Approval Workflow Simulation**: Review, approve, or reject versions in-memory to simulate the future WhatsApp approval step.
-- **Strictly In-Memory**: No database, no local files, no persistent storage.
+- **Strictly In-Memory & MongoDB Atlas Hybrid**: Zero-crash deduplication via MongoDB Atlas cluster, with automatic in-memory fallback.
+- **Strict A2 Elementary English**: Simple, short sentences, everyday vocabulary that anyone can understand.
+- **Tailored High-Value Themes**: Geopolitics & Global Power Shifts, 2035 Technology & AI Forecasts, Strategic Resources (Chips, Lithium, Energy), and Political Commentary.
+- **GitHub Actions Scheduled Triggers**: Daily cron requests at 9:00 AM, 2:00 PM, and 8:00 PM (Pakistan Time).
+- **Active Keep-Alive Engine**: High-frequency pinging while awaiting owner response so Render containers never sleep.
 
 ---
 

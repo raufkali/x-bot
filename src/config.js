@@ -1,4 +1,5 @@
 import dns from 'node:dns';
+import fs from 'node:fs';
 import dotenv from 'dotenv';
 
 // Ensure Node network fetches prioritize IPv4 on systems without IPv6 routing
@@ -8,7 +9,11 @@ try {
   // Ignore on older runtimes where not supported
 }
 
+// Load standard .env first, then .env.add1 if it exists
 dotenv.config();
+if (fs.existsSync('.env.add1')) {
+  dotenv.config({ path: '.env.add1', override: false });
+}
 
 export const config = {
   // Grok / Groq AI Settings
@@ -36,8 +41,18 @@ export const config = {
   whatsappTemplateName: process.env.WHATSAPP_TEMPLATE_NAME || '3p_direct_integration_test_template',
   whatsappTemplateLang: process.env.WHATSAPP_TEMPLATE_LANG || 'en_US',
 
-  // Automated Post Scheduling Settings
-  scheduleTime: process.env.POST_SCHEDULE_TIME || process.env.DAILY_POST_TIME || '09:00', // HH:MM in 24hr format
+  // Automated Post Scheduling Settings (9:00 AM, 2:00 PM, 8:00 PM)
+  scheduleTime: process.env.POST_SCHEDULE_TIME || process.env.DAILY_POST_TIME || '09:00', // Primary / fallback HH:MM
+  scheduleTimes: process.env.POST_SCHEDULE_TIMES
+    ? process.env.POST_SCHEDULE_TIMES.split(',').map(s => s.trim())
+    : ['09:00', '14:00', '20:00'],
   scheduleTimezone: process.env.SCHEDULE_TIMEZONE || 'Asia/Karachi',
-  scheduleEnabled: String(process.env.SCHEDULE_ENABLED || 'true').toLowerCase() === 'true'
+  scheduleEnabled: String(process.env.SCHEDULE_ENABLED || 'true').toLowerCase() === 'true',
+
+  // MongoDB Atlas Database (Set via MONGODB_URI in .env or Render dashboard)
+  mongoUri: process.env.MONGODB_URI || '',
+
+  // Content Generation Profile
+  englishLevel: 'A2',
+  contentThemes: 'Geopolitics, Global Power Shifts, Future Forecastings 2035, AI Technology, Economics & Strategic Resources, Global Political Documentary'
 };

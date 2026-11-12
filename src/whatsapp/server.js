@@ -13,6 +13,8 @@ import { whatsappWorkflow } from './workflow.js';
 import { whatsappClient } from './client.js';
 import { postScheduler } from '../utils/scheduler.js';
 import { keepAliveService } from '../utils/keepAlive.js';
+import { initMongo, isMongoConnected } from '../db/mongo.js';
+import { PostModel } from '../db/postModel.js';
 import { ansi } from '../utils/ansi.js';
 
 const app = express();
@@ -184,7 +186,7 @@ app.post('/schedule', (req, res) => {
 });
 
 // ============================================================
-// 7. STATUS & HEALTH ENDPOINTS
+// 7. STATUS, POSTS & HEALTH ENDPOINTS
 // ============================================================
 app.get('/status', (req, res) => {
   res.json({
@@ -192,9 +194,30 @@ app.get('/status', (req, res) => {
     version: config.appVersion,
     whatsappConfigured: whatsappClient.isConfigured(),
     ownerNumberConfigured: Boolean(config.ownerPhoneNumber),
+    database: {
+      connected: isMongoConnected(),
+      cluster: 'MongoDB Atlas (cluster0.jsxyhxh.mongodb.net)',
+      database: 'x_bot'
+    },
+    contentConfig: {
+      englishLevel: config.englishLevel,
+      themes: config.contentThemes
+    },
     schedule: postScheduler.getStatus(),
     state: whatsappWorkflow.getCurrentState()
   });
+});
+
+app.get('/posts', async (req, res) => {
+  try {
+    if (isMongoConnected()) {
+      const posts = await PostModel.find({}).sort({ createdAt: -1 }).limit(30).lean();
+      return res.status(200).json({ success: true, count: posts.length, posts });
+    }
+    res.status(200).json({ success: true, databaseConnected: false, message: 'Database pending connection or running in-memory.' });
+  } catch (err) {
+    res.status(500).json({ success: false, error: err.message });
+  }
 });
 
 app.get('/health', (req, res) => {
@@ -205,6 +228,11 @@ app.get('/health', (req, res) => {
 // START SERVER
 // ============================================================
 export function startServer(port = config.serverPort) {
+  // Initialize MongoDB Atlas connection in background
+  initMongo().catch(err => {
+    console.warn('[MongoDB Background Error]', err.message);
+  });
+
   // Start the background post scheduler
   postScheduler.start();
 

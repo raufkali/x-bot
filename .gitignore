@@ -1,8 +1,14 @@
 # Dependencies
 node_modules/
 
-# Environment
+# Environment files (ignore all .env and variants)
 .env
+.env.*
+.env.add*
+.env.local
+.env.development
+.env.production
+!.env.example
 
 # Logs and system
 *.log

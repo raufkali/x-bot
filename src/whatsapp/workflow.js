@@ -12,6 +12,8 @@ import {
 import { whatsappClient } from './client.js';
 import { config } from '../config.js';
 import { ansi } from '../utils/ansi.js';
+import { keepAliveService } from '../utils/keepAlive.js';
+import { markPostApproved, markPostDiscarded } from '../db/postModel.js';
 
 class WhatsAppWorkflowManager extends EventEmitter {
   constructor() {
@@ -38,6 +40,7 @@ class WhatsAppWorkflowManager extends EventEmitter {
       generatedAt: new Date().toISOString()
     };
     this.status = 'AWAITING_APPROVAL';
+    keepAliveService.setWaitingForResponse(true);
 
     console.log(`Topic: ${gen.topic}`);
     console.log(`Sending to owner WhatsApp: ${config.ownerPhoneNumber || '[NOT CONFIGURED]'}`);
@@ -140,6 +143,7 @@ class WhatsAppWorkflowManager extends EventEmitter {
     if (input === 'exit' || input === 'quit' || input === 'sleep' || input === 'stop') {
       this.status = 'IDLE';
       this.currentPendingPost = null;
+      keepAliveService.setWaitingForResponse(false);
       console.log(ansi.dimText('\n😴 [WhatsApp Action] Bot entered SLEEP mode by owner command.'));
       const sleepMsg = '😴 X Assistant is now sleeping. Send any message whenever you want to wake me up again!';
       if (whatsappClient.isConfigured() && fromNumber) {
@@ -246,6 +250,8 @@ class WhatsAppWorkflowManager extends EventEmitter {
         };
         this.status = 'APPROVED';
         this.currentPendingPost = null;
+        keepAliveService.setWaitingForResponse(false);
+        markPostApproved(post.topic, 'English').catch(() => {});
         console.log(ansi.emeraldText('\n✓ [WhatsApp Action] Owner APPROVED & POSTED ENGLISH directly!'));
 
         if (whatsappClient.isConfigured() && fromNumber) {
@@ -272,6 +278,8 @@ class WhatsAppWorkflowManager extends EventEmitter {
       if (input === '4' || input.includes('discard') || input.includes('cancel')) {
         this.status = 'DISCARDED';
         this.currentPendingPost = null;
+        keepAliveService.setWaitingForResponse(false);
+        markPostDiscarded(post.topic).catch(() => {});
         console.log(ansi.dimText('\n✕ [WhatsApp Action] Owner DISCARDED the post.'));
 
         if (whatsappClient.isConfigured() && fromNumber) {
@@ -316,6 +324,8 @@ class WhatsAppWorkflowManager extends EventEmitter {
         };
         this.status = 'APPROVED';
         this.currentPendingPost = null;
+        keepAliveService.setWaitingForResponse(false);
+        markPostApproved(post.topic, 'Roman Urdu').catch(() => {});
         console.log(ansi.emeraldText('\n✓ [WhatsApp Action] Owner APPROVED & POSTED ROMAN URDU!'));
 
         if (whatsappClient.isConfigured() && fromNumber) {
@@ -352,6 +362,8 @@ class WhatsAppWorkflowManager extends EventEmitter {
         };
         this.status = 'APPROVED';
         this.currentPendingPost = null;
+        keepAliveService.setWaitingForResponse(false);
+        markPostApproved(post.topic, 'English').catch(() => {});
         if (whatsappClient.isConfigured() && fromNumber) {
           try {
             await whatsappClient.sendApprovalConfirmation(fromNumber, 'English', post.english);
@@ -366,6 +378,8 @@ class WhatsAppWorkflowManager extends EventEmitter {
       if (input === '4' || input.includes('discard')) {
         this.status = 'DISCARDED';
         this.currentPendingPost = null;
+        keepAliveService.setWaitingForResponse(false);
+        markPostDiscarded(post.topic).catch(() => {});
         if (whatsappClient.isConfigured() && fromNumber) {
           try {
             await whatsappClient.sendText(fromNumber, '🗑️ Post discarded. Send any message or press 1 to generate a new post.');
@@ -400,6 +414,8 @@ class WhatsAppWorkflowManager extends EventEmitter {
         };
         this.status = 'APPROVED';
         this.currentPendingPost = null;
+        keepAliveService.setWaitingForResponse(false);
+        markPostApproved(post.topic, 'Plain Urdu').catch(() => {});
         console.log(ansi.emeraldText('\n✓ [WhatsApp Action] Owner APPROVED & POSTED PLAIN URDU!'));
 
         if (whatsappClient.isConfigured() && fromNumber) {
@@ -436,6 +452,8 @@ class WhatsAppWorkflowManager extends EventEmitter {
         };
         this.status = 'APPROVED';
         this.currentPendingPost = null;
+        keepAliveService.setWaitingForResponse(false);
+        markPostApproved(post.topic, 'English').catch(() => {});
         if (whatsappClient.isConfigured() && fromNumber) {
           try {
             await whatsappClient.sendApprovalConfirmation(fromNumber, 'English', post.english);
@@ -450,6 +468,8 @@ class WhatsAppWorkflowManager extends EventEmitter {
       if (input === '4' || input.includes('discard')) {
         this.status = 'DISCARDED';
         this.currentPendingPost = null;
+        keepAliveService.setWaitingForResponse(false);
+        markPostDiscarded(post.topic).catch(() => {});
         if (whatsappClient.isConfigured() && fromNumber) {
           try {
             await whatsappClient.sendText(fromNumber, '🗑️ Post discarded. Send any message or press 1 to generate a new post.');
