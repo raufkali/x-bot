@@ -262,7 +262,8 @@ export class XService {
 
   /**
    * Publishes a tweet to X using OAuth 2.0 user access token
-   * @param {string} text - Tweet content (max 280 chars)
+   * Supports both single long post (X Premium / Basic) and automated thread splitting (Standard accounts)
+   * @param {string} text - Tweet content
    */
   async publishTweet(text) {
     const accessToken = await this.getValidAccessToken();
@@ -272,6 +273,7 @@ export class XService {
       );
     }
 
+    // Try posting the complete story directly first (supported natively on X Premium / Basic up to 25k chars)
     const res = await fetch('https://api.twitter.com/2/tweets', {
       method: 'POST',
       headers: {
@@ -282,6 +284,20 @@ export class XService {
     });
 
     const data = await res.json();
+
+    // Check if error is due to character length on a non-premium standard account (280 char limit)
+    const errMsgLower = (data.detail || data.title || JSON.stringify(data)).toLowerCase();
+    const isLengthError =
+      errMsgLower.includes('too long') ||
+      errMsgLower.includes('character_limit') ||
+      errMsgLower.includes('length') ||
+      errMsgLower.includes('longer than');
+
+    if (!res.ok && isLengthError) {
+      console.log('[X Service] Single post exceeds standard 280 limit; posting as connected thread...');
+      return await this.publishThread(text, accessToken);
+    }
+
     if (!res.ok) {
       const errMsg = data.detail || data.title || JSON.stringify(data);
       console.error('[X Tweet Publish Error]', data);
@@ -308,6 +324,71 @@ export class XService {
     }
 
     return data.data; // { id, text }
+  }
+
+  /**
+   * Splits a long story into connected sequential thread tweets (280 chars each)
+   * @param {string} fullText
+   * @param {string} accessToken
+   */
+  async publishThread(fullText, accessToken) {
+    const paragraphs = fullText.split(/\n\n+/).filter(p => p.trim().length > 0);
+    const chunks = [];
+    let current = '';
+
+    for (const p of paragraphs) {
+      if (!current) {
+        if (p.length <= 260) {
+          current = p;
+        } else {
+          const sentences = p.match(/[^.!?\n]+[.!?\n]+/g) || [p];
+          for (const s of sentences) {
+            if ((current + ' ' + s).trim().length <= 260) {
+              current = (current + ' ' + s).trim();
+            } else {
+              if (current) chunks.push(current);
+              current = s.trim();
+            }
+          }
+        }
+      } else if ((current + '\n\n' + p).length <= 260) {
+        current = current + '\n\n' + p;
+      } else {
+        chunks.push(current);
+        current = p;
+      }
+    }
+    if (current) chunks.push(current);
+
+    let lastTweetId = null;
+    let firstTweetData = null;
+
+    for (let i = 0; i < chunks.length; i++) {
+      const chunkText = chunks.length > 1 ? `(${i + 1}/${chunks.length}) ${chunks[i]}` : chunks[i];
+      const payload = { text: chunkText };
+      if (lastTweetId) {
+        payload.reply = { in_reply_to_tweet_id: lastTweetId };
+      }
+
+      const res = await fetch('https://api.twitter.com/2/tweets', {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${accessToken}`,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(payload)
+      });
+
+      const data = await res.json();
+      if (!res.ok) {
+        throw new Error(`Failed to post thread part ${i + 1}: ${data.detail || JSON.stringify(data)}`);
+      }
+
+      lastTweetId = data.data.id;
+      if (!firstTweetData) firstTweetData = data.data;
+    }
+
+    return firstTweetData;
   }
 
   /**

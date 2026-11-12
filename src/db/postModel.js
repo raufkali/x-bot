@@ -66,6 +66,18 @@ const PostSchema = new mongoose.Schema(
     approvedAt: {
       type: Date,
       default: null
+    },
+    publishedAt: {
+      type: Date,
+      default: null
+    },
+    tweetId: {
+      type: String,
+      default: null
+    },
+    tweetUrl: {
+      type: String,
+      default: null
     }
   },
   {
@@ -277,4 +289,78 @@ export async function markPostDiscarded(topicOrText) {
       console.warn('[PostModel] Failed to discard post in MongoDB:', err.message);
     }
   }
+}
+
+/**
+ * Updates post status to POSTED with live tweet details and permanently marks it as published
+ */
+export async function markPostPublished(topicOrText, language = 'English', tweetId = null, tweetUrl = null) {
+  const hash = computeNormalizedHash(topicOrText);
+  if (inMemoryPosts.has(hash)) {
+    const p = inMemoryPosts.get(hash);
+    p.status = 'POSTED';
+    p.approvedLanguage = language;
+    p.approvedAt = p.approvedAt || new Date();
+    p.publishedAt = new Date();
+    p.tweetId = tweetId;
+    p.tweetUrl = tweetUrl;
+  }
+
+  inMemoryHashes.add(hash);
+  if (!inMemoryTopics.includes(topicOrText)) {
+    inMemoryTopics.push(topicOrText);
+  }
+
+  if (isMongoConnected()) {
+    try {
+      await PostModel.updateMany(
+        {
+          $or: [
+            { textHash: hash },
+            { topic: topicOrText }
+          ]
+        },
+        {
+          $set: {
+            status: 'POSTED',
+            approvedLanguage: language,
+            approvedAt: new Date(),
+            publishedAt: new Date(),
+            tweetId: tweetId,
+            tweetUrl: tweetUrl
+          }
+        }
+      );
+    } catch (err) {
+      console.warn('[PostModel] Failed to mark post as POSTED in MongoDB:', err.message);
+    }
+  }
+}
+
+/**
+ * Retrieves ALL topics that have been posted or approved or generated,
+ * to ensure 100% brand new fresh content is generated every single time.
+ */
+export async function getAllUsedTopics(limit = 100) {
+  const topics = [];
+
+  if (isMongoConnected()) {
+    try {
+      const records = await PostModel.find({}, { topic: 1, status: 1 })
+        .sort({ createdAt: -1 })
+        .limit(limit)
+        .lean();
+      records.forEach(r => {
+        if (r.topic && !topics.includes(r.topic)) topics.push(r.topic);
+      });
+    } catch (err) {
+      console.warn('[PostModel] Error fetching used topics from MongoDB:', err.message);
+    }
+  }
+
+  inMemoryTopics.forEach(t => {
+    if (!topics.includes(t)) topics.push(t);
+  });
+
+  return topics;
 }

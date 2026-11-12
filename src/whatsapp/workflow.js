@@ -13,7 +13,7 @@ import { whatsappClient } from './client.js';
 import { config } from '../config.js';
 import { ansi } from '../utils/ansi.js';
 import { keepAliveService } from '../utils/keepAlive.js';
-import { markPostApproved, markPostDiscarded } from '../db/postModel.js';
+import { markPostApproved, markPostDiscarded, markPostPublished } from '../db/postModel.js';
 import { xService } from '../x/xService.js';
 
 class WhatsAppWorkflowManager extends EventEmitter {
@@ -137,6 +137,9 @@ class WhatsAppWorkflowManager extends EventEmitter {
 
       console.log(ansi.emeraldText(`✓ [X Published] Successfully posted to X! Tweet ID: ${tweetResult.id}`));
       console.log(ansi.cyanText(`   Live Tweet URL: ${tweetUrl}`));
+
+      // Permanently mark as published in database so it is never reused or regenerated
+      await markPostPublished(topic, language, tweetResult.id, tweetUrl).catch(() => {});
 
       tweetDetails = {
         id: tweetResult.id,
@@ -352,12 +355,14 @@ class WhatsAppWorkflowManager extends EventEmitter {
         return decision;
       }
 
-      // Option 5: Regenerate the post
-      if (input === '5' || input.includes('retry') || input.includes('regen') || input.includes('new')) {
-        console.log(ansi.yellowText('\n⟳ [WhatsApp Action] Owner requested REGENERATION of English post...'));
+      // Option 5: Generate a brand NEW fresh post (Discard current and generate new)
+      if (input === '5' || input.includes('retry') || input.includes('regen') || input.includes('new') || input.includes('fresh')) {
+        console.log(ansi.yellowText('\n⟳ [WhatsApp Action] Owner requested a completely NEW fresh post...'));
+        markPostDiscarded(post.topic).catch(() => {});
+        this.currentPendingPost = null;
         if (whatsappClient.isConfigured() && fromNumber) {
           try {
-            await whatsappClient.sendText(fromNumber, '⚡ Regenerating fresh English post. Stand by...');
+            await whatsappClient.sendText(fromNumber, '⚡ Generating a completely fresh new story post for you. Stand by...');
           } catch (e) {
             console.warn('[WhatsApp Send Warning]', e.message);
           }
@@ -454,15 +459,19 @@ class WhatsAppWorkflowManager extends EventEmitter {
         return decision;
       }
 
-      // 5: Regenerate Roman Urdu
-      if (input === '5' || input.includes('retry')) {
-        post.romanUrdu = await generateRomanUrduFromEnglish(post.english, post.topic);
+      // 5: Generate a brand NEW fresh post
+      if (input === '5' || input.includes('retry') || input.includes('regen') || input.includes('new') || input.includes('fresh')) {
+        console.log(ansi.yellowText('\n⟳ [WhatsApp Action] Owner requested a completely NEW fresh post from Roman Urdu view...'));
+        markPostDiscarded(post.topic).catch(() => {});
+        this.currentPendingPost = null;
         if (whatsappClient.isConfigured() && fromNumber) {
           try {
-            await whatsappClient.sendRomanUrduVersion(fromNumber, post);
-          } catch (e) {}
+            await whatsappClient.sendText(fromNumber, '⚡ Generating a completely fresh new story post for you. Stand by...');
+          } catch (e) {
+            console.warn('[WhatsApp Send Warning]', e.message);
+          }
         }
-        return { action: 'VIEW_ROMAN_URDU', post };
+        return await this.generateAndSend();
       }
     }
 
@@ -554,15 +563,19 @@ class WhatsAppWorkflowManager extends EventEmitter {
         return decision;
       }
 
-      // 5: Regenerate Urdu
-      if (input === '5' || input.includes('retry')) {
-        post.plainUrdu = await generatePlainUrduFromEnglish(post.english, post.topic);
+      // 5: Generate a brand NEW fresh post
+      if (input === '5' || input.includes('retry') || input.includes('regen') || input.includes('new') || input.includes('fresh')) {
+        console.log(ansi.yellowText('\n⟳ [WhatsApp Action] Owner requested a completely NEW fresh post from Plain Urdu view...'));
+        markPostDiscarded(post.topic).catch(() => {});
+        this.currentPendingPost = null;
         if (whatsappClient.isConfigured() && fromNumber) {
           try {
-            await whatsappClient.sendPlainUrduVersion(fromNumber, post);
-          } catch (e) {}
+            await whatsappClient.sendText(fromNumber, '⚡ Generating a completely fresh new story post for you. Stand by...');
+          } catch (e) {
+            console.warn('[WhatsApp Send Warning]', e.message);
+          }
         }
-        return { action: 'VIEW_PLAIN_URDU', post };
+        return await this.generateAndSend();
       }
     }
 
@@ -571,7 +584,7 @@ class WhatsAppWorkflowManager extends EventEmitter {
       try {
         await whatsappClient.sendText(
           fromNumber,
-          `🤖 *Options:*\n• *1* ➔ Generate in Roman Urdu\n• *2* ➔ Generate in Urdu\n• *3* ➔ Post directly in English\n• *4* ➔ Discard post\n• *5* ➔ Regenerate the post`
+          `🤖 *Options:*\n• *1* ➔ Generate in Roman Urdu\n• *2* ➔ Generate in Urdu\n• *3* ➔ Post directly in English\n• *4* ➔ Discard post\n• *5* ➔ Generate a NEW fresh post`
         );
       } catch (e) {}
     }

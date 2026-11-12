@@ -192,84 +192,81 @@ export class WhatsAppClient {
   }
 
   /**
-   * Formats and sends 1 good English post with the 5 options:
+   * Formats and sends 1 descriptive story post with the 5 options:
    * 1- generate in Roman Urdu
    * 2- generate in Urdu
-   * 3- Post directly in English
+   * 3- Post directly to X
    * 4- Discard post
-   * 5- regenerate the post
+   * 5- Generate a NEW fresh post
    * @param {string} to 
    * @param {object} post 
    */
   async sendEnglishPostForReview(to, post) {
     const english = post.english || post;
-    const message = `🇬🇧 *NEW POST (ENGLISH)*
+    const body = english.fullPost || english.text;
+    const message = `🇬🇧 *NEW STORY POST (ENGLISH)*
 
-📌 *Topic:* ${post.topic || 'Trending Topic'}
+📌 *Topic:* ${post.topic || 'Trending Insight'}
 
 ━━━━━━━━━━━━━━━━━━━━
-${english.text}
-
-${english.hashtags || ''}
+${body}
 ━━━━━━━━━━━━━━━━━━━━
-_Length: ${english.weightedCount}/280 chars_
+_Length: ${english.charCount || english.weightedCount || body.length} characters_
 
 Reply with:
 • *1* ➔ Generate in Roman Urdu
-• *2* ➔ Generate in Urdu
-• *3* ➔ Post directly in English
+• *2* ➔ Generate in Urdu (اردو)
+• *3* ➔ Post directly to X (Twitter)
 • *4* ➔ Discard post
-• *5* ➔ Regenerate the post`;
+• *5* ➔ Generate a NEW fresh post`;
 
     return this.sendText(to, message);
   }
 
   /**
-   * Sends Roman Urdu version with action options
+   * Sends Roman Urdu story version with action options
    */
   async sendRomanUrduVersion(to, post) {
+    const body = post.romanUrdu.fullPost || post.romanUrdu.text;
     const message = `🇵🇰 *ROMAN URDU VERSION*
 
 📌 *Topic:* ${post.topic || ''}
 
 ━━━━━━━━━━━━━━━━━━━━
-${post.romanUrdu.text}
-
-${post.romanUrdu.hashtags || ''}
+${body}
 ━━━━━━━━━━━━━━━━━━━━
-_Length: ${post.romanUrdu.weightedCount}/280 chars_
+_Length: ${post.romanUrdu.charCount || post.romanUrdu.weightedCount || body.length} characters_
 
 Reply with:
-• *1* ➔ Approve & Post Roman Urdu
+• *1* ➔ Approve & Post Roman Urdu to X
 • *2* ➔ Generate in Urdu (اردو)
-• *3* ➔ Post English directly
+• *3* ➔ Post English directly to X
 • *4* ➔ Discard post
-• *5* ➔ Regenerate Roman Urdu`;
+• *5* ➔ Generate a NEW fresh post`;
 
     return this.sendText(to, message);
   }
 
   /**
-   * Sends Plain Urdu version with action options
+   * Sends Plain Urdu story version with action options
    */
   async sendPlainUrduVersion(to, post) {
+    const body = post.plainUrdu.fullPost || post.plainUrdu.text;
     const message = `🇵🇰 *URDU VERSION (اردو)*
 
 📌 *Topic:* ${post.topic || ''}
 
 ━━━━━━━━━━━━━━━━━━━━
-${post.plainUrdu.text}
-
-${post.plainUrdu.hashtags || ''}
+${body}
 ━━━━━━━━━━━━━━━━━━━━
-_Length: ${post.plainUrdu.weightedCount}/280 chars_
+_Length: ${post.plainUrdu.charCount || post.plainUrdu.weightedCount || body.length} characters_
 
 Reply with:
-• *1* ➔ Approve & Post Urdu
+• *1* ➔ Approve & Post Urdu to X
 • *2* ➔ Generate in Roman Urdu
-• *3* ➔ Post English directly
+• *3* ➔ Post English directly to X
 • *4* ➔ Discard post
-• *5* ➔ Regenerate Urdu`;
+• *5* ➔ Generate a NEW fresh post`;
 
     return this.sendText(to, message);
   }
