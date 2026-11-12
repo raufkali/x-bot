@@ -302,7 +302,20 @@ ${bodyContent}
 ━━━━━━━━━━━━━━━━━━━━
 _Length: ${lengthCount}/280 chars_`;
     } else if (tweetDetails && tweetDetails.error) {
-      confirmation = `⚠️ *POST APPROVED BUT FAILED TO PUBLISH TO X*
+      if (tweetDetails.isRechargeNeeded) {
+        confirmation = `💳 *RECHARGE YOUR X ACCOUNT FOR POSTING*
+
+⚠️ *Post was approved, but X rejected publishing:*
+Your X (Twitter) Developer monthly post limit or credits have been reached.
+
+💡 *Action Required:* Please recharge your X account or upgrade your X Developer API credits at https://developer.x.com/ to resume posting.
+
+━━━━━━━━━━━━━━━━━━━━
+🌐 *Approved Content (${language}):*
+${bodyContent}
+━━━━━━━━━━━━━━━━━━━━`;
+      } else {
+        confirmation = `⚠️ *POST APPROVED BUT FAILED TO PUBLISH TO X*
 
 🌐 *Language:* ${language}
 ❌ *Error:* ${tweetDetails.error}
@@ -311,6 +324,7 @@ _Length: ${lengthCount}/280 chars_`;
 ━━━━━━━━━━━━━━━━━━━━
 ${bodyContent}
 ━━━━━━━━━━━━━━━━━━━━`;
+      }
     } else {
       confirmation = `✅ *POST APPROVED FOR X (TWITTER)!*
 

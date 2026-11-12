@@ -285,7 +285,26 @@ export class XService {
     if (!res.ok) {
       const errMsg = data.detail || data.title || JSON.stringify(data);
       console.error('[X Tweet Publish Error]', data);
-      throw new Error(`X Tweet Publish Failed (${res.status}): ${errMsg}`);
+
+      const isRechargeNeeded =
+        res.status === 429 ||
+        errMsg.toLowerCase().includes('usage') ||
+        errMsg.toLowerCase().includes('cap') ||
+        errMsg.toLowerCase().includes('credit') ||
+        errMsg.toLowerCase().includes('limit') ||
+        errMsg.toLowerCase().includes('payment') ||
+        errMsg.toLowerCase().includes('tier') ||
+        errMsg.toLowerCase().includes('subscribe');
+
+      const err = new Error(
+        isRechargeNeeded
+          ? `Please recharge your X account for posting (${errMsg})`
+          : `X Tweet Publish Failed (${res.status}): ${errMsg}`
+      );
+      err.status = res.status;
+      err.isRechargeNeeded = isRechargeNeeded;
+      err.raw = data;
+      throw err;
     }
 
     return data.data; // { id, text }

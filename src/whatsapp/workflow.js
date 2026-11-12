@@ -146,8 +146,18 @@ class WhatsAppWorkflowManager extends EventEmitter {
       };
     } catch (err) {
       console.error(ansi.redText(`✕ [X Publish Error] ${err.message}`));
+      const isRecharge =
+        Boolean(err.isRechargeNeeded) ||
+        err.message?.toLowerCase().includes('recharge') ||
+        err.message?.toLowerCase().includes('usage') ||
+        err.message?.toLowerCase().includes('cap') ||
+        err.message?.toLowerCase().includes('credit') ||
+        err.message?.toLowerCase().includes('limit') ||
+        err.status === 429;
+
       tweetDetails = {
-        error: err.message
+        error: err.message,
+        isRechargeNeeded: isRecharge
       };
     }
 
