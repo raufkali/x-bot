@@ -21,6 +21,44 @@ const app = express();
 app.use(express.json());
 
 // ============================================================
+// GLOBAL REQUEST LOGGER MIDDLEWARE
+// Prominently logs every incoming request in Render & server stdout
+// ============================================================
+app.use((req, res, next) => {
+  const start = Date.now();
+  const clientIp = req.headers['x-forwarded-for'] || req.socket.remoteAddress || 'unknown';
+  const userAgent = req.headers['user-agent'] || 'unknown';
+
+  // For high-frequency /health checks, keep log line clean and compact
+  if (req.path === '/health') {
+    res.on('finish', () => {
+      console.log(`[KeepAlive] GET /health -> ${res.statusCode} (${Date.now() - start}ms)`);
+    });
+    return next();
+  }
+
+  console.log(`\n======================================================`);
+  console.log(`🌐 [HTTP INCOMING] ${req.method} ${req.originalUrl}`);
+  console.log(`   Source IP:   ${clientIp}`);
+  console.log(`   User-Agent:  ${userAgent}`);
+  console.log(`   Timestamp:   ${new Date().toISOString()}`);
+  if (req.method === 'POST' || req.method === 'PUT') {
+    const bodyStr = JSON.stringify(req.body);
+    console.log(`   Payload:     ${bodyStr && bodyStr.length > 250 ? bodyStr.slice(0, 250) + '...' : bodyStr}`);
+  }
+  console.log(`======================================================`);
+
+  res.on('finish', () => {
+    const duration = Date.now() - start;
+    const isOk = res.statusCode < 400;
+    const badge = isOk ? ansi.emeraldText(`✓ [HTTP COMPLETED]`) : ansi.yellowText(`⚠ [HTTP COMPLETED]`);
+    console.log(`${badge} ${req.method} ${req.originalUrl} -> ${res.statusCode} (${duration}ms)\n`);
+  });
+
+  next();
+});
+
+// ============================================================
 // 1. WEBHOOK VERIFICATION (GET /webhook)
 // Meta sends a GET request when configuring the webhook in Developer Dashboard.
 // ============================================================
@@ -121,11 +159,28 @@ app.post('/trigger', async (req, res) => {
 // Endpoint to trigger a new post and send it immediately without waiting
 // ============================================================
 app.post('/generate', async (req, res) => {
+  const customTopic = req.body?.topic || '';
+  const caller = req.headers['user-agent']?.includes('GitHub')
+    ? 'GitHub Actions'
+    : (req.headers['user-agent'] || 'Direct API');
+
+  console.log(ansi.boldText(`\n🚀 [POST /generate] Post generation triggered!`));
+  console.log(`   Trigger Source:  ${caller}`);
+  console.log(`   Requested Topic: "${customTopic || 'Auto Trending Theme'}"`);
+
   try {
-    const customTopic = req.body?.topic || '';
     const result = await whatsappWorkflow.generateAndSend(customTopic);
+
+    console.log(`   AI Result:       ✓ Generated topic "${result.post?.topic}"`);
+    if (result.sent) {
+      console.log(ansi.emeraldText(`   WhatsApp Send:   ✓ SUCCESS (Delivered to ${config.ownerPhoneNumber})`));
+    } else {
+      console.log(ansi.yellowText(`   WhatsApp Send:   ✕ FAILED (${result.error || result.reason || 'Not delivered'})`));
+    }
+
     res.status(200).json(result);
   } catch (err) {
+    console.error(ansi.redText(`   Processing Err:  ✕ ${err.message}`));
     res.status(500).json({ success: false, error: err.message });
   }
 });

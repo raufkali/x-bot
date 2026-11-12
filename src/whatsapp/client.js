@@ -4,6 +4,7 @@
  */
 
 import { config } from '../config.js';
+import { ansi } from '../utils/ansi.js';
 
 export class WhatsAppClient {
   constructor() {
@@ -46,7 +47,27 @@ export class WhatsAppClient {
 
         if (!response.ok) {
           const errorMsg = responseData?.error?.message || response.statusText;
-          console.error('[WhatsApp API Error]', responseData);
+          const errorCode = responseData?.error?.code;
+          const errorSubcode = responseData?.error?.error_subcode;
+          const fbTraceId = responseData?.error?.fbtrace_id;
+
+          console.error(ansi.redText('\n❌ [WhatsApp Cloud API Error from Meta]'));
+          console.error(`   HTTP Status:     ${response.status}`);
+          console.error(`   Error Message:   ${errorMsg}`);
+          console.error(`   Error Code:      ${errorCode ?? 'N/A'}`);
+          console.error(`   Error Subcode:   ${errorSubcode ?? 'N/A'}`);
+          console.error(`   FBTrace ID:      ${fbTraceId ?? 'N/A'}`);
+          console.error(`   Phone Number ID: ${this.phoneNumberId}`);
+          console.error(`   Recipient:       ${payload?.to}`);
+
+          if (errorMsg.includes('API access blocked')) {
+            console.warn(ansi.yellowText('\n   [TROUBLESHOOTING TIP — API Access Blocked]'));
+            console.warn(ansi.yellowText('   1. Check your WhatsApp Phone Number status:'));
+            console.warn(ansi.yellowText('      https://business.facebook.com/wa/manage/phone-numbers/'));
+            console.warn(ansi.yellowText('   2. Verify Meta Business Suite -> Account Quality for restrictions or pending verification.'));
+            console.warn(ansi.yellowText('   3. Ensure System User Token has active "whatsapp_business_messaging" permission.'));
+          }
+
           throw new Error(`WhatsApp API failed (${response.status}): ${errorMsg}`);
         }
 
