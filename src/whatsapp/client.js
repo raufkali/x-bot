@@ -95,6 +95,19 @@ export class WhatsAppClient {
   }
 
   /**
+   * Cleans recipient phone number and protects against self-messaging
+   */
+  formatRecipient(to) {
+    let clean = String(to || config.ownerPhoneNumber || '923435022880').replace(/[^0-9]/g, '');
+    // A bot cannot send WhatsApp messages to its own registered phone number
+    if (clean === '923290958704') {
+      console.warn('[WhatsApp Route] Recipient is the bot\'s own number (+92 329 0958704). Auto-rerouting to owner (+92 343 5022880).');
+      clean = '923435022880';
+    }
+    return clean;
+  }
+
+  /**
    * Sends a pre-approved WhatsApp template message
    * @param {string} to - Recipient number
    * @param {string} [templateName] - Template name (defaults to config.whatsappTemplateName)
@@ -102,7 +115,7 @@ export class WhatsAppClient {
    * @param {Array} [components] - Optional template components (header, body parameters)
    */
   async sendTemplate(to, templateName = config.whatsappTemplateName, languageCode = config.whatsappTemplateLang, components = []) {
-    const formattedTo = String(to).replace(/[^0-9]/g, '');
+    const formattedTo = this.formatRecipient(to);
     const templatePayload = {
       name: templateName,
       language: {
@@ -128,7 +141,7 @@ export class WhatsAppClient {
    * Sends a simple text message
    */
   async sendText(to, text) {
-    const formattedTo = String(to).replace(/[^0-9]/g, '');
+    const formattedTo = this.formatRecipient(to);
     const payload = {
       messaging_product: 'whatsapp',
       recipient_type: 'individual',
@@ -149,7 +162,7 @@ export class WhatsAppClient {
    * @param {Array<{ id: string, title: string }>} buttons - Max 3 buttons
    */
   async sendInteractiveButtons(to, bodyText, buttons) {
-    const formattedTo = String(to).replace(/[^0-9]/g, '');
+    const formattedTo = this.formatRecipient(to);
 
     const formattedButtons = buttons.slice(0, 3).map((btn) => ({
       type: 'reply',
