@@ -61,6 +61,6 @@ export const config = {
   xCallbackUrl: process.env.X_CALLBACK_URL || 'https://x-bot-7p2s.onrender.com/auth/x/callback',
 
   // Content Generation Profile
-  englishLevel: 'A2',
-  contentThemes: 'Geopolitics, Global Power Shifts, Future Forecastings 2035, AI Technology, Economics & Strategic Resources, Global Political Documentary'
+  englishLevel: 'Concise Analysis',
+  contentThemes: 'Chinese PLA & Taiwan Annexation, Semiconductors & Chip Wars, Radars & Sun Tzu Strategy, Global Trade Corridors, Digital Dictatorship, Oil Markets & Iran, Cyber Warfare, Crypto, Nuclear Deterrence'
 };
