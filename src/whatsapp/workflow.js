@@ -168,26 +168,93 @@ class WhatsAppWorkflowManager extends EventEmitter {
   }
 
   /**
+   * Returns normalized list of authorized owner phone numbers
+   */
+  getAllowedOwnerNumbers() {
+    const rawList = [
+      config.ownerPhoneNumber,
+      process.env.OWNER_PHONE_NUMBER,
+      process.env.OWNER_PHONE_NUMBERS
+    ].filter(Boolean).join(',');
+
+    const set = new Set();
+    rawList.split(/[,\s;]+/).forEach(num => {
+      const clean = String(num).replace(/[^0-9]/g, '');
+      // Never allow the bot's own number to act as owner
+      if (clean && clean !== '923290958704') {
+        set.add(clean);
+      }
+    });
+
+    // Known verified owner numbers
+    set.add('923435022880');
+    set.add('923469258704');
+
+    return Array.from(set);
+  }
+
+  /**
+   * Strictly validates if the incoming phone number belongs to the owner.
+   * If sender is NOT owner, the bot ignores it completely so normal WhatsApp
+   * functionality is preserved for other contacts.
+   * @param {string} fromNumber 
+   * @returns {boolean}
+   */
+  isOwner(fromNumber) {
+    if (!fromNumber) {
+      // Internal call without sender context
+      return true;
+    }
+
+    const cleanSender = String(fromNumber).replace(/[^0-9]/g, '');
+    if (!cleanSender) return false;
+
+    // Never allow the bot's own number to act as owner
+    if (cleanSender === '923290958704') {
+      return false;
+    }
+
+    const allowedOwners = this.getAllowedOwnerNumbers();
+    return allowedOwners.some(owner => {
+      const cleanOwner = String(owner).replace(/[^0-9]/g, '');
+      if (!cleanOwner) return false;
+      if (cleanSender === cleanOwner) return true;
+      if (
+        cleanSender.length >= 10 &&
+        cleanOwner.length >= 10 &&
+        cleanSender.slice(-10) === cleanOwner.slice(-10)
+      ) {
+        return true;
+      }
+      return false;
+    });
+  }
+
+  /**
    * Processes incoming reply from the owner's WhatsApp
    * @param {string} rawInput - Text message or interactive button ID
    * @param {string} fromNumber - Sender phone number
    */
   async handleOwnerReply(rawInput = '', fromNumber = '') {
-    const input = String(rawInput).trim().toLowerCase();
-    const cleanSender = String(fromNumber).replace(/[^0-9]/g, '');
-    const cleanOwner = String(config.ownerPhoneNumber).replace(/[^0-9]/g, '');
-
-    // Robust phone matching: matches exact digits or last 10 digits (handles 923... vs 03... vs +92...)
-    const isOwnerMatch =
-      !cleanOwner ||
-      cleanSender === cleanOwner ||
-      (cleanSender.length >= 10 && cleanOwner.length >= 10 && cleanSender.slice(-10) === cleanOwner.slice(-10));
-
-    if (!isOwnerMatch) {
-      console.warn(
-        `[WhatsApp Notice] Sender ${fromNumber} does not match configured owner ${config.ownerPhoneNumber}. Processing for active session.`
+    // ------------------------------------------------------------
+    // STRICT OWNER SECURITY GUARD:
+    // Only the owner can interact with X_BOT features.
+    // For all other numbers, the bot remains completely silent and
+    // functions like normal personal WhatsApp.
+    // ------------------------------------------------------------
+    if (!this.isOwner(fromNumber)) {
+      console.log(
+        ansi.dimText(`[WhatsApp Shield] Ignored message from non-owner (${fromNumber}). Bot is only active for owner. Normal WhatsApp preserved.`)
       );
+      return {
+        action: 'IGNORED_NON_OWNER',
+        status: this.status,
+        sender: fromNumber,
+        message: 'Non-owner message ignored. Preserving normal WhatsApp.'
+      };
     }
+
+    const input = String(rawInput).trim().toLowerCase();
 
     // ------------------------------------------------------------
     // GLOBAL COMMAND: EXIT / SLEEP

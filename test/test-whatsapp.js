@@ -145,14 +145,20 @@ async function runTests() {
 
     // TEST 10: Testing POST /trigger endpoint (Synchronous wait for owner response)
     console.log('TEST 10: Testing POST /trigger waiting for owner response via POST /respond...');
+    whatsappWorkflow.status = 'IDLE';
+    whatsappWorkflow.currentPendingPost = null;
+
     const triggerPromise = fetch(`${baseUrl}/trigger`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ topic: 'Test Trigger AI', timeoutMs: 5000 })
+      body: JSON.stringify({ topic: 'Test Trigger AI', timeoutMs: 15000 })
     }).then(r => r.json());
 
     // Allow trigger to start and enter waiting state
-    await new Promise(r => setTimeout(r, 200));
+    for (let i = 0; i < 60; i++) {
+      if (whatsappWorkflow.status === 'AWAITING_APPROVAL' && whatsappWorkflow.currentPendingPost) break;
+      await new Promise(r => setTimeout(r, 100));
+    }
 
     // Simulate owner approving English via POST /respond (Option 3 on English view)
     const respondRes = await fetch(`${baseUrl}/respond`, {
@@ -185,6 +191,14 @@ async function runTests() {
     assert.strictEqual(updateSchedJson.schedule.dailyTime, '14:30');
     assert.strictEqual(updateSchedJson.schedule.timezone, 'Asia/Karachi');
     console.log('✓ TEST 11 PASSED: Daily auto-post scheduler configured and responsive!\n');
+
+    // TEST 12: Non-Owner Security Guard
+    console.log('TEST 12: Testing Non-Owner Security Guard...');
+    const strangerResult = await whatsappWorkflow.handleOwnerReply('1', '923999888777');
+    assert.strictEqual(strangerResult.action, 'IGNORED_NON_OWNER');
+    assert.strictEqual(whatsappWorkflow.isOwner('923999888777'), false);
+    assert.strictEqual(whatsappWorkflow.isOwner(config.ownerPhoneNumber), true);
+    console.log('✓ TEST 12 PASSED: Non-owner messages safely ignored. Normal WhatsApp preserved for other contacts!\n');
 
     console.log('====================================================');
     console.log('   ALL WHATSAPP WEBHOOK TESTS PASSED! (100%)');

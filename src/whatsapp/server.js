@@ -126,7 +126,10 @@ app.post('/webhook', async (req, res) => {
 
           if (incomingText) {
             console.log(`\n📩 [Inbound WhatsApp Message] From: ${from} | Text: "${incomingText}"`);
-            await whatsappWorkflow.handleOwnerReply(incomingText, from);
+            const replyResult = await whatsappWorkflow.handleOwnerReply(incomingText, from);
+            if (replyResult?.action === 'IGNORED_NON_OWNER') {
+              console.log(ansi.dimText(`   🛡️ [Security] Non-owner contact. Zero bot interaction sent. Regular WhatsApp preserved.`));
+            }
           }
         }
       }
