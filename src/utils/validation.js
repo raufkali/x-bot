@@ -1,6 +1,12 @@
 /**
  * Validation and Character Counting Utilities for X (Twitter) Content
+ *
+ * NOTE: Posts are intentionally longer than the standard X 280-char limit.
+ * Content is published as a thread or long-form post where needed.
+ * Internal character limit is 500 chars.
  */
+
+const X_CHAR_LIMIT = 500;
 
 /**
  * Validates the user's topic
@@ -30,7 +36,7 @@ export function validateTopic(topic) {
  */
 export function calculateXCharacterCount(text = '') {
   if (!text) {
-    return { charCount: 0, weightedCount: 0, isOverLimit: false, remaining: 280 };
+    return { charCount: 0, weightedCount: 0, isOverLimit: false, remaining: X_CHAR_LIMIT };
   }
 
   // Normalization
@@ -57,8 +63,8 @@ export function calculateXCharacterCount(text = '') {
     }
   }
 
-  const isOverLimit = weightedCount > 280;
-  const remaining = 280 - weightedCount;
+  const isOverLimit = weightedCount > X_CHAR_LIMIT;
+  const remaining = X_CHAR_LIMIT - weightedCount;
 
   return {
     charCount,

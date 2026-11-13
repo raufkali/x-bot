@@ -16,7 +16,7 @@
  *
  * Standards:
  * - English Level: Natural, fluent B1–B2 analytical English
- * - Target Length: 180–260 characters (strictly max 280 X characters)
+ * - Target Length: 350–480 characters (max 500)
  * - Zero hashtags, zero emojis, zero conversational fluff
  * - Translations: Pakistani Roman Urdu and Plain Urdu script (اردو)
  * - Strict MongoDB SHA-256 deduplication & category rotation
@@ -105,169 +105,169 @@ export const CONTENT_CATEGORIES = [
 export const CURATED_STORY_TOPICS = [
   // Category A: China, Taiwan & Indo-Pacific
   {
-    topic: "Taiwan's Semiconductor Shield and the Global Economy",
+    topic: "Taiwan and Computer Chips",
     category: 'CHINA_TAIWAN_INDO_PACIFIC',
     english: {
-      text: "Taiwan's importance goes far beyond its geography. Its semiconductor industry connects the island to the global economy. Any military crisis in the Taiwan Strait disrupts AI development, chip supply, and global trade. Control over Taiwan carries consequences far beyond Asia."
+      text: "China wants Taiwan to become part of China, but Taiwan has its own government. America also supports Taiwan's defence. This makes the situation more serious. If China attacks Taiwan, America may also become involved. But why is Taiwan so important? Because many of the world's computer chips are made there."
     },
     romanUrdu: {
-      text: "Taiwan ki ahemiyat sirf geography tak mehdood nahi. Iski semiconductor industry poori aalmi maeeshat ko jorrti hai. Taiwan Strait mein koi bhi larrai computer chips aur trade ko foran rok degi. Taiwan par qabzay ke asraat Asia se bohat agay jayenge."
+      text: "China chahta hai ke Taiwan uska hissa ban jaye, lekin Taiwan ki apni government hai. America bhi Taiwan ka saath deta hai. Yeh sab maamlat aur bhi serious ho gaye hain. Agar China ne Taiwan par hamla kiya, to America bhi aa sakta hai. Lekin Taiwan itna ahem kyun hai? Kyunke duniya ke bohot sare computer chips wahan banate hain."
     },
     plainUrdu: {
-      text: "تائیوان کی اہمیت محض جغرافیے تک محدود نہیں۔ اس کی سیمی کنڈکٹر صنعت جزیرے کو عالمی معیشت سے جوڑتی ہے۔ آبنائے تائیوان میں فوجی بحران چپ سپلائی اور عالمی تجارت کو مفلوج کر دے گا۔ تائیوان پر کنٹرول کے نتائج ایشیا سے کہیں آگے تک جائیں گے۔"
+      text: "چین چاہتا ہے کہ تائیوان اس کا حصہ بن جائے، لیکن تائیوان کی اپنی حکومت ہے۔ امریکہ بھی تائیوان کا ساتھ دیتا ہے۔ یہ صورتحال اور بھی سنگین ہوتی جا رہی ہے۔ اگر چین نے تائیوان پر حملہ کیا تو امریکہ بھی شامل ہو سکتا ہے۔ لیکن تائیوان اتنا اہم کیوں ہے؟ کیونکہ دنیا کے بہت سارے کمپیوٹر چپس وہاں بنائے جاتے ہیں۔"
     }
   },
   {
-    topic: "PLA Encirclement and the Strategy of Chokepoints",
+    topic: "China and America's Competition",
     category: 'CHINA_TAIWAN_INDO_PACIFIC',
     english: {
-      text: "China's PLA naval drills around Taiwan aren't preparing for a traditional beach landing. A sustained maritime blockade cuts off energy imports and halts advanced semiconductor exports in days. In modern warfare, economic starvation precedes artillery."
+      text: "China and America are competing in many areas, including AI, trade, military power and computer chips. Both countries want to become stronger and protect their interests. This competition is also affecting other countries. But a direct war between these two powers could damage the world economy. Can they compete without starting a major war?"
     },
     romanUrdu: {
-      text: "Taiwan ke ird gird China ki PLA mashqein kisi foji hamlay ki nahi balkay naakabandi ki tayari hain. Samandar band hotay hi Taiwan ka tail aur chip export dinon mein ruk jaye gi. Jadeed jung mein topon se pehle maashi naakabandi aati hai."
+      text: "China aur America AI, tijarat, foji taqat aur computer chips mein aapas mein muqabla kar rahay hain. Dono mulk aur taqatwar banna chahte hain aur apne mufadat bachana chahte hain. Yeh muqabla dusre mulkon ko bhi affect kar raha hai. Lekin in dono ke darmiyan seedhi jung poori duniya ki economy ko tabah kar sakti hai. Kya yeh bina bari jung ke muqabla kar sakte hain?"
     },
     plainUrdu: {
-      text: "تائیوان کے گرد چینی فوج کی مشقیں روایتی زمینی حملے کی تیاری نہیں۔ بحری ناکہ بندی چند دنوں میں تائیوان کے ایندھن اور چپ برآمدات کو روک سکتی ہے۔ جدید دور کی جنگ میں گولہ باری سے پہلے معاشی محاصرہ فیصلہ کن ہوتا ہے۔"
+      text: "چین اور امریکہ AI، تجارت، فوجی طاقت اور کمپیوٹر چپس میں ایک دوسرے سے مقابلہ کر رہے ہیں۔ دونوں ملک مضبوط بننا چاہتے ہیں۔ یہ مقابلہ دوسرے ملکوں کو بھی متاثر کر رہا ہے۔ لیکن ان دونوں کے درمیان براہ راست جنگ پوری دنیا کی معیشت کو نقصان پہنچا سکتی ہے۔ کیا یہ بغیر بڑی جنگ کے مقابلہ کر سکتے ہیں؟"
     }
   },
 
   // Category B: Military Strategy & Intelligence
   {
-    topic: "Sun Tzu, Information Warfare and Modern Military Doctrine",
+    topic: "Sun Tzu and Modern War",
     category: 'MILITARY_STRATEGY_INTELLIGENCE',
     english: {
-      text: "Sun Tzu argued that understanding the enemy is essential to victory. Modern military strategy follows a similar principle. Satellite surveillance, cyber intelligence, and electronic warfare weaken an opponent before missiles launch. Information is as valuable as firepower."
+      text: "Sun Tzu was a Chinese military thinker who believed that knowing your enemy was very important. His ideas are still useful today. Modern countries collect information about each other's armies, weapons and plans. They also use computers and satellites to watch military movements. The weapons have changed, but the importance of information remains the same."
     },
     romanUrdu: {
-      text: "Sun Tzu ka usool tha ke dushman ko samajhna hi jeet ki asal bunyad hai. Jadeed military doctrine isi par chalti hai. Satellite surveillance, cyber intelligence aur electronic jammers pehla missile chalnay se pehle dushman ko kamzor kar dete hain."
+      text: "Sun Tzu ek Chinese military expert tha jis ka aqeeda tha ke dushman ko samajhna bohot zaroori hai. Uske khayal aaj bhi kaam aate hain. Jadeed mulk ek dusre ki fauj, hathiyaron aur plans ki information ikhatta karte hain. Woh computers aur satellites bhi use karte hain. Hathiyar badal gaye hain, lekin information ki ahmiyat wahi hai."
     },
     plainUrdu: {
-      text: "سن زو کا مؤقف تھا کہ دشمن کو سمجھنا ہی فتح کی اصل ضمانت ہے۔ جدید فوجی حکمت عملی اسی اصول پر استوار ہے۔ سیٹلائٹ نگرانی، سائبر انٹیلی جنس اور الیکٹرانک وارفیئر پہلے میزائل کے داغے جانے سے قبل حریف کو مفلوج کر دیتے ہیں۔"
+      text: "سن زو ایک چینی فوجی ماہر تھا جس کا یقین تھا کہ دشمن کو سمجھنا بہت ضروری ہے۔ اس کے خیالات آج بھی کام آتے ہیں۔ جدید ممالک ایک دوسرے کی فوج، ہتھیاروں اور منصوبوں کی معلومات اکٹھی کرتے ہیں۔ وہ کمپیوٹر اور سیٹلائٹ بھی استعمال کرتے ہیں۔ ہتھیار بدل گئے ہیں، لیکن معلومات کی اہمیت وہی ہے۔"
     }
   },
   {
-    topic: "Electronic Warfare and the Silent Radar Battles",
+    topic: "AI and Modern War",
     category: 'MILITARY_STRATEGY_INTELLIGENCE',
     english: {
-      text: "Modern air superiority is no longer decided by dogfights. Long-range phased-array radars and airborne electronic jammers blind defensive sensors before aircraft ever appear. Whoever commands the electromagnetic spectrum commands the battlefield."
+      text: "Wars are changing because of AI. Today, armies can use drones to watch enemy movements and find possible targets. AI can also help soldiers understand what is happening on the battlefield. China and America are both investing in this technology. In the future, wars may depend not only on weapons but also on computers."
     },
     romanUrdu: {
-      text: "Hawa mein bartari ab aam jahazon ki larrai se nahi jeeti jati. Long-range phased-array radars aur airborne electronic jammers hamlay se pehle dushman ke sensors ko andha kar dete hain. Jo electromagnetic spectrum par qabza karega, maidan uska hoga."
+      text: "AI ki wajah se jung ka tarika badal raha hai. Aaj faujen drones se dushman ki movements dekh sakti hain aur targets dhundh sakti hain. AI soldiers ko battlefield ki soorat e haal samajhne mein bhi madad karta hai. China aur America dono is technology mein paisa laga rahe hain. Mustaqbil ki jung sirf hathiyaron se nahi, computers se bhi lari jayegi."
     },
     plainUrdu: {
-      text: "فضائی برتری اب روایتی فضائی جھڑپوں سے طے نہیں پاتی۔ طویل فاصلے کے فیزڈ ارے ریڈارز اور الیکٹرانک جیمرز حملہ آور طیاروں کے پہنچنے سے قبل دفاعی سینسرز کو اندھا کر دیتے ہیں۔ جو الیکٹرو میگنیٹک میدان جیتے گا، معرکہ اسی کا ہوگا۔"
+      text: "AI کی وجہ سے جنگ کا طریقہ بدل رہا ہے۔ آج فوجیں ڈرونز سے دشمن کی حرکات دیکھ سکتی ہیں اور اہداف ڈھونڈ سکتی ہیں۔ AI فوجیوں کو میدان جنگ کی صورتحال سمجھنے میں بھی مدد کرتا ہے۔ چین اور امریکہ دونوں اس ٹیکنالوجی میں سرمایہ لگا رہے ہیں۔ مستقبل کی جنگ صرف ہتھیاروں سے نہیں، کمپیوٹرز سے بھی لڑی جائے گی۔"
     }
   },
 
   // Category C: Iran, Israel & Middle East
   {
-    topic: "Iran, the Strait of Hormuz and Global Energy Markets",
+    topic: "Iran and the Strait of Hormuz",
     category: 'IRAN_ISRAEL_MIDDLE_EAST',
     english: {
-      text: "A conflict involving Iran is never limited to the Middle East. The Strait of Hormuz carries a major share of global oil trade. Any disruption immediately rocks energy prices, financial markets, and foreign economies. Geography remains a decisive weapon in world politics."
+      text: "Iran does not need a nuclear bomb to hurt the West. It just needs to close the Strait of Hormuz for one week. This sea route carries a large amount of the world's oil supply. If it closes, oil prices go up, stock markets fall and many countries start to panic. That is Iran's real power. And everyone knows it."
     },
     romanUrdu: {
-      text: "Iran ki larrai kabhi sirf Middle East tak mehdood nahi rehti. Strait of Hormuz aalmi tail ki rasad ka barri hissa sambhalta hai. Yahan ki rukawat foran tail ki qeematein aur stock markets hila deti hai. Aalmi siyasat mein geography sab se bara hathiyar hai."
+      text: "Iran ko Maghrib ko nuqsan pahunchane ke liye nuclear bomb ki zaroorat nahi. Agar Iran Strait of Hormuz sirf ek hafte ke liye band kar de, to tail ki qeematein barhein gi, stock markets girengi aur bohot se mulk pareshan ho jayenge. Yahi Iran ki asli taqat hai. Aur sab ko pata hai."
     },
     plainUrdu: {
-      text: "ایران سے وابستہ کشیدگی کبھی مشرق وسطیٰ تک محدود نہیں رہتی۔ آبنائے ہرمز عالمی تیل کی ترسیل کا بڑا حصہ سنبھالتی ہے۔ یہاں معمولی رکاوٹ بھی توانائی کی قیمتوں اور منڈیوں کو ہلا دیتی ہے۔ جغرافیہ آج بھی عالمی سیاست کا سب سے بڑا ہتھیار ہے۔"
+      text: "ایران کو مغرب کو نقصان پہنچانے کے لیے ایٹم بم کی ضرورت نہیں۔ اگر ایران آبنائے ہرمز صرف ایک ہفتے کے لیے بند کر دے تو تیل کی قیمتیں بڑھیں گی، اسٹاک مارکیٹیں گریں گی اور بہت سے ملک پریشان ہو جائیں گے۔ یہی ایران کی اصل طاقت ہے۔ اور سب کو پتا ہے۔"
     }
   },
   {
-    topic: "Regional Proxies and the Attrition of Superpower Power",
+    topic: "China Buys Oil from Iran",
     category: 'IRAN_ISRAEL_MIDDLE_EAST',
     english: {
-      text: "Direct confrontations between heavily armed states are avoided due to nuclear risks. Instead, low-cost drone networks and regional proxies fight protracted wars along vital trade corridors, forcing major powers to burn billion-dollar missiles to counter cheap attacks."
+      text: "China buys oil from Iran, while America does not support this trade. The US has placed restrictions on Iran and wants other countries to follow them. But China continues to buy Iranian oil because it needs energy for its industries. This creates more tension between China and America. Oil is not just about money. It is also about power."
     },
     romanUrdu: {
-      text: "Nuclear khatray ki wajah se barri taqatein aapas mein seedhi jung se bachti hain. Iske bajaye saste drones aur regional proxies ahem tijarati raston par jung larrte hain, jahan superpowers ko saste hamlon ke samnay arabon dollar ke missiles zaya karnay partay hain."
+      text: "China Iran se tail khareedta hai, jabke America is tijarat ko pasand nahi karta. America ne Iran par pabandian lagayi hain aur chahta hai ke baaki mulk bhi manen. Lekin China Iranian tail kharidta rehta hai kyunke use apni industries ke liye energy chahiye. Isse China aur America ke darmiyan tanaao badhta hai. Tail sirf paisay ka maamla nahi. Yeh taqat ka bhi sawaal hai."
     },
     plainUrdu: {
-      text: "ایٹمی خطرات کی وجہ سے بڑی طاقتیں براہ راست تصادم سے گریز کرتی ہیں۔ اس کے برعکس سستے ڈرونز اور پراکسی نیٹ ورکس اہم تجارتی راہداریوں پر ایسی جنگ چھیڑتے ہیں جہاں بڑی طاقتوں کو معمولی حملوں کے دفاع کے لیے اربوں ڈالرز جھونکنے پڑتے ہیں۔"
+      text: "چین ایران سے تیل خریدتا ہے، جبکہ امریکہ اس تجارت کو پسند نہیں کرتا۔ امریکہ نے ایران پر پابندیاں لگائی ہیں اور چاہتا ہے کہ باقی ملک بھی مانیں۔ لیکن چین ایرانی تیل خریدتا رہتا ہے کیونکہ اسے اپنی صنعتوں کے لیے توانائی چاہیے۔ اس سے چین اور امریکہ کے درمیان تناؤ بڑھتا ہے۔ تیل صرف پیسے کا معاملہ نہیں۔ یہ طاقت کا بھی سوال ہے۔"
     }
   },
 
   // Category D: Global Economy & Financial Warfare
   {
-    topic: "Dollar Dominance and the Weaponization of Global Finance",
+    topic: "CPEC and Gwadar Port",
     category: 'GLOBAL_ECONOMY_FINANCIAL_WARFARE',
     english: {
-      text: "When international clearing rails and foreign reserves are frozen as policy levers, financial dominance creates its own counter-reaction. Nations diversify into gold, local currency settlements, and decentralized ledgers to insulate their economies from dollar shocks."
+      text: "Pakistan has an important location because it connects different parts of Asia. China is investing in the China-Pakistan Economic Corridor, also known as CPEC. Gwadar Port is an important part of this project. China wants better trade routes, while Pakistan hopes to improve its economy. This project can bring opportunities, but security and good planning are also important."
     },
     romanUrdu: {
-      text: "Jab international banking systems aur bank reserves ko siyasi hathiyar banaya jata hai, to dollar ki bartari apne khilaf naye raste banati hai. Mumalik ab sonay, local currency trade aur decentralized crypto ki taraf ja rahay hain taakay sanctions se bach sakein."
+      text: "Pakistan ki location ahem hai kyunke yeh Asia ke mukhtalif hisson ko jor-ti hai. China Pakistan mein CPEC ke zariye paisa laga raha hai. Gwadar Port is project ka ek ahem hissa hai. China behtar tijarati rasten chahta hai jabke Pakistan apni economy behtar karna chahta hai. Yeh project mauke la sakta hai, lekin security aur achi planning bhi zaruri hai."
     },
     plainUrdu: {
-      text: "جب بین الاقوامی مالیاتی نیٹ ورکس اور زر مبادلہ کے ذخائر کو بطور ہتھیار استعمال کیا جائے تو مالیاتی بالادستی خود اپنے متبادل کو جنم دیتی ہے۔ ممالک اب سونے، مقامی کرنسیوں اور بلاک چین کی طرف بڑھ رہے ہیں تاکہ مالیاتی جھٹکوں سے محفوظ رہ سکیں۔"
+      text: "پاکستان کی لوکیشن اہم ہے کیونکہ یہ ایشیا کے مختلف حصوں کو جوڑتی ہے۔ چین CPEC کے ذریعے پاکستان میں سرمایہ لگا رہا ہے۔ گوادر پورٹ اس منصوبے کا ایک اہم حصہ ہے۔ چین بہتر تجارتی راستے چاہتا ہے جبکہ پاکستان اپنی معیشت بہتر کرنا چاہتا ہے۔ یہ منصوبہ مواقع لا سکتا ہے، لیکن سیکیورٹی اور اچھی منصوبہ بندی بھی ضروری ہے۔"
     }
   },
   {
-    topic: "Maritime Chokepoints and Fragile Global Supply Chains",
+    topic: "Trade Routes and Sea Routes",
     category: 'GLOBAL_ECONOMY_FINANCIAL_WARFARE',
     english: {
-      text: "Financial algorithms price corporate earnings, but ninety percent of physical goods still navigate vulnerable maritime straits. When a chokepoint like the Red Sea or Malacca narrows, shipping costs surge and global inflation follows. Physical trade outranks paper finance."
+      text: "Most of the world's goods travel by sea. Ships carry oil, food, electronics and many other products from one country to another. If an important sea route is blocked, it can cause problems for many countries at the same time. This is why countries care so much about controlling sea routes. Trade is not just about business. It is also about power."
     },
     romanUrdu: {
-      text: "Stock markets company munafay ka hisab lagati hain, magar 90 percent saaman tang samandari raston se guzarta hai. Jab Red Sea ya Malacca mein rukawat aati hai to kiraya barhta hai aur mehangai aati hai. Zameeni tijarat hamesha paper finance se bari hoti hai."
+      text: "Duniya ka zyada tar saaman samundar ke zariye safar karta hai. Jahaz tail, khaana, electronics aur bohot se products ek mulk se dusre lejate hain. Agar koi ahem samudri raasta band ho jaye, to ek waqt mein bohot se mulkon ko mushkilat hoti hain. Isliye mulk samudri raston par control ke liye itna ziada parwa karte hain. Tijarat sirf karobar nahi. Yeh taqat ka bhi maamla hai."
     },
     plainUrdu: {
-      text: "اسٹاک مارکیٹیں کارپوریٹ منافع کا حساب لگاتی ہیں، لیکن دنیا کا نوے فیصد سامان تنگ بحری راہداریوں سے گزرتا ہے۔ جب بحیرہ احمر یا ملاکا میں رکاوٹ آئے تو کرایے بڑھتے ہیں اور عالمی افراط زر جنم لیتا ہے۔ حقیقی تجارت کا وزن کاغذی مالیات سے زیادہ ہے۔"
+      text: "دنیا کا زیادہ تر سامان سمندر کے ذریعے سفر کرتا ہے۔ جہاز تیل، کھانا، الیکٹرونکس اور بہت سی مصنوعات ایک ملک سے دوسرے لے جاتے ہیں۔ اگر کوئی اہم سمندری راستہ بند ہو جائے تو ایک ساتھ بہت سے ملکوں کو مشکلات ہوتی ہیں۔ اسی لیے ملک سمندری راستوں پر کنٹرول کے لیے اتنی زیادہ پرواہ کرتے ہیں۔ تجارت صرف کاروبار نہیں۔ یہ طاقت کا بھی معاملہ ہے۔"
     }
   },
 
   // Category E: AI, Technology & Cybersecurity
   {
-    topic: "The AI Chip Race as the New Geopolitical Balance of Power",
+    topic: "Semiconductor Chips and Global Power",
     category: 'AI_TECHNOLOGY_CYBERSECURITY',
     english: {
-      text: "The geopolitical balance of power is no longer measured solely in steel and nuclear warheads. Sovereign power now hinges on silicon foundry capacity and advanced AI accelerator hardware. Silicon dominance dictates the future of intelligence, economy, and military strategy."
+      text: "Why are computer chips so important? Because almost every modern device needs them. Mobile phones, cars, AI systems and military equipment all use these small chips. Taiwan makes some of the world's most advanced chips. This is one reason why China and America are both interested in the region. Technology has become a major part of global power."
     },
     romanUrdu: {
-      text: "Taqat ka aalmi tawazun ab sirf foj aur atom bomb se nahi naapa jata. Riyasati taqat ab semiconductor foundries aur advanced AI chips par munhasir hai. Silicon par qabza hi mustaqbil ki intelligence, maeeshat aur military strategy ka faisla karta hai."
+      text: "Computer chips itne ahem kyun hain? Kyunke har jadeed device inhe chahiye hoti hai. Mobile phones, gaariyan, AI systems aur foji sazaamaan sab inhi chhote chips se chaltay hain. Taiwan duniya ke sab se advanced chips mein se kuch banata hai. Yahi ek wajah hai ke China aur America dono is علاقے mein dilchaspi rakhte hain. Technology ab global taqat ka ek bara hissa ban chuki hai."
     },
     plainUrdu: {
-      text: "عالمی طاقت کا توازن اب محض بارود اور ایٹمی ہتھیاروں سے نہیں تولا جاتا۔ اب خودمختاری کا دارومدار جدید مائیکرو چپس اور مصنوعی ذہانت کے سسٹمز پر ہے۔ سلیکان پر کنٹرول ہی مستقبل کی انٹیلی جنس، معیشت اور عسکری حکمت عملی کی سمت متعین کرتا ہے۔"
+      text: "کمپیوٹر چپس اتنی اہم کیوں ہیں؟ کیونکہ ہر جدید ڈیوائس انہیں چاہتی ہے۔ موبائل فونز، گاڑیاں، AI سسٹمز اور فوجی سازوسامان سب ان چھوٹی چپس سے چلتے ہیں۔ تائیوان دنیا کی سب سے جدید چپس میں سے کچھ بناتا ہے۔ یہی ایک وجہ ہے کہ چین اور امریکہ دونوں اس علاقے میں دلچسپی رکھتے ہیں۔ ٹیکنالوجی اب عالمی طاقت کا ایک بڑا حصہ بن چکی ہے۔"
     }
   },
   {
-    topic: "Digital Surveillance and the Architecture of Modern Power",
+    topic: "Cyber Warfare",
     category: 'AI_TECHNOLOGY_CYBERSECURITY',
     english: {
-      text: "Historical dictatorships relied on physical secret police to enforce order. Modern governance leverages ubiquitous smartphone telemetry, automated facial surveillance, and programmable digital currencies. State authority has transitioned from physical force to algorithmic control."
+      text: "A country does not always need missiles to attack another country. It can also attack its computer systems. Imagine a cyberattack that stops a country's banks or electricity supply. People may not even know who is responsible. This is why countries are spending more money to protect their computer networks. The next war may also start online."
     },
     romanUrdu: {
-      text: "Puranay aamiron ko awaam dabane ke liye secret police chahiye hoti thi. Jadeed riyasat smartphone telemetry, facial recognition cameras aur programmable digital currency ka sahara leti hai. Hakumat ka zor ab physical taqat se nikal kar algorithmic control ban chuka hai."
+      text: "Kisi mulk ko dusre par hamla karne ke liye missiles ki zaroorat nahi hoti. Woh uske computer systems par bhi hamla kar sakta hai. Socho agar ek cyber attack kisi mulk ke banks ya bijli band kar de. Log shayad jan bhi na sakein ke zimmedar kaun hai. Isliye mulk apne computer networks ki hifazat par zyada paisa kharch kar rahe hain. Agli jung online bhi shuru ho sakti hai."
     },
     plainUrdu: {
-      text: "ماضی کی آمریتیں اقتدار قائم رکھنے کے لیے خفیہ پولیس پر انحصار کرتی تھیں۔ جدید ریاستی نظام اسمارٹ فون ٹیلی میٹری، خودکار کیمروں اور ڈیجیٹل کرنسی کا سہارا لیتا ہے۔ اقتدار کا طریقہ کار اب جسمانی طاقت سے بدل کر الگورتھمک گرفت میں ڈھل چکا ہے۔"
+      text: "کسی ملک کو دوسرے پر حملہ کرنے کے لیے میزائلوں کی ضرورت نہیں ہوتی۔ وہ اس کے کمپیوٹر سسٹمز پر بھی حملہ کر سکتا ہے۔ سوچو اگر ایک سائبر حملہ کسی ملک کے بینکس یا بجلی بند کر دے۔ لوگ شاید جان بھی نہ سکیں کہ ذمہ دار کون ہے۔ اسی لیے ملک اپنے کمپیوٹر نیٹ ورکس کی حفاظت پر زیادہ پیسہ خرچ کر رہے ہیں۔ اگلی جنگ آن لائن بھی شروع ہو سکتی ہے۔"
     }
   },
 
   // Category F: Civilization, History & Global Power
   {
-    topic: "Strategic Corridors and the Rise and Fall of Empires",
+    topic: "Bagram Air Base and US-Pakistan Relations",
     category: 'CIVILIZATION_HISTORY_GLOBAL_POWER',
     english: {
-      text: "From the ancient Silk Road to modern maritime corridors, empires have consistently risen and collapsed along trade routes. Pipelines, undersea fiber cables, and deep-water ports are simply the modern technological expressions of timeless civilizational competition."
+      text: "Bagram was never about Afghanistan. It was always about China, Iran, and Pakistan. If US and Taliban are now talking about spying on China, then Kabul is not neutral anymore. It is becoming a tool. And Pakistan will pay the price for being in the middle."
     },
     romanUrdu: {
-      text: "Qadeem Silk Road se le kar jadeed maritime corridors tak, saltanatein hamesha tijarati raston ke gird bani aur bikhri hain. Oil pipelines, undersea internet cables aur deep-sea ports qadeem tehzeebi mukablay ki jadeed shaklein hain."
+      text: "Bagram kabhi Afghanistan ke baare mein tha hi nahi. Yeh hamesha China, Iran aur Pakistan ke baare mein tha. Agar America aur Taliban ab China par nazar rakhne ki baat kar rahe hain, to Kabul zyada neutral nahi raha. Yeh ek tool ban raha hai. Aur Pakistan darmiyan mein hone ki qeemat adaa karega."
     },
     plainUrdu: {
-      text: "قدیم شاہراہ ریشم سے لے کر جدید بحری راہداریوں تک، سلطنتیں ہمیشہ تجارتی راستوں پر ہی عروج پاتی اور ختم ہوتی رہی ہیں۔ پائپ لائنز، سمندری انٹرنیٹ کیبلز اور گہرے بندرگاہیں دراصل ازلی تہذیبی رقابت کے جدید روپ ہیں۔"
+      text: "بگرام کبھی افغانستان کے بارے میں تھا ہی نہیں۔ یہ ہمیشہ چین، ایران اور پاکستان کے بارے میں تھا۔ اگر امریکہ اور طالبان اب چین پر نظر رکھنے کی بات کر رہے ہیں تو کابل زیادہ غیر جانبدار نہیں رہا۔ یہ ایک آلہ بن رہا ہے۔ اور پاکستان درمیان میں ہونے کی قیمت ادا کرے گا۔"
     }
   },
   {
-    topic: "Bagram, Regional Proxies and Great Power Competition",
+    topic: "Digital Surveillance and Government Control",
     category: 'CIVILIZATION_HISTORY_GLOBAL_POWER',
     english: {
-      text: "Bagram was never about Afghanistan. It was always about the surrounding regional powers: China, Iran, and Pakistan. When global superpowers bargain for intelligence perches and strategic corridors, nations trapped in the middle invariably absorb the collateral cost."
+      text: "Today, our phones know a lot about us. They can collect information about our location, searches and daily activities. Governments and companies can use this information for different purposes. AI makes it even easier to study people's behaviour. This creates an important question: are we using technology, or is technology slowly controlling our lives?"
     },
     romanUrdu: {
-      text: "Bagram ka maamla kabhi Afghanistan ka tha hi nahi. Asal nishana hamesha China, Iran aur Pakistan thay. Jab superpowers intelligence perches aur corridors ka souda karti hain, to darmiyan mein phansay mumalik hamesha sab se bhari qeemat chukatay hain."
+      text: "Aaj humare phone humare baare mein bohot kuch jante hain. Woh hamari location, searches aur rozana ki activities ka data ikhatta kar sakte hain. Hukumtein aur companies is information ko mukhtalif maqasid ke liye use kar sakti hain. AI se log ki harkatein samajhna aur bhi aasan ho gaya hai. Yeh ek ahem sawaal uthata hai: kya hum technology use kar rahe hain, ya technology hamdhi zindagi par qabzu le rahi hai?"
     },
     plainUrdu: {
-      text: "بگرام کا معاملہ کبھی افغانستان کا تھا ہی نہیں۔ اصل نظر ہمیشہ چین، ایران اور پاکستان پر تھی۔ جب عالمی سپر پاورز انٹیلی جنس اڈوں اور راہداریوں کا سودا کرتی ہیں، تو جغرافیے کے درمیان پھنسے ممالک ہی سب سے بھاری قیمت چکاتے ہیں۔"
+      text: "آج ہمارے فون ہمارے بارے میں بہت کچھ جانتے ہیں۔ وہ ہماری لوکیشن، سرچز اور روزانہ کی سرگرمیوں کا ڈیٹا اکٹھا کر سکتے ہیں۔ حکومتیں اور کمپنیاں اس معلومات کو مختلف مقاصد کے لیے استعمال کر سکتی ہیں۔ AI سے لوگوں کی حرکات سمجھنا اور بھی آسان ہو گیا ہے۔ یہ ایک اہم سوال اٹھاتا ہے: کیا ہم ٹیکنالوجی استعمال کر رہے ہیں، یا ٹیکنالوجی ہماری زندگی پر قابو لے رہی ہے؟"
     }
   }
 ];
@@ -275,9 +275,9 @@ export const CURATED_STORY_TOPICS = [
 let categoryRotationIndex = 0;
 let storyCounter = 0;
 
-const MIN_CHARACTERS = 180;
-const MAX_CHARACTERS = 265;
-const ABSOLUTE_MAX_CHARACTERS = 280;
+const MIN_CHARACTERS = 350;
+const MAX_CHARACTERS = 480;
+const ABSOLUTE_MAX_CHARACTERS = 500;
 
 /* =========================================================
    TEXT FORMATTING AND VALIDATION
@@ -318,7 +318,7 @@ function validateAIResponse(res, chosenTopic, chosenCategory = 'GEOPOLITICS_STRA
 
   const entry = formatEntry(rawText);
   if (entry.isOverLimit || entry.charCount > ABSOLUTE_MAX_CHARACTERS) {
-    throw new Error(`AI post exceeds X 280-char limit (${entry.charCount} chars)`);
+    throw new Error(`AI post exceeds 500-char limit (${entry.charCount} chars)`);
   }
 
   return {
@@ -339,54 +339,76 @@ function createEnglishPrompt(chosenTopic, usedTopics, targetCategory = null) {
       : 'None';
 
   const categoryHint = targetCategory
-    ? `The post should explore themes related to: ${targetCategory.name}.`
-    : `Themes: China/Taiwan, Military Strategy, Iran/Middle East, Global Economy, AI/Tech, or Historical Power.`;
+    ? `The post should be about themes related to: ${targetCategory.name}.`
+    : `Topics: China, Taiwan, America, Iran, AI, cyber warfare, military, oil, trade, technology or global power.`;
 
-  return `You are writing a short analytical post for X (Twitter) about geopolitics and world affairs.
+  return `You are writing a short social media post about international news and world politics.
 
 TOPIC: "${chosenTopic}"
 
 ${categoryHint}
 
 ============================================================
-WRITING STYLE — READ THIS CAREFULLY
+LANGUAGE RULES — THIS IS THE MOST IMPORTANT PART
 ============================================================
-Write like a smart Pakistani person who follows world news closely and explains it in simple, clear English.
-NOT like an academic paper. NOT like a news headline. Like someone talking to a friend who is also educated.
+Write in very simple English. The reader is an ordinary Pakistani person with basic English knowledge.
 
-The English should be:
-- Simple and direct. Short sentences. Easy to understand on first read.
-- Natural flow — each sentence connects to the next. No jumping between ideas.
-- Confident and opinionated. Say what you think clearly.
-- Never use big words just to sound smart.
+Use ONLY simple, everyday words. For example:
+- Use "buy" not "procure"
+- Use "attack" not "escalate aggression"
+- Use "power" not "geopolitical leverage"
+- Use "army" not "armed forces"
+- Use "oil" not "petroleum resources"
+- Use "fight" not "engage in hostilities"
+- Use "country" not "nation-state"
+- Use "chips" or "computer chips" not "semiconductors" (or explain immediately)
 
-THESE ARE PERFECT EXAMPLES OF THE STYLE (do NOT copy these, only copy the style):
+If you must use a technical word, explain it right away in simple English.
+Example: "semiconductor chips — the small parts that run computers and phones"
 
-Example 1:
-"Bagram was never about Afghanistan. It was always about China, Iran, and Pakistan. If US and Taliban are now talking about spying on China, then Kabul is not neutral anymore. It is becoming a tool. And Pakistan will pay the price for being in the middle."
+DO NOT write like a university paper or a news agency report.
+DO NOT use long complicated sentences.
+Write like you are explaining the news to a friend.
 
-Example 2:
-"Everyone talks about who controls the oil. Nobody talks about who controls the water. The rivers that feed Pakistan, India, and China all start from the same mountains. Whoever controls those mountains quietly controls the food supply of three billion people."
+============================================================
+CONTENT STYLE
+============================================================
+${categoryHint}
 
-Example 3:
-"Iran does not need a nuclear bomb to hurt the West. It just needs to close the Strait of Hormuz for one week. Oil prices double, stock markets crash, and Europe starts panicking. That is the real weapon. And everyone knows it."
+Explain the situation simply and connect it to a bigger picture. Answer:
+- What is happening?
+- Why is it happening?
+- How does it affect other countries or the world?
 
-Study how these examples work:
-- They start with one clear idea.
-- They stay on that one idea the whole time.
-- They build logically, sentence by sentence.
-- The last sentence hits hard and makes you think.
-- No jargon. No list of technical terms. Just clear thinking.
+You may end with a natural thought or question that makes the reader think.
+
+============================================================
+PERFECT EXAMPLES — FOLLOW THIS EXACT STYLE
+============================================================
+Study how these examples work. Use the same simple language and sentence length.
+
+Example 1 (China and Iran oil):
+"China buys oil from Iran, while America does not support this trade. The US has placed restrictions on Iran and wants other countries to follow them. But China continues to buy Iranian oil because it needs energy for its industries. This creates more tension between China and America. Oil is not just about money. It is also about power."
+
+Example 2 (Taiwan and chips):
+"China wants Taiwan to become part of China, but Taiwan has its own government. America also supports Taiwan's defence. This makes the situation more serious. If China attacks Taiwan, America may also become involved. But why is Taiwan so important? Because many of the world's computer chips are made there."
+
+Example 3 (Cyber warfare):
+"A country does not always need missiles to attack another country. It can also attack its computer systems. Imagine a cyberattack that stops a country's banks or electricity supply. People may not even know who is responsible. This is why countries are spending more money to protect their computer networks. The next war may also start online."
+
+Example 4 (AI in war):
+"Wars are changing because of AI. Today, armies can use drones to watch enemy movements and find possible targets. AI can also help soldiers understand what is happening on the battlefield. China and America are both investing in this technology. In the future, wars may depend not only on weapons but also on computers."
 
 ============================================================
 STRICT RULES
 ============================================================
-- Pick ONE angle of the topic and develop it fully. Do NOT cover multiple sub-topics.
+- Write about ONE clear topic. Do not mix multiple separate issues.
+- Keep each sentence short and easy to understand.
+- 3 to 5 sentences. Around 350 to 450 characters. HARD MAXIMUM: 500 characters.
 - Do NOT use hashtags.
 - Do NOT use emojis.
-- Do NOT start with: "In today's world", "It is important", "Imagine a world", "In the complex landscape".
-- Do NOT stuff technical terms. Only use a specific term if the post cannot work without it.
-- Length: 190 to 260 characters. HARD MAXIMUM: 280 characters.
+- Do NOT start with: "In today's world", "It is important", "Imagine a world", "In the complex landscape", "In recent years".
+- Do NOT use bullet points or numbered lists.
 - Do NOT repeat or closely rephrase these recent topics: ${avoidListStr}
 
 Return ONLY valid JSON in this exact format:
@@ -563,17 +585,17 @@ export async function generateRomanUrduFromEnglish(englishPost, topic = '') {
   const xaiKey = process.env.GROK_API_KEY || process.env.XAI_API_KEY;
   const groqKey = process.env.GROQ_API_KEY;
 
-  const prompt = `Convert this English geopolitical and strategic analysis post into natural Pakistani conversational Roman Urdu.
+  const prompt = `Translate this English post about world politics into natural Pakistani Roman Urdu.
 
 ENGLISH POST:
 "${englishPost.text}"
 
 RULES:
-- Use natural Pakistani Roman Urdu.
-- Preserve the exact analytical meaning and strategic insight.
-- Use dignified, familiar vocabulary (B1-B2 equivalent).
-- Keep length between 180 and 265 characters (strictly under 280 X chars).
-- Never use hashtags.
+- Write in simple, natural Pakistani Roman Urdu. Write like you are explaining news to a friend.
+- Use everyday words that a normal Pakistani person understands.
+- Keep the same meaning and simple tone as the English post.
+- Keep length between 350 and 480 characters. Maximum 500 characters.
+- Do NOT use hashtags.
 - Return ONLY valid JSON:
 {
   "text": "Roman Urdu text here"
@@ -632,19 +654,20 @@ export async function generatePlainUrduFromEnglish(englishPost, topic = '') {
   const xaiKey = process.env.GROK_API_KEY || process.env.XAI_API_KEY;
   const groqKey = process.env.GROQ_API_KEY;
 
-  const prompt = `Convert this English geopolitical and strategic analysis post into clear, dignified Pakistani Urdu script (اردو).
+  const prompt = `Translate this English post about world politics into simple, clear Pakistani Urdu script (اردو).
 
 ENGLISH POST:
 "${englishPost.text}"
 
 RULES:
-- Write natural, grammatically correct Pakistani Urdu script.
-- Preserve the original strategic meaning and analytical depth.
-- Keep length between 180 and 265 characters (strictly under 280 X chars).
-- Never use hashtags.
+- Write in natural, easy Pakistani Urdu that an ordinary reader can understand.
+- Use simple everyday Urdu words. Do not use difficult or formal words.
+- Keep the same meaning and tone as the English post.
+- Keep length between 350 and 480 characters. Maximum 500 characters.
+- Do NOT use hashtags.
 - Return ONLY valid JSON:
 {
-  "text": "مختصر، جامع اور مدلل اردو متن یہاں تحریر کریں"
+  "text": "اردو متن یہاں لکھیں"
 }`;
 
   if (geminiKey) {

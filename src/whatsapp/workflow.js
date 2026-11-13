@@ -362,7 +362,7 @@ class WhatsAppWorkflowManager extends EventEmitter {
         this.currentPendingPost = null;
         if (whatsappClient.isConfigured() && fromNumber) {
           try {
-            await whatsappClient.sendText(fromNumber, '⚡ Generating a completely fresh new story post for you. Stand by...');
+            await whatsappClient.sendText(fromNumber, '⚡ Generating a completely fresh new post for you. Stand by...');
           } catch (e) {
             console.warn('[WhatsApp Send Warning]', e.message);
           }
@@ -466,7 +466,7 @@ class WhatsAppWorkflowManager extends EventEmitter {
         this.currentPendingPost = null;
         if (whatsappClient.isConfigured() && fromNumber) {
           try {
-            await whatsappClient.sendText(fromNumber, '⚡ Generating a completely fresh new story post for you. Stand by...');
+            await whatsappClient.sendText(fromNumber, '⚡ Generating a completely fresh new post for you. Stand by...');
           } catch (e) {
             console.warn('[WhatsApp Send Warning]', e.message);
           }
@@ -570,7 +570,7 @@ class WhatsAppWorkflowManager extends EventEmitter {
         this.currentPendingPost = null;
         if (whatsappClient.isConfigured() && fromNumber) {
           try {
-            await whatsappClient.sendText(fromNumber, '⚡ Generating a completely fresh new story post for you. Stand by...');
+            await whatsappClient.sendText(fromNumber, '⚡ Generating a completely fresh new post for you. Stand by...');
           } catch (e) {
             console.warn('[WhatsApp Send Warning]', e.message);
           }

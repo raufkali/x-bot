@@ -297,7 +297,7 @@ Reply with:
 ━━━━━━━━━━━━━━━━━━━━
 ${bodyContent}
 ━━━━━━━━━━━━━━━━━━━━
-_Length: ${lengthCount}/280 chars_`;
+_Length: ${lengthCount}/500 chars_`;
     } else if (tweetDetails && tweetDetails.error) {
       if (tweetDetails.isRechargeNeeded) {
         confirmation = `💳 *RECHARGE YOUR X ACCOUNT FOR POSTING*
@@ -331,7 +331,7 @@ Status: *Ready for Publishing*
 ━━━━━━━━━━━━━━━━━━━━
 ${bodyContent}
 ━━━━━━━━━━━━━━━━━━━━
-_Length: ${lengthCount}/280 chars_`;
+_Length: ${lengthCount}/500 chars_`;
     }
 
     return this.sendText(to, confirmation);
