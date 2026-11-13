@@ -338,77 +338,62 @@ function createEnglishPrompt(chosenTopic, usedTopics, targetCategory = null) {
       ? usedTopics.slice(0, 30).join('; ')
       : 'None';
 
-  const categoryContext = targetCategory
-    ? `TARGET THEMATIC FOCUS: ${targetCategory.name}\nKEY TERMS TO DRAW ON (USE MEANINGFULLY): ${targetCategory.keywords.slice(0, 8).join(', ')}`
-    : `KEY DOMAINS: China/Taiwan/PLA, Military Strategy (Sun Tzu, EW, Radars), Iran/Hormuz/Oil, Financial Warfare/Sanctions, AI/Cyber Warfare, Historical Corridors`;
+  const categoryHint = targetCategory
+    ? `The post should explore themes related to: ${targetCategory.name}.`
+    : `Themes: China/Taiwan, Military Strategy, Iran/Middle East, Global Economy, AI/Tech, or Historical Power.`;
 
-  return `# X-BOT — ADVANCED GEOPOLITICAL & STRATEGIC ANALYSIS CONTENT ENGINE
-
-You are an elite geopolitical and strategic defense analyst writing intellectual, insightful, and thought-provoking analysis for X (formerly Twitter).
+  return `You are writing a short analytical post for X (Twitter) about geopolitics and world affairs.
 
 TOPIC: "${chosenTopic}"
 
-${categoryContext}
+${categoryHint}
 
 ============================================================
-1. CORE CONTENT DIRECTION
+WRITING STYLE — READ THIS CAREFULLY
 ============================================================
-- Write as a seasoned geopolitical analyst explaining the deeper strategic meaning behind world events.
-- Explore strategic conflicts, hidden economic connections, technological dependencies, or shifts in global power.
-- Absolutely NO ordinary motivational posts, generic educational primers, or superficial news summaries.
-- Deliver intellectual depth with meaningful cause-and-effect reasoning.
+Write like a smart Pakistani person who follows world news closely and explains it in simple, clear English.
+NOT like an academic paper. NOT like a news headline. Like someone talking to a friend who is also educated.
+
+The English should be:
+- Simple and direct. Short sentences. Easy to understand on first read.
+- Natural flow — each sentence connects to the next. No jumping between ideas.
+- Confident and opinionated. Say what you think clearly.
+- Never use big words just to sound smart.
+
+THESE ARE PERFECT EXAMPLES OF THE STYLE (do NOT copy these, only copy the style):
+
+Example 1:
+"Bagram was never about Afghanistan. It was always about China, Iran, and Pakistan. If US and Taliban are now talking about spying on China, then Kabul is not neutral anymore. It is becoming a tool. And Pakistan will pay the price for being in the middle."
+
+Example 2:
+"Everyone talks about who controls the oil. Nobody talks about who controls the water. The rivers that feed Pakistan, India, and China all start from the same mountains. Whoever controls those mountains quietly controls the food supply of three billion people."
+
+Example 3:
+"Iran does not need a nuclear bomb to hurt the West. It just needs to close the Strait of Hormuz for one week. Oil prices double, stock markets crash, and Europe starts panicking. That is the real weapon. And everyone knows it."
+
+Study how these examples work:
+- They start with one clear idea.
+- They stay on that one idea the whole time.
+- They build logically, sentence by sentence.
+- The last sentence hits hard and makes you think.
+- No jargon. No list of technical terms. Just clear thinking.
 
 ============================================================
-2. ANALYTICAL WRITING STYLE (B1–B2 FLUENCY)
+STRICT RULES
 ============================================================
-- Analytical, not simplistic. Use natural, fluent English (B1–B2 level).
-- Strategic vocabulary and geopolitical terminology are WELCOME when they add analytical value (e.g. deterrence, semiconductor foundries, maritime blockade, chokepoints, electromagnetic spectrum, sovereign reserves).
-- NEVER force keywords into sentences just to sound intelligent. Every technical term must directly advance your central argument.
-- Connect keywords through clear, logical explanations. Avoid disconnected sentences or lists of weapons/politicians.
-- Distinguish confirmed strategic facts from allegations and interpretations. No sensationalism or fabricated breaking news.
+- Pick ONE angle of the topic and develop it fully. Do NOT cover multiple sub-topics.
+- Do NOT use hashtags.
+- Do NOT use emojis.
+- Do NOT start with: "In today's world", "It is important", "Imagine a world", "In the complex landscape".
+- Do NOT stuff technical terms. Only use a specific term if the post cannot work without it.
+- Length: 190 to 260 characters. HARD MAXIMUM: 280 characters.
+- Do NOT repeat or closely rephrase these recent topics: ${avoidListStr}
 
-============================================================
-3. 5-PART ANALYTICAL STORYTELLING STRUCTURE
-============================================================
-Build your post around ONE central analytical thesis:
-1. HOOK: Open with a bold geopolitical observation or unexpected strategic connection.
-2. CONTEXT: Explain the relevant conflict, development, or historical background.
-3. ANALYSIS: Connect military, economic, technological, or political factors.
-4. IMPLICATION: Explain why the development matters beyond the immediate region.
-5. FINAL THOUGHT: Finish with a memorable analytical observation that leaves the reader reflecting.
-(Maintain natural logical flow rather than treating this as a rigid formula).
-
-============================================================
-4. QUALITY STYLE BENCHMARKS (STUDY THEIR REASONING & DEPTH)
-============================================================
-Benchmark 1 (Taiwan & Semiconductors):
-"Taiwan's importance goes far beyond its geography. Its semiconductor industry connects the island to the global economy. Any military crisis in the Taiwan Strait disrupts AI development, chip supply, and global trade. Control over Taiwan carries consequences far beyond Asia."
-
-Benchmark 2 (Iran & Oil Markets):
-"A conflict involving Iran is never limited to the Middle East. The Strait of Hormuz carries a major share of global oil trade. Any disruption immediately rocks energy prices, stock markets, and foreign economies. Geography remains a decisive weapon in world politics."
-
-Benchmark 3 (Military Strategy & Technology):
-"Sun Tzu argued that understanding the enemy is essential to victory. Modern military strategy follows a similar principle. Satellite surveillance, cyber intelligence, and electronic warfare weaken an opponent before missiles launch. Information is as valuable as firepower."
-
-============================================================
-5. STRICT CONSTRAINTS & FORMAT
-============================================================
-- Length: Target 190 to 260 characters. ABSOLUTE MAXIMUM: 280 characters.
-- Must fit within Twitter/X's 280 character limit.
-- ZERO hashtags (no #tags at all).
-- ZERO emojis.
-- Avoid generic AI openers (e.g. "In today's world...", "It is important to remember...", "Imagine a world...").
-- Do NOT duplicate or closely rephrase any of these recently published topics:
-${avoidListStr}
-
-EDITORIAL PRIORITY:
-Analytical depth > Logical connections > Natural storytelling > Strategic terminology > Strong conclusion.
-
-Return ONLY valid JSON matching this exact structure:
+Return ONLY valid JSON in this exact format:
 {
   "topic": "${chosenTopic}",
   "category": "GEOPOLITICAL_STRATEGY",
-  "text": "Your complete analytical post here"
+  "text": "Your complete post here"
 }`;
 }
 
@@ -797,7 +782,7 @@ async function callGemini(prompt, apiKey) {
     try {
       const url = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`;
       const controller = new AbortController();
-      const timer = setTimeout(() => controller.abort(), 8000);
+      const timer = setTimeout(() => controller.abort(), 15000);
 
       const response = await fetch(url, {
         method: 'POST',
