@@ -35,6 +35,40 @@ import {
 
 export const CURATED_STORY_TOPICS = [
   {
+    topic: "Bagram, Regional Proxies and the China-Pakistan Dilemma",
+    category: 'GEOPOLITICS_SOUTH_ASIA',
+
+    english: {
+      text: "Bagram was never about Afghanistan. It was always about China, Iran, and Pakistan. If US-Taliban are talking about spying on Beijing and building a proxy against Tehran, Kabul becomes a marketplace. And Pakistan pays the price for being in the middle."
+    },
+
+    romanUrdu: {
+      text: "Bagram ka maamla kabhi Afghanistan ka tha hi nahi. Asal nishana hamesha China, Iran aur Pakistan thay. Agar US aur Taliban Beijing par nazar rakhnay ke souday karein, to Kabul bazaar ban jata hai, aur qeemat darmiyan mein phansa Pakistan ada karta hai."
+    },
+
+    plainUrdu: {
+      text: "بگرام کا معاملہ کبھی افغانستان کا تھا ہی نہیں۔ اصل نظر ہمیشہ چین، ایران اور پاکستان پر تھی۔ اگر امریکہ اور طالبان بیجنگ پر نظر رکھنے کے معاہدے کریں تو کابل منڈی بن جاتا ہے، اور خمیازہ درمیان میں پھنسا پاکستان بھگتے گا۔"
+    }
+  },
+
+  {
+    topic: "The Degree Trap and the Illusion of Real Assets",
+    category: 'SOCIETAL_ECONOMICS',
+
+    english: {
+      text: "Our ancestors with no degrees and limited means bought land — real assets. Today, we sell that very land to buy a piece of paper called a degree. Why fund research labs when a ring light is cheaper? A trap no generation has ever faced before."
+    },
+
+    romanUrdu: {
+      text: "Hamaray barron ne baghair degree ke zameenein khareedein — asal daulat. Aaj hum usi zameen ko bech kar degree ka kaghaz khareed rahay hain. Lab par kon kharch kare jab ring light sasti hai? Aisa jaal jo kisi nasl ne nahi dekha."
+    },
+
+    plainUrdu: {
+      text: "ہمارے بزرگوں نے بغیر ڈگریوں کے زمینیں خریدیں جو حقیقی اثاثے تھیں۔ آج ہم اسی زمین کو بیچ کر ڈگری کے نام پر کاغذ کا ٹکڑا خرید رہے ہیں۔ لیب پر کون خرچ کرے جب کیمرے کی رنگ لائٹ زیادہ سستی ہے؟ ایسا جال جو پہلے کبھی نہیں تھا۔"
+    }
+  },
+
+  {
     topic: "PLA Encirclement and Taiwan's Semiconductor Shield",
     category: 'CHINA_TAIWAN_SEMICONDUCTORS',
 
@@ -324,50 +358,42 @@ function createEnglishPrompt(chosenTopic, usedTopics) {
       ? usedTopics.slice(0, 30).join('; ')
       : 'None';
 
-  return `You are a professional geopolitical and technology content writer for X (Twitter).
+  return `You are an elite geopolitical and strategic documentary writer for X (Twitter) in the style of raw, observational social realism.
 
 TOPIC: "${chosenTopic}"
 
 CONTENT FOCUS:
-Chinese PLA and Taiwan, semiconductor competition, military strategy, radar systems, electronic warfare, global trade routes, digital surveillance, Iran, oil markets, cyber warfare, cryptocurrency and nuclear deterrence.
+Geopolitics, global power shifts, future forecastings (2035), AI economics, strategic resources (semiconductors, oil, lithium, rare earths), trade corridors, and military/political commentary (China, US, Pakistan, Iran, Afghanistan, Russia).
+
+GOLDEN STYLE BENCHMARKS (Write with this exact tone, cadence, and punch):
+- Example 1: "Bagram was never about Afghanistan. It was always about China, Iran, and Pakistan. If US-Taliban are now talking about spying on China and building a proxy against Iran, then Kabul is not neutral. It is becoming a marketplace. And Pakistan will pay the price for being in the middle."
+- Example 2: "Our ancestors with no degrees and limited means bought land — real assets. We, with all our degrees and so-called wisdom, are selling that land to buy a piece of paper. A trap no generation has ever faced before."
 
 WRITING RULES:
 
-1. ENGLISH LEVEL:
-- Use clear A2-level English.
-- Use common, familiar words and simple sentence structures.
-- Keep the language natural and professional.
-- Avoid difficult vocabulary and academic wording.
-- Do not make the content childish.
+1. THE HOOK & CONTRAST:
+- Open with a bold, contrasting statement comparing illusion vs reality.
+- Show the hidden truth behind the headline.
+- Sharp, cynical, biting documentary-style observation.
 
-2. CONTENT QUALITY:
-- Deliver meaningful information and a clear insight.
-- Explain why the topic matters.
-- Include relevant facts and strategic implications.
-- Avoid generic statements.
-- Do not invent statistics or present guesses as facts.
-- Clearly distinguish analysis from confirmed events.
+2. SIMPLE A2 VOCABULARY:
+- Use simple, everyday, direct English words.
+- Strictly NO academic or pretentious words (avoid: "paradigm", "hegemony", "ubiquitous", "unprecedented", "synergy").
+- Keep sentences short, rhythmic, and clear (max 10-15 words per sentence).
 
-3. X POST STYLE:
-- Target 180-260 characters.
-- Never exceed 280 characters.
+3. LENGTH & FORMAT:
+- Target 180-260 characters (must comfortably fit under 280 characters).
 - Write one complete, standalone post.
-- Start directly with the main point.
-- Use 2-3 connected sentences where appropriate.
-- No storytelling or unnecessary introductions.
-- No clickbait or exaggerated claims.
 - No hashtags.
-- No unnecessary emojis.
-- Do not sacrifice meaning just to meet the character target.
+- No emojis.
+- No generic AI intro phrases (never start with "In today's world...", "It is important to remember...", "Imagine a world...").
 
-4. ORIGINALITY:
-- Provide a fresh angle.
-- Do not repeat these previously used topics:
+4. DEDUPLICATION:
+- Do NOT repeat or closely match any of these recently published topics:
 ${avoidListStr}
 
 5. OUTPUT:
-Return ONLY valid JSON in this structure:
-
+Return ONLY valid JSON in this exact structure:
 {
   "topic": "${chosenTopic}",
   "category": "GEOPOLITICS_TECH_DEFENSE",
