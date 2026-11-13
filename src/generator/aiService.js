@@ -1,22 +1,22 @@
 /**
- * X-BOT — Bold Geopolitical Analysis, Political Commentary & Social Media Engagement
+ * X-BOT — Data-Driven Analytical Content Engine
  *
  * Core Focus:
- * - Bold, analytical, thought-provoking political and geopolitical commentary
- * - Uses real numbers, comparisons, irony, sarcasm, and uncomfortable questions
- * - Sounds like an independent commentator who makes readers stop, think, and reply
+ * - Data-driven analytical social media posts
+ * - Statistics, economic figures, military budgets, and international comparisons
+ * - Critical analysis of power, money, politics, and global inequality
  *
  * Categories:
- * 1. Geopolitics & Global Power (India vs Pakistan, China vs USA, Middle East, Sanctions)
- * 2. Pakistan Politics & Economy (Spending, IMF loans, Defence vs Welfare, Dynasties)
+ * 1. Geopolitics & Military Power (India vs Pakistan, China vs USA, Middle East, Sanctions)
+ * 2. Pakistan Politics & Economy (Spending, IMF loans, Debt, Defence vs Welfare, Dynasties)
  * 3. Social & Regional Issues (Balochistan, KPK, Sindh, Punjab, Unequal development)
- * 4. AI & Human Society (Job replacement, dependency, surveillance, data centres)
- * 5. Climate & Global Power (Flood injustice, global emissions, rich vs poor)
- * 6. Satirical Commentary (Sugar vs guns, promises vs reality, everyday irony)
+ * 4. AI & Technology (Job replacement, dependency, surveillance, data centres)
+ * 5. Climate & Resources (Flood injustice, global emissions, rich vs poor)
+ * 6. Double Meaning & Social Commentary (Sugar vs guns, promises vs reality, everyday irony)
  *
  * Standards:
- * - English Level: Simple Pakistani English (A1–A2)
- * - Target Length: 500–900 characters (max 1000), 5–8 sentences with paragraph breaks
+ * - English Level: Simple Pakistani English (A2 Level)
+ * - Strict Target Length: 400–500 characters (aim for 450–470 chars, max 500)
  * - Zero hashtags, zero emojis, no internal labels or bullet lists
  * - Translations: Pakistani Roman Urdu and Plain Urdu script (اردو)
  * - Strict MongoDB SHA-256 deduplication & category rotation
@@ -93,7 +93,7 @@ export const CONTENT_CATEGORIES = [
 ];
 
 /* =========================================================
-   CURATED ANALYTICAL TOPIC BANK (500–900 CHARS, A1-A2 ENGLISH)
+   CURATED ANALYTICAL TOPIC BANK (400–500 CHARACTERS, A2 ENGLISH)
 ========================================================= */
 
 export const CURATED_STORY_TOPICS = [
@@ -102,13 +102,13 @@ export const CURATED_STORY_TOPICS = [
     topic: "India vs Pakistan: Weapons vs Welfare",
     category: 'GEOPOLITICS',
     english: {
-      text: "India spends over 70 billion dollars on its military every year. Pakistan spends around 8 to 9 billion dollars. Yet both countries talk about winning the next war.\n\nMillions of people on both sides of the border still lack clean drinking water, proper hospitals, and decent schools. One country buys advanced fighter jets, while the other spends a huge part of its budget just to keep up.\n\nA country needs security, but it also needs healthy, educated citizens. What is the real point of winning an imaginary war when ordinary people are already losing their lives to poverty and disease?"
+      text: "India spends $83 billion on defence, while Pakistan spends $9 billion. That means India outspends Pakistan by more than 9 to 1.\n\nYet 40% of people in both nations lack clean water, and 25 million Pakistani children are out of school. Both countries buy $100M fighter jets while public hospitals lack basic medicines.\n\nWhat is the point of nuclear deterrence if citizens are dying of poverty?"
     },
     romanUrdu: {
-      text: "India har saal foj par 70 arab dollar se zyada kharch karta hai, jabke Pakistan 8 se 9 arab dollar lagata hai. Lekin dono mulk agli jung jeetne ke daaway karte hain.\n\nBorder ke dono taraf karoron log saaf paani, acche aspatal aur taleem ke liye taras rahe hain. Ek mulk mehnge jangi jahaz khareedta hai, jabke dusra apna bara budget sirf muqabla karne par laga deta hai.\n\nFoj zaroori hai, lekin log bhi to zinda rehne chahiye. Aisi jung jeetne ka kya faida jahan aam shehri pehle hi ghurbat aur beemari se haar raha ho?"
+      text: "India defence par 83 arab dollar kharch karta hai jabke Pakistan 9 arab dollar. Yani India Pakistan se 9 guna zyada kharch kar raha hai.\n\nMagar dono mulkon ke 40% log saaf paani se mehroom hain aur 2.5 karor Pakistani bachay school nahi jatay. Dono mulk 100 million dollar ke jahaz khareedte hain jabke hospitals mein dawai nahi.\n\nAisi atomic taqat ka kya faida agar awam ghurbat se mar rahi ho?"
     },
     plainUrdu: {
-      text: "بھارت ہر سال فوج پر 70 ارب ڈالر سے زیادہ خرچ کرتا ہے، جبکہ پاکستان کا دفاعی بجٹ تقریباً 8 سے 9 ارب ڈالر ہے۔ اس کے باوجود دونوں ملک اگلی جنگ جیتنے کے دعوے کرتے ہیں۔\n\nسرحد کے دونوں طرف کروڑوں لوگ پینے کے صاف پانی، اچھے ہسپتالوں اور تعلیم کے لیے ترس رہے ہیں۔ ایک ملک مہنگے جنگی جہاز خریدتا ہے جبکہ دوسرا صرف برابری قائم رکھنے کے لیے وسائل جھونک دیتا ہے۔\n\nملک کو حفاظت ضرور چاہیے، مگر زندہ اور خوشحال شہری بھی چاہئیں۔ ایسی جنگ جیتنے کا کیا فائدہ جہاں عام انسان پہلے ہی غربت اور بیماری سے ہار رہا ہو؟"
+      text: "بھارت دفاع پر 83 ارب ڈالر خرچ کرتا ہے جبکہ پاکستان کا بجٹ صرف 9 ارب ڈالر ہے۔ یعنی بھارت نو گنا زیادہ رقم خرچ کر رہا ہے۔\n\nمگر دونوں ممالک کے 40 فیصد شہری پینے کے صاف پانی سے محروم ہیں اور ڈھائی کروڑ پاکستانی بچے اسکولوں سے باہر ہیں۔ دونوں ملک سو ملین ڈالر کے جنگی جہاز خریدتے ہیں جبکہ سرکاری اسپتالوں میں دوائیں نہیں۔\n\nایسی ایٹمی طاقت کا کیا فائدہ اگر عوام بھوک اور مفلسی سے مر رہے ہوں؟"
     }
   },
 
@@ -117,13 +117,13 @@ export const CURATED_STORY_TOPICS = [
     topic: "Sugar vs Guns: The Hidden Danger",
     category: 'SATIRICAL_COMMENTARY',
     english: {
-      text: "Everyone is terrified of a man carrying a loaded gun. But nobody gets scared of the three big spoons of white sugar in their daily cup of tea.\n\nA bullet can kill a person in one second. But too much sugar damages your heart, destroys your kidneys, and ruins your health slowly over twenty years. We panic over visible dangers that rarely touch us, yet we happily welcome the silent killers sitting right inside our kitchens.\n\nSo tell me honestly: what is actually more dangerous in your daily life — the gun outside your house, or the sugar inside your teacup?"
+      text: "In Pakistan, gun violence kills around 4,000 people each year. But diabetes, driven by excessive sugar consumption, claims over 400,000 lives annually. That is 100 times deadlier than bullets.\n\nWe fear armed men on the street, yet we happily drink three spoons of white sugar in every cup of chai.\n\nWhat is the real threat to national security: the rifle outside your gate, or the sugar inside your teacup?"
     },
     romanUrdu: {
-      text: "Hathiyar uthaye banday se har koi darta hai. Lekin rozana chai ki pyali mein daali gayi teen chamach cheeni se kisi ko darr nahi lagta.\n\nGoli ek second mein jaan le sakti hai. Magar cheeni bees saal mein ahista ahista dil, gurday aur sehat tabah kar deti hai. Hum un khatraat se darte hain jo shayed kabhi na aaein, lekin jo khatra hamare kitchen mein baitha hai use maze se peetay hain.\n\nAb sach bataiye: aap ki zindagi ke liye zyada khatarnak kya hai — bahar khari bandook ya chai mein ghuli cheeni?"
+      text: "Pakistan mein goli se har saal 4,000 log marnay ka shikaar hotay hain. Lekin cheeni se honay wali diabetes har saal 4 laakh se zyada jaanein leti hai. Yeh bandook se 100 guna zyada khatarnak hai.\n\nHum sadak par kharay musallah shakhs se dartay hain, magar chai mein teen chamach cheeni maze se peetay hain.\n\nAsal khatra kya hai: darwazay par khari bandook ya chai ki pyali mein ghuli cheeni?"
     },
     plainUrdu: {
-      text: "ہتھیار اٹھائے بندے سے ہر کوئی خوفزدہ ہو جاتا ہے۔ لیکن روزانہ چائے کی پیالی میں ڈالی جانے والی تین چمچ چینی سے کسی کو ڈر نہیں لگتا۔\n\nگولی ایک سیکنڈ میں جان لے سکتی ہے۔ مگر حد سے زیادہ چینی بیس سال میں خاموشی سے دل، گردے اور صحت برباد کر دیتی ہے۔ ہم ان خطرات پر شور مچاتے ہیں جو شاذ و نادر سامنے آتے ہیں، لیکن جو خاموش قاتل باورچی خانے میں بیٹھا ہے اسے خوشی سے پیتے ہیں۔\n\nاب سچ بتائیے: آپ کی روزمرہ زندگی کے لیے زیادہ خطرناک کیا ہے — گھر کے باہر کھڑی بندوق یا چائے میں گھلی چینی؟"
+      text: "پاکستان میں فائرنگ سے ہر سال تقریباً چار ہزار اموات ہوتی ہیں۔ لیکن ضرورت سے زیادہ چینی سے ہونے والی ذیابیطس چار لاکھ سے زائد جانیں لیتی ہے۔ یہ گولی سے سو گنا زیادہ مہلک ہے۔\n\nہم گلی میں کھڑے مسلح شخص سے خوف کھاتے ہیں، مگر چائے کی ہر پیالی میں تین چمچ چینی خوشی سے پیتے ہیں۔\n\nقومی سلامتی کے لیے اصل خطرہ کیا ہے: گیٹ پر موجود بندوق یا چائے میں گھلی چینی؟"
     }
   },
 
@@ -132,88 +132,88 @@ export const CURATED_STORY_TOPICS = [
     topic: "China vs USA: Business or Control?",
     category: 'GEOPOLITICS',
     english: {
-      text: "America wants to remain the undisputed boss of the world. China wants to take that seat. Both countries talk endlessly about world peace, free trade, and friendship.\n\nIn reality, both only care about power. China spends hundreds of billions building roads, bridges, and deep-sea ports across Asia and Africa. America responds with trade bans and over 750 military bases across the planet. Smaller countries are trapped in the middle, forced to pick a side.\n\nAre these two superpowers really trying to help the developing world, or are they just fighting over who gets to own the market?"
+      text: "The US operates over 750 overseas military bases with an $886 billion defence budget. Meanwhile, China invested over $1 trillion in roads, ports, and energy across 150 countries via Belt and Road.\n\nAmerica controls the sea lanes with aircraft carriers. China controls the supply chains with manufacturing.\n\nAre smaller nations forming genuine alliances, or are they just pawns in a trillion-dollar trade war?"
     },
     romanUrdu: {
-      text: "America duniya ka akela badshah rehna chahta hai. China uski kursi cheenna chahta hai. Dono aalmi aman, azaad tijarat aur dosti ki baatein karte hain.\n\nLekin haqeeqat mein dono ko sirf taqat chahiye. China Asia aur Africa mein arabon dollar ki sarkain aur bandargahain bana raha hai. America pabandiyan lagata hai aur duniya bhar mein 750 se zyada foji adday chalata hai. Chotay mulk darmiyan mein phas kar faisla nahi kar pa rahe.\n\nKya yeh superpowers ghareeb mulkon ki madad kar rahi hain, ya sirf is baat par larr rahi hain ke aalmi market par qabza kiska hoga?"
+      text: "America 886 arab dollar ke foji budget se 750 se zyada foji adday chalata hai. Doosri taraf China ne Belt and Road ke zariye 150 mulkon mein 1 trillion dollar lagaye hain.\n\nAmerica bahr-e-jahaz se samundar control karta hai, aur China factories se aalmi supply chain control karta hai.\n\nKya chhotay mumalik dost ban rahay hain ya sirf trillion-dollar jung ke mohray hain?"
     },
     plainUrdu: {
-      text: "امریکہ دنیا کا بلا شرکت غیرے سردار رہنا چاہتا ہے۔ چین یہ کرسی حاصل کرنے کی دوڑ میں ہے۔ دونوں ملک عالمی امن، آزاد تجارت اور دوستی کی لمبی لمبی باتیں کرتے ہیں۔\n\nمگر حقیقت یہ ہے کہ دونوں کو صرف طاقت اور غلبہ چاہیے۔ چین ایشیا اور افریقہ میں اربوں ڈالر سے سڑکیں اور بندرگاہیں بنا رہا ہے۔ امریکہ پابندیاں لگاتا ہے اور دنیا بھر میں 750 سے زیادہ فوجی اڈے چلاتا ہے۔ چھوٹے ممالک درمیان میں پھنس کر قیمت چکا رہے ہیں۔\n\nکیا یہ دونوں طاقتیں غریب ممالک کی مدد کر رہی ہیں، یا صرف اس بات پر دست و گریباں ہیں کہ دنیا کے وسائل پر قبضہ کس کا ہوگا؟"
+      text: "امریکہ 886 ارب ڈالر کے دفاعی بجٹ کے ساتھ دنیا بھر میں 750 سے زیادہ فوجی اڈے چلاتا ہے۔ دوسری طرف چین نے بیلٹ اینڈ روڈ کے ذریعے 150 ممالک میں ایک ٹریلین ڈالر سے زیادہ سرمایہ کاری کی ہے۔\n\nامریکہ طیارہ بردار جہازوں سے سمندری راستوں پر راج کرتا ہے جبکہ چین عالمی سپلائی چین پر قابض ہے۔\n\nکیا چھوٹے ممالک اتحادی بن رہے ہیں یا کھربوں ڈالر کی معاشی جنگ کے مہرے؟"
     }
   },
 
-  // 4. AI & Human Society
+  // 4. AI & Tech: Energy and Water Grids
   {
-    topic: "AI and Thinking: Are We Becoming Helpless?",
+    topic: "AI Data Centres: The Hidden Resource Cost",
     category: 'AI_HUMAN_SOCIETY',
     english: {
-      text: "Artificial intelligence can now write your office emails, pass university exams, and create complete computer software in seconds. It looks like magical progress.\n\nBut look at what is happening to the human mind. Students don't read books anymore because a bot writes their homework. Young professionals don't solve difficult problems because an algorithm gives them the answer. When you stop using your muscles, your body gets weak. When you stop using your brain, your thinking dies.\n\nTechnology was invented to make human beings stronger and freer. So why does it feel like AI is slowly turning us into helpless spectators?"
+      text: "Training one advanced AI model consumes over 700,000 litres of clean water and enough electricity to power 100 homes for a year. Global tech giants plan to spend $150 billion on new data centres by 2026.\n\nMeanwhile, 1.2 billion people worldwide face acute water shortages.\n\nIs artificial intelligence genuinely serving humanity, or is it quietly drinking our future dry?"
     },
     romanUrdu: {
-      text: "AI ab aap ke emails likh sakti hai, exams pass kar sakti hai aur software bana sakti hai. Yeh dekhne mein kamaal lagta hai.\n\nLekin insani dimaag ka kya ho raha hai? Students kitabein nahi parhte kyunke bot homework kar deta hai. Log mushkil masail par sochna chor chukay hain kyunke computer foran jawab deta hai. Jab aap jism harkat nahi dete to kamzor ho jate hain, aur jab dimaag istemal nahi karte to aqal khatam ho jati hai.\n\nTechnology insaan ko taqatwar banane aayi thi. Phir aisa kyun lagta hai ke AI ahista ahista humein be-bas aur mohtaj bana rahi hai?"
+      text: "Ek baray AI model ki training par 7 laakh litre saaf paani aur 100 gharon ki saalana bijli kharch hoti hai. Tech companies 2026 tak data centres par 150 arab dollar lagane ja rahi hain.\n\nJabke dunya ke 1.2 arab log saaf paani ki shadeed killat jhel rahay hain.\n\nKya AI sach mein insaniyat ki khidmat kar rahi hai, ya chupchap hamara mustaqbil pee rahi hai?"
     },
     plainUrdu: {
-      text: "مصنوعی ذہانت اب آپ کی ای میلز لکھ سکتی ہے، یونیورسٹی کے امتحان پاس کر سکتی ہے اور منٹوں میں کمپیوٹر سافٹ ویئر بنا سکتی ہے۔ یہ بظاہر بڑا معجزہ لگتا ہے۔\n\nمگر انسانی ذہن کے ساتھ کیا ہو رہا ہے؟ طلبہ کتابیں نہیں پڑھتے کیونکہ چیٹ بوٹ ہوم ورک کر دیتا ہے۔ نوجوان مشکل مسائل پر غور نہیں کرتے کیونکہ کمپیوٹر فوری جواب فراہم کرتا ہے۔ اگر جسم حرکت نہ کرے تو کمزور ہو جاتا ہے، اور اگر دماغ استعمال نہ ہو تو سوچنے کی صلاحیت ختم ہو جاتی ہے۔\n\nٹیکنالوجی انسان کو طاقتور بنانے کے لیے بنی تھی۔ پھر ایسا کیوں محسوس ہوتا ہے کہ AI ہمیں آہستہ آہستہ محتاج بنا رہی ہے؟"
+      text: "ایک جدید AI ماڈل کی ٹریننگ پر سات لاکھ لیٹر سے زیادہ پینے کا پانی اور سو گھروں کی سالانہ بجلی خرچ ہوتی ہے۔ بڑی ٹیک کمپنیاں ڈیٹا سینٹرز پر 150 ارب ڈالر لگا رہی ہیں۔\n\nدوسری طرف دنیا کے ایک ارب سے زائد انسان پینے کے صاف پانی کی شدید قلت کا سامنا کر رہے ہیں۔\n\nکیا مصنوعی ذہانت واقعی انسانیت کی خدمت کر رہی ہے یا ہمارا مستقبل چاٹ رہی ہے؟"
     }
   },
 
-  // 5. Pakistan Politics & Economy: IMF Trap
+  // 5. Pakistan Politics & Economy: IMF Debt Trap
   {
-    topic: "Pakistan and the IMF: Borrowing to Pay Debts",
+    topic: "Pakistan and the IMF: Debt Trap",
     category: 'PAKISTAN_POLITICS',
     english: {
-      text: "Pakistan has knocked on the IMF's door more than twenty times. Every single government promises that this current IMF program will be the very last one.\n\nThen electricity tariffs jump, petrol prices break records, and heavy taxes are slapped on everyday food items. The new loan doesn't build modern factories or create jobs. Most of the borrowed money goes straight back out to pay interest on older loans that politicians took years ago.\n\nIf a family borrows money from a neighbour just to pay interest to the local shopkeeper, that family goes broke. How can a country of 240 million people become independent if its leaders keep doing the exact same thing?"
+      text: "Pakistan has entered 24 IMF programs since 1958. Today, over 70% of all federal tax revenues go directly toward servicing $130 billion in public debt.\n\nTo secure a $7 billion loan, electricity tariffs were hiked 45% and sales taxes raised, crushing 90 million low-income workers.\n\nHow can a nation of 240 million become independent if it borrows new money just to pay interest on old loans?"
     },
     romanUrdu: {
-      text: "Pakistan bees se zyada martaba IMF ke darwazay par dastak de chuka hai. Har nayi hukumat aakar kehti hai ke yeh hamara aakhri IMF program hoga.\n\nUske baad bijli ke bill aasmaan par pohanchte hain, petrol mehanga hota hai aur aam roti par tax lag jata hai. Naye qarzay se na factory lagti hai na rozgar milta hai, balkay purane qarzay ka sood adaa hota hai.\n\nAgar koi gharana dukan ka sood chukane ke liye hamsaye se qarza le, to woh barbaad ho jata hai. 24 karor awam ka mulk azaad kaise ho sakta hai agar hamare hukumran hamesha yahi karte rahein?"
+      text: "Pakistan 1958 se ab tak 24 martaba IMF ja chuka hai. Aaj FBR ke 70% se zyada tax collections 130 arab dollar ke qarzay ka sood chukanay mein chalay jatay hain.\n\n7 arab dollar ke loan ke liye bijli 45% mehngi ki gayi aur taxes barhaye gaye.\n\n24 karor awam ka mulk azaad kaise banay ga agar naya qarza sirf puranay sood ko denay ke liye liya jaye?"
     },
     plainUrdu: {
-      text: "پاکستان بیس سے زائد بار آئی ایم ایف کے دروازے پر دستک دے چکا ہے۔ ہر نئی حکومت وعدہ کرتی ہے کہ یہ ہمارا آخری آئی ایم ایف پروگرام ہوگا۔\n\nپھر بجلی کے بل آسمان کو چھوتے ہیں، پیٹرول مہنگا ہوتا ہے اور عام خوراک پر بھاری ٹیکس لگا دیے جاتے ہیں۔ نئے قرضے سے نہ کارخانے لگتے ہیں اور نہ روزگار ملتا ہے، بلکہ سارا پیسہ پرانے قرضوں کا سود چکانے میں چلا جاتا ہے۔\n\nاگر کوئی خاندان پرانا سود ادا کرنے کے لیے ہمسائے سے نیا ادھار لے تو وہ دیوالیہ ہو جاتا ہے۔ چوبیس کروڑ عوام کا ملک معاشی طور پر خودمختار کیسے بنے گا اگر حکمران مسلسل یہی چکر چلاتے رہے؟"
+      text: "پاکستان 1958 سے اب تک 24 مرتبہ آئی ایم ایف جا چکا ہے۔ آج وفاقی ٹیکس محصولات کا 70 فیصد سے زائد حصہ 130 ارب ڈالر کے عوامی قرضوں کا سود بھرنے میں چلا جاتا ہے۔\n\nسات ارب ڈالر کے قرضے کے لیے بجلی کے نرخ 45 فیصد بڑھائے گئے جس سے نو کروڑ غریب پس گئے۔\n\nچوبیس کروڑ کا ملک خودمختار کیسے ہوگا اگر نیا ادھار صرف پرانے سود کی ادائیگی کے لیے لیا جائے؟"
     }
   },
 
-  // 6. Social & Regional Issues: Balochistan & National Wealth
+  // 6. Social & Regional Issues: Balochistan Resources
   {
-    topic: "Balochistan: Rich Ground, Poor Citizens",
+    topic: "Balochistan: Rich Land, Poor People",
     category: 'SOCIAL_ETHNIC_ISSUES',
     english: {
-      text: "Balochistan covers nearly half of Pakistan's entire land area. Its mountains are filled with gold, copper, and natural gas that has heated stoves in Lahore and Karachi for decades.\n\nYet walk into the towns of Balochistan today. You will find broken single-room clinics without doctors, dusty schools without teachers, and youth searching desperately for basic jobs. The natural wealth flows out through massive pipelines and big corporate contracts, while local communities are left with empty hands and heavy grievances.\n\nA federation is not just a line drawn on an atlas. It is built on trust, respect, and fair distribution. How can you demand national unity from people when you refuse to give them clean water from their own land?"
+      text: "Balochistan produces 20% of Pakistan's natural gas and holds $1 trillion in untapped copper and gold. Yet 62% of Balochistan lives in multidimensional poverty, and 70% of homes lack piped drinking water.\n\nWhile gas pipelines heat factories in Punjab and Sindh, local families burn wood for cooking.\n\nCan any federation build genuine unity when half its land feeds everyone except its own people?"
     },
     romanUrdu: {
-      text: "Balochistan Pakistan ke lagbhag aadhay raqbay par phela hai. Iske paharon mein sona, tanba aur gas hai jo daheeyon se Lahore aur Karachi ke choolhay jala rahi hai.\n\nLekin Balochistan ke shehron mein ja kar dekhein. Wahan baghair doctor ke aspatal, baghair ustaad ke schools aur be-rozgar nojawan milenge. Qudrati daulat pipelines ke zariye nikal jati hai, aur maqami log khali haath reh jate hain.\n\nWifaq sirf naqshay par khenchi lakeer nahi hota. Yeh barabari aur insaaf se banta hai. Aap un logon se qoumi yakjehti ki umeed kaise rakh sakte hain jinhein apni zameen ka saaf paani tak nahi milta?"
+      text: "Balochistan Pakistan ki 20% gas paida karta hai aur 1 trillion dollar ke maadiniat rakhta hai. Magar 62% abadi ghareeb hai aur 70% gharon mein saaf paani ka pipe tak nahi.\n\nGas pipelines Punjab aur Sindh ke factories chalati hain, jabke maqami log lakriyan jala rahay hain.\n\nWifaq mein yakjehti kaise aayegi jab aadhi zameen sab ko khilaye siwaye apnay logon ke?"
     },
     plainUrdu: {
-      text: "بلوچستان پاکستان کے تقریباً نصف رقبے پر محیط ہے۔ اس کے پہاڑوں میں سونا، تانبا اور قدرتی گیس ہے جو دہائیوں سے لاہور اور کراچی کے چولہے جلا رہی ہے۔\n\nمگر کبھی بلوچستان کے قصبوں میں جا کر دیکھیں۔ وہاں بغیر ڈاکٹر کے کلینک، بغیر استاد کے اسکول اور بے روزگار نوجوان دکھائی دیں گے۔ قدرتی وسائل پائپ لائنوں کے ذریعے نکل جاتے ہیں جبکہ مقامی آبادی خالی ہاتھ رہ جاتی ہے۔\n\nوفاق محض نقشے پر کھینچی گئی لکیر نہیں ہوتا۔ یہ انصاف، برابری اور اعتماد سے بنتا ہے۔ آپ ان لوگوں سے قومی یکجہتی کا تقاضا کیسے کر سکتے ہیں جنہیں اپنی ہی زمین سے پینے کا صاف پانی تک نصیب نہیں؟"
+      text: "بلوچستان پاکستان کی 20 فیصد قدرتی گیس پیدا کرتا ہے اور ایک ٹریلین ڈالر کے تانبے اور سونے کا مالک ہے۔ مگر 62 فیصد آبادی غربت میں ہے اور 70 فیصد گھروں میں پینے کا پانی نہیں۔\n\nگیس پائپ لائنیں پنجاب اور سندھ کی فیکٹریاں چلاتی ہیں جبکہ مقامی خاندان لکڑیاں جلاتے ہیں۔\n\nوفاق میں حقیقی اتحاد کیسے بنے گا جب آدھی سرزمین سب کو کھلائے سوائے اپنے لوگوں کے؟"
     }
   },
 
-  // 7. Climate & Global Power: The Flood Injustice
+  // 7. Climate & Global Power: Flood Injustice
   {
     topic: "Climate Injustice: Who Pollutes and Who Drowns?",
     category: 'CLIMATE_GLOBAL_POWER',
     english: {
-      text: "Pakistan produces less than one percent of total global greenhouse emissions. Yet when the monsoon rains turn violent, one-third of the country goes entirely underwater.\n\nRich Western industrial nations built gigantic wealth by burning coal and oil for two hundred years. Today, when Pakistani farmers lose their crops, cattle, and mud houses to flash floods, international climate summits offer polite sympathy and tiny loans instead of real reparations.\n\nWealthy corporations fly in private jets to talk about saving the planet while poor village children sleep under open skies in Sindh and Balochistan. Is climate change really an environmental crisis, or is it just the world's most unequal economic crime?"
+      text: "Pakistan generates less than 0.9% of global carbon emissions. Yet the 2022 floods submerged 33% of the country, killing 1,700 people and causing $30 billion in damages.\n\nThe world's richest 10% produce 50% of global pollution, but send tiny interest-bearing loans instead of climate compensation.\n\nIs climate change an environmental accident, or the world's most unequal economic crime against poor nations?"
     },
     romanUrdu: {
-      text: "Pakistan poori duniya ki aalmi aaloodgi mein ek percent se bhi kam hissa dalta hai. Lekin jab barish aati hai to mulk ka aik tihai hissa paani mein doob jata hai.\n\nAmeer Maghribi mumalik ne do sau saal tail aur koyla jala kar daulat kamayi. Magar jab hamare kisanon ki faslein aur ghar sailaab mein beh jate hain, to aalmi conferences mein sirf tasalliyan aur qarzay diye jate hain.\n\nBari companies ke malik private jets mein baith kar maholiyat par bhashan dete hain, jabke Sindh ke bachay khulay aasmaan talay sote hain. Kya yeh sirf mausam ki tabdeeli hai, ya dunya ka sab se bara na-insafi par mabni nizaam?"
+      text: "Pakistan aalmi carbon aaloodgi mein 0.9% se bhi kam hissa dalta hai. Magar 2022 ke sailab ne 33% mulk dabo diya, 1,700 jaanein le lein aur 30 arab dollar ka nuqsan kiya.\n\nAmeer 10% mumalik 50% aaloodgi phailatay hain magar madad ke bajaye soodi qarza bhejte hain.\n\nKya yeh mausam ka haadsa hai ya ghareeb mulkon ke khilaf aalmi jurm?"
     },
     plainUrdu: {
-      text: "پاکستان دنیا کی مجموعی ماحولیاتی آلودگی میں ایک فیصد سے بھی کم کا ذمہ دار ہے۔ مگر جب مانسون بے قابو ہوتا ہے تو ملک کا ایک تہائی حصہ پانی میں ڈوب جاتا ہے۔\n\nامیر صنعتی ممالک نے دو سو سال کوئلہ اور تیل جلا کر بے پناہ دولت بنائی۔ لیکن جب ہمارے کسانوں کی فصلیں، مویشی اور کچے مکانات سیلاب کی نذر ہو جاتے ہیں، تو عالمی کانفرنسوں میں صرف ہمدردی کے بیانات اور نئے قرضے ملتے ہیں۔\n\nبڑی کمپنیوں کے مالکان نجی طیاروں میں بیٹھ کر ماحول بچانے کی باتیں کرتے ہیں جبکہ سندھ اور بلوچستان کے بچے کھلے آسمان تلے رات گزارتے ہیں۔ کیا یہ محض موسمی تبدیلی ہے، یا تاریخ کا سب سے بڑا معاشی ظلم؟"
+      text: "پاکستان دنیا کی کاربن آلودگی میں 0.9 فیصد سے بھی کم پیدا کرتا ہے۔ مگر 2022 کے سیلاب نے ملک کا 33 فیصد حصہ ڈبو دیا، 1700 اموات ہوئیں اور 30 ارب ڈالر کا نقصان ہوا۔\n\nدس فیصد امیر ممالک 50 فیصد آلودگی پھیلاتے ہیں لیکن معاوضے کے بجائے سودی قرضے بھیجتے ہیں۔\n\nکیا موسمیاتی تبدیلی محض قدرتی حادثہ ہے یا غریب اقوام کے خلاف ایک تاریخی معاشی جرم؟"
     }
   },
 
-  // 8. AI & Tech: Energy and Water Grids
+  // 8. AI & Human Thinking
   {
-    topic: "AI Data Centres: Power for Bots vs Power for People",
+    topic: "AI and Thinking: Cognitive Decline",
     category: 'AI_HUMAN_SOCIETY',
     english: {
-      text: "Every time you ask an artificial intelligence tool to write an essay or generate an image, powerful supercomputers consume electricity and clean cooling water.\n\nGlobal technology giants are building massive data centres that use as much electricity as entire medium-sized cities. At the very same time, millions of ordinary families in developing countries suffer ten to twelve hours of power cuts every single hot summer day.\n\nClean water and electric power are basic human necessities. When tech monopolies buy up renewable energy grids just to train faster chatbots, we have to ask ourselves: who is this modern technological revolution actually serving?"
+      text: "Over 75% of university students now use AI to draft assignments and solve exams. Studies show human cognitive problem-solving drops 30% when people rely entirely on automated prompts.\n\nWe celebrate algorithms that code in seconds, but young minds are losing the ability to think critically without a screen.\n\nAre we using modern technology to empower human brains, or are we letting AI slowly replace human intelligence?"
     },
     romanUrdu: {
-      text: "Jab bhi aap AI se koi sawaal poochtay hain ya tasweer banwate hain, to baray supercomputers bijli aur saaf thanda paani peetay hain.\n\nGlobal tech companies aisi data centres bana rahi hain jo poore poore shehron ke barabar bijli khati hain. Doosri taraf garmion mein ghareeb mulkon ke log barah barah ghantay load shedding bardasht karte hain.\n\nBijli aur paani insani zaroorat hain. Jab barri companies chatbots chalane ke liye bijli ke grid khareed leti hain, to sawaal yeh hai ke yeh nayi taraqqi aakhir kis ke faiday ke liye hai?"
+      text: "75% se zyada university students ab assignments aur exams ke liye AI use karte hain. Research ke mutabiq insani dimaag ki problem solving 30% gir jati hai jab bot par inhesaar kiya jaye.\n\nHum seconds mein coding karnay wali algorithms ki tareef karte hain, magar nojawan sochna bhool rahay hain.\n\nKya hum dimaag ko taqatwar bana rahay hain ya AI ko insani aqal cheennay de rahay hain?"
     },
     plainUrdu: {
-      text: "جب بھی آپ مصنوعی ذہانت سے کوئی سوال پوچھتے ہیں یا تصویر بنواتے ہیں، تو بڑے ڈیٹا سینٹرز بے پناہ بجلی اور ٹھنڈا پانی استعمال کرتے ہیں۔\n\nعالمی ٹیکنالوجی کمپنیاں ایسے ڈیٹا سینٹرز بنا رہی ہیں جو پورے شہروں جتنی بجلی خرچ کر دیتے ہیں۔ دوسری طرف ترقی پذیر ممالک میں غریب خاندان شدید گرمیوں میں بارہ بارہ گھنٹے بجلی کی بندش جھیلتے ہیں۔\n\nپانی اور بجلی بنیادی انسانی ضرورت ہیں۔ جب بڑی کارپوریشنز چیٹ بوٹس کی ٹریننگ کے لیے توانائی کے ذخائر خرید لیتی ہیں، تو سوچنے کی بات یہ ہے کہ یہ جدید انقلاب آخر کس کی خدمت کر رہا ہے؟"
+      text: "75 فیصد سے زائد طلبہ اب اسائنمنٹس اور امتحانات کے لیے AI استعمال کر رہے ہیں۔ تحقیق بتاتی ہے کہ خودکار سسٹمز پر مکمل انحصار سے انسانی دماغ کی مسائل حل کرنے کی صلاحیت 30 فیصد گر جاتی ہے۔\n\nہم سیکنڈوں میں کوڈ لکھنے والے الگورتھم کی تعریف کرتے ہیں لیکن نئی نسل خود سوچنے سے قاصر ہے۔\n\nکیا ہم انسان کو بااختیار بنا رہے ہیں یا AI کو انسانی عقل کا متبادل بنا رہے ہیں؟"
     }
   }
 ];
@@ -221,9 +221,9 @@ export const CURATED_STORY_TOPICS = [
 let categoryRotationIndex = 0;
 let storyCounter = 0;
 
-const MIN_CHARACTERS = 450;
-const MAX_CHARACTERS = 950;
-const ABSOLUTE_MAX_CHARACTERS = 1000;
+const MIN_CHARACTERS = 380;
+const MAX_CHARACTERS = 500;
+const ABSOLUTE_MAX_CHARACTERS = 500;
 
 /* =========================================================
    TEXT FORMATTING AND VALIDATION (PRESERVES PARAGRAPH BREAKS)
@@ -264,7 +264,10 @@ function validateAIResponse(res, chosenTopic, chosenCategory = 'GEOPOLITICS') {
 
   const entry = formatEntry(rawText);
   if (entry.isOverLimit || entry.charCount > ABSOLUTE_MAX_CHARACTERS) {
-    throw new Error(`AI post exceeds limit (${entry.charCount} chars, max ${ABSOLUTE_MAX_CHARACTERS})`);
+    throw new Error(`AI post exceeds strict 500-char limit (${entry.charCount} chars, max ${ABSOLUTE_MAX_CHARACTERS})`);
+  }
+  if (entry.charCount < 380) {
+    throw new Error(`AI post is too short (${entry.charCount} chars, must be 400-500)`);
   }
 
   return {
@@ -275,7 +278,7 @@ function validateAIResponse(res, chosenTopic, chosenCategory = 'GEOPOLITICS') {
 }
 
 /* =========================================================
-   MASTER ANALYTICAL AI PROMPT (BOLD POLITICAL COMMENTARY)
+   MASTER DATA-DRIVEN AI PROMPT (STRICT 400–500 CHARACTERS)
 ========================================================= */
 
 function createEnglishPrompt(chosenTopic, usedTopics, targetCategory = null) {
@@ -284,71 +287,79 @@ function createEnglishPrompt(chosenTopic, usedTopics, targetCategory = null) {
       ? usedTopics.slice(0, 30).join('; ')
       : 'None';
 
-  const categoryName = targetCategory?.name || 'Geopolitics & Political Commentary';
+  const categoryName = targetCategory?.name || 'Geopolitics & Military Power';
   const categoryKeywords = targetCategory?.keywords?.join(', ') || 'Global power, Pakistan politics, economy, AI, society';
 
-  return `You are an independent, sharp, and fearless Pakistani political commentator and social media analyst.
-You write bold, intelligent, and highly engaging posts that make readers stop, think, disagree, discuss, and comment.
+  return `# ANTIGRAVITY — DATA-DRIVEN ANALYTICAL CONTENT ENGINE
+
+**POST LENGTH — STRICT REQUIREMENT**
+- Every generated post must contain 400–500 characters, including spaces and punctuation.
+- Aim for 450–470 characters.
+- Never exceed 500 characters or produce fewer than 400.
+- Keep analytical depth by prioritising 2–4 strong, relevant statistics, meaningful comparisons, and clear analysis.
+- Remove unnecessary introductions, repeated explanations, and filler instead of removing important analysis.
+- Count the final characters before returning the post.
+- Return only the final post, ready to publish.
+
+PRIMARY OBJECTIVE:
+Produce DATA-DRIVEN analytical social media posts about world events, military budgets, economics, AI, and power politics.
+You are an independent geopolitical and economic analyst who uses verified numbers to explain how the world works.
+ANALYSIS MUST BE THE MAIN CONTENT. Humour and sarcasm are optional supporting elements.
 
 TOPIC: "${chosenTopic}"
 CATEGORY: ${categoryName}
 THEMES TO DRAW FROM: ${categoryKeywords}
 
 ============================================================
-1. LANGUAGE RULES — SIMPLE PAKISTANI ENGLISH (A1–A2)
+1. DATA-FIRST WRITING & ANALYSIS
+============================================================
+- Include 2 to 4 real, relevant data points (e.g. military spending, GDP %, budget figures, debt, trade numbers, energy/water consumption, ratios).
+- ANALYSE THE NUMBERS: don't just state them. Compare them (e.g. "India outspends Pakistan 9 to 1... but defence spending is not the only measure...").
+- Expose contradictions: show what leaders say vs what the actual data shows.
+- Show consequences: who pays the price, who benefits, and what happens to ordinary people.
+- Never invent fake statistics. Every figure must help explain the argument.
+
+============================================================
+2. LANGUAGE — SIMPLE PAKISTANI ENGLISH (A2 LEVEL)
 ============================================================
 - Write in simple, natural English that ordinary Pakistani social media users easily understand.
-- Write how an educated Pakistani explains real politics to a friend or ordinary people.
-- Short, direct sentences. Common English words. Natural expressions.
-- Simple comparisons and strong, confident observations.
-- NEVER use academic, university-style, or confusing English.
-- Avoid difficult vocabulary (do not write "geopolitical hegemony", write "who controls the market"; do not write "indigenous escalation", write "growing tension").
-- If a technical term is unavoidable, explain it immediately in plain English.
+- Short, direct sentences. Common words.
+- Bold, confident, and critical tone.
+- No academic or university-style jargon.
 
 ============================================================
-2. TONE & COMMENTARY STYLE
+3. POST STRUCTURE (STRICTLY 400–500 CHARACTERS)
 ============================================================
-- Bold, analytical, thought-provoking, and sarcastic where appropriate.
-- Use facts, comparisons, irony, and uncomfortable questions.
-- Expose the difference between what governments say and what happens in ground reality.
-- Question powerful institutions, wealthy corporations, and superpower games.
-- NEVER write boring news summaries, educational primers, or motivational fluff.
-- NEVER blind support for any side or country; remain critically analytical.
-- Respect ordinary people of all ethnicities and backgrounds; criticise corrupt systems and unequal policies.
+1. Opening: Surprising number, bold statement, or striking comparison.
+2. Data & Analysis: 2–4 relevant figures compared logically. Explain what they mean.
+3. Critical Angle: Uncover the hidden cost or unfair reality.
+4. Ending: Powerful question that forces readers to think and reply.
+- Use paragraph breaks (\\n\\n) between thoughts.
 
 ============================================================
-3. POST STRUCTURE & LENGTH (500–900 CHARACTERS)
+4. STYLE BENCHMARKS (400–500 CHARACTERS)
 ============================================================
-Each post should follow this natural flow:
-1. Short Catchy Opening: Bold statement, surprising comparison, or striking fact.
-2. Ground Reality & Evidence: Explain what is actually happening. Use real numbers, budgets, or comparisons where relevant (NEVER invent fake statistics; if unsure of numbers, make a factual comparison).
-3. Irony / Sarcasm: Show the contradiction between political promises and real life. Use paragraph breaks (\\n\\n) to make reading pleasant.
-4. Powerful Ending Question: Finish with a hard-hitting question that forces the reader to think and reply.
+Benchmark 1 (India vs Pakistan):
+"India spends $83 billion on defence, while Pakistan spends $9 billion. That means India outspends Pakistan by more than 9 to 1.
 
-TARGET LENGTH: 500 to 900 characters (around 5 to 8 short sentences with paragraph breaks).
-HARD MAXIMUM: 1000 characters.
+Yet 40% of people in both nations lack clean water, and 25 million Pakistani children are out of school. Both countries buy $100M fighter jets while public hospitals lack basic medicines.
 
-============================================================
-4. STYLE BENCHMARKS (STUDY THE TONE & FLOW)
-============================================================
-Benchmark 1 (Defence vs Welfare):
-"India spends billions on defence. Pakistan spends much less. Yet both countries talk about winning the next war. But what about education, hospitals, and jobs? A country needs a strong army, but it also needs strong people. What is the point of winning a war if ordinary people are already losing their lives to poverty?"
+What is the point of nuclear deterrence if citizens are dying of poverty?"
 
 Benchmark 2 (Sugar vs Gun):
-"Everyone is scared of a man carrying a gun. But nobody is scared of the three spoons of sugar in their daily tea. A gun can kill quickly, but too much sugar can damage your health slowly. We fear visible dangers but often ignore the things we use every day. So tell me, what is more dangerous: the gun outside your house or the sugar inside your kitchen?"
+"In Pakistan, gun violence kills around 4,000 people each year. But diabetes, driven by excessive sugar consumption, claims over 400,000 lives annually. That is 100 times deadlier than bullets.
 
-Benchmark 3 (China vs USA):
-"America wants to remain the strongest country in the world. China also wants to become stronger. Both countries talk about security, trade and friendship. But both also want to protect their own interests. China invests in roads and ports, while America has military bases around the world. Smaller countries often become part of this competition. Are these powerful countries making friends, or simply protecting their own business?"
+We fear armed men on the street, yet we happily drink three spoons of white sugar in every cup of chai.
+
+What is the real threat to national security: the rifle outside your gate, or the sugar inside your teacup?"
 
 ============================================================
 5. STRICT CONSTRAINTS
 ============================================================
-- ZERO hashtags (no #tags).
-- ZERO emojis.
-- NO bullet points or numbered lists inside the post.
-- NO disclaimers, AI markers, or meta-explanations.
-- NO repetitive phrases like "In today's world" or "It is important to understand".
-- Do not duplicate these recently used topics: ${avoidListStr}
+- EXACT LENGTH: 400 to 500 characters total. Count characters carefully!
+- ZERO hashtags. ZERO emojis. NO bullet points.
+- NO AI meta-text, introductions, or character counts in output.
+- Do NOT repeat these recent topics: ${avoidListStr}
 
 Return ONLY valid JSON matching this exact structure:
 {
@@ -524,16 +535,16 @@ export async function generateRomanUrduFromEnglish(englishPost, topic = '') {
   const xaiKey = process.env.GROK_API_KEY || process.env.XAI_API_KEY;
   const groqKey = process.env.GROQ_API_KEY;
 
-  const prompt = `Translate and adapt this bold political commentary post into natural, engaging Pakistani Roman Urdu.
+  const prompt = `Translate and adapt this data-driven analytical post into natural, engaging Pakistani Roman Urdu.
 
 ENGLISH POST:
 "${englishPost.text}"
 
 RULES:
-- Write in simple, natural Pakistani Roman Urdu as spoken by an educated Pakistani explaining politics.
-- Keep the exact same bold, sarcastic, and thought-provoking commentary tone.
+- Write in simple, natural Pakistani Roman Urdu as spoken by an educated Pakistani explaining news and data.
+- Keep the exact same numbers, statistics, comparisons, and thought-provoking analysis.
 - Preserve the paragraph breaks (\\n\\n) and keep the ending question intact.
-- Target length: 500 to 900 characters (max 1000).
+- Target length: 400 to 500 characters (aim for 450–470 chars, NEVER exceed 500).
 - Do NOT use hashtags or emojis.
 - Return ONLY valid JSON:
 {
@@ -593,16 +604,16 @@ export async function generatePlainUrduFromEnglish(englishPost, topic = '') {
   const xaiKey = process.env.GROK_API_KEY || process.env.XAI_API_KEY;
   const groqKey = process.env.GROQ_API_KEY;
 
-  const prompt = `Translate and adapt this bold political commentary post into clear, dignified Pakistani Urdu script (اردو).
+  const prompt = `Translate and adapt this data-driven analytical post into clear, dignified Pakistani Urdu script (اردو).
 
 ENGLISH POST:
 "${englishPost.text}"
 
 RULES:
 - Write in natural, easy Pakistani Urdu script that ordinary readers easily understand.
-- Preserve the sharp political commentary, sarcasm, facts, and paragraph breaks (\\n\\n).
+- Preserve the exact numbers, statistics, comparisons, facts, and paragraph breaks (\\n\\n).
 - Keep the powerful final question intact.
-- Target length: 500 to 900 characters (max 1000).
+- Target length: 400 to 500 characters (aim for 450–470 chars, NEVER exceed 500).
 - Do NOT use hashtags or emojis.
 - Return ONLY valid JSON:
 {

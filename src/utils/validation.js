@@ -1,11 +1,11 @@
 /**
  * Validation and Character Counting Utilities for Social Media Content
  *
- * NOTE: Posts are bold analytical political commentaries.
- * Target length: 500–900 characters. Maximum limit: 1000 chars.
+ * NOTE: Data-Driven Analytical Posts.
+ * Strict target length: 400–500 characters. Maximum limit: 500 chars.
  */
 
-const X_CHAR_LIMIT = 1000;
+const X_CHAR_LIMIT = 500;
 
 /**
  * Validates the user's topic
