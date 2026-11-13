@@ -61,6 +61,6 @@ export const config = {
   xCallbackUrl: process.env.X_CALLBACK_URL || 'https://x-bot-7p2s.onrender.com/auth/x/callback',
 
   // Content Generation Profile
-  englishLevel: 'Concise Analysis',
-  contentThemes: 'Chinese PLA & Taiwan Annexation, Semiconductors & Chip Wars, Radars & Sun Tzu Strategy, Global Trade Corridors, Digital Dictatorship, Oil Markets & Iran, Cyber Warfare, Crypto, Nuclear Deterrence'
+  englishLevel: 'B1-B2 Strategic Analysis',
+  contentThemes: 'China & Taiwan (PLA/TSMC/Chips), Military Strategy (Sun Tzu/EW/Radars), Iran & Middle East (Hormuz/Oil/Proxies), Global Economy & Financial Warfare (Dollar/Sanctions/Supply Chains), AI & Technology (Cyber/Surveillance), Civilization & Strategic Geography'
 };

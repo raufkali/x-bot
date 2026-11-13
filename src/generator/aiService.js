@@ -1,290 +1,283 @@
-
 /**
- * Geopolitical & Technology Strategy AI Service for X_BOT
+ * X-BOT — Advanced Geopolitical & Strategic Analysis Content Engine
  *
- * Features:
- * - China, Taiwan, PLA and semiconductor strategy
- * - Military strategy and electronic warfare
- * - Global trade routes and energy security
- * - Digital surveillance and cyber warfare
- * - Iran, oil markets, crypto and nuclear deterrence
+ * Core Focus:
+ * - Current global affairs, geopolitical rivalries, and military strategy
+ * - Economic warfare, emerging technologies, and international power politics
+ * - Sounds like a geopolitical analyst explaining the deeper meaning behind world events
+ *
+ * Categories:
+ * A. China, Taiwan & Indo-Pacific
+ * B. Military Strategy & Intelligence
+ * C. Iran, Israel & Middle East
+ * D. Global Economy & Financial Warfare
+ * E. AI, Technology & Cybersecurity
+ * F. Civilization, History & Global Power
  *
  * Standards:
- * - Target: 180-260 characters
- * - Maximum: 280 X characters
- * - Zero hashtags
- * - English, Pakistani Roman Urdu and Urdu script
- * - MongoDB duplicate checking
- * - Grok -> Groq -> Curated fallback
+ * - English Level: Natural, fluent B1–B2 analytical English
+ * - Target Length: 180–260 characters (strictly max 280 X characters)
+ * - Zero hashtags, zero emojis, zero conversational fluff
+ * - Translations: Pakistani Roman Urdu and Plain Urdu script (اردو)
+ * - Strict MongoDB SHA-256 deduplication & category rotation
  */
 
 import Groq from 'groq-sdk';
-
 import { calculateXCharacterCount } from '../utils/validation.js';
-
 import {
   isDuplicatePost,
   saveGeneratedPost,
   getAllUsedTopics
 } from '../db/postModel.js';
 
+/* =========================================================
+   6 CORE STRATEGIC CATEGORIES & KEYWORDS
+========================================================= */
+
+export const CONTENT_CATEGORIES = [
+  {
+    id: 'CHINA_TAIWAN_INDO_PACIFIC',
+    name: 'China, Taiwan & Indo-Pacific',
+    keywords: [
+      "People's Liberation Army (PLA)", "Taiwan annexation", "Taiwan Strait",
+      "TSMC", "Semiconductor industry", "Advanced AI chips", "Chip manufacturing",
+      "Silicon supply chains", "Naval blockade", "Military encirclement",
+      "US-China rivalry", "Indo-Pacific strategy", "South China Sea", "Strategic deterrence"
+    ]
+  },
+  {
+    id: 'MILITARY_STRATEGY_INTELLIGENCE',
+    name: 'Military Strategy & Intelligence',
+    keywords: [
+      "Sun Tzu", "The Art of War", "Military doctrine", "Electronic warfare",
+      "Cyber warfare", "Intelligence operations", "Satellite surveillance",
+      "Military radars", "Missile defence", "Drone warfare", "Hypersonic weapons",
+      "Nuclear deterrence", "Proxy warfare", "Strategic corridors", "Military alliances"
+    ]
+  },
+  {
+    id: 'IRAN_ISRAEL_MIDDLE_EAST',
+    name: 'Iran, Israel & Middle East',
+    keywords: [
+      "Iran", "Israel", "United States", "Nuclear programme", "Nuclear deterrence",
+      "Oil prices", "Strait of Hormuz", "Energy security", "Regional proxies",
+      "Missile capabilities", "Cyber attacks", "Middle Eastern power balance",
+      "Sanctions", "Regional escalation"
+    ]
+  },
+  {
+    id: 'GLOBAL_ECONOMY_FINANCIAL_WARFARE',
+    name: 'Global Economy & Financial Warfare',
+    keywords: [
+      "Global oil markets", "Stock exchanges", "Cryptocurrency", "Bitcoin",
+      "Economic sanctions", "Dollar dominance", "Financial warfare", "Trade wars",
+      "Global markets", "Supply chain disruption", "Energy corridors",
+      "International trade routes", "Strategic ports", "Economic dependencies"
+    ]
+  },
+  {
+    id: 'AI_TECHNOLOGY_CYBERSECURITY',
+    name: 'AI, Technology & Cybersecurity',
+    keywords: [
+      "Artificial intelligence", "AI chip race", "Semiconductor dependency",
+      "Cyber espionage", "Digital surveillance", "Digital dictatorship",
+      "Algorithmic control", "Data sovereignty", "Quantum computing",
+      "Cyber attacks", "Critical infrastructure", "Digital currency",
+      "Information warfare", "Technology sanctions"
+    ]
+  },
+  {
+    id: 'CIVILIZATION_HISTORY_GLOBAL_POWER',
+    name: 'Civilization, History & Global Power',
+    keywords: [
+      "Rise and fall of civilizations", "Ancient trade routes", "Silk Road",
+      "Belt and Road Initiative", "Global corridors", "Historical empires",
+      "Civilizational competition", "Geography and power", "Resource control",
+      "Maritime trade", "Strategic geography", "New world order"
+    ]
+  }
+];
 
 /* =========================================================
-   CURATED TOPIC BANK
+   CURATED ANALYTICAL TOPIC BANK (B1-B2 ANALYTICAL BENCHMARKS)
 ========================================================= */
 
 export const CURATED_STORY_TOPICS = [
+  // Category A: China, Taiwan & Indo-Pacific
   {
-    topic: "Bagram, Regional Proxies and the China-Pakistan Dilemma",
-    category: 'GEOPOLITICS_SOUTH_ASIA',
-
+    topic: "Taiwan's Semiconductor Shield and the Global Economy",
+    category: 'CHINA_TAIWAN_INDO_PACIFIC',
     english: {
-      text: "Bagram was never about Afghanistan. It was always about China, Iran, and Pakistan. If US-Taliban are talking about spying on Beijing and building a proxy against Tehran, Kabul becomes a marketplace. And Pakistan pays the price for being in the middle."
+      text: "Taiwan's importance goes far beyond its geography. Its semiconductor industry connects the island to the global economy. Any military crisis in the Taiwan Strait disrupts AI development, chip supply, and global trade. Control over Taiwan carries consequences far beyond Asia."
     },
-
     romanUrdu: {
-      text: "Bagram ka maamla kabhi Afghanistan ka tha hi nahi. Asal nishana hamesha China, Iran aur Pakistan thay. Agar US aur Taliban Beijing par nazar rakhnay ke souday karein, to Kabul bazaar ban jata hai, aur qeemat darmiyan mein phansa Pakistan ada karta hai."
+      text: "Taiwan ki ahemiyat sirf geography tak mehdood nahi. Iski semiconductor industry poori aalmi maeeshat ko jorrti hai. Taiwan Strait mein koi bhi larrai computer chips aur trade ko foran rok degi. Taiwan par qabzay ke asraat Asia se bohat agay jayenge."
     },
-
     plainUrdu: {
-      text: "بگرام کا معاملہ کبھی افغانستان کا تھا ہی نہیں۔ اصل نظر ہمیشہ چین، ایران اور پاکستان پر تھی۔ اگر امریکہ اور طالبان بیجنگ پر نظر رکھنے کے معاہدے کریں تو کابل منڈی بن جاتا ہے، اور خمیازہ درمیان میں پھنسا پاکستان بھگتے گا۔"
+      text: "تائیوان کی اہمیت محض جغرافیے تک محدود نہیں۔ اس کی سیمی کنڈکٹر صنعت جزیرے کو عالمی معیشت سے جوڑتی ہے۔ آبنائے تائیوان میں فوجی بحران چپ سپلائی اور عالمی تجارت کو مفلوج کر دے گا۔ تائیوان پر کنٹرول کے نتائج ایشیا سے کہیں آگے تک جائیں گے۔"
+    }
+  },
+  {
+    topic: "PLA Encirclement and the Strategy of Chokepoints",
+    category: 'CHINA_TAIWAN_INDO_PACIFIC',
+    english: {
+      text: "China's PLA naval drills around Taiwan aren't preparing for a traditional beach landing. A sustained maritime blockade cuts off energy imports and halts advanced semiconductor exports in days. In modern warfare, economic starvation precedes artillery."
+    },
+    romanUrdu: {
+      text: "Taiwan ke ird gird China ki PLA mashqein kisi foji hamlay ki nahi balkay naakabandi ki tayari hain. Samandar band hotay hi Taiwan ka tail aur chip export dinon mein ruk jaye gi. Jadeed jung mein topon se pehle maashi naakabandi aati hai."
+    },
+    plainUrdu: {
+      text: "تائیوان کے گرد چینی فوج کی مشقیں روایتی زمینی حملے کی تیاری نہیں۔ بحری ناکہ بندی چند دنوں میں تائیوان کے ایندھن اور چپ برآمدات کو روک سکتی ہے۔ جدید دور کی جنگ میں گولہ باری سے پہلے معاشی محاصرہ فیصلہ کن ہوتا ہے۔"
     }
   },
 
+  // Category B: Military Strategy & Intelligence
   {
-    topic: "The Degree Trap and the Illusion of Real Assets",
-    category: 'SOCIETAL_ECONOMICS',
-
+    topic: "Sun Tzu, Information Warfare and Modern Military Doctrine",
+    category: 'MILITARY_STRATEGY_INTELLIGENCE',
     english: {
-      text: "Our ancestors with no degrees and limited means bought land — real assets. Today, we sell that very land to buy a piece of paper called a degree. Why fund research labs when a ring light is cheaper? A trap no generation has ever faced before."
+      text: "Sun Tzu argued that understanding the enemy is essential to victory. Modern military strategy follows a similar principle. Satellite surveillance, cyber intelligence, and electronic warfare weaken an opponent before missiles launch. Information is as valuable as firepower."
     },
-
     romanUrdu: {
-      text: "Hamaray barron ne baghair degree ke zameenein khareedein — asal daulat. Aaj hum usi zameen ko bech kar degree ka kaghaz khareed rahay hain. Lab par kon kharch kare jab ring light sasti hai? Aisa jaal jo kisi nasl ne nahi dekha."
+      text: "Sun Tzu ka usool tha ke dushman ko samajhna hi jeet ki asal bunyad hai. Jadeed military doctrine isi par chalti hai. Satellite surveillance, cyber intelligence aur electronic jammers pehla missile chalnay se pehle dushman ko kamzor kar dete hain."
     },
-
     plainUrdu: {
-      text: "ہمارے بزرگوں نے بغیر ڈگریوں کے زمینیں خریدیں جو حقیقی اثاثے تھیں۔ آج ہم اسی زمین کو بیچ کر ڈگری کے نام پر کاغذ کا ٹکڑا خرید رہے ہیں۔ لیب پر کون خرچ کرے جب کیمرے کی رنگ لائٹ زیادہ سستی ہے؟ ایسا جال جو پہلے کبھی نہیں تھا۔"
+      text: "سن زو کا مؤقف تھا کہ دشمن کو سمجھنا ہی فتح کی اصل ضمانت ہے۔ جدید فوجی حکمت عملی اسی اصول پر استوار ہے۔ سیٹلائٹ نگرانی، سائبر انٹیلی جنس اور الیکٹرانک وارفیئر پہلے میزائل کے داغے جانے سے قبل حریف کو مفلوج کر دیتے ہیں۔"
+    }
+  },
+  {
+    topic: "Electronic Warfare and the Silent Radar Battles",
+    category: 'MILITARY_STRATEGY_INTELLIGENCE',
+    english: {
+      text: "Modern air superiority is no longer decided by dogfights. Long-range phased-array radars and airborne electronic jammers blind defensive sensors before aircraft ever appear. Whoever commands the electromagnetic spectrum commands the battlefield."
+    },
+    romanUrdu: {
+      text: "Hawa mein bartari ab aam jahazon ki larrai se nahi jeeti jati. Long-range phased-array radars aur airborne electronic jammers hamlay se pehle dushman ke sensors ko andha kar dete hain. Jo electromagnetic spectrum par qabza karega, maidan uska hoga."
+    },
+    plainUrdu: {
+      text: "فضائی برتری اب روایتی فضائی جھڑپوں سے طے نہیں پاتی۔ طویل فاصلے کے فیزڈ ارے ریڈارز اور الیکٹرانک جیمرز حملہ آور طیاروں کے پہنچنے سے قبل دفاعی سینسرز کو اندھا کر دیتے ہیں۔ جو الیکٹرو میگنیٹک میدان جیتے گا، معرکہ اسی کا ہوگا۔"
     }
   },
 
+  // Category C: Iran, Israel & Middle East
   {
-    topic: "PLA Encirclement and Taiwan's Semiconductor Shield",
-    category: 'CHINA_TAIWAN_SEMICONDUCTORS',
-
+    topic: "Iran, the Strait of Hormuz and Global Energy Markets",
+    category: 'IRAN_ISRAEL_MIDDLE_EAST',
     english: {
-      text: "China doesn't need to invade Taiwan with soldiers. A simple naval blockade around the island stops the world's computer chip supply immediately. When the chips stop, global technology freezes. The real weapon isn't guns; it's tiny computer chips."
+      text: "A conflict involving Iran is never limited to the Middle East. The Strait of Hormuz carries a major share of global oil trade. Any disruption immediately rocks energy prices, financial markets, and foreign economies. Geography remains a decisive weapon in world politics."
     },
-
     romanUrdu: {
-      text: "China ko Taiwan par hamla karnay ki zaroorat nahi. Island ke ird gird behri naakabandi poori duniya ki chip supply foran rok deti hai. Jab chips rukti hain, global technology jam jati hai. Asal hathiyar bandook nahi, choti computer chips hain."
+      text: "Iran ki larrai kabhi sirf Middle East tak mehdood nahi rehti. Strait of Hormuz aalmi tail ki rasad ka barri hissa sambhalta hai. Yahan ki rukawat foran tail ki qeematein aur stock markets hila deti hai. Aalmi siyasat mein geography sab se bara hathiyar hai."
     },
-
     plainUrdu: {
-      text: "چین کو تائیوان پر فوج کشی کی ضرورت نہیں۔ جزیرے کے گرد محض بحری ناکہ بندی دنیا بھر کی کمپیوٹر چپس کی فراہمی روک سکتی ہے۔ چپس رکتے ہی عالمی ٹیکنالوجی مفلوج ہو جائے گی۔ اصل طاقت بندوق نہیں، چھوٹی مائیکرو چپس ہیں۔"
+      text: "ایران سے وابستہ کشیدگی کبھی مشرق وسطیٰ تک محدود نہیں رہتی۔ آبنائے ہرمز عالمی تیل کی ترسیل کا بڑا حصہ سنبھالتی ہے۔ یہاں معمولی رکاوٹ بھی توانائی کی قیمتوں اور منڈیوں کو ہلا دیتی ہے۔ جغرافیہ آج بھی عالمی سیاست کا سب سے بڑا ہتھیار ہے۔"
+    }
+  },
+  {
+    topic: "Regional Proxies and the Attrition of Superpower Power",
+    category: 'IRAN_ISRAEL_MIDDLE_EAST',
+    english: {
+      text: "Direct confrontations between heavily armed states are avoided due to nuclear risks. Instead, low-cost drone networks and regional proxies fight protracted wars along vital trade corridors, forcing major powers to burn billion-dollar missiles to counter cheap attacks."
+    },
+    romanUrdu: {
+      text: "Nuclear khatray ki wajah se barri taqatein aapas mein seedhi jung se bachti hain. Iske bajaye saste drones aur regional proxies ahem tijarati raston par jung larrte hain, jahan superpowers ko saste hamlon ke samnay arabon dollar ke missiles zaya karnay partay hain."
+    },
+    plainUrdu: {
+      text: "ایٹمی خطرات کی وجہ سے بڑی طاقتیں براہ راست تصادم سے گریز کرتی ہیں۔ اس کے برعکس سستے ڈرونز اور پراکسی نیٹ ورکس اہم تجارتی راہداریوں پر ایسی جنگ چھیڑتے ہیں جہاں بڑی طاقتوں کو معمولی حملوں کے دفاع کے لیے اربوں ڈالرز جھونکنے پڑتے ہیں۔"
     }
   },
 
+  // Category D: Global Economy & Financial Warfare
   {
-    topic: "Sun Tzu, PLA Radars and the Art of Winning Without Fighting",
-    category: 'MILITARY_STRATEGY_SUNTZU',
-
+    topic: "Dollar Dominance and the Weaponization of Global Finance",
+    category: 'GLOBAL_ECONOMY_FINANCIAL_WARFARE',
     english: {
-      text: "Sun Tzu taught that the highest victory is winning without fighting a battle. China's new radars and electronic jammers over Taiwan are not planning an invasion; they are making expensive warships completely useless without firing a single shot."
+      text: "When international clearing rails and foreign reserves are frozen as policy levers, financial dominance creates its own counter-reaction. Nations diversify into gold, local currency settlements, and decentralized ledgers to insulate their economies from dollar shocks."
     },
-
     romanUrdu: {
-      text: "Sun Tzu ka usool tha ke behtareen jeet baghair larray dushman ko jhukana hai. Taiwan ke ird gird China ke naye radars aur jammers kisi hamlay ki tayari nahi; balkay mehangay behri jahazon ko aik goli chalaye baghair be-asar karna hai."
+      text: "Jab international banking systems aur bank reserves ko siyasi hathiyar banaya jata hai, to dollar ki bartari apne khilaf naye raste banati hai. Mumalik ab sonay, local currency trade aur decentralized crypto ki taraf ja rahay hain taakay sanctions se bach sakein."
     },
-
     plainUrdu: {
-      text: "سن زو کا اصول تھا کہ سب سے بڑی فتح بغیر لڑے دشمن کو زیر کرنا ہے۔ تائیوان کے گرد چین کے نئے ریڈارز اور جیمرز حملے کی تیاری نہیں، بلکہ بھاری بحری جنگی جہازوں کو ایک گولی چلائے بغیر ناکارہ بنانا ہے۔"
+      text: "جب بین الاقوامی مالیاتی نیٹ ورکس اور زر مبادلہ کے ذخائر کو بطور ہتھیار استعمال کیا جائے تو مالیاتی بالادستی خود اپنے متبادل کو جنم دیتی ہے۔ ممالک اب سونے، مقامی کرنسیوں اور بلاک چین کی طرف بڑھ رہے ہیں تاکہ مالیاتی جھٹکوں سے محفوظ رہ سکیں۔"
+    }
+  },
+  {
+    topic: "Maritime Chokepoints and Fragile Global Supply Chains",
+    category: 'GLOBAL_ECONOMY_FINANCIAL_WARFARE',
+    english: {
+      text: "Financial algorithms price corporate earnings, but ninety percent of physical goods still navigate vulnerable maritime straits. When a chokepoint like the Red Sea or Malacca narrows, shipping costs surge and global inflation follows. Physical trade outranks paper finance."
+    },
+    romanUrdu: {
+      text: "Stock markets company munafay ka hisab lagati hain, magar 90 percent saaman tang samandari raston se guzarta hai. Jab Red Sea ya Malacca mein rukawat aati hai to kiraya barhta hai aur mehangai aati hai. Zameeni tijarat hamesha paper finance se bari hoti hai."
+    },
+    plainUrdu: {
+      text: "اسٹاک مارکیٹیں کارپوریٹ منافع کا حساب لگاتی ہیں، لیکن دنیا کا نوے فیصد سامان تنگ بحری راہداریوں سے گزرتا ہے۔ جب بحیرہ احمر یا ملاکا میں رکاوٹ آئے تو کرایے بڑھتے ہیں اور عالمی افراط زر جنم لیتا ہے۔ حقیقی تجارت کا وزن کاغذی مالیات سے زیادہ ہے۔"
     }
   },
 
+  // Category E: AI, Technology & Cybersecurity
   {
-    topic: "Silicon Valley's Fatal Dependence on Asian Fabs",
-    category: 'TECH_SILICON_VALLEY_CHIPS',
-
+    topic: "The AI Chip Race as the New Geopolitical Balance of Power",
+    category: 'AI_TECHNOLOGY_CYBERSECURITY',
     english: {
-      text: "Silicon Valley creates the world's software, but builds almost none of its own computer chips. If ships stop moving through the Taiwan Strait, the entire global artificial intelligence boom stops in a single day. Brilliant code cannot run without factory metal."
+      text: "The geopolitical balance of power is no longer measured solely in steel and nuclear warheads. Sovereign power now hinges on silicon foundry capacity and advanced AI accelerator hardware. Silicon dominance dictates the future of intelligence, economy, and military strategy."
     },
-
     romanUrdu: {
-      text: "Silicon Valley duniya ka software banati hai, magar computer chips khud nahi banati. Agar Taiwan Strait mein jahaz chalna band ho jayein, to poori duniya ka AI inqilab aik din mein ruk jayega. Behtareen code bhi factory ki chips ke baghair bekar hai."
+      text: "Taqat ka aalmi tawazun ab sirf foj aur atom bomb se nahi naapa jata. Riyasati taqat ab semiconductor foundries aur advanced AI chips par munhasir hai. Silicon par qabza hi mustaqbil ki intelligence, maeeshat aur military strategy ka faisla karta hai."
     },
-
     plainUrdu: {
-      text: "سلیکان ویلی دنیا کا سافٹ ویئر بناتی ہے، مگر کمپیوٹر چپس خود نہیں بنا سکتی۔ اگر آبنائے تائیوان سے بحری جہازوں کی آمدورفت رک جائے تو مصنوعی ذہانت کا عالمی عروج ایک دن میں تھم جائے گا۔ شاندار کوڈ بھی فیکٹری کی چپس کے بغیر نہیں چل سکتا۔"
+      text: "عالمی طاقت کا توازن اب محض بارود اور ایٹمی ہتھیاروں سے نہیں تولا جاتا۔ اب خودمختاری کا دارومدار جدید مائیکرو چپس اور مصنوعی ذہانت کے سسٹمز پر ہے۔ سلیکان پر کنٹرول ہی مستقبل کی انٹیلی جنس، معیشت اور عسکری حکمت عملی کی سمت متعین کرتا ہے۔"
+    }
+  },
+  {
+    topic: "Digital Surveillance and the Architecture of Modern Power",
+    category: 'AI_TECHNOLOGY_CYBERSECURITY',
+    english: {
+      text: "Historical dictatorships relied on physical secret police to enforce order. Modern governance leverages ubiquitous smartphone telemetry, automated facial surveillance, and programmable digital currencies. State authority has transitioned from physical force to algorithmic control."
+    },
+    romanUrdu: {
+      text: "Puranay aamiron ko awaam dabane ke liye secret police chahiye hoti thi. Jadeed riyasat smartphone telemetry, facial recognition cameras aur programmable digital currency ka sahara leti hai. Hakumat ka zor ab physical taqat se nikal kar algorithmic control ban chuka hai."
+    },
+    plainUrdu: {
+      text: "ماضی کی آمریتیں اقتدار قائم رکھنے کے لیے خفیہ پولیس پر انحصار کرتی تھیں۔ جدید ریاستی نظام اسمارٹ فون ٹیلی میٹری، خودکار کیمروں اور ڈیجیٹل کرنسی کا سہارا لیتا ہے۔ اقتدار کا طریقہ کار اب جسمانی طاقت سے بدل کر الگورتھمک گرفت میں ڈھل چکا ہے۔"
     }
   },
 
+  // Category F: Civilization, History & Global Power
   {
-    topic: "The Malacca Strait Chokepoint and Trade Corridors",
-    category: 'TRADE_CORRIDORS_GEOPOLITICS',
-
+    topic: "Strategic Corridors and the Rise and Fall of Empires",
+    category: 'CIVILIZATION_HISTORY_GLOBAL_POWER',
     english: {
-      text: "Eighty percent of China's imported oil passes through the narrow Malacca Strait. Beijing's Belt and Road ports and radar networks aren't just commercial trade corridors; they are survival valves for when maritime chokepoints close."
+      text: "From the ancient Silk Road to modern maritime corridors, empires have consistently risen and collapsed along trade routes. Pipelines, undersea fiber cables, and deep-water ports are simply the modern technological expressions of timeless civilizational competition."
     },
-
     romanUrdu: {
-      text: "China ka 80 percent tail Malacca ki tang patti se guzarta hai. China ke banaye huay trade corridors aur radar stations sirf tijarat ke liye nahi, balkay aisi naakabandi se bachnay ke raste hain jab samandar band ho jayein."
+      text: "Qadeem Silk Road se le kar jadeed maritime corridors tak, saltanatein hamesha tijarati raston ke gird bani aur bikhri hain. Oil pipelines, undersea internet cables aur deep-sea ports qadeem tehzeebi mukablay ki jadeed shaklein hain."
     },
-
     plainUrdu: {
-      text: "چین کا اسی فیصد تیل آبنائے ملاکا کی تنگ پٹی سے گزرتا ہے۔ بیجنگ کے تجارتی کوریڈورز اور ریڈار نیٹ ورکس محض معیشت کے لیے نہیں، بلکہ اس وقت کی تیاری ہیں جب عالمی سمندری راستے بند کر دیے جائیں گے۔"
+      text: "قدیم شاہراہ ریشم سے لے کر جدید بحری راہداریوں تک، سلطنتیں ہمیشہ تجارتی راستوں پر ہی عروج پاتی اور ختم ہوتی رہی ہیں۔ پائپ لائنز، سمندری انٹرنیٹ کیبلز اور گہرے بندرگاہیں دراصل ازلی تہذیبی رقابت کے جدید روپ ہیں۔"
     }
   },
-
   {
-    topic: "The Digital Dictatorship and Silent Social Control",
-    category: 'SURVEILLANCE_DIGITAL_DICTATORSHIP',
-
+    topic: "Bagram, Regional Proxies and Great Power Competition",
+    category: 'CIVILIZATION_HISTORY_GLOBAL_POWER',
     english: {
-      text: "Past dictators needed secret police and physical wiretaps to control people. The modern digital state only needs smartphone tracking, street cameras, and digital money. Control is no longer loud. It is completely silent."
+      text: "Bagram was never about Afghanistan. It was always about the surrounding regional powers: China, Iran, and Pakistan. When global superpowers bargain for intelligence perches and strategic corridors, nations trapped in the middle invariably absorb the collateral cost."
     },
-
     romanUrdu: {
-      text: "Pichli sadi ke aamir ko secret police aur foj chahiye hoti thi. Aaj ki digital riyasat ko sirf mobile tracking, street cameras aur digital bank accounts chahiye. Qabza ab shor nahi machata; ye bilkul khamosh hai."
+      text: "Bagram ka maamla kabhi Afghanistan ka tha hi nahi. Asal nishana hamesha China, Iran aur Pakistan thay. Jab superpowers intelligence perches aur corridors ka souda karti hain, to darmiyan mein phansay mumalik hamesha sab se bhari qeemat chukatay hain."
     },
-
     plainUrdu: {
-      text: "ماضی کے آمروں کو عوام کو قابو میں رکھنے کے لیے خفیہ پولیس درکار ہوتی تھی۔ آج کی جدید ریاست کو صرف موبائل ٹریکنگ، سڑکوں کے کیمرے اور ڈیجیٹل پیسہ درکار ہے۔ جبر اب شور نہیں مچاتا، یہ بالکل خاموش ہے۔"
-    }
-  },
-
-  {
-    topic: "Iran, the Strait of Hormuz and the Global Oil Shock",
-    category: 'ENERGY_IRAN_OIL_MARKETS',
-
-    english: {
-      text: "A single incident near the Strait of Hormuz can send world oil prices soaring in hours. When oil tankers stop moving, banks panic, prices jump, and developing nations run out of fuel. One narrow water passage holds the global economy hostage."
-    },
-
-    romanUrdu: {
-      text: "Strait of Hormuz ke qareeb aik waqia chand ghanton mein aalmi tail ki qeematein asman par pohncha sakta hai. Jab oil tankers rukte hain, banks ghabra jatay hain aur ghareeb mulkon mein petrol khatam ho jata hai. Aik tang samandari rasta poori aalmi maeeshat ko bandh kar baitha hai."
-    },
-
-    plainUrdu: {
-      text: "آبنائے ہرمز کے قریب ایک چھوٹا واقعہ چند گھنٹوں میں عالمی تیل کی قیمتیں آسمان پر پہنچا سکتا ہے۔ جب آئل ٹینکرز رکتے ہیں تو بینک گھبرا جاتے ہیں اور غریب ممالک ایندھن اور اشیاء کے بحران میں مبتلا ہو جاتے ہیں۔ ایک تنگ بحری راستہ پوری عالمی معیشت کو یرغمال بنائے ہوئے ہے۔"
-    }
-  },
-
-  {
-    topic: "Cyber Warfare and the Invisible Battlefield",
-    category: 'CYBER_ATTACKS_CRITICAL_INFRA',
-
-    english: {
-      text: "The next major conflict will not start with loud sirens or missiles. It begins with silent computer code turning off city electricity, blinding defense screens, and stopping bank payments in seconds. The most dangerous weapon is now invisible."
-    },
-
-    romanUrdu: {
-      text: "Agli barri jung loud sirens ya missiles se shuru nahi hogi. Ye khamosh computer code se shuru hogi jo shehron ki bijli band karega, defense screens ko andha karega, aur bank payments rokay ga. Sab se khatarnak hathiyar ab nazar nahi aata."
-    },
-
-    plainUrdu: {
-      text: "اگلی بڑی جنگ سائرن یا میزائلوں سے شروع نہیں ہوگی۔ یہ ایک خاموش کمپیوٹر کوڈ سے شروع ہوگی جو شہروں کی بجلی بند کر دے گا، دفاعی اسکرینوں کو اندھا کرے گا اور لمحوں میں بینک ادائیگیاں روک دے گا۔ سب سے خطرناک ہتھیار اب نظر نہیں آتا۔"
-    }
-  },
-
-  {
-    topic: "Nuclear Deterrence vs Microchip Defense",
-    category: 'GEOPOLITICS_NUCLEAR_TECH',
-
-    english: {
-      text: "Nuclear weapons stop big countries from invading each other. But computer chips stop countries from cutting off global trade. When national survival means keeping the global economy running, tiny computer chips become the strongest defense."
-    },
-
-    romanUrdu: {
-      text: "Nuclear hathiyar mulkon ko aik doosray par hamla karnay se roktay hain. Magar computer chips mulkon ko tijarat band karnay se rokti hain. Jab baqa ka matlab aalmi maeeshat chalana ban jaye, to choti chips sab se barri dhaal ban jati hain."
-    },
-
-    plainUrdu: {
-      text: "ایٹمی ہتھیار ممالک کو ایک دوسرے پر چڑھائی سے روکتے ہیں۔ لیکن کمپیوٹر چپس ممالک کو عالمی تجارت منقطع کرنے سے روکتی ہیں۔ جب قومی بقا کا مطلب عالمی معیشت کو رواں رکھنا ہو، تو چھوٹی مائیکرو چپس ہی سب سے مضبوط دفاع بن جاتی ہیں۔"
-    }
-  },
-
-  {
-    topic: "The Stock Exchange Illusion in an Era of Kinetic Conflict",
-    category: 'FINANCE_MARKETS_CONFLICT',
-
-    english: {
-      text: "Stock markets trade near record highs while the Red Sea, the Persian Gulf, and the Taiwan Strait are wired with anti-ship missiles. Financial algorithms price corporate quarterly profits, but they cannot price global supply chain death."
-    },
-
-    romanUrdu: {
-      text: "Stock market records bana rahi hai jabkay Red Sea, Gulf, aur Taiwan mein missile tayar kharay hain. Wall Street ke algorithms company ke munafay ka hisaab to lagatay hain, magar global supply chains band honay ka andaza nahi."
-    },
-
-    plainUrdu: {
-      text: "اسٹاک مارکیٹیں ریکارڈ سطح پر ہیں جبکہ بحیرہ احمر، خلیج فارس اور تائیوان میں اینٹی شپ میزائل نصب ہیں۔ مالیاتی الگورتھم کمپنیوں کے سہ ماہی منافع کا حساب تو لگاتے ہیں، مگر وہ عالمی سپلائی چین کے خاتمے کی قیمت بھول چکے ہیں۔"
-    }
-  },
-
-  {
-    topic: "Crypto, Capital Flight and Sanctions Evasion",
-    category: 'CRYPTO_GEOPOLITICS',
-
-    english: {
-      text: "When superpowers weaponize the dollar and freeze sovereign central bank reserves, Bitcoin and private crypto rails become state survival tools. Decentralized ledgers are no longer speculative toys; they are the financial underground of geopolitics."
-    },
-
-    romanUrdu: {
-      text: "Jab barri taqatein dollar ko hathiyar banati hain aur bank reserves freeze karti hain, to Bitcoin mulkon ke liye sahara ban jata hai. Decentralized crypto ab sirf shouq nahi, balkay aalmi siyasat ka underground banking nizam hai."
-    },
-
-    plainUrdu: {
-      text: "جب بڑی طاقتیں ڈالر کو بطور ہتھیار استعمال کر کے غیر ملکی ذخائر منجمد کرتی ہیں، تو بٹ کوائن اور کرپٹو نیٹ ورکس ریاستوں کے لیے بقا کا راستہ بن جاتے ہیں۔ بلاک چین اب محض شوق نہیں بلکہ عالمی سیاست کی خفیہ مالیاتی پناہ گاہ ہے۔"
-    }
-  },
-
-  {
-    topic: "Taiwan Annexation and the Collapse of Western Deterrence",
-    category: 'CHINA_TAIWAN_PLA',
-
-    english: {
-      text: "A Chinese annexation of Taiwan wouldn't just redraw a Pacific map; it would permanently break the post-1945 American security umbrella. If Washington cannot protect the island that powers the world's computers, no treaty in Asia holds value."
-    },
-
-    romanUrdu: {
-      text: "China ka Taiwan par qabza sirf naqsha nahi badlega, balkay America ki 80 saal purani security umbrella ko tor day ga. Agar America us jazeeray ko nahi bacha sakta jo poori duniya ke computers chalata hai, to Asia mein koi muahida bacha nahi."
-    },
-
-    plainUrdu: {
-      text: "چین کا تائیوان پر قبضہ محض نقشہ تبدیل نہیں کرے گا، بلکہ امریکی دفاعی چھتری کا خاتمہ کر دے گا۔ اگر واشنگٹن اس جزیرے کی حفاظت نہ کر سکا جو دنیا بھر کے کمپیوٹرز چلاتا ہے، تو ایشیا میں اس کے کسی دفاعی معاہدے کی کوئی وقعت نہیں رہے گی۔"
-    }
-  },
-
-  {
-    topic: "PLA Electronic Warfare over the First Island Chain",
-    category: 'RADARS_ELECTRONIC_WARFARE',
-
-    english: {
-      text: "The real battle for the Taiwan Strait is already being fought silently in the electromagnetic spectrum. PLA phased-array radars and airborne jammers test US carrier battle groups daily, mapping frequencies before the first missile is ever fueled."
-    },
-
-    romanUrdu: {
-      text: "Taiwan Strait ki asal larrai abhi se electromagnetic spectrum mein khamoshi se lari ja rahi hai. PLA ke radars aur jammers rozana US naval ships ke frequencies scan kar rahay hain, is se pehle ke pehla missile launch ho."
-    },
-
-    plainUrdu: {
-      text: "آبنائے تائیوان کی اصل جنگ الیکٹرو میگنیٹک میدان میں خاموشی سے جاری ہے۔ چینی فوج کے فیزڈ ارے ریڈارز اور جیمرز روزانہ امریکی بحری بیڑوں کی فریکوئنسیز اسکین کر رہے ہیں، قبل اس کے کہ پہلا باقاعدہ میزائل داغا جائے۔"
+      text: "بگرام کا معاملہ کبھی افغانستان کا تھا ہی نہیں۔ اصل نظر ہمیشہ چین، ایران اور پاکستان پر تھی۔ جب عالمی سپر پاورز انٹیلی جنس اڈوں اور راہداریوں کا سودا کرتی ہیں، تو جغرافیے کے درمیان پھنسے ممالک ہی سب سے بھاری قیمت چکاتے ہیں۔"
     }
   }
 ];
 
-
-/* =========================================================
-   CONFIGURATION
-========================================================= */
-
+let categoryRotationIndex = 0;
 let storyCounter = 0;
 
 const MIN_CHARACTERS = 180;
-const MAX_CHARACTERS = 260;
-
-const DEFAULT_CATEGORY = 'GEOPOLITICS_TECH_DEFENSE';
-
+const MAX_CHARACTERS = 265;
+const ABSOLUTE_MAX_CHARACTERS = 280;
 
 /* =========================================================
    TEXT FORMATTING AND VALIDATION
@@ -306,236 +299,176 @@ function formatEntry(text) {
     charCount: count.charCount,
     weightedCount: count.weightedCount,
     isOverLimit: count.isOverLimit,
-
     isValidLength:
-      count.charCount >= 80 &&
-      count.charCount <= 280 &&
+      count.charCount >= MIN_CHARACTERS &&
+      count.charCount <= ABSOLUTE_MAX_CHARACTERS &&
       !count.isOverLimit
   };
 }
 
-
-function validateAIResponse(res, chosenTopic) {
+function validateAIResponse(res, chosenTopic, chosenCategory = 'GEOPOLITICS_STRATEGY') {
   if (!res || typeof res !== 'object') {
-    throw new Error('Invalid AI response');
+    throw new Error('Invalid AI response object');
   }
 
-  if (typeof res.text !== 'string' || !res.text.trim()) {
-    throw new Error('AI response contains no post text');
+  const rawText = typeof res.text === 'string' ? res.text.trim() : '';
+  if (!rawText || rawText.length < 80) {
+    throw new Error('AI returned empty or overly short text');
   }
 
-  const entry = formatEntry(res.text);
-
-  if (entry.isOverLimit || entry.charCount < 40) {
-    throw new Error(
-      `Invalid character count: ${entry.charCount} (over limit: ${entry.isOverLimit})`
-    );
+  const entry = formatEntry(rawText);
+  if (entry.isOverLimit || entry.charCount > ABSOLUTE_MAX_CHARACTERS) {
+    throw new Error(`AI post exceeds X 280-char limit (${entry.charCount} chars)`);
   }
 
   return {
-    topic:
-      typeof res.topic === 'string' && res.topic.trim()
-        ? res.topic.trim()
-        : chosenTopic,
-
-    category:
-      typeof res.category === 'string' && res.category.trim()
-        ? res.category.trim()
-        : DEFAULT_CATEGORY,
-
+    topic: typeof res.topic === 'string' && res.topic.trim() ? res.topic.trim() : chosenTopic,
+    category: typeof res.category === 'string' && res.category.trim() ? res.category.trim() : chosenCategory,
     english: entry
   };
 }
 
-
 /* =========================================================
-   AI PROMPT
+   MASTER ANALYTICAL AI PROMPT
 ========================================================= */
 
-function createEnglishPrompt(chosenTopic, usedTopics) {
+function createEnglishPrompt(chosenTopic, usedTopics, targetCategory = null) {
   const avoidListStr =
     usedTopics.length > 0
       ? usedTopics.slice(0, 30).join('; ')
       : 'None';
 
-  return `You are an expert social commentator and strategic writer for X (Twitter) who writes in simple, powerful, and natural human English.
+  const categoryContext = targetCategory
+    ? `TARGET THEMATIC FOCUS: ${targetCategory.name}\nKEY TERMS TO DRAW ON (USE MEANINGFULLY): ${targetCategory.keywords.slice(0, 8).join(', ')}`
+    : `KEY DOMAINS: China/Taiwan/PLA, Military Strategy (Sun Tzu, EW, Radars), Iran/Hormuz/Oil, Financial Warfare/Sanctions, AI/Cyber Warfare, Historical Corridors`;
+
+  return `# X-BOT — ADVANCED GEOPOLITICAL & STRATEGIC ANALYSIS CONTENT ENGINE
+
+You are an elite geopolitical and strategic defense analyst writing intellectual, insightful, and thought-provoking analysis for X (formerly Twitter).
 
 TOPIC: "${chosenTopic}"
 
-MISSION:
-Write a single, compelling X post that prioritizes NATURAL STORYTELLING, SIMPLE ENGLISH, READABILITY, AND LOGICAL FLOW over complex vocabulary and technical terminology.
+${categoryContext}
 
 ============================================================
-1. WRITING STYLE
+1. CORE CONTENT DIRECTION
 ============================================================
-- Use A2-level English wherever possible (simple, everyday words).
-- Write in simple, natural, human-like English.
-- Make every sentence connect naturally to the next.
-- Present ONE central idea and develop it clearly.
-- The reader must understand the entire message on the FIRST read.
-- Use strong opinions, interesting comparisons, and meaningful observations.
-- Make the post thought-provoking without making it unnecessarily complicated.
-- Prefer short, powerful sentences over long, technical sentences.
+- Write as a seasoned geopolitical analyst explaining the deeper strategic meaning behind world events.
+- Explore strategic conflicts, hidden economic connections, technological dependencies, or shifts in global power.
+- Absolutely NO ordinary motivational posts, generic educational primers, or superficial news summaries.
+- Deliver intellectual depth with meaningful cause-and-effect reasoning.
 
 ============================================================
-2. AVOID THESE PROBLEMS (CRITICAL)
+2. ANALYTICAL WRITING STYLE (B1–B2 FLUENCY)
 ============================================================
-DO NOT:
-- Force technical terms, military terminology, or political keywords into sentences.
-- Write like an academic research paper or a news headline.
-- Use complicated vocabulary just to make a post sound intelligent.
-- Combine too many unrelated ideas in one post.
-- Use unexplained abbreviations, figures, or technical concepts.
-- Sacrifice readability to cram in more information.
-- Specifically avoid forced or pretentious phrases such as:
-  * "3-nanometer silicon"
-  * "mathematically obsolete"
-  * "semiconductor shield"
-  * "algorithmic encirclement"
-  * "unprecedented paradigm"
-  * "multilateral hegemony"
-
-Use technical words ONLY when they are essential to the central message, and always explain them in plain words.
+- Analytical, not simplistic. Use natural, fluent English (B1–B2 level).
+- Strategic vocabulary and geopolitical terminology are WELCOME when they add analytical value (e.g. deterrence, semiconductor foundries, maritime blockade, chokepoints, electromagnetic spectrum, sovereign reserves).
+- NEVER force keywords into sentences just to sound intelligent. Every technical term must directly advance your central argument.
+- Connect keywords through clear, logical explanations. Avoid disconnected sentences or lists of weapons/politicians.
+- Distinguish confirmed strategic facts from allegations and interpretations. No sensationalism or fabricated breaking news.
 
 ============================================================
-3. STYLE REFERENCES (Study their cadence, simplicity & contrast)
+3. 5-PART ANALYTICAL STORYTELLING STRUCTURE
 ============================================================
-Reference 1:
-"Bagram was never about Afghanistan. It was always about China, Iran, and Pakistan. If US-Taliban are talking about spying on Beijing and building a proxy against Tehran, Kabul becomes a marketplace. And Pakistan pays the price for being in the middle."
-
-Reference 2:
-"Our ancestors with no degrees and limited means bought land — real assets. Today, we sell that very land to buy a piece of paper called a degree. Why fund research labs when a ring light is cheaper? A trap no generation has ever faced before."
-
-Notice why these work:
-- Easy-to-understand English.
-- Natural sentence flow (one thought leads directly into the next).
-- Clear comparisons (reality vs illusion).
-- Simple words carrying meaningful ideas.
-- A punchy final thought that stays with the reader.
-(Use them as STYLE REFERENCES, not as topics to repeat).
+Build your post around ONE central analytical thesis:
+1. HOOK: Open with a bold geopolitical observation or unexpected strategic connection.
+2. CONTEXT: Explain the relevant conflict, development, or historical background.
+3. ANALYSIS: Connect military, economic, technological, or political factors.
+4. IMPLICATION: Explain why the development matters beyond the immediate region.
+5. FINAL THOUGHT: Finish with a memorable analytical observation that leaves the reader reflecting.
+(Maintain natural logical flow rather than treating this as a rigid formula).
 
 ============================================================
-4. NATURAL STORY STRUCTURE
+4. QUALITY STYLE BENCHMARKS (STUDY THEIR REASONING & DEPTH)
 ============================================================
-Follow this structure naturally:
-1. Opening: Start with an interesting observation, bold statement, or unexpected comparison.
-2. Development: Explain the situation using simple and connected sentences.
-3. Insight: Show the deeper meaning, consequence, or contradiction.
-4. Ending: Finish with a memorable thought that makes the reader reflect.
+Benchmark 1 (Taiwan & Semiconductors):
+"Taiwan's importance goes far beyond its geography. Its semiconductor industry connects the island to the global economy. Any military crisis in the Taiwan Strait disrupts AI development, chip supply, and global trade. Control over Taiwan carries consequences far beyond Asia."
+
+Benchmark 2 (Iran & Oil Markets):
+"A conflict involving Iran is never limited to the Middle East. The Strait of Hormuz carries a major share of global oil trade. Any disruption immediately rocks energy prices, stock markets, and foreign economies. Geography remains a decisive weapon in world politics."
+
+Benchmark 3 (Military Strategy & Technology):
+"Sun Tzu argued that understanding the enemy is essential to victory. Modern military strategy follows a similar principle. Satellite surveillance, cyber intelligence, and electronic warfare weaken an opponent before missiles launch. Information is as valuable as firepower."
 
 ============================================================
-5. TOPIC FLEXIBILITY
+5. STRICT CONSTRAINTS & FORMAT
 ============================================================
-This bot covers geopolitics, international relations, technology, artificial intelligence, cybersecurity, education, economics, society, and other important topics.
-- Maintain the same simple and natural writing style regardless of the topic.
-- A post about military technology or microchips must be just as easy to read as a post about education or society.
-- Do not confuse expertise with complicated language.
-
-============================================================
-6. INTERNAL QUALITY CHECK (Self-Review Before Output)
-============================================================
-Before returning, internally evaluate:
-✓ Can an ordinary English learner understand it?
-✓ Does it sound like a human expressing an interesting idea?
-✓ Does every sentence connect logically?
-✓ Is there one clear central message?
-✓ Are technical words genuinely necessary?
-✓ Does the ending leave an impression?
-✓ Would a reader understand it without researching the topic?
-If the answer to any important question is NO, rewrite the post simply and cleanly.
-
-============================================================
-7. LENGTH & FORMAT RULES
-============================================================
-- Length: Target 180 to 260 characters (must comfortably fit under 280 X characters).
-- Write one complete, standalone post.
-- No hashtags.
-- No emojis.
-- No generic AI intro phrases (never start with "In today's world...", "It is important to remember...", "Imagine a world...").
-- Do NOT repeat or closely match any of these recently published topics:
+- Length: Target 190 to 260 characters. ABSOLUTE MAXIMUM: 280 characters.
+- Must fit within Twitter/X's 280 character limit.
+- ZERO hashtags (no #tags at all).
+- ZERO emojis.
+- Avoid generic AI openers (e.g. "In today's world...", "It is important to remember...", "Imagine a world...").
+- Do NOT duplicate or closely rephrase any of these recently published topics:
 ${avoidListStr}
 
-FINAL PRIORITY:
-Readability > Natural Flow > Clear Meaning > Strong Insight > Vocabulary Complexity.
+EDITORIAL PRIORITY:
+Analytical depth > Logical connections > Natural storytelling > Strategic terminology > Strong conclusion.
 
-The goal is not to make every post sound intellectual. The goal is to make every post communicate an intelligent idea in simple, powerful English.
-
-Return ONLY valid JSON in this exact structure:
+Return ONLY valid JSON matching this exact structure:
 {
   "topic": "${chosenTopic}",
-  "category": "GEOPOLITICS_TECH_SOCIETY",
-  "text": "Your final simple, powerful X post here"
+  "category": "GEOPOLITICAL_STRATEGY",
+  "text": "Your complete analytical post here"
 }`;
 }
 
-
 /* =========================================================
-   GENERATE ENGLISH POST
+   GENERATE ENGLISH POST WITH CATEGORY ROTATION
 ========================================================= */
 
 export async function generateEnglishPost(customTopic = '') {
-  const xaiKey =
-    process.env.GROK_API_KEY ||
-    process.env.XAI_API_KEY;
-
+  const xaiKey = process.env.GROK_API_KEY || process.env.XAI_API_KEY;
   const groqKey = process.env.GROQ_API_KEY;
 
   let usedTopics = [];
-
   try {
     usedTopics = await getAllUsedTopics(200);
   } catch (error) {
     console.warn('[Database] Could not retrieve used topics:', error.message);
   }
 
-  const normalizedUsedTopics = usedTopics.map(
-    topic => String(topic).toLowerCase().trim()
-  );
+  const normalizedUsedTopics = usedTopics.map(t => String(t).toLowerCase().trim());
 
-  const unusedCurated = CURATED_STORY_TOPICS.filter(
-    item =>
-      !normalizedUsedTopics.includes(
-        item.topic.toLowerCase().trim()
-      )
-  );
+  // Determine Category Rotation for Option 5 Fresh Post Diversity
+  const targetCategory = CONTENT_CATEGORIES[categoryRotationIndex % CONTENT_CATEGORIES.length];
+  categoryRotationIndex++;
 
   let chosenTopic = customTopic.trim();
+  let chosenCategory = targetCategory.id;
 
   if (!chosenTopic) {
-    if (unusedCurated.length > 0) {
-      chosenTopic =
-        unusedCurated[storyCounter % unusedCurated.length].topic;
+    // Prefer an unused curated topic from the current target category
+    const categoryCurated = CURATED_STORY_TOPICS.filter(
+      item => item.category === targetCategory.id && !normalizedUsedTopics.includes(item.topic.toLowerCase().trim())
+    );
+
+    // If none unused in current category, check any unused in the entire curated bank
+    const allUnusedCurated = CURATED_STORY_TOPICS.filter(
+      item => !normalizedUsedTopics.includes(item.topic.toLowerCase().trim())
+    );
+
+    if (categoryCurated.length > 0) {
+      chosenTopic = categoryCurated[storyCounter % categoryCurated.length].topic;
+      chosenCategory = categoryCurated[storyCounter % categoryCurated.length].category;
+    } else if (allUnusedCurated.length > 0) {
+      chosenTopic = allUnusedCurated[storyCounter % allUnusedCurated.length].topic;
+      chosenCategory = allUnusedCurated[storyCounter % allUnusedCurated.length].category;
     } else {
-      chosenTopic =
-        CURATED_STORY_TOPICS[
-          storyCounter % CURATED_STORY_TOPICS.length
-        ].topic;
+      chosenTopic = CURATED_STORY_TOPICS[storyCounter % CURATED_STORY_TOPICS.length].topic;
+      chosenCategory = CURATED_STORY_TOPICS[storyCounter % CURATED_STORY_TOPICS.length].category;
     }
 
     storyCounter++;
   }
 
-  const prompt = createEnglishPrompt(
-    chosenTopic,
-    usedTopics
-  );
+  const prompt = createEnglishPrompt(chosenTopic, usedTopics, targetCategory);
 
-
-  /* ---------------- GROK ---------------- */
-
+  /* ---------------- 1. xAI GROK API ---------------- */
   if (xaiKey) {
     try {
       const res = await callXai(prompt, 'grok-beta');
-
-      const validated = validateAIResponse(
-        res,
-        chosenTopic
-      );
-
-      const isDup = await isDuplicatePost(
-        validated.topic,
-        validated.english.text
-      );
+      const validated = validateAIResponse(res, chosenTopic, chosenCategory);
+      const isDup = await isDuplicatePost(validated.topic, validated.english.text);
 
       if (!isDup) {
         await saveGeneratedPost({
@@ -550,32 +483,18 @@ export async function generateEnglishPost(customTopic = '') {
           provider: 'xAI Grok API (Paid)'
         };
       }
-
-      console.warn('[Grok] Duplicate post rejected.');
-
+      console.warn('[Grok] Duplicate post rejected, trying next...');
     } catch (error) {
-      console.warn(
-        `[Grok API] ${error.message}. Falling back to Groq...`
-      );
+      console.warn(`[Grok API] ${error.message}. Falling back to Groq...`);
     }
   }
 
-
-  /* ---------------- GROQ ---------------- */
-
+  /* ---------------- 2. GROQ CLOUD API ---------------- */
   if (groqKey) {
     try {
       const res = await callGroq(prompt, groqKey);
-
-      const validated = validateAIResponse(
-        res,
-        chosenTopic
-      );
-
-      const isDup = await isDuplicatePost(
-        validated.topic,
-        validated.english.text
-      );
+      const validated = validateAIResponse(res, chosenTopic, chosenCategory);
+      const isDup = await isDuplicatePost(validated.topic, validated.english.text);
 
       if (!isDup) {
         await saveGeneratedPost({
@@ -590,220 +509,158 @@ export async function generateEnglishPost(customTopic = '') {
           provider: 'Groq Cloud API (Free)'
         };
       }
-
-      console.warn('[Groq] Duplicate post rejected.');
-
+      console.warn('[Groq] Duplicate post rejected, using curated fallback...');
     } catch (error) {
-      console.warn(
-        `[Groq API] ${error.message}. Falling back to curated bank...`
-      );
+      console.warn(`[Groq API] ${error.message}. Falling back to curated bank...`);
     }
   }
 
-
-  /* ---------------- CURATED FALLBACK ---------------- */
-
-  const matched =
-    unusedCurated.find(
-      item =>
-        item.topic.toLowerCase() === chosenTopic.toLowerCase()
-    ) ||
-    (unusedCurated.length > 0
-      ? unusedCurated[storyCounter % unusedCurated.length]
-      : null) ||
+  /* ---------------- 3. CURATED ANALYTICAL ENGINE ---------------- */
+  const found =
     CURATED_STORY_TOPICS.find(
-      item =>
-        item.topic.toLowerCase() === chosenTopic.toLowerCase()
+      item => item.topic.toLowerCase().trim() === chosenTopic.toLowerCase().trim()
     ) ||
-    CURATED_STORY_TOPICS[storyCounter % CURATED_STORY_TOPICS.length] ||
-    CURATED_STORY_TOPICS[0];
+    CURATED_STORY_TOPICS.find(item => item.category === chosenCategory) ||
+    CURATED_STORY_TOPICS[storyCounter % CURATED_STORY_TOPICS.length];
 
-  const entry = formatEntry(matched.english.text);
+  const entry = formatEntry(found.english.text);
 
   await saveGeneratedPost({
-    topic: matched.topic,
-    category: matched.category,
+    topic: found.topic,
+    category: found.category,
     english: entry,
-    romanUrdu: formatEntry(matched.romanUrdu.text),
-    plainUrdu: formatEntry(matched.plainUrdu.text),
-    provider: 'Curated Defense Strategy Engine'
+    romanUrdu: formatEntry(found.romanUrdu?.text || ''),
+    plainUrdu: formatEntry(found.plainUrdu?.text || ''),
+    provider: 'Curated Geopolitical Engine'
   });
 
   return {
-    topic: matched.topic,
-    category: matched.category,
+    topic: found.topic,
+    category: found.category,
     english: entry,
-    provider: 'Curated Defense Strategy Engine'
+    provider: 'Curated Geopolitical Engine'
   };
 }
 
-
 /* =========================================================
-   ROMAN URDU GENERATION
+   PAKISTANI ROMAN URDU TRANSLATION
 ========================================================= */
 
-export async function generateRomanUrduFromEnglish(
-  englishPost,
-  topic = ''
-) {
-  const xaiKey =
-    process.env.GROK_API_KEY ||
-    process.env.XAI_API_KEY;
-
+export async function generateRomanUrduFromEnglish(englishPost, topic = '') {
+  const xaiKey = process.env.GROK_API_KEY || process.env.XAI_API_KEY;
   const groqKey = process.env.GROQ_API_KEY;
 
-  const prompt = `Convert this English geopolitical and defense post into natural Pakistani conversational Roman Urdu.
+  const prompt = `Convert this English geopolitical and strategic analysis post into natural Pakistani conversational Roman Urdu.
 
 ENGLISH POST:
 "${englishPost.text}"
 
 RULES:
 - Use natural Pakistani Roman Urdu.
-- Preserve the exact meaning and strategic insight.
-- Use simple, familiar words.
-- Keep it between 180 and 260 characters.
+- Preserve the exact analytical meaning and strategic insight.
+- Use dignified, familiar vocabulary (B1-B2 equivalent).
+- Keep length between 180 and 265 characters (strictly under 280 X chars).
 - Never use hashtags.
-- Do not add new facts.
 - Return ONLY valid JSON:
-
 {
   "text": "Roman Urdu text here"
 }`;
 
-
   if (xaiKey) {
     try {
       const res = await callXai(prompt, 'grok-beta');
-
       if (res && res.text) {
         const entry = formatEntry(res.text);
         if (!entry.isOverLimit && entry.charCount > 20) return entry;
       }
-
     } catch (error) {
       console.warn('[Roman Urdu Grok]', error.message);
     }
   }
 
-
   if (groqKey) {
     try {
       const res = await callGroq(prompt, groqKey);
-
       if (res && res.text) {
         const entry = formatEntry(res.text);
         if (!entry.isOverLimit && entry.charCount > 20) return entry;
       }
-
     } catch (error) {
       console.warn('[Roman Urdu Groq]', error.message);
     }
   }
 
-
   const found =
     CURATED_STORY_TOPICS.find(
-      item =>
-        item.topic === topic ||
-        item.english.text === englishPost.text
-    ) ||
-    CURATED_STORY_TOPICS[0];
+      item => item.topic === topic || item.english.text === englishPost.text
+    ) || CURATED_STORY_TOPICS[0];
 
   return formatEntry(found.romanUrdu.text);
 }
 
-
 /* =========================================================
-   URDU SCRIPT GENERATION
+   PLAIN URDU SCRIPT TRANSLATION
 ========================================================= */
 
-export async function generatePlainUrduFromEnglish(
-  englishPost,
-  topic = ''
-) {
-  const xaiKey =
-    process.env.GROK_API_KEY ||
-    process.env.XAI_API_KEY;
-
+export async function generatePlainUrduFromEnglish(englishPost, topic = '') {
+  const xaiKey = process.env.GROK_API_KEY || process.env.XAI_API_KEY;
   const groqKey = process.env.GROQ_API_KEY;
 
-  const prompt = `Convert this English geopolitical and defense post into clear, dignified Pakistani Urdu script (اردو).
+  const prompt = `Convert this English geopolitical and strategic analysis post into clear, dignified Pakistani Urdu script (اردو).
 
 ENGLISH POST:
 "${englishPost.text}"
 
 RULES:
-- Write natural and grammatically correct Urdu.
-- Preserve the original meaning and strategic insight.
-- Use clear Pakistani Urdu.
-- Keep it between 180 and 260 characters.
+- Write natural, grammatically correct Pakistani Urdu script.
+- Preserve the original strategic meaning and analytical depth.
+- Keep length between 180 and 265 characters (strictly under 280 X chars).
 - Never use hashtags.
-- Do not add new facts.
 - Return ONLY valid JSON:
-
 {
-  "text": "مختصر اور جامع اردو متن یہاں تحریر کریں"
+  "text": "مختصر، جامع اور مدلل اردو متن یہاں تحریر کریں"
 }`;
-
 
   if (xaiKey) {
     try {
       const res = await callXai(prompt, 'grok-beta');
-
       if (res && res.text) {
         const entry = formatEntry(res.text);
         if (!entry.isOverLimit && entry.charCount > 20) return entry;
       }
-
     } catch (error) {
-      console.warn('[Urdu Grok]', error.message);
+      console.warn('[Plain Urdu Grok]', error.message);
     }
   }
-
 
   if (groqKey) {
     try {
       const res = await callGroq(prompt, groqKey);
-
       if (res && res.text) {
         const entry = formatEntry(res.text);
         if (!entry.isOverLimit && entry.charCount > 20) return entry;
       }
-
     } catch (error) {
-      console.warn('[Urdu Groq]', error.message);
+      console.warn('[Plain Urdu Groq]', error.message);
     }
   }
 
-
   const found =
     CURATED_STORY_TOPICS.find(
-      item =>
-        item.topic === topic ||
-        item.english.text === englishPost.text
-    ) ||
-    CURATED_STORY_TOPICS[0];
+      item => item.topic === topic || item.english.text === englishPost.text
+    ) || CURATED_STORY_TOPICS[0];
 
   return formatEntry(found.plainUrdu.text);
 }
 
-
 /* =========================================================
-   GENERATE MULTILINGUAL POST
+   MULTILINGUAL POST GENERATION (3 LANGUAGES IN 1 CALL)
 ========================================================= */
 
 export async function generateMultilingualPost(customTopic = '') {
   const eng = await generateEnglishPost(customTopic);
-
-  const roman = await generateRomanUrduFromEnglish(
-    eng.english,
-    eng.topic
-  );
-
-  const plain = await generatePlainUrduFromEnglish(
-    eng.english,
-    eng.topic
-  );
+  const roman = await generateRomanUrduFromEnglish(eng.english, eng.topic);
+  const plain = await generatePlainUrduFromEnglish(eng.english, eng.topic);
 
   return {
     topic: eng.topic,
@@ -815,146 +672,60 @@ export async function generateMultilingualPost(customTopic = '') {
   };
 }
 
-
 /* =========================================================
-   BACKWARD COMPATIBILITY
-========================================================= */
-
-export const CURATED_A2_TOPICS = CURATED_STORY_TOPICS;
-
-
-/* =========================================================
-   GROQ API
+   API CALL WRAPPERS (GROQ & XAI)
 ========================================================= */
 
 async function callGroq(prompt, apiKey) {
   const groq = new Groq({ apiKey });
-
-  const model =
-    process.env.AI_MODEL || 'llama-3.3-70b-versatile';
+  const model = process.env.AI_MODEL || 'llama-3.3-70b-versatile';
 
   const completion = await groq.chat.completions.create({
     model,
-
     messages: [
       {
         role: 'system',
-        content: `You are a professional geopolitical and technology intelligence analyst.
-
-Write concise, evidence-conscious and high-quality content for X.
-
-Use simple A2-level English when English is requested.
-Use natural language for Urdu translations.
-Avoid clickbait, exaggerated claims and hashtags.
-Never invent facts or statistics.
-Return only valid JSON matching the requested structure.`
+        content: 'You are an advanced geopolitical intelligence analyst writing analytical commentary for X (Twitter).'
       },
-      {
-        role: 'user',
-        content: prompt
-      }
+      { role: 'user', content: prompt }
     ],
-
-    response_format: {
-      type: 'json_object'
-    },
-
-    temperature: 0.7
+    response_format: { type: 'json_object' },
+    temperature: 0.6
   });
 
-  const rawJson =
-    completion.choices[0]?.message?.content;
-
-  if (!rawJson) {
-    throw new Error('Groq returned an empty response.');
-  }
-
+  const rawJson = completion.choices[0]?.message?.content;
   return JSON.parse(rawJson);
 }
 
-
-/* =========================================================
-   xAI / GROK API
-========================================================= */
-
 async function callXai(prompt, model = 'grok-beta') {
-  const apiKey =
-    process.env.GROK_API_KEY ||
-    process.env.XAI_API_KEY;
+  const apiKey = process.env.GROK_API_KEY || process.env.XAI_API_KEY;
 
-  if (!apiKey) {
-    throw new Error('xAI API key is missing.');
-  }
-
-  const response = await fetch(
-    'https://api.x.ai/v1/chat/completions',
-    {
-      method: 'POST',
-
-      headers: {
-        Authorization: `Bearer ${apiKey}`,
-        'Content-Type': 'application/json'
-      },
-
-      body: JSON.stringify({
-        model: process.env.AI_MODEL || model,
-
-        messages: [
-          {
-            role: 'system',
-            content: `You are a professional geopolitical and technology intelligence analyst.
-
-Write concise, evidence-conscious and high-quality content for X.
-
-Use simple A2-level English when English is requested.
-Use natural language for Urdu translations.
-Avoid clickbait, exaggerated claims and hashtags.
-Never invent facts or statistics.
-Return only valid JSON matching the requested structure.`
-          },
-
-          {
-            role: 'user',
-            content: prompt
-          }
-        ],
-
-        response_format: {
-          type: 'json_object'
+  const response = await fetch('https://api.x.ai/v1/chat/completions', {
+    method: 'POST',
+    headers: {
+      Authorization: `Bearer ${apiKey}`,
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({
+      model: process.env.AI_MODEL || model,
+      messages: [
+        {
+          role: 'system',
+          content: 'You are an advanced geopolitical intelligence analyst writing analytical commentary for X (Twitter).'
         },
-
-        temperature: 0.7
-      })
-    }
-  );
+        { role: 'user', content: prompt }
+      ],
+      temperature: 0.6
+    })
+  });
 
   if (!response.ok) {
-    const errorBody = await response.text();
-
-    throw new Error(
-      `xAI API error ${response.status}: ${errorBody}`
-    );
+    throw new Error(`xAI error HTTP ${response.status}`);
   }
 
   const json = await response.json();
-
-  const content =
-    json.choices?.[0]?.message?.content || '';
-
-  if (!content) {
-    throw new Error('xAI returned an empty response.');
-  }
-
-  try {
-    return JSON.parse(content);
-
-  } catch (error) {
-    const match = content.match(/\{[\s\S]*\}/);
-
-    if (!match) {
-      throw new Error('Invalid JSON returned by xAI.');
-    }
-
-    return JSON.parse(match[0]);
-  }
+  const content = json.choices[0]?.message?.content || '';
+  const match = content.match(/\{[\s\S]*\}/);
+  if (!match) throw new Error('No valid JSON object found in Grok response');
+  return JSON.parse(match[0]);
 }

@@ -204,7 +204,7 @@ export class WhatsAppClient {
   async sendEnglishPostForReview(to, post) {
     const english = post.english || post;
     const body = english.fullPost || english.text;
-    const message = `*NEW ENGLISH POST:*
+    const message = `🇬🇧 *NEW POST (ENGLISH)*
 
 📌 *Topic:* ${post.topic || 'Trending Insight'}
 
