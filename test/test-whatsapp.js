@@ -155,7 +155,7 @@ async function runTests() {
     }).then(r => r.json());
 
     // Allow trigger to start and enter waiting state
-    for (let i = 0; i < 60; i++) {
+    for (let i = 0; i < 200; i++) {
       if (whatsappWorkflow.status === 'AWAITING_APPROVAL' && whatsappWorkflow.currentPendingPost) break;
       await new Promise(r => setTimeout(r, 100));
     }

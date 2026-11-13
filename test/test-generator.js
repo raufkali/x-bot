@@ -81,9 +81,9 @@ const urduCount = calculateXCharacterCount(urduSample);
 assert.strictEqual(urduCount.isOverLimit, false);
 assert.ok(urduCount.charCount > 0);
 
-const longText = 'a'.repeat(510);
+const longText = 'a'.repeat(1010);
 const longCount = calculateXCharacterCount(longText);
-assert.strictEqual(longCount.isOverLimit, true, 'Over 500 characters should trigger isOverLimit');
+assert.strictEqual(longCount.isOverLimit, true, 'Over 1000 characters should trigger isOverLimit');
 console.log('✓ TEST 2 PASSED: Character counting and Unicode weighting working.\n');
 
 // TEST 3: Prompt Building (1, 5, 10 Posts)

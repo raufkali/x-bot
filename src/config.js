@@ -63,6 +63,6 @@ export const config = {
   xCallbackUrl: process.env.X_CALLBACK_URL || 'https://x-bot-7p2s.onrender.com/auth/x/callback',
 
   // Content Generation Profile
-  englishLevel: 'B1-B2 Strategic Analysis',
-  contentThemes: 'China & Taiwan (PLA/TSMC/Chips), Military Strategy (Sun Tzu/EW/Radars), Iran & Middle East (Hormuz/Oil/Proxies), Global Economy & Financial Warfare (Dollar/Sanctions/Supply Chains), AI & Technology (Cyber/Surveillance), Civilization & Strategic Geography'
+  englishLevel: 'A1-A2 Simple Pakistani English',
+  contentThemes: 'Geopolitics, Pakistan Politics & Economy, Social & Regional Issues, AI & Human Society, Climate & Global Power, Satirical Commentary'
 };

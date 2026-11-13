@@ -1,12 +1,11 @@
 /**
- * Validation and Character Counting Utilities for X (Twitter) Content
+ * Validation and Character Counting Utilities for Social Media Content
  *
- * NOTE: Posts are intentionally longer than the standard X 280-char limit.
- * Content is published as a thread or long-form post where needed.
- * Internal character limit is 500 chars.
+ * NOTE: Posts are bold analytical political commentaries.
+ * Target length: 500–900 characters. Maximum limit: 1000 chars.
  */
 
-const X_CHAR_LIMIT = 500;
+const X_CHAR_LIMIT = 1000;
 
 /**
  * Validates the user's topic

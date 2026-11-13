@@ -81,24 +81,40 @@ class WhatsAppWorkflowManager extends EventEmitter {
    * @param {number} [timeoutMs=300000]
    */
   async generateSendAndWait(customTopic = '', timeoutMs = 300000) {
-    const genResult = await this.generateAndSend(customTopic);
-
-    return new Promise((resolve) => {
+    return new Promise(async (resolve) => {
       let timer = null;
+      let genResult = null;
 
       const onDecision = (decision) => {
         if (timer) clearTimeout(timer);
         this.removeListener('owner_decision', onDecision);
         resolve({
           ...decision,
-          topic: decision.topic || genResult.post?.topic,
-          post: genResult.post,
-          sent: genResult.sent,
-          sendError: genResult.error
+          topic: decision.topic || genResult?.post?.topic,
+          post: genResult?.post,
+          sent: genResult?.sent,
+          sendError: genResult?.error
         });
       };
 
+      // Attach listener first so we don't miss early replies
       this.on('owner_decision', onDecision);
+
+      genResult = await this.generateAndSend(customTopic);
+
+      // If owner decision already arrived during generation
+      if (this.status === 'APPROVED' || this.status === 'DISCARDED') {
+        if (timer) clearTimeout(timer);
+        this.removeListener('owner_decision', onDecision);
+        return resolve({
+          action: this.status,
+          status: this.status,
+          topic: genResult?.post?.topic,
+          post: genResult?.post,
+          sent: genResult?.sent,
+          sendError: genResult?.error
+        });
+      }
 
       if (timeoutMs > 0) {
         timer = setTimeout(() => {
@@ -107,9 +123,9 @@ class WhatsAppWorkflowManager extends EventEmitter {
             action: 'TIMEOUT',
             status: 'TIMEOUT',
             message: `Owner did not reply within ${Math.round(timeoutMs / 1000)}s.`,
-            post: genResult.post,
-            sent: genResult.sent,
-            sendError: genResult.error
+            post: genResult?.post,
+            sent: genResult?.sent,
+            sendError: genResult?.error
           });
         }, timeoutMs);
       }

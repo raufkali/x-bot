@@ -1,23 +1,23 @@
 /**
- * X-BOT — Advanced Geopolitical & Strategic Analysis Content Engine
+ * X-BOT — Bold Geopolitical Analysis, Political Commentary & Social Media Engagement
  *
  * Core Focus:
- * - Current global affairs, geopolitical rivalries, and military strategy
- * - Economic warfare, emerging technologies, and international power politics
- * - Sounds like a geopolitical analyst explaining the deeper meaning behind world events
+ * - Bold, analytical, thought-provoking political and geopolitical commentary
+ * - Uses real numbers, comparisons, irony, sarcasm, and uncomfortable questions
+ * - Sounds like an independent commentator who makes readers stop, think, and reply
  *
  * Categories:
- * A. China, Taiwan & Indo-Pacific
- * B. Military Strategy & Intelligence
- * C. Iran, Israel & Middle East
- * D. Global Economy & Financial Warfare
- * E. AI, Technology & Cybersecurity
- * F. Civilization, History & Global Power
+ * 1. Geopolitics & Global Power (India vs Pakistan, China vs USA, Middle East, Sanctions)
+ * 2. Pakistan Politics & Economy (Spending, IMF loans, Defence vs Welfare, Dynasties)
+ * 3. Social & Regional Issues (Balochistan, KPK, Sindh, Punjab, Unequal development)
+ * 4. AI & Human Society (Job replacement, dependency, surveillance, data centres)
+ * 5. Climate & Global Power (Flood injustice, global emissions, rich vs poor)
+ * 6. Satirical Commentary (Sugar vs guns, promises vs reality, everyday irony)
  *
  * Standards:
- * - English Level: Natural, fluent B1–B2 analytical English
- * - Target Length: 350–480 characters (max 500)
- * - Zero hashtags, zero emojis, zero conversational fluff
+ * - English Level: Simple Pakistani English (A1–A2)
+ * - Target Length: 500–900 characters (max 1000), 5–8 sentences with paragraph breaks
+ * - Zero hashtags, zero emojis, no internal labels or bullet lists
  * - Translations: Pakistani Roman Urdu and Plain Urdu script (اردو)
  * - Strict MongoDB SHA-256 deduplication & category rotation
  */
@@ -36,238 +36,184 @@ import {
 
 export const CONTENT_CATEGORIES = [
   {
-    id: 'CHINA_TAIWAN_INDO_PACIFIC',
-    name: 'China, Taiwan & Indo-Pacific',
+    id: 'GEOPOLITICS',
+    name: 'Geopolitics & Global Power',
     keywords: [
-      "People's Liberation Army (PLA)", "Taiwan annexation", "Taiwan Strait",
-      "TSMC", "Semiconductor industry", "Advanced AI chips", "Chip manufacturing",
-      "Silicon supply chains", "Naval blockade", "Military encirclement",
-      "US-China rivalry", "Indo-Pacific strategy", "South China Sea", "Strategic deterrence"
+      'India vs Pakistan', 'China vs USA', 'Iran and oil trade', 'Russia and Ukraine',
+      'Middle East conflicts', 'US military bases', 'International trade and sanctions',
+      'Global power competition', 'Superpowers using smaller countries'
     ]
   },
   {
-    id: 'MILITARY_STRATEGY_INTELLIGENCE',
-    name: 'Military Strategy & Intelligence',
+    id: 'PAKISTAN_POLITICS',
+    name: 'Pakistan Politics & Economy',
     keywords: [
-      "Sun Tzu", "The Art of War", "Military doctrine", "Electronic warfare",
-      "Cyber warfare", "Intelligence operations", "Satellite surveillance",
-      "Military radars", "Missile defence", "Drone warfare", "Hypersonic weapons",
-      "Nuclear deterrence", "Proxy warfare", "Strategic corridors", "Military alliances"
+      'Government spending', 'IMF loans and economic pressure', 'Defence budgets vs public welfare',
+      'Education and healthcare spending', 'Political families and power',
+      'Civilian and military relations', 'Democracy and accountability', 'Pakistan international position'
     ]
   },
   {
-    id: 'IRAN_ISRAEL_MIDDLE_EAST',
-    name: 'Iran, Israel & Middle East',
+    id: 'SOCIAL_ETHNIC_ISSUES',
+    name: 'Social & Regional Issues',
     keywords: [
-      "Iran", "Israel", "United States", "Nuclear programme", "Nuclear deterrence",
-      "Oil prices", "Strait of Hormuz", "Energy security", "Regional proxies",
-      "Missile capabilities", "Cyber attacks", "Middle Eastern power balance",
-      "Sanctions", "Regional escalation"
+      'Punjab, Sindh, Balochistan and KPK', 'Unequal development', 'Resource distribution',
+      'Ethnic representation and voice', 'National unity vs policy fairness',
+      'Different communities in India and Pakistan', 'Language and identity'
     ]
   },
   {
-    id: 'GLOBAL_ECONOMY_FINANCIAL_WARFARE',
-    name: 'Global Economy & Financial Warfare',
+    id: 'AI_HUMAN_SOCIETY',
+    name: 'AI & Human Society',
     keywords: [
-      "Global oil markets", "Stock exchanges", "Cryptocurrency", "Bitcoin",
-      "Economic sanctions", "Dollar dominance", "Financial warfare", "Trade wars",
-      "Global markets", "Supply chain disruption", "Energy corridors",
-      "International trade routes", "Strategic ports", "Economic dependencies"
+      'AI replacing human work', 'Human dependence on AI', 'AI in education and homework',
+      'Digital surveillance and government control', 'AI-generated fake news',
+      'Autonomous military weapons', 'Data centres electricity and water consumption',
+      'Big Tech corporate power'
     ]
   },
   {
-    id: 'AI_TECHNOLOGY_CYBERSECURITY',
-    name: 'AI, Technology & Cybersecurity',
+    id: 'CLIMATE_GLOBAL_POWER',
+    name: 'Climate & Global Power',
     keywords: [
-      "Artificial intelligence", "AI chip race", "Semiconductor dependency",
-      "Cyber espionage", "Digital surveillance", "Digital dictatorship",
-      "Algorithmic control", "Data sovereignty", "Quantum computing",
-      "Cyber attacks", "Critical infrastructure", "Digital currency",
-      "Information warfare", "Technology sanctions"
+      'Pakistan floods and climate damage', 'Global pollution and emissions',
+      'Rich countries vs poor countries', 'Climate funding promises vs reality',
+      'Water shortages and rivers', 'Agriculture and food security', 'Corporate environmental responsibility'
     ]
   },
   {
-    id: 'CIVILIZATION_HISTORY_GLOBAL_POWER',
-    name: 'Civilization, History & Global Power',
+    id: 'SATIRICAL_COMMENTARY',
+    name: 'Double-Meaning & Satirical Commentary',
     keywords: [
-      "Rise and fall of civilizations", "Ancient trade routes", "Silk Road",
-      "Belt and Road Initiative", "Global corridors", "Historical empires",
-      "Civilizational competition", "Geography and power", "Resource control",
-      "Maritime trade", "Strategic geography", "New world order"
+      'Sugar vs guns', 'Pakistan position in world politics', 'Political promises vs reality',
+      'Rich nations vs poor nations', 'AI vs human intelligence',
+      'Military spending vs public welfare', 'Everyday life compared with international politics'
     ]
   }
 ];
 
 /* =========================================================
-   CURATED ANALYTICAL TOPIC BANK (B1-B2 ANALYTICAL BENCHMARKS)
+   CURATED ANALYTICAL TOPIC BANK (500–900 CHARS, A1-A2 ENGLISH)
 ========================================================= */
 
 export const CURATED_STORY_TOPICS = [
-  // Category A: China, Taiwan & Indo-Pacific
+  // 1. Geopolitics: India vs Pakistan
   {
-    topic: "Taiwan and Computer Chips",
-    category: 'CHINA_TAIWAN_INDO_PACIFIC',
+    topic: "India vs Pakistan: Weapons vs Welfare",
+    category: 'GEOPOLITICS',
     english: {
-      text: "China wants Taiwan to become part of China, but Taiwan has its own government. America also supports Taiwan's defence. This makes the situation more serious. If China attacks Taiwan, America may also become involved. But why is Taiwan so important? Because many of the world's computer chips are made there."
+      text: "India spends over 70 billion dollars on its military every year. Pakistan spends around 8 to 9 billion dollars. Yet both countries talk about winning the next war.\n\nMillions of people on both sides of the border still lack clean drinking water, proper hospitals, and decent schools. One country buys advanced fighter jets, while the other spends a huge part of its budget just to keep up.\n\nA country needs security, but it also needs healthy, educated citizens. What is the real point of winning an imaginary war when ordinary people are already losing their lives to poverty and disease?"
     },
     romanUrdu: {
-      text: "China chahta hai ke Taiwan uska hissa ban jaye, lekin Taiwan ki apni government hai. America bhi Taiwan ka saath deta hai. Yeh sab maamlat aur bhi serious ho gaye hain. Agar China ne Taiwan par hamla kiya, to America bhi aa sakta hai. Lekin Taiwan itna ahem kyun hai? Kyunke duniya ke bohot sare computer chips wahan banate hain."
+      text: "India har saal foj par 70 arab dollar se zyada kharch karta hai, jabke Pakistan 8 se 9 arab dollar lagata hai. Lekin dono mulk agli jung jeetne ke daaway karte hain.\n\nBorder ke dono taraf karoron log saaf paani, acche aspatal aur taleem ke liye taras rahe hain. Ek mulk mehnge jangi jahaz khareedta hai, jabke dusra apna bara budget sirf muqabla karne par laga deta hai.\n\nFoj zaroori hai, lekin log bhi to zinda rehne chahiye. Aisi jung jeetne ka kya faida jahan aam shehri pehle hi ghurbat aur beemari se haar raha ho?"
     },
     plainUrdu: {
-      text: "چین چاہتا ہے کہ تائیوان اس کا حصہ بن جائے، لیکن تائیوان کی اپنی حکومت ہے۔ امریکہ بھی تائیوان کا ساتھ دیتا ہے۔ یہ صورتحال اور بھی سنگین ہوتی جا رہی ہے۔ اگر چین نے تائیوان پر حملہ کیا تو امریکہ بھی شامل ہو سکتا ہے۔ لیکن تائیوان اتنا اہم کیوں ہے؟ کیونکہ دنیا کے بہت سارے کمپیوٹر چپس وہاں بنائے جاتے ہیں۔"
-    }
-  },
-  {
-    topic: "China and America's Competition",
-    category: 'CHINA_TAIWAN_INDO_PACIFIC',
-    english: {
-      text: "China and America are competing in many areas, including AI, trade, military power and computer chips. Both countries want to become stronger and protect their interests. This competition is also affecting other countries. But a direct war between these two powers could damage the world economy. Can they compete without starting a major war?"
-    },
-    romanUrdu: {
-      text: "China aur America AI, tijarat, foji taqat aur computer chips mein aapas mein muqabla kar rahay hain. Dono mulk aur taqatwar banna chahte hain aur apne mufadat bachana chahte hain. Yeh muqabla dusre mulkon ko bhi affect kar raha hai. Lekin in dono ke darmiyan seedhi jung poori duniya ki economy ko tabah kar sakti hai. Kya yeh bina bari jung ke muqabla kar sakte hain?"
-    },
-    plainUrdu: {
-      text: "چین اور امریکہ AI، تجارت، فوجی طاقت اور کمپیوٹر چپس میں ایک دوسرے سے مقابلہ کر رہے ہیں۔ دونوں ملک مضبوط بننا چاہتے ہیں۔ یہ مقابلہ دوسرے ملکوں کو بھی متاثر کر رہا ہے۔ لیکن ان دونوں کے درمیان براہ راست جنگ پوری دنیا کی معیشت کو نقصان پہنچا سکتی ہے۔ کیا یہ بغیر بڑی جنگ کے مقابلہ کر سکتے ہیں؟"
+      text: "بھارت ہر سال فوج پر 70 ارب ڈالر سے زیادہ خرچ کرتا ہے، جبکہ پاکستان کا دفاعی بجٹ تقریباً 8 سے 9 ارب ڈالر ہے۔ اس کے باوجود دونوں ملک اگلی جنگ جیتنے کے دعوے کرتے ہیں۔\n\nسرحد کے دونوں طرف کروڑوں لوگ پینے کے صاف پانی، اچھے ہسپتالوں اور تعلیم کے لیے ترس رہے ہیں۔ ایک ملک مہنگے جنگی جہاز خریدتا ہے جبکہ دوسرا صرف برابری قائم رکھنے کے لیے وسائل جھونک دیتا ہے۔\n\nملک کو حفاظت ضرور چاہیے، مگر زندہ اور خوشحال شہری بھی چاہئیں۔ ایسی جنگ جیتنے کا کیا فائدہ جہاں عام انسان پہلے ہی غربت اور بیماری سے ہار رہا ہو؟"
     }
   },
 
-  // Category B: Military Strategy & Intelligence
+  // 2. Satirical Commentary: Sugar vs Guns
   {
-    topic: "Sun Tzu and Modern War",
-    category: 'MILITARY_STRATEGY_INTELLIGENCE',
+    topic: "Sugar vs Guns: The Hidden Danger",
+    category: 'SATIRICAL_COMMENTARY',
     english: {
-      text: "Sun Tzu was a Chinese military thinker who believed that knowing your enemy was very important. His ideas are still useful today. Modern countries collect information about each other's armies, weapons and plans. They also use computers and satellites to watch military movements. The weapons have changed, but the importance of information remains the same."
+      text: "Everyone is terrified of a man carrying a loaded gun. But nobody gets scared of the three big spoons of white sugar in their daily cup of tea.\n\nA bullet can kill a person in one second. But too much sugar damages your heart, destroys your kidneys, and ruins your health slowly over twenty years. We panic over visible dangers that rarely touch us, yet we happily welcome the silent killers sitting right inside our kitchens.\n\nSo tell me honestly: what is actually more dangerous in your daily life — the gun outside your house, or the sugar inside your teacup?"
     },
     romanUrdu: {
-      text: "Sun Tzu ek Chinese military expert tha jis ka aqeeda tha ke dushman ko samajhna bohot zaroori hai. Uske khayal aaj bhi kaam aate hain. Jadeed mulk ek dusre ki fauj, hathiyaron aur plans ki information ikhatta karte hain. Woh computers aur satellites bhi use karte hain. Hathiyar badal gaye hain, lekin information ki ahmiyat wahi hai."
+      text: "Hathiyar uthaye banday se har koi darta hai. Lekin rozana chai ki pyali mein daali gayi teen chamach cheeni se kisi ko darr nahi lagta.\n\nGoli ek second mein jaan le sakti hai. Magar cheeni bees saal mein ahista ahista dil, gurday aur sehat tabah kar deti hai. Hum un khatraat se darte hain jo shayed kabhi na aaein, lekin jo khatra hamare kitchen mein baitha hai use maze se peetay hain.\n\nAb sach bataiye: aap ki zindagi ke liye zyada khatarnak kya hai — bahar khari bandook ya chai mein ghuli cheeni?"
     },
     plainUrdu: {
-      text: "سن زو ایک چینی فوجی ماہر تھا جس کا یقین تھا کہ دشمن کو سمجھنا بہت ضروری ہے۔ اس کے خیالات آج بھی کام آتے ہیں۔ جدید ممالک ایک دوسرے کی فوج، ہتھیاروں اور منصوبوں کی معلومات اکٹھی کرتے ہیں۔ وہ کمپیوٹر اور سیٹلائٹ بھی استعمال کرتے ہیں۔ ہتھیار بدل گئے ہیں، لیکن معلومات کی اہمیت وہی ہے۔"
-    }
-  },
-  {
-    topic: "AI and Modern War",
-    category: 'MILITARY_STRATEGY_INTELLIGENCE',
-    english: {
-      text: "Wars are changing because of AI. Today, armies can use drones to watch enemy movements and find possible targets. AI can also help soldiers understand what is happening on the battlefield. China and America are both investing in this technology. In the future, wars may depend not only on weapons but also on computers."
-    },
-    romanUrdu: {
-      text: "AI ki wajah se jung ka tarika badal raha hai. Aaj faujen drones se dushman ki movements dekh sakti hain aur targets dhundh sakti hain. AI soldiers ko battlefield ki soorat e haal samajhne mein bhi madad karta hai. China aur America dono is technology mein paisa laga rahe hain. Mustaqbil ki jung sirf hathiyaron se nahi, computers se bhi lari jayegi."
-    },
-    plainUrdu: {
-      text: "AI کی وجہ سے جنگ کا طریقہ بدل رہا ہے۔ آج فوجیں ڈرونز سے دشمن کی حرکات دیکھ سکتی ہیں اور اہداف ڈھونڈ سکتی ہیں۔ AI فوجیوں کو میدان جنگ کی صورتحال سمجھنے میں بھی مدد کرتا ہے۔ چین اور امریکہ دونوں اس ٹیکنالوجی میں سرمایہ لگا رہے ہیں۔ مستقبل کی جنگ صرف ہتھیاروں سے نہیں، کمپیوٹرز سے بھی لڑی جائے گی۔"
+      text: "ہتھیار اٹھائے بندے سے ہر کوئی خوفزدہ ہو جاتا ہے۔ لیکن روزانہ چائے کی پیالی میں ڈالی جانے والی تین چمچ چینی سے کسی کو ڈر نہیں لگتا۔\n\nگولی ایک سیکنڈ میں جان لے سکتی ہے۔ مگر حد سے زیادہ چینی بیس سال میں خاموشی سے دل، گردے اور صحت برباد کر دیتی ہے۔ ہم ان خطرات پر شور مچاتے ہیں جو شاذ و نادر سامنے آتے ہیں، لیکن جو خاموش قاتل باورچی خانے میں بیٹھا ہے اسے خوشی سے پیتے ہیں۔\n\nاب سچ بتائیے: آپ کی روزمرہ زندگی کے لیے زیادہ خطرناک کیا ہے — گھر کے باہر کھڑی بندوق یا چائے میں گھلی چینی؟"
     }
   },
 
-  // Category C: Iran, Israel & Middle East
+  // 3. Geopolitics: China vs USA
   {
-    topic: "Iran and the Strait of Hormuz",
-    category: 'IRAN_ISRAEL_MIDDLE_EAST',
+    topic: "China vs USA: Business or Control?",
+    category: 'GEOPOLITICS',
     english: {
-      text: "Iran does not need a nuclear bomb to hurt the West. It just needs to close the Strait of Hormuz for one week. This sea route carries a large amount of the world's oil supply. If it closes, oil prices go up, stock markets fall and many countries start to panic. That is Iran's real power. And everyone knows it."
+      text: "America wants to remain the undisputed boss of the world. China wants to take that seat. Both countries talk endlessly about world peace, free trade, and friendship.\n\nIn reality, both only care about power. China spends hundreds of billions building roads, bridges, and deep-sea ports across Asia and Africa. America responds with trade bans and over 750 military bases across the planet. Smaller countries are trapped in the middle, forced to pick a side.\n\nAre these two superpowers really trying to help the developing world, or are they just fighting over who gets to own the market?"
     },
     romanUrdu: {
-      text: "Iran ko Maghrib ko nuqsan pahunchane ke liye nuclear bomb ki zaroorat nahi. Agar Iran Strait of Hormuz sirf ek hafte ke liye band kar de, to tail ki qeematein barhein gi, stock markets girengi aur bohot se mulk pareshan ho jayenge. Yahi Iran ki asli taqat hai. Aur sab ko pata hai."
+      text: "America duniya ka akela badshah rehna chahta hai. China uski kursi cheenna chahta hai. Dono aalmi aman, azaad tijarat aur dosti ki baatein karte hain.\n\nLekin haqeeqat mein dono ko sirf taqat chahiye. China Asia aur Africa mein arabon dollar ki sarkain aur bandargahain bana raha hai. America pabandiyan lagata hai aur duniya bhar mein 750 se zyada foji adday chalata hai. Chotay mulk darmiyan mein phas kar faisla nahi kar pa rahe.\n\nKya yeh superpowers ghareeb mulkon ki madad kar rahi hain, ya sirf is baat par larr rahi hain ke aalmi market par qabza kiska hoga?"
     },
     plainUrdu: {
-      text: "ایران کو مغرب کو نقصان پہنچانے کے لیے ایٹم بم کی ضرورت نہیں۔ اگر ایران آبنائے ہرمز صرف ایک ہفتے کے لیے بند کر دے تو تیل کی قیمتیں بڑھیں گی، اسٹاک مارکیٹیں گریں گی اور بہت سے ملک پریشان ہو جائیں گے۔ یہی ایران کی اصل طاقت ہے۔ اور سب کو پتا ہے۔"
-    }
-  },
-  {
-    topic: "China Buys Oil from Iran",
-    category: 'IRAN_ISRAEL_MIDDLE_EAST',
-    english: {
-      text: "China buys oil from Iran, while America does not support this trade. The US has placed restrictions on Iran and wants other countries to follow them. But China continues to buy Iranian oil because it needs energy for its industries. This creates more tension between China and America. Oil is not just about money. It is also about power."
-    },
-    romanUrdu: {
-      text: "China Iran se tail khareedta hai, jabke America is tijarat ko pasand nahi karta. America ne Iran par pabandian lagayi hain aur chahta hai ke baaki mulk bhi manen. Lekin China Iranian tail kharidta rehta hai kyunke use apni industries ke liye energy chahiye. Isse China aur America ke darmiyan tanaao badhta hai. Tail sirf paisay ka maamla nahi. Yeh taqat ka bhi sawaal hai."
-    },
-    plainUrdu: {
-      text: "چین ایران سے تیل خریدتا ہے، جبکہ امریکہ اس تجارت کو پسند نہیں کرتا۔ امریکہ نے ایران پر پابندیاں لگائی ہیں اور چاہتا ہے کہ باقی ملک بھی مانیں۔ لیکن چین ایرانی تیل خریدتا رہتا ہے کیونکہ اسے اپنی صنعتوں کے لیے توانائی چاہیے۔ اس سے چین اور امریکہ کے درمیان تناؤ بڑھتا ہے۔ تیل صرف پیسے کا معاملہ نہیں۔ یہ طاقت کا بھی سوال ہے۔"
+      text: "امریکہ دنیا کا بلا شرکت غیرے سردار رہنا چاہتا ہے۔ چین یہ کرسی حاصل کرنے کی دوڑ میں ہے۔ دونوں ملک عالمی امن، آزاد تجارت اور دوستی کی لمبی لمبی باتیں کرتے ہیں۔\n\nمگر حقیقت یہ ہے کہ دونوں کو صرف طاقت اور غلبہ چاہیے۔ چین ایشیا اور افریقہ میں اربوں ڈالر سے سڑکیں اور بندرگاہیں بنا رہا ہے۔ امریکہ پابندیاں لگاتا ہے اور دنیا بھر میں 750 سے زیادہ فوجی اڈے چلاتا ہے۔ چھوٹے ممالک درمیان میں پھنس کر قیمت چکا رہے ہیں۔\n\nکیا یہ دونوں طاقتیں غریب ممالک کی مدد کر رہی ہیں، یا صرف اس بات پر دست و گریباں ہیں کہ دنیا کے وسائل پر قبضہ کس کا ہوگا؟"
     }
   },
 
-  // Category D: Global Economy & Financial Warfare
+  // 4. AI & Human Society
   {
-    topic: "CPEC and Gwadar Port",
-    category: 'GLOBAL_ECONOMY_FINANCIAL_WARFARE',
+    topic: "AI and Thinking: Are We Becoming Helpless?",
+    category: 'AI_HUMAN_SOCIETY',
     english: {
-      text: "Pakistan has an important location because it connects different parts of Asia. China is investing in the China-Pakistan Economic Corridor, also known as CPEC. Gwadar Port is an important part of this project. China wants better trade routes, while Pakistan hopes to improve its economy. This project can bring opportunities, but security and good planning are also important."
+      text: "Artificial intelligence can now write your office emails, pass university exams, and create complete computer software in seconds. It looks like magical progress.\n\nBut look at what is happening to the human mind. Students don't read books anymore because a bot writes their homework. Young professionals don't solve difficult problems because an algorithm gives them the answer. When you stop using your muscles, your body gets weak. When you stop using your brain, your thinking dies.\n\nTechnology was invented to make human beings stronger and freer. So why does it feel like AI is slowly turning us into helpless spectators?"
     },
     romanUrdu: {
-      text: "Pakistan ki location ahem hai kyunke yeh Asia ke mukhtalif hisson ko jor-ti hai. China Pakistan mein CPEC ke zariye paisa laga raha hai. Gwadar Port is project ka ek ahem hissa hai. China behtar tijarati rasten chahta hai jabke Pakistan apni economy behtar karna chahta hai. Yeh project mauke la sakta hai, lekin security aur achi planning bhi zaruri hai."
+      text: "AI ab aap ke emails likh sakti hai, exams pass kar sakti hai aur software bana sakti hai. Yeh dekhne mein kamaal lagta hai.\n\nLekin insani dimaag ka kya ho raha hai? Students kitabein nahi parhte kyunke bot homework kar deta hai. Log mushkil masail par sochna chor chukay hain kyunke computer foran jawab deta hai. Jab aap jism harkat nahi dete to kamzor ho jate hain, aur jab dimaag istemal nahi karte to aqal khatam ho jati hai.\n\nTechnology insaan ko taqatwar banane aayi thi. Phir aisa kyun lagta hai ke AI ahista ahista humein be-bas aur mohtaj bana rahi hai?"
     },
     plainUrdu: {
-      text: "پاکستان کی لوکیشن اہم ہے کیونکہ یہ ایشیا کے مختلف حصوں کو جوڑتی ہے۔ چین CPEC کے ذریعے پاکستان میں سرمایہ لگا رہا ہے۔ گوادر پورٹ اس منصوبے کا ایک اہم حصہ ہے۔ چین بہتر تجارتی راستے چاہتا ہے جبکہ پاکستان اپنی معیشت بہتر کرنا چاہتا ہے۔ یہ منصوبہ مواقع لا سکتا ہے، لیکن سیکیورٹی اور اچھی منصوبہ بندی بھی ضروری ہے۔"
-    }
-  },
-  {
-    topic: "Trade Routes and Sea Routes",
-    category: 'GLOBAL_ECONOMY_FINANCIAL_WARFARE',
-    english: {
-      text: "Most of the world's goods travel by sea. Ships carry oil, food, electronics and many other products from one country to another. If an important sea route is blocked, it can cause problems for many countries at the same time. This is why countries care so much about controlling sea routes. Trade is not just about business. It is also about power."
-    },
-    romanUrdu: {
-      text: "Duniya ka zyada tar saaman samundar ke zariye safar karta hai. Jahaz tail, khaana, electronics aur bohot se products ek mulk se dusre lejate hain. Agar koi ahem samudri raasta band ho jaye, to ek waqt mein bohot se mulkon ko mushkilat hoti hain. Isliye mulk samudri raston par control ke liye itna ziada parwa karte hain. Tijarat sirf karobar nahi. Yeh taqat ka bhi maamla hai."
-    },
-    plainUrdu: {
-      text: "دنیا کا زیادہ تر سامان سمندر کے ذریعے سفر کرتا ہے۔ جہاز تیل، کھانا، الیکٹرونکس اور بہت سی مصنوعات ایک ملک سے دوسرے لے جاتے ہیں۔ اگر کوئی اہم سمندری راستہ بند ہو جائے تو ایک ساتھ بہت سے ملکوں کو مشکلات ہوتی ہیں۔ اسی لیے ملک سمندری راستوں پر کنٹرول کے لیے اتنی زیادہ پرواہ کرتے ہیں۔ تجارت صرف کاروبار نہیں۔ یہ طاقت کا بھی معاملہ ہے۔"
+      text: "مصنوعی ذہانت اب آپ کی ای میلز لکھ سکتی ہے، یونیورسٹی کے امتحان پاس کر سکتی ہے اور منٹوں میں کمپیوٹر سافٹ ویئر بنا سکتی ہے۔ یہ بظاہر بڑا معجزہ لگتا ہے۔\n\nمگر انسانی ذہن کے ساتھ کیا ہو رہا ہے؟ طلبہ کتابیں نہیں پڑھتے کیونکہ چیٹ بوٹ ہوم ورک کر دیتا ہے۔ نوجوان مشکل مسائل پر غور نہیں کرتے کیونکہ کمپیوٹر فوری جواب فراہم کرتا ہے۔ اگر جسم حرکت نہ کرے تو کمزور ہو جاتا ہے، اور اگر دماغ استعمال نہ ہو تو سوچنے کی صلاحیت ختم ہو جاتی ہے۔\n\nٹیکنالوجی انسان کو طاقتور بنانے کے لیے بنی تھی۔ پھر ایسا کیوں محسوس ہوتا ہے کہ AI ہمیں آہستہ آہستہ محتاج بنا رہی ہے؟"
     }
   },
 
-  // Category E: AI, Technology & Cybersecurity
+  // 5. Pakistan Politics & Economy: IMF Trap
   {
-    topic: "Semiconductor Chips and Global Power",
-    category: 'AI_TECHNOLOGY_CYBERSECURITY',
+    topic: "Pakistan and the IMF: Borrowing to Pay Debts",
+    category: 'PAKISTAN_POLITICS',
     english: {
-      text: "Why are computer chips so important? Because almost every modern device needs them. Mobile phones, cars, AI systems and military equipment all use these small chips. Taiwan makes some of the world's most advanced chips. This is one reason why China and America are both interested in the region. Technology has become a major part of global power."
+      text: "Pakistan has knocked on the IMF's door more than twenty times. Every single government promises that this current IMF program will be the very last one.\n\nThen electricity tariffs jump, petrol prices break records, and heavy taxes are slapped on everyday food items. The new loan doesn't build modern factories or create jobs. Most of the borrowed money goes straight back out to pay interest on older loans that politicians took years ago.\n\nIf a family borrows money from a neighbour just to pay interest to the local shopkeeper, that family goes broke. How can a country of 240 million people become independent if its leaders keep doing the exact same thing?"
     },
     romanUrdu: {
-      text: "Computer chips itne ahem kyun hain? Kyunke har jadeed device inhe chahiye hoti hai. Mobile phones, gaariyan, AI systems aur foji sazaamaan sab inhi chhote chips se chaltay hain. Taiwan duniya ke sab se advanced chips mein se kuch banata hai. Yahi ek wajah hai ke China aur America dono is علاقے mein dilchaspi rakhte hain. Technology ab global taqat ka ek bara hissa ban chuki hai."
+      text: "Pakistan bees se zyada martaba IMF ke darwazay par dastak de chuka hai. Har nayi hukumat aakar kehti hai ke yeh hamara aakhri IMF program hoga.\n\nUske baad bijli ke bill aasmaan par pohanchte hain, petrol mehanga hota hai aur aam roti par tax lag jata hai. Naye qarzay se na factory lagti hai na rozgar milta hai, balkay purane qarzay ka sood adaa hota hai.\n\nAgar koi gharana dukan ka sood chukane ke liye hamsaye se qarza le, to woh barbaad ho jata hai. 24 karor awam ka mulk azaad kaise ho sakta hai agar hamare hukumran hamesha yahi karte rahein?"
     },
     plainUrdu: {
-      text: "کمپیوٹر چپس اتنی اہم کیوں ہیں؟ کیونکہ ہر جدید ڈیوائس انہیں چاہتی ہے۔ موبائل فونز، گاڑیاں، AI سسٹمز اور فوجی سازوسامان سب ان چھوٹی چپس سے چلتے ہیں۔ تائیوان دنیا کی سب سے جدید چپس میں سے کچھ بناتا ہے۔ یہی ایک وجہ ہے کہ چین اور امریکہ دونوں اس علاقے میں دلچسپی رکھتے ہیں۔ ٹیکنالوجی اب عالمی طاقت کا ایک بڑا حصہ بن چکی ہے۔"
-    }
-  },
-  {
-    topic: "Cyber Warfare",
-    category: 'AI_TECHNOLOGY_CYBERSECURITY',
-    english: {
-      text: "A country does not always need missiles to attack another country. It can also attack its computer systems. Imagine a cyberattack that stops a country's banks or electricity supply. People may not even know who is responsible. This is why countries are spending more money to protect their computer networks. The next war may also start online."
-    },
-    romanUrdu: {
-      text: "Kisi mulk ko dusre par hamla karne ke liye missiles ki zaroorat nahi hoti. Woh uske computer systems par bhi hamla kar sakta hai. Socho agar ek cyber attack kisi mulk ke banks ya bijli band kar de. Log shayad jan bhi na sakein ke zimmedar kaun hai. Isliye mulk apne computer networks ki hifazat par zyada paisa kharch kar rahe hain. Agli jung online bhi shuru ho sakti hai."
-    },
-    plainUrdu: {
-      text: "کسی ملک کو دوسرے پر حملہ کرنے کے لیے میزائلوں کی ضرورت نہیں ہوتی۔ وہ اس کے کمپیوٹر سسٹمز پر بھی حملہ کر سکتا ہے۔ سوچو اگر ایک سائبر حملہ کسی ملک کے بینکس یا بجلی بند کر دے۔ لوگ شاید جان بھی نہ سکیں کہ ذمہ دار کون ہے۔ اسی لیے ملک اپنے کمپیوٹر نیٹ ورکس کی حفاظت پر زیادہ پیسہ خرچ کر رہے ہیں۔ اگلی جنگ آن لائن بھی شروع ہو سکتی ہے۔"
+      text: "پاکستان بیس سے زائد بار آئی ایم ایف کے دروازے پر دستک دے چکا ہے۔ ہر نئی حکومت وعدہ کرتی ہے کہ یہ ہمارا آخری آئی ایم ایف پروگرام ہوگا۔\n\nپھر بجلی کے بل آسمان کو چھوتے ہیں، پیٹرول مہنگا ہوتا ہے اور عام خوراک پر بھاری ٹیکس لگا دیے جاتے ہیں۔ نئے قرضے سے نہ کارخانے لگتے ہیں اور نہ روزگار ملتا ہے، بلکہ سارا پیسہ پرانے قرضوں کا سود چکانے میں چلا جاتا ہے۔\n\nاگر کوئی خاندان پرانا سود ادا کرنے کے لیے ہمسائے سے نیا ادھار لے تو وہ دیوالیہ ہو جاتا ہے۔ چوبیس کروڑ عوام کا ملک معاشی طور پر خودمختار کیسے بنے گا اگر حکمران مسلسل یہی چکر چلاتے رہے؟"
     }
   },
 
-  // Category F: Civilization, History & Global Power
+  // 6. Social & Regional Issues: Balochistan & National Wealth
   {
-    topic: "Bagram Air Base and US-Pakistan Relations",
-    category: 'CIVILIZATION_HISTORY_GLOBAL_POWER',
+    topic: "Balochistan: Rich Ground, Poor Citizens",
+    category: 'SOCIAL_ETHNIC_ISSUES',
     english: {
-      text: "Bagram was never about Afghanistan. It was always about China, Iran, and Pakistan. If US and Taliban are now talking about spying on China, then Kabul is not neutral anymore. It is becoming a tool. And Pakistan will pay the price for being in the middle."
+      text: "Balochistan covers nearly half of Pakistan's entire land area. Its mountains are filled with gold, copper, and natural gas that has heated stoves in Lahore and Karachi for decades.\n\nYet walk into the towns of Balochistan today. You will find broken single-room clinics without doctors, dusty schools without teachers, and youth searching desperately for basic jobs. The natural wealth flows out through massive pipelines and big corporate contracts, while local communities are left with empty hands and heavy grievances.\n\nA federation is not just a line drawn on an atlas. It is built on trust, respect, and fair distribution. How can you demand national unity from people when you refuse to give them clean water from their own land?"
     },
     romanUrdu: {
-      text: "Bagram kabhi Afghanistan ke baare mein tha hi nahi. Yeh hamesha China, Iran aur Pakistan ke baare mein tha. Agar America aur Taliban ab China par nazar rakhne ki baat kar rahe hain, to Kabul zyada neutral nahi raha. Yeh ek tool ban raha hai. Aur Pakistan darmiyan mein hone ki qeemat adaa karega."
+      text: "Balochistan Pakistan ke lagbhag aadhay raqbay par phela hai. Iske paharon mein sona, tanba aur gas hai jo daheeyon se Lahore aur Karachi ke choolhay jala rahi hai.\n\nLekin Balochistan ke shehron mein ja kar dekhein. Wahan baghair doctor ke aspatal, baghair ustaad ke schools aur be-rozgar nojawan milenge. Qudrati daulat pipelines ke zariye nikal jati hai, aur maqami log khali haath reh jate hain.\n\nWifaq sirf naqshay par khenchi lakeer nahi hota. Yeh barabari aur insaaf se banta hai. Aap un logon se qoumi yakjehti ki umeed kaise rakh sakte hain jinhein apni zameen ka saaf paani tak nahi milta?"
     },
     plainUrdu: {
-      text: "بگرام کبھی افغانستان کے بارے میں تھا ہی نہیں۔ یہ ہمیشہ چین، ایران اور پاکستان کے بارے میں تھا۔ اگر امریکہ اور طالبان اب چین پر نظر رکھنے کی بات کر رہے ہیں تو کابل زیادہ غیر جانبدار نہیں رہا۔ یہ ایک آلہ بن رہا ہے۔ اور پاکستان درمیان میں ہونے کی قیمت ادا کرے گا۔"
+      text: "بلوچستان پاکستان کے تقریباً نصف رقبے پر محیط ہے۔ اس کے پہاڑوں میں سونا، تانبا اور قدرتی گیس ہے جو دہائیوں سے لاہور اور کراچی کے چولہے جلا رہی ہے۔\n\nمگر کبھی بلوچستان کے قصبوں میں جا کر دیکھیں۔ وہاں بغیر ڈاکٹر کے کلینک، بغیر استاد کے اسکول اور بے روزگار نوجوان دکھائی دیں گے۔ قدرتی وسائل پائپ لائنوں کے ذریعے نکل جاتے ہیں جبکہ مقامی آبادی خالی ہاتھ رہ جاتی ہے۔\n\nوفاق محض نقشے پر کھینچی گئی لکیر نہیں ہوتا۔ یہ انصاف، برابری اور اعتماد سے بنتا ہے۔ آپ ان لوگوں سے قومی یکجہتی کا تقاضا کیسے کر سکتے ہیں جنہیں اپنی ہی زمین سے پینے کا صاف پانی تک نصیب نہیں؟"
     }
   },
+
+  // 7. Climate & Global Power: The Flood Injustice
   {
-    topic: "Digital Surveillance and Government Control",
-    category: 'CIVILIZATION_HISTORY_GLOBAL_POWER',
+    topic: "Climate Injustice: Who Pollutes and Who Drowns?",
+    category: 'CLIMATE_GLOBAL_POWER',
     english: {
-      text: "Today, our phones know a lot about us. They can collect information about our location, searches and daily activities. Governments and companies can use this information for different purposes. AI makes it even easier to study people's behaviour. This creates an important question: are we using technology, or is technology slowly controlling our lives?"
+      text: "Pakistan produces less than one percent of total global greenhouse emissions. Yet when the monsoon rains turn violent, one-third of the country goes entirely underwater.\n\nRich Western industrial nations built gigantic wealth by burning coal and oil for two hundred years. Today, when Pakistani farmers lose their crops, cattle, and mud houses to flash floods, international climate summits offer polite sympathy and tiny loans instead of real reparations.\n\nWealthy corporations fly in private jets to talk about saving the planet while poor village children sleep under open skies in Sindh and Balochistan. Is climate change really an environmental crisis, or is it just the world's most unequal economic crime?"
     },
     romanUrdu: {
-      text: "Aaj humare phone humare baare mein bohot kuch jante hain. Woh hamari location, searches aur rozana ki activities ka data ikhatta kar sakte hain. Hukumtein aur companies is information ko mukhtalif maqasid ke liye use kar sakti hain. AI se log ki harkatein samajhna aur bhi aasan ho gaya hai. Yeh ek ahem sawaal uthata hai: kya hum technology use kar rahe hain, ya technology hamdhi zindagi par qabzu le rahi hai?"
+      text: "Pakistan poori duniya ki aalmi aaloodgi mein ek percent se bhi kam hissa dalta hai. Lekin jab barish aati hai to mulk ka aik tihai hissa paani mein doob jata hai.\n\nAmeer Maghribi mumalik ne do sau saal tail aur koyla jala kar daulat kamayi. Magar jab hamare kisanon ki faslein aur ghar sailaab mein beh jate hain, to aalmi conferences mein sirf tasalliyan aur qarzay diye jate hain.\n\nBari companies ke malik private jets mein baith kar maholiyat par bhashan dete hain, jabke Sindh ke bachay khulay aasmaan talay sote hain. Kya yeh sirf mausam ki tabdeeli hai, ya dunya ka sab se bara na-insafi par mabni nizaam?"
     },
     plainUrdu: {
-      text: "آج ہمارے فون ہمارے بارے میں بہت کچھ جانتے ہیں۔ وہ ہماری لوکیشن، سرچز اور روزانہ کی سرگرمیوں کا ڈیٹا اکٹھا کر سکتے ہیں۔ حکومتیں اور کمپنیاں اس معلومات کو مختلف مقاصد کے لیے استعمال کر سکتی ہیں۔ AI سے لوگوں کی حرکات سمجھنا اور بھی آسان ہو گیا ہے۔ یہ ایک اہم سوال اٹھاتا ہے: کیا ہم ٹیکنالوجی استعمال کر رہے ہیں، یا ٹیکنالوجی ہماری زندگی پر قابو لے رہی ہے؟"
+      text: "پاکستان دنیا کی مجموعی ماحولیاتی آلودگی میں ایک فیصد سے بھی کم کا ذمہ دار ہے۔ مگر جب مانسون بے قابو ہوتا ہے تو ملک کا ایک تہائی حصہ پانی میں ڈوب جاتا ہے۔\n\nامیر صنعتی ممالک نے دو سو سال کوئلہ اور تیل جلا کر بے پناہ دولت بنائی۔ لیکن جب ہمارے کسانوں کی فصلیں، مویشی اور کچے مکانات سیلاب کی نذر ہو جاتے ہیں، تو عالمی کانفرنسوں میں صرف ہمدردی کے بیانات اور نئے قرضے ملتے ہیں۔\n\nبڑی کمپنیوں کے مالکان نجی طیاروں میں بیٹھ کر ماحول بچانے کی باتیں کرتے ہیں جبکہ سندھ اور بلوچستان کے بچے کھلے آسمان تلے رات گزارتے ہیں۔ کیا یہ محض موسمی تبدیلی ہے، یا تاریخ کا سب سے بڑا معاشی ظلم؟"
+    }
+  },
+
+  // 8. AI & Tech: Energy and Water Grids
+  {
+    topic: "AI Data Centres: Power for Bots vs Power for People",
+    category: 'AI_HUMAN_SOCIETY',
+    english: {
+      text: "Every time you ask an artificial intelligence tool to write an essay or generate an image, powerful supercomputers consume electricity and clean cooling water.\n\nGlobal technology giants are building massive data centres that use as much electricity as entire medium-sized cities. At the very same time, millions of ordinary families in developing countries suffer ten to twelve hours of power cuts every single hot summer day.\n\nClean water and electric power are basic human necessities. When tech monopolies buy up renewable energy grids just to train faster chatbots, we have to ask ourselves: who is this modern technological revolution actually serving?"
+    },
+    romanUrdu: {
+      text: "Jab bhi aap AI se koi sawaal poochtay hain ya tasweer banwate hain, to baray supercomputers bijli aur saaf thanda paani peetay hain.\n\nGlobal tech companies aisi data centres bana rahi hain jo poore poore shehron ke barabar bijli khati hain. Doosri taraf garmion mein ghareeb mulkon ke log barah barah ghantay load shedding bardasht karte hain.\n\nBijli aur paani insani zaroorat hain. Jab barri companies chatbots chalane ke liye bijli ke grid khareed leti hain, to sawaal yeh hai ke yeh nayi taraqqi aakhir kis ke faiday ke liye hai?"
+    },
+    plainUrdu: {
+      text: "جب بھی آپ مصنوعی ذہانت سے کوئی سوال پوچھتے ہیں یا تصویر بنواتے ہیں، تو بڑے ڈیٹا سینٹرز بے پناہ بجلی اور ٹھنڈا پانی استعمال کرتے ہیں۔\n\nعالمی ٹیکنالوجی کمپنیاں ایسے ڈیٹا سینٹرز بنا رہی ہیں جو پورے شہروں جتنی بجلی خرچ کر دیتے ہیں۔ دوسری طرف ترقی پذیر ممالک میں غریب خاندان شدید گرمیوں میں بارہ بارہ گھنٹے بجلی کی بندش جھیلتے ہیں۔\n\nپانی اور بجلی بنیادی انسانی ضرورت ہیں۔ جب بڑی کارپوریشنز چیٹ بوٹس کی ٹریننگ کے لیے توانائی کے ذخائر خرید لیتی ہیں، تو سوچنے کی بات یہ ہے کہ یہ جدید انقلاب آخر کس کی خدمت کر رہا ہے؟"
     }
   }
 ];
@@ -275,19 +221,19 @@ export const CURATED_STORY_TOPICS = [
 let categoryRotationIndex = 0;
 let storyCounter = 0;
 
-const MIN_CHARACTERS = 350;
-const MAX_CHARACTERS = 480;
-const ABSOLUTE_MAX_CHARACTERS = 500;
+const MIN_CHARACTERS = 450;
+const MAX_CHARACTERS = 950;
+const ABSOLUTE_MAX_CHARACTERS = 1000;
 
 /* =========================================================
-   TEXT FORMATTING AND VALIDATION
+   TEXT FORMATTING AND VALIDATION (PRESERVES PARAGRAPH BREAKS)
 ========================================================= */
 
 function formatEntry(text) {
   const clean = (text || '')
     .replace(/#[\p{L}\p{N}_]+/gu, '')
     .replace(/[ \t]+/g, ' ')
-    .replace(/\s+/g, ' ')
+    .replace(/\n{3,}/g, '\n\n')
     .trim();
 
   const count = calculateXCharacterCount(clean);
@@ -306,19 +252,19 @@ function formatEntry(text) {
   };
 }
 
-function validateAIResponse(res, chosenTopic, chosenCategory = 'GEOPOLITICS_STRATEGY') {
+function validateAIResponse(res, chosenTopic, chosenCategory = 'GEOPOLITICS') {
   if (!res || typeof res !== 'object') {
     throw new Error('Invalid AI response object');
   }
 
   const rawText = typeof res.text === 'string' ? res.text.trim() : '';
-  if (!rawText || rawText.length < 80) {
+  if (!rawText || rawText.length < 200) {
     throw new Error('AI returned empty or overly short text');
   }
 
   const entry = formatEntry(rawText);
   if (entry.isOverLimit || entry.charCount > ABSOLUTE_MAX_CHARACTERS) {
-    throw new Error(`AI post exceeds 500-char limit (${entry.charCount} chars)`);
+    throw new Error(`AI post exceeds limit (${entry.charCount} chars, max ${ABSOLUTE_MAX_CHARACTERS})`);
   }
 
   return {
@@ -329,7 +275,7 @@ function validateAIResponse(res, chosenTopic, chosenCategory = 'GEOPOLITICS_STRA
 }
 
 /* =========================================================
-   MASTER ANALYTICAL AI PROMPT
+   MASTER ANALYTICAL AI PROMPT (BOLD POLITICAL COMMENTARY)
 ========================================================= */
 
 function createEnglishPrompt(chosenTopic, usedTopics, targetCategory = null) {
@@ -338,84 +284,77 @@ function createEnglishPrompt(chosenTopic, usedTopics, targetCategory = null) {
       ? usedTopics.slice(0, 30).join('; ')
       : 'None';
 
-  const categoryHint = targetCategory
-    ? `The post should be about themes related to: ${targetCategory.name}.`
-    : `Topics: China, Taiwan, America, Iran, AI, cyber warfare, military, oil, trade, technology or global power.`;
+  const categoryName = targetCategory?.name || 'Geopolitics & Political Commentary';
+  const categoryKeywords = targetCategory?.keywords?.join(', ') || 'Global power, Pakistan politics, economy, AI, society';
 
-  return `You are writing a short social media post about international news and world politics.
+  return `You are an independent, sharp, and fearless Pakistani political commentator and social media analyst.
+You write bold, intelligent, and highly engaging posts that make readers stop, think, disagree, discuss, and comment.
 
 TOPIC: "${chosenTopic}"
-
-${categoryHint}
-
-============================================================
-LANGUAGE RULES — THIS IS THE MOST IMPORTANT PART
-============================================================
-Write in very simple English. The reader is an ordinary Pakistani person with basic English knowledge.
-
-Use ONLY simple, everyday words. For example:
-- Use "buy" not "procure"
-- Use "attack" not "escalate aggression"
-- Use "power" not "geopolitical leverage"
-- Use "army" not "armed forces"
-- Use "oil" not "petroleum resources"
-- Use "fight" not "engage in hostilities"
-- Use "country" not "nation-state"
-- Use "chips" or "computer chips" not "semiconductors" (or explain immediately)
-
-If you must use a technical word, explain it right away in simple English.
-Example: "semiconductor chips — the small parts that run computers and phones"
-
-DO NOT write like a university paper or a news agency report.
-DO NOT use long complicated sentences.
-Write like you are explaining the news to a friend.
+CATEGORY: ${categoryName}
+THEMES TO DRAW FROM: ${categoryKeywords}
 
 ============================================================
-CONTENT STYLE
+1. LANGUAGE RULES — SIMPLE PAKISTANI ENGLISH (A1–A2)
 ============================================================
-${categoryHint}
-
-Explain the situation simply and connect it to a bigger picture. Answer:
-- What is happening?
-- Why is it happening?
-- How does it affect other countries or the world?
-
-You may end with a natural thought or question that makes the reader think.
-
-============================================================
-PERFECT EXAMPLES — FOLLOW THIS EXACT STYLE
-============================================================
-Study how these examples work. Use the same simple language and sentence length.
-
-Example 1 (China and Iran oil):
-"China buys oil from Iran, while America does not support this trade. The US has placed restrictions on Iran and wants other countries to follow them. But China continues to buy Iranian oil because it needs energy for its industries. This creates more tension between China and America. Oil is not just about money. It is also about power."
-
-Example 2 (Taiwan and chips):
-"China wants Taiwan to become part of China, but Taiwan has its own government. America also supports Taiwan's defence. This makes the situation more serious. If China attacks Taiwan, America may also become involved. But why is Taiwan so important? Because many of the world's computer chips are made there."
-
-Example 3 (Cyber warfare):
-"A country does not always need missiles to attack another country. It can also attack its computer systems. Imagine a cyberattack that stops a country's banks or electricity supply. People may not even know who is responsible. This is why countries are spending more money to protect their computer networks. The next war may also start online."
-
-Example 4 (AI in war):
-"Wars are changing because of AI. Today, armies can use drones to watch enemy movements and find possible targets. AI can also help soldiers understand what is happening on the battlefield. China and America are both investing in this technology. In the future, wars may depend not only on weapons but also on computers."
+- Write in simple, natural English that ordinary Pakistani social media users easily understand.
+- Write how an educated Pakistani explains real politics to a friend or ordinary people.
+- Short, direct sentences. Common English words. Natural expressions.
+- Simple comparisons and strong, confident observations.
+- NEVER use academic, university-style, or confusing English.
+- Avoid difficult vocabulary (do not write "geopolitical hegemony", write "who controls the market"; do not write "indigenous escalation", write "growing tension").
+- If a technical term is unavoidable, explain it immediately in plain English.
 
 ============================================================
-STRICT RULES
+2. TONE & COMMENTARY STYLE
 ============================================================
-- Write about ONE clear topic. Do not mix multiple separate issues.
-- Keep each sentence short and easy to understand.
-- 3 to 5 sentences. Around 350 to 450 characters. HARD MAXIMUM: 500 characters.
-- Do NOT use hashtags.
-- Do NOT use emojis.
-- Do NOT start with: "In today's world", "It is important", "Imagine a world", "In the complex landscape", "In recent years".
-- Do NOT use bullet points or numbered lists.
-- Do NOT repeat or closely rephrase these recent topics: ${avoidListStr}
+- Bold, analytical, thought-provoking, and sarcastic where appropriate.
+- Use facts, comparisons, irony, and uncomfortable questions.
+- Expose the difference between what governments say and what happens in ground reality.
+- Question powerful institutions, wealthy corporations, and superpower games.
+- NEVER write boring news summaries, educational primers, or motivational fluff.
+- NEVER blind support for any side or country; remain critically analytical.
+- Respect ordinary people of all ethnicities and backgrounds; criticise corrupt systems and unequal policies.
 
-Return ONLY valid JSON in this exact format:
+============================================================
+3. POST STRUCTURE & LENGTH (500–900 CHARACTERS)
+============================================================
+Each post should follow this natural flow:
+1. Short Catchy Opening: Bold statement, surprising comparison, or striking fact.
+2. Ground Reality & Evidence: Explain what is actually happening. Use real numbers, budgets, or comparisons where relevant (NEVER invent fake statistics; if unsure of numbers, make a factual comparison).
+3. Irony / Sarcasm: Show the contradiction between political promises and real life. Use paragraph breaks (\\n\\n) to make reading pleasant.
+4. Powerful Ending Question: Finish with a hard-hitting question that forces the reader to think and reply.
+
+TARGET LENGTH: 500 to 900 characters (around 5 to 8 short sentences with paragraph breaks).
+HARD MAXIMUM: 1000 characters.
+
+============================================================
+4. STYLE BENCHMARKS (STUDY THE TONE & FLOW)
+============================================================
+Benchmark 1 (Defence vs Welfare):
+"India spends billions on defence. Pakistan spends much less. Yet both countries talk about winning the next war. But what about education, hospitals, and jobs? A country needs a strong army, but it also needs strong people. What is the point of winning a war if ordinary people are already losing their lives to poverty?"
+
+Benchmark 2 (Sugar vs Gun):
+"Everyone is scared of a man carrying a gun. But nobody is scared of the three spoons of sugar in their daily tea. A gun can kill quickly, but too much sugar can damage your health slowly. We fear visible dangers but often ignore the things we use every day. So tell me, what is more dangerous: the gun outside your house or the sugar inside your kitchen?"
+
+Benchmark 3 (China vs USA):
+"America wants to remain the strongest country in the world. China also wants to become stronger. Both countries talk about security, trade and friendship. But both also want to protect their own interests. China invests in roads and ports, while America has military bases around the world. Smaller countries often become part of this competition. Are these powerful countries making friends, or simply protecting their own business?"
+
+============================================================
+5. STRICT CONSTRAINTS
+============================================================
+- ZERO hashtags (no #tags).
+- ZERO emojis.
+- NO bullet points or numbered lists inside the post.
+- NO disclaimers, AI markers, or meta-explanations.
+- NO repetitive phrases like "In today's world" or "It is important to understand".
+- Do not duplicate these recently used topics: ${avoidListStr}
+
+Return ONLY valid JSON matching this exact structure:
 {
   "topic": "${chosenTopic}",
-  "category": "GEOPOLITICAL_STRATEGY",
-  "text": "Your complete post here"
+  "category": "${targetCategory?.id || 'GEOPOLITICS'}",
+  "text": "Your complete post with paragraph breaks here"
 }`;
 }
 
@@ -585,20 +524,20 @@ export async function generateRomanUrduFromEnglish(englishPost, topic = '') {
   const xaiKey = process.env.GROK_API_KEY || process.env.XAI_API_KEY;
   const groqKey = process.env.GROQ_API_KEY;
 
-  const prompt = `Translate this English post about world politics into natural Pakistani Roman Urdu.
+  const prompt = `Translate and adapt this bold political commentary post into natural, engaging Pakistani Roman Urdu.
 
 ENGLISH POST:
 "${englishPost.text}"
 
 RULES:
-- Write in simple, natural Pakistani Roman Urdu. Write like you are explaining news to a friend.
-- Use everyday words that a normal Pakistani person understands.
-- Keep the same meaning and simple tone as the English post.
-- Keep length between 350 and 480 characters. Maximum 500 characters.
-- Do NOT use hashtags.
+- Write in simple, natural Pakistani Roman Urdu as spoken by an educated Pakistani explaining politics.
+- Keep the exact same bold, sarcastic, and thought-provoking commentary tone.
+- Preserve the paragraph breaks (\\n\\n) and keep the ending question intact.
+- Target length: 500 to 900 characters (max 1000).
+- Do NOT use hashtags or emojis.
 - Return ONLY valid JSON:
 {
-  "text": "Roman Urdu text here"
+  "text": "Roman Urdu text with paragraph breaks here"
 }`;
 
   if (geminiKey) {
@@ -654,20 +593,20 @@ export async function generatePlainUrduFromEnglish(englishPost, topic = '') {
   const xaiKey = process.env.GROK_API_KEY || process.env.XAI_API_KEY;
   const groqKey = process.env.GROQ_API_KEY;
 
-  const prompt = `Translate this English post about world politics into simple, clear Pakistani Urdu script (اردو).
+  const prompt = `Translate and adapt this bold political commentary post into clear, dignified Pakistani Urdu script (اردو).
 
 ENGLISH POST:
 "${englishPost.text}"
 
 RULES:
-- Write in natural, easy Pakistani Urdu that an ordinary reader can understand.
-- Use simple everyday Urdu words. Do not use difficult or formal words.
-- Keep the same meaning and tone as the English post.
-- Keep length between 350 and 480 characters. Maximum 500 characters.
-- Do NOT use hashtags.
+- Write in natural, easy Pakistani Urdu script that ordinary readers easily understand.
+- Preserve the sharp political commentary, sarcasm, facts, and paragraph breaks (\\n\\n).
+- Keep the powerful final question intact.
+- Target length: 500 to 900 characters (max 1000).
+- Do NOT use hashtags or emojis.
 - Return ONLY valid JSON:
 {
-  "text": "اردو متن یہاں لکھیں"
+  "text": "اردو متن پیراگراف بریک کے ساتھ یہاں لکھیں"
 }`;
 
   if (geminiKey) {
