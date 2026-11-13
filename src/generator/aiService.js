@@ -73,15 +73,15 @@ export const CURATED_STORY_TOPICS = [
     category: 'CHINA_TAIWAN_SEMICONDUCTORS',
 
     english: {
-      text: "China's PLA doesn't need to bomb Taiwan to take it; a 48-hour naval blockade does the job. When TSMC's chip foundries stop, Silicon Valley goes dark and Wall Street bleeds. The real frontline isn't beaches, it's 3-nanometer silicon."
+      text: "China doesn't need to invade Taiwan with soldiers. A simple naval blockade around the island stops the world's computer chip supply immediately. When the chips stop, global technology freezes. The real weapon isn't guns; it's tiny computer chips."
     },
 
     romanUrdu: {
-      text: "China ki PLA ko Taiwan par bomb phenknay ki zaroorat nahi, 48 ghantay ki samandari naakabandi kaafi hai. Jab TSMC ke chips rukenge, Silicon Valley andheri ho jayegi. Asal larrai zameen par nahi, 3-nanometer chip par hai."
+      text: "China ko Taiwan par hamla karnay ki zaroorat nahi. Island ke ird gird behri naakabandi poori duniya ki chip supply foran rok deti hai. Jab chips rukti hain, global technology jam jati hai. Asal hathiyar bandook nahi, choti computer chips hain."
     },
 
     plainUrdu: {
-      text: "چین کی فوج کو تائیوان پر بمباری کی ضرورت نہیں، محض اڑتالیس گھنٹے کی ناکہ بندی کافی ہے۔ جونہی جدید مائیکرو چپس کی سپلائی رکے گی، سلیکان ویلی اور وال اسٹریٹ بیٹھ جائیں گی۔ اصل جنگ زمین کی نہیں، نینومیٹر چپ کی ہے۔"
+      text: "چین کو تائیوان پر فوج کشی کی ضرورت نہیں۔ جزیرے کے گرد محض بحری ناکہ بندی دنیا بھر کی کمپیوٹر چپس کی فراہمی روک سکتی ہے۔ چپس رکتے ہی عالمی ٹیکنالوجی مفلوج ہو جائے گی۔ اصل طاقت بندوق نہیں، چھوٹی مائیکرو چپس ہیں۔"
     }
   },
 
@@ -90,15 +90,15 @@ export const CURATED_STORY_TOPICS = [
     category: 'MILITARY_STRATEGY_SUNTZU',
 
     english: {
-      text: "Sun Tzu taught that supreme excellence is subduing the enemy without fighting. China's modern PLA radars and electronic jamming over Taiwan aren't preparing for an invasion; they are making US aircraft carriers mathematically obsolete."
+      text: "Sun Tzu taught that the highest victory is winning without fighting a battle. China's new radars and electronic jammers over Taiwan are not planning an invasion; they are making expensive warships completely useless without firing a single shot."
     },
 
     romanUrdu: {
-      text: "Sun Tzu ka usool tha ke behtareen jeet baghair larre dushman ko jhukana hai. Taiwan ke ird gird China ke PLA radars aur electronic jamming hamlay ki tayari nahi, balkay US behri jahazon ko be-asar sabit karna hai."
+      text: "Sun Tzu ka usool tha ke behtareen jeet baghair larray dushman ko jhukana hai. Taiwan ke ird gird China ke naye radars aur jammers kisi hamlay ki tayari nahi; balkay mehangay behri jahazon ko aik goli chalaye baghair be-asar karna hai."
     },
 
     plainUrdu: {
-      text: "سن زو کا فلسفہ تھا کہ اصل فتح بغیر لڑے دشمن کو زیر کرنا ہے۔ تائیوان کے گرد چینی فوج کے ریڈارز اور الیکٹرانک نظام کسی حملے کی تیاری نہیں، بلکہ امریکی بحری بیڑوں کو بغیر گولی چلائے ناکارہ بنانے کی خفیہ چال ہیں۔"
+      text: "سن زو کا اصول تھا کہ سب سے بڑی فتح بغیر لڑے دشمن کو زیر کرنا ہے۔ تائیوان کے گرد چین کے نئے ریڈارز اور جیمرز حملے کی تیاری نہیں، بلکہ بھاری بحری جنگی جہازوں کو ایک گولی چلائے بغیر ناکارہ بنانا ہے۔"
     }
   },
 
@@ -107,15 +107,15 @@ export const CURATED_STORY_TOPICS = [
     category: 'TECH_SILICON_VALLEY_CHIPS',
 
     english: {
-      text: "Silicon Valley designs the future, but manufactures zero percent of the world's most advanced AI chips. If a single radar glitch triggers a crisis in the Taiwan Strait, the entire global AI boom evaporates in twenty-four hours."
+      text: "Silicon Valley creates the world's software, but builds almost none of its own computer chips. If ships stop moving through the Taiwan Strait, the entire global artificial intelligence boom stops in a single day. Brilliant code cannot run without factory metal."
     },
 
     romanUrdu: {
-      text: "Silicon Valley mustaqbil ka software to banati hai, magar advanced AI chips khud nahi banati. Agar Taiwan Strait mein radar ki choti si ghalti se larrai chhid gayi, to poori duniya ka AI inqilab aik din mein ruk jayega."
+      text: "Silicon Valley duniya ka software banati hai, magar computer chips khud nahi banati. Agar Taiwan Strait mein jahaz chalna band ho jayein, to poori duniya ka AI inqilab aik din mein ruk jayega. Behtareen code bhi factory ki chips ke baghair bekar hai."
     },
 
     plainUrdu: {
-      text: "سلیکان ویلی مستقبل کے سافٹ ویئر ڈیزائن تو کرتی ہے، مگر جدید ترین چپس خود نہیں بنا سکتی۔ اگر آبنائے تائیوان میں ریڈار کی ذرا سی غلطی سے جھڑپ ہوئی تو دنیا بھر کا مصنوعی ذہانت کا انقلاب چوبیس گھنٹوں میں ٹھپ ہو جائے گا۔"
+      text: "سلیکان ویلی دنیا کا سافٹ ویئر بناتی ہے، مگر کمپیوٹر چپس خود نہیں بنا سکتی۔ اگر آبنائے تائیوان سے بحری جہازوں کی آمدورفت رک جائے تو مصنوعی ذہانت کا عالمی عروج ایک دن میں تھم جائے گا۔ شاندار کوڈ بھی فیکٹری کی چپس کے بغیر نہیں چل سکتا۔"
     }
   },
 
@@ -137,70 +137,70 @@ export const CURATED_STORY_TOPICS = [
   },
 
   {
-    topic: "The Digital Dictatorship and the Algorithmic Panopticon",
+    topic: "The Digital Dictatorship and Silent Social Control",
     category: 'SURVEILLANCE_DIGITAL_DICTATORSHIP',
 
     english: {
-      text: "The 20th-century dictator needed secret police and physical wiretaps. The modern digital state needs only smartphone GPS, facial recognition radars, and programmable digital currency. Modern tyranny is no longer loud; it is algorithmic."
+      text: "Past dictators needed secret police and physical wiretaps to control people. The modern digital state only needs smartphone tracking, street cameras, and digital money. Control is no longer loud. It is completely silent."
     },
 
     romanUrdu: {
-      text: "Pichli sadi ke aamir ko foj aur secret police chahiye hoti thi. Aaj ki digital hakumat ko sirf mobile GPS, facial recognition radars, aur digital currency chahiye. Zulm ab shor nahi machata, wo algorithms ke peechay khamosh hai."
+      text: "Pichli sadi ke aamir ko secret police aur foj chahiye hoti thi. Aaj ki digital riyasat ko sirf mobile tracking, street cameras aur digital bank accounts chahiye. Qabza ab shor nahi machata; ye bilkul khamosh hai."
     },
 
     plainUrdu: {
-      text: "پرانے دور کے آمر کو خفیہ پولیس درکار ہوتی تھی۔ اکیسویں صدی کی ڈیجیٹل آمریت کو صرف اسمارٹ فون جی پی ایس، چہرہ پہچاننے والے ریڈارز اور ڈیجیٹل کرنسی درکار ہے۔ جبر اب شور نہیں مچاتا، یہ الگورتھم کے پیچھے چھپا رہتا ہے۔"
+      text: "ماضی کے آمروں کو عوام کو قابو میں رکھنے کے لیے خفیہ پولیس درکار ہوتی تھی۔ آج کی جدید ریاست کو صرف موبائل ٹریکنگ، سڑکوں کے کیمرے اور ڈیجیٹل پیسہ درکار ہے۔ جبر اب شور نہیں مچاتا، یہ بالکل خاموش ہے۔"
     }
   },
 
   {
-    topic: "Iran, the Strait of Hormuz and the $150 Oil Shock",
+    topic: "Iran, the Strait of Hormuz and the Global Oil Shock",
     category: 'ENERGY_IRAN_OIL_MARKETS',
 
     english: {
-      text: "A single drone strike near the Strait of Hormuz can send crude oil over $150 a barrel in four hours. When tankers halt, Wall Street panics, central banks hike interest rates, and developing economies run out of food and fuel."
+      text: "A single incident near the Strait of Hormuz can send world oil prices soaring in hours. When oil tankers stop moving, banks panic, prices jump, and developing nations run out of fuel. One narrow water passage holds the global economy hostage."
     },
 
     romanUrdu: {
-      text: "Strait of Hormuz ke qareeb aik drone hamla 4 ghantay mein tail ki qeemat 150 dollar tak pohncha sakta hai. Jab oil tankers rukte hain, Wall Street par kohraam machta hai aur ghareeb mulkon mein petrol aur khana khatam ho jata hai."
+      text: "Strait of Hormuz ke qareeb aik waqia chand ghanton mein aalmi tail ki qeematein asman par pohncha sakta hai. Jab oil tankers rukte hain, banks ghabra jatay hain aur ghareeb mulkon mein petrol khatam ho jata hai. Aik tang samandari rasta poori aalmi maeeshat ko bandh kar baitha hai."
     },
 
     plainUrdu: {
-      text: "آبنائے ہرمز کے قریب ایک ڈرون حملہ چار گھنٹوں میں تیل ڈیڑھ سو ڈالرز فی بیرل تک پہنچا سکتا ہے۔ جب آئل ٹینکرز رکتے ہیں تو وال اسٹریٹ لرز اٹھتی ہے اور ترقی پذیر ممالک ایندھن اور اناج کے بحران میں ڈوب جاتے ہیں۔"
+      text: "آبنائے ہرمز کے قریب ایک چھوٹا واقعہ چند گھنٹوں میں عالمی تیل کی قیمتیں آسمان پر پہنچا سکتا ہے۔ جب آئل ٹینکرز رکتے ہیں تو بینک گھبرا جاتے ہیں اور غریب ممالک ایندھن اور اشیاء کے بحران میں مبتلا ہو جاتے ہیں۔ ایک تنگ بحری راستہ پوری عالمی معیشت کو یرغمال بنائے ہوئے ہے۔"
     }
   },
 
   {
-    topic: "Cyber Warfare and the Ghost Frontline",
+    topic: "Cyber Warfare and the Invisible Battlefield",
     category: 'CYBER_ATTACKS_CRITICAL_INFRA',
 
     english: {
-      text: "World War III won't begin with screaming sirens or nuclear missiles. It begins with silent cyber malware turning off electricity grids, blinding defense radars, and draining bank balances across financial stock exchanges in seconds."
+      text: "The next major conflict will not start with loud sirens or missiles. It begins with silent computer code turning off city electricity, blinding defense screens, and stopping bank payments in seconds. The most dangerous weapon is now invisible."
     },
 
     romanUrdu: {
-      text: "Teesri aalmi jung sirens ya atom bomb se shuru nahi hogi. Ye khamosh cyber virus se shuru hogi jo bijli ke grids band karega, radars ko andha karega, aur stock exchanges ke bank accounts seconds mein saaf kar dega."
+      text: "Agli barri jung loud sirens ya missiles se shuru nahi hogi. Ye khamosh computer code se shuru hogi jo shehron ki bijli band karega, defense screens ko andha karega, aur bank payments rokay ga. Sab se khatarnak hathiyar ab nazar nahi aata."
     },
 
     plainUrdu: {
-      text: "تیسری عالمی جنگ سائرن یا میزائلوں سے شروع نہیں ہوگی۔ یہ ایک خاموش سائبر حملے سے شروع ہوگی جو بجلی کے گرڈز بند کر دے گا، ایئر ڈیفنس ریڈارز کو اندھا کرے گا اور اسٹاک ایکسچینج کے اکاؤنٹس لمحوں میں خالی کر دے گا۔"
+      text: "اگلی بڑی جنگ سائرن یا میزائلوں سے شروع نہیں ہوگی۔ یہ ایک خاموش کمپیوٹر کوڈ سے شروع ہوگی جو شہروں کی بجلی بند کر دے گا، دفاعی اسکرینوں کو اندھا کرے گا اور لمحوں میں بینک ادائیگیاں روک دے گا۔ سب سے خطرناک ہتھیار اب نظر نہیں آتا۔"
     }
   },
 
   {
-    topic: "Nuclear Deterrence vs Microchip Deterrence",
+    topic: "Nuclear Deterrence vs Microchip Defense",
     category: 'GEOPOLITICS_NUCLEAR_TECH',
 
     english: {
-      text: "Nuclear bombs prevent superpowers from invading each other's capitals. But semiconductor microchips prevent Beijing from blockading Taiwan. When mutually assured destruction shifts from atomic radiation to economic collapse, chips are the new warheads."
+      text: "Nuclear weapons stop big countries from invading each other. But computer chips stop countries from cutting off global trade. When national survival means keeping the global economy running, tiny computer chips become the strongest defense."
     },
 
     romanUrdu: {
-      text: "Nuclear hathiyar dushman ko border paar karnay se roktay hain, magar computer chips Taiwan ki naakabandi rokti hain. Jab tabahi atom bomb se hat kar maashi maut par aa jaye, to microchips hi naye nuclear warheads hain."
+      text: "Nuclear hathiyar mulkon ko aik doosray par hamla karnay se roktay hain. Magar computer chips mulkon ko tijarat band karnay se rokti hain. Jab baqa ka matlab aalmi maeeshat chalana ban jaye, to choti chips sab se barri dhaal ban jati hain."
     },
 
     plainUrdu: {
-      text: "ایٹمی ہتھیار بڑی طاقتوں کو کھلے حملے سے روکتے ہیں، لیکن مائیکرو چپس تائیوان کے محاصرے سے روکتی ہیں۔ جب تباہی کا خوف ایٹم بم سے نکل کر عالمی معاشی موت بن جائے، تو نینومیٹر چپس ہی نیا ایٹمی توازن بن جاتی ہیں۔"
+      text: "ایٹمی ہتھیار ممالک کو ایک دوسرے پر چڑھائی سے روکتے ہیں۔ لیکن کمپیوٹر چپس ممالک کو عالمی تجارت منقطع کرنے سے روکتی ہیں۔ جب قومی بقا کا مطلب عالمی معیشت کو رواں رکھنا ہو، تو چھوٹی مائیکرو چپس ہی سب سے مضبوط دفاع بن جاتی ہیں۔"
     }
   },
 
@@ -358,46 +358,113 @@ function createEnglishPrompt(chosenTopic, usedTopics) {
       ? usedTopics.slice(0, 30).join('; ')
       : 'None';
 
-  return `You are an elite geopolitical and strategic documentary writer for X (Twitter) in the style of raw, observational social realism.
+  return `You are an expert social commentator and strategic writer for X (Twitter) who writes in simple, powerful, and natural human English.
 
 TOPIC: "${chosenTopic}"
 
-CONTENT FOCUS:
-Geopolitics, global power shifts, future forecastings (2035), AI economics, strategic resources (semiconductors, oil, lithium, rare earths), trade corridors, and military/political commentary (China, US, Pakistan, Iran, Afghanistan, Russia).
+MISSION:
+Write a single, compelling X post that prioritizes NATURAL STORYTELLING, SIMPLE ENGLISH, READABILITY, AND LOGICAL FLOW over complex vocabulary and technical terminology.
 
-GOLDEN STYLE BENCHMARKS (Write with this exact tone, cadence, and punch):
-- Example 1: "Bagram was never about Afghanistan. It was always about China, Iran, and Pakistan. If US-Taliban are now talking about spying on China and building a proxy against Iran, then Kabul is not neutral. It is becoming a marketplace. And Pakistan will pay the price for being in the middle."
-- Example 2: "Our ancestors with no degrees and limited means bought land — real assets. We, with all our degrees and so-called wisdom, are selling that land to buy a piece of paper. A trap no generation has ever faced before."
+============================================================
+1. WRITING STYLE
+============================================================
+- Use A2-level English wherever possible (simple, everyday words).
+- Write in simple, natural, human-like English.
+- Make every sentence connect naturally to the next.
+- Present ONE central idea and develop it clearly.
+- The reader must understand the entire message on the FIRST read.
+- Use strong opinions, interesting comparisons, and meaningful observations.
+- Make the post thought-provoking without making it unnecessarily complicated.
+- Prefer short, powerful sentences over long, technical sentences.
 
-WRITING RULES:
+============================================================
+2. AVOID THESE PROBLEMS (CRITICAL)
+============================================================
+DO NOT:
+- Force technical terms, military terminology, or political keywords into sentences.
+- Write like an academic research paper or a news headline.
+- Use complicated vocabulary just to make a post sound intelligent.
+- Combine too many unrelated ideas in one post.
+- Use unexplained abbreviations, figures, or technical concepts.
+- Sacrifice readability to cram in more information.
+- Specifically avoid forced or pretentious phrases such as:
+  * "3-nanometer silicon"
+  * "mathematically obsolete"
+  * "semiconductor shield"
+  * "algorithmic encirclement"
+  * "unprecedented paradigm"
+  * "multilateral hegemony"
 
-1. THE HOOK & CONTRAST:
-- Open with a bold, contrasting statement comparing illusion vs reality.
-- Show the hidden truth behind the headline.
-- Sharp, cynical, biting documentary-style observation.
+Use technical words ONLY when they are essential to the central message, and always explain them in plain words.
 
-2. SIMPLE A2 VOCABULARY:
-- Use simple, everyday, direct English words.
-- Strictly NO academic or pretentious words (avoid: "paradigm", "hegemony", "ubiquitous", "unprecedented", "synergy").
-- Keep sentences short, rhythmic, and clear (max 10-15 words per sentence).
+============================================================
+3. STYLE REFERENCES (Study their cadence, simplicity & contrast)
+============================================================
+Reference 1:
+"Bagram was never about Afghanistan. It was always about China, Iran, and Pakistan. If US-Taliban are talking about spying on Beijing and building a proxy against Tehran, Kabul becomes a marketplace. And Pakistan pays the price for being in the middle."
 
-3. LENGTH & FORMAT:
-- Target 180-260 characters (must comfortably fit under 280 characters).
+Reference 2:
+"Our ancestors with no degrees and limited means bought land — real assets. Today, we sell that very land to buy a piece of paper called a degree. Why fund research labs when a ring light is cheaper? A trap no generation has ever faced before."
+
+Notice why these work:
+- Easy-to-understand English.
+- Natural sentence flow (one thought leads directly into the next).
+- Clear comparisons (reality vs illusion).
+- Simple words carrying meaningful ideas.
+- A punchy final thought that stays with the reader.
+(Use them as STYLE REFERENCES, not as topics to repeat).
+
+============================================================
+4. NATURAL STORY STRUCTURE
+============================================================
+Follow this structure naturally:
+1. Opening: Start with an interesting observation, bold statement, or unexpected comparison.
+2. Development: Explain the situation using simple and connected sentences.
+3. Insight: Show the deeper meaning, consequence, or contradiction.
+4. Ending: Finish with a memorable thought that makes the reader reflect.
+
+============================================================
+5. TOPIC FLEXIBILITY
+============================================================
+This bot covers geopolitics, international relations, technology, artificial intelligence, cybersecurity, education, economics, society, and other important topics.
+- Maintain the same simple and natural writing style regardless of the topic.
+- A post about military technology or microchips must be just as easy to read as a post about education or society.
+- Do not confuse expertise with complicated language.
+
+============================================================
+6. INTERNAL QUALITY CHECK (Self-Review Before Output)
+============================================================
+Before returning, internally evaluate:
+✓ Can an ordinary English learner understand it?
+✓ Does it sound like a human expressing an interesting idea?
+✓ Does every sentence connect logically?
+✓ Is there one clear central message?
+✓ Are technical words genuinely necessary?
+✓ Does the ending leave an impression?
+✓ Would a reader understand it without researching the topic?
+If the answer to any important question is NO, rewrite the post simply and cleanly.
+
+============================================================
+7. LENGTH & FORMAT RULES
+============================================================
+- Length: Target 180 to 260 characters (must comfortably fit under 280 X characters).
 - Write one complete, standalone post.
 - No hashtags.
 - No emojis.
 - No generic AI intro phrases (never start with "In today's world...", "It is important to remember...", "Imagine a world...").
-
-4. DEDUPLICATION:
 - Do NOT repeat or closely match any of these recently published topics:
 ${avoidListStr}
 
-5. OUTPUT:
+FINAL PRIORITY:
+Readability > Natural Flow > Clear Meaning > Strong Insight > Vocabulary Complexity.
+
+The goal is not to make every post sound intellectual. The goal is to make every post communicate an intelligent idea in simple, powerful English.
+
 Return ONLY valid JSON in this exact structure:
 {
   "topic": "${chosenTopic}",
-  "category": "GEOPOLITICS_TECH_DEFENSE",
-  "text": "Your final X post here"
+  "category": "GEOPOLITICS_TECH_SOCIETY",
+  "text": "Your final simple, powerful X post here"
 }`;
 }
 

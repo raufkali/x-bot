@@ -33,11 +33,12 @@ Generate exactly ${postWord}. Each idea must communicate a distinct angle or poi
 For EVERY post idea, generate exactly three language versions communicating the same core message:
 
 LANGUAGE 1 — ENGLISH
-- Use simple, natural English.
-- Keep sentences clear, short, and readable.
-- Avoid unnecessarily complex vocabulary.
-- Use an engaging opening.
-- Write like a knowledgeable human, not a generic AI.
+- Prioritize natural storytelling, simple A2 English, readability, and logical flow.
+- Use simple, everyday, direct human words (never use complex vocabulary or academic jargon).
+- Prefer short, powerful sentences that connect naturally (max 10-15 words per sentence).
+- Present one central idea and develop it clearly so anyone understands on the first read.
+- Avoid forced technical terms (e.g. avoid "3-nanometer silicon", "mathematically obsolete", "semiconductor shield").
+- Readability > Natural Flow > Clear Meaning > Strong Insight > Vocabulary Complexity.
 
 LANGUAGE 2 — ROMAN URDU
 - Write Urdu using English alphabets.
