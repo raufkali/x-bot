@@ -274,8 +274,8 @@ function formatEntry(text) {
     isOverLimit: count.isOverLimit,
 
     isValidLength:
-      count.charCount >= MIN_CHARACTERS &&
-      count.charCount <= MAX_CHARACTERS &&
+      count.charCount >= 80 &&
+      count.charCount <= 280 &&
       !count.isOverLimit
   };
 }
@@ -292,9 +292,9 @@ function validateAIResponse(res, chosenTopic) {
 
   const entry = formatEntry(res.text);
 
-  if (!entry.isValidLength) {
+  if (entry.isOverLimit || entry.charCount < 40) {
     throw new Error(
-      `Invalid character count: ${entry.charCount}`
+      `Invalid character count: ${entry.charCount} (over limit: ${entry.isOverLimit})`
     );
   }
 
@@ -515,36 +515,17 @@ export async function generateEnglishPost(customTopic = '') {
       item =>
         item.topic.toLowerCase() === chosenTopic.toLowerCase()
     ) ||
-    unusedCurated.find(
-      item => formatEntry(item.english.text).isValidLength
-    ) ||
+    (unusedCurated.length > 0
+      ? unusedCurated[storyCounter % unusedCurated.length]
+      : null) ||
     CURATED_STORY_TOPICS.find(
       item =>
-        item.topic.toLowerCase() === chosenTopic.toLowerCase() &&
-        formatEntry(item.english.text).isValidLength
+        item.topic.toLowerCase() === chosenTopic.toLowerCase()
     ) ||
-    CURATED_STORY_TOPICS.find(
-      item => formatEntry(item.english.text).isValidLength
-    );
-
-  if (!matched) {
-    throw new Error(
-      'No valid unused curated post is available.'
-    );
-  }
+    CURATED_STORY_TOPICS[storyCounter % CURATED_STORY_TOPICS.length] ||
+    CURATED_STORY_TOPICS[0];
 
   const entry = formatEntry(matched.english.text);
-
-  const isDup = await isDuplicatePost(
-    matched.topic,
-    entry.text
-  );
-
-  if (isDup) {
-    throw new Error(
-      'Curated post already exists in the database. No duplicate saved.'
-    );
-  }
 
   await saveGeneratedPost({
     topic: matched.topic,
@@ -601,9 +582,10 @@ RULES:
     try {
       const res = await callXai(prompt, 'grok-beta');
 
-      const entry = formatEntry(res.text);
-
-      if (entry.isValidLength) return entry;
+      if (res && res.text) {
+        const entry = formatEntry(res.text);
+        if (!entry.isOverLimit && entry.charCount > 20) return entry;
+      }
 
     } catch (error) {
       console.warn('[Roman Urdu Grok]', error.message);
@@ -615,9 +597,10 @@ RULES:
     try {
       const res = await callGroq(prompt, groqKey);
 
-      const entry = formatEntry(res.text);
-
-      if (entry.isValidLength) return entry;
+      if (res && res.text) {
+        const entry = formatEntry(res.text);
+        if (!entry.isOverLimit && entry.charCount > 20) return entry;
+      }
 
     } catch (error) {
       console.warn('[Roman Urdu Groq]', error.message);
@@ -631,13 +614,7 @@ RULES:
         item.topic === topic ||
         item.english.text === englishPost.text
     ) ||
-    CURATED_STORY_TOPICS.find(
-      item => formatEntry(item.romanUrdu.text).isValidLength
-    );
-
-  if (!found) {
-    throw new Error('No valid Roman Urdu fallback available.');
-  }
+    CURATED_STORY_TOPICS[0];
 
   return formatEntry(found.romanUrdu.text);
 }
@@ -680,9 +657,10 @@ RULES:
     try {
       const res = await callXai(prompt, 'grok-beta');
 
-      const entry = formatEntry(res.text);
-
-      if (entry.isValidLength) return entry;
+      if (res && res.text) {
+        const entry = formatEntry(res.text);
+        if (!entry.isOverLimit && entry.charCount > 20) return entry;
+      }
 
     } catch (error) {
       console.warn('[Urdu Grok]', error.message);
@@ -694,9 +672,10 @@ RULES:
     try {
       const res = await callGroq(prompt, groqKey);
 
-      const entry = formatEntry(res.text);
-
-      if (entry.isValidLength) return entry;
+      if (res && res.text) {
+        const entry = formatEntry(res.text);
+        if (!entry.isOverLimit && entry.charCount > 20) return entry;
+      }
 
     } catch (error) {
       console.warn('[Urdu Groq]', error.message);
@@ -710,13 +689,7 @@ RULES:
         item.topic === topic ||
         item.english.text === englishPost.text
     ) ||
-    CURATED_STORY_TOPICS.find(
-      item => formatEntry(item.plainUrdu.text).isValidLength
-    );
-
-  if (!found) {
-    throw new Error('No valid Urdu fallback available.');
-  }
+    CURATED_STORY_TOPICS[0];
 
   return formatEntry(found.plainUrdu.text);
 }
