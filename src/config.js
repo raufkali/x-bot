@@ -16,7 +16,9 @@ if (fs.existsSync('.env.add1')) {
 }
 
 export const config = {
-  // Grok / Groq AI Settings
+  // AI Engine API Keys & Settings
+  geminiApiKey: process.env.GEMINI_API_KEY || '',
+  geminiModel: process.env.GEMINI_MODEL || 'gemini-3.5-flash',
   grokMode: process.env.GROK_MODE || 'auto',
   grokUrl: process.env.GROK_URL || 'https://grok.com',
   chromeCdpUrl: process.env.CHROME_CDP_URL || '',

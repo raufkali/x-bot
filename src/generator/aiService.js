@@ -417,6 +417,7 @@ Return ONLY valid JSON matching this exact structure:
 ========================================================= */
 
 export async function generateEnglishPost(customTopic = '') {
+  const geminiKey = process.env.GEMINI_API_KEY;
   const xaiKey = process.env.GROK_API_KEY || process.env.XAI_API_KEY;
   const groqKey = process.env.GROQ_API_KEY;
 
@@ -463,7 +464,33 @@ export async function generateEnglishPost(customTopic = '') {
 
   const prompt = createEnglishPrompt(chosenTopic, usedTopics, targetCategory);
 
-  /* ---------------- 1. xAI GROK API ---------------- */
+  /* ---------------- 1. GOOGLE GEMINI FREE API (PRIMARY) ---------------- */
+  if (geminiKey) {
+    try {
+      const res = await callGemini(prompt, geminiKey);
+      const validated = validateAIResponse(res, chosenTopic, chosenCategory);
+      const isDup = await isDuplicatePost(validated.topic, validated.english.text);
+
+      if (!isDup) {
+        await saveGeneratedPost({
+          topic: validated.topic,
+          category: validated.category,
+          english: validated.english,
+          provider: 'Google Gemini Free API'
+        });
+
+        return {
+          ...validated,
+          provider: 'Google Gemini Free API'
+        };
+      }
+      console.warn('[Gemini] Duplicate post rejected, falling back to Grok...');
+    } catch (error) {
+      console.warn(`[Gemini API] ${error.message}. Falling back to Grok...`);
+    }
+  }
+
+  /* ---------------- 2. xAI GROK API (SECONDARY FALLBACK) ---------------- */
   if (xaiKey) {
     try {
       const res = await callXai(prompt, 'grok-beta');
@@ -475,12 +502,12 @@ export async function generateEnglishPost(customTopic = '') {
           topic: validated.topic,
           category: validated.category,
           english: validated.english,
-          provider: 'xAI Grok API (Paid)'
+          provider: 'xAI Grok API'
         });
 
         return {
           ...validated,
-          provider: 'xAI Grok API (Paid)'
+          provider: 'xAI Grok API'
         };
       }
       console.warn('[Grok] Duplicate post rejected, trying next...');
@@ -489,7 +516,7 @@ export async function generateEnglishPost(customTopic = '') {
     }
   }
 
-  /* ---------------- 2. GROQ CLOUD API ---------------- */
+  /* ---------------- 3. GROQ CLOUD API (TERTIARY FALLBACK) ---------------- */
   if (groqKey) {
     try {
       const res = await callGroq(prompt, groqKey);
@@ -515,7 +542,7 @@ export async function generateEnglishPost(customTopic = '') {
     }
   }
 
-  /* ---------------- 3. CURATED ANALYTICAL ENGINE ---------------- */
+  /* ---------------- 4. CURATED ANALYTICAL ENGINE ---------------- */
   const found =
     CURATED_STORY_TOPICS.find(
       item => item.topic.toLowerCase().trim() === chosenTopic.toLowerCase().trim()
@@ -547,6 +574,7 @@ export async function generateEnglishPost(customTopic = '') {
 ========================================================= */
 
 export async function generateRomanUrduFromEnglish(englishPost, topic = '') {
+  const geminiKey = process.env.GEMINI_API_KEY;
   const xaiKey = process.env.GROK_API_KEY || process.env.XAI_API_KEY;
   const groqKey = process.env.GROQ_API_KEY;
 
@@ -565,6 +593,18 @@ RULES:
 {
   "text": "Roman Urdu text here"
 }`;
+
+  if (geminiKey) {
+    try {
+      const res = await callGemini(prompt, geminiKey);
+      if (res && res.text) {
+        const entry = formatEntry(res.text);
+        if (!entry.isOverLimit && entry.charCount > 20) return entry;
+      }
+    } catch (error) {
+      console.warn('[Roman Urdu Gemini]', error.message);
+    }
+  }
 
   if (xaiKey) {
     try {
@@ -603,6 +643,7 @@ RULES:
 ========================================================= */
 
 export async function generatePlainUrduFromEnglish(englishPost, topic = '') {
+  const geminiKey = process.env.GEMINI_API_KEY;
   const xaiKey = process.env.GROK_API_KEY || process.env.XAI_API_KEY;
   const groqKey = process.env.GROQ_API_KEY;
 
@@ -620,6 +661,18 @@ RULES:
 {
   "text": "مختصر، جامع اور مدلل اردو متن یہاں تحریر کریں"
 }`;
+
+  if (geminiKey) {
+    try {
+      const res = await callGemini(prompt, geminiKey);
+      if (res && res.text) {
+        const entry = formatEntry(res.text);
+        if (!entry.isOverLimit && entry.charCount > 20) return entry;
+      }
+    } catch (error) {
+      console.warn('[Plain Urdu Gemini]', error.message);
+    }
+  }
 
   if (xaiKey) {
     try {
@@ -728,4 +781,63 @@ async function callXai(prompt, model = 'grok-beta') {
   const match = content.match(/\{[\s\S]*\}/);
   if (!match) throw new Error('No valid JSON object found in Grok response');
   return JSON.parse(match[0]);
+}
+
+async function callGemini(prompt, apiKey) {
+  // Free Google Gemini Models (Primary: gemini-3.5-flash, Fallbacks: 3.5-flash-lite, 3.1-flash-lite)
+  const models = [
+    process.env.GEMINI_MODEL || 'gemini-3.5-flash',
+    'gemini-3.5-flash-lite',
+    'gemini-3.1-flash-lite'
+  ];
+  const uniqueModels = [...new Set(models)];
+
+  let lastError = null;
+  for (const model of uniqueModels) {
+    try {
+      const url = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`;
+      const controller = new AbortController();
+      const timer = setTimeout(() => controller.abort(), 8000);
+
+      const response = await fetch(url, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        signal: controller.signal,
+        body: JSON.stringify({
+          systemInstruction: {
+            parts: [{
+              text: 'You are an advanced geopolitical intelligence analyst writing analytical commentary for X (Twitter). Return ONLY valid JSON.'
+            }]
+          },
+          contents: [{ parts: [{ text: prompt }] }],
+          generationConfig: {
+            temperature: 0.6,
+            responseMimeType: 'application/json'
+          }
+        })
+      });
+      clearTimeout(timer);
+
+      if (!response.ok) {
+        const errJson = await response.json().catch(() => ({}));
+        const msg = errJson.error?.message || `HTTP ${response.status}`;
+        lastError = new Error(`Gemini (${model}): ${msg}`);
+        continue;
+      }
+
+      const data = await response.json();
+      const rawText = data.candidates?.[0]?.content?.parts?.[0]?.text || '';
+      const match = rawText.match(/\{[\s\S]*\}/);
+      if (!match) {
+        lastError = new Error(`Gemini (${model}): No JSON object found in output`);
+        continue;
+      }
+
+      return JSON.parse(match[0]);
+    } catch (err) {
+      lastError = err;
+    }
+  }
+
+  throw lastError || new Error('All Gemini free tier models failed');
 }
