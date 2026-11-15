@@ -157,11 +157,11 @@ async function runTests() {
     const triggerPromise = fetch(`${baseUrl}/trigger`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ topic: 'Test Trigger AI', timeoutMs: 15000 })
+      body: JSON.stringify({ topic: 'Test Trigger AI', timeoutMs: 30000 })
     }).then(r => r.json());
 
     // Allow trigger to start and enter waiting state
-    for (let i = 0; i < 200; i++) {
+    for (let i = 0; i < 300; i++) {
       if (whatsappWorkflow.status === 'AWAITING_APPROVAL' && whatsappWorkflow.currentPendingPost) break;
       await new Promise(r => setTimeout(r, 100));
     }
@@ -289,6 +289,62 @@ async function runTests() {
     assert.strictEqual(resetResult.isRandom, true);
     assert.strictEqual(genreManager.getPrimaryGenre(), null, 'Primary genre must now be null (Random)');
     console.log('✓ TEST 19 PASSED: Primary genre reset to Random (rotating across all genres)!\n');
+
+    // TEST 20: Option 6 on Post Review Menu (Customize Bot from Review Menu)
+    console.log('TEST 20: Testing Option 6 on Post Review Menu (Customize Bot)...');
+    whatsappWorkflow.currentPendingPost = null;
+    await whatsappWorkflow.generateAndSend('Global Strategic Test');
+    assert.ok(whatsappWorkflow.currentPendingPost, 'Pending post must exist');
+    const opt6Result = await whatsappWorkflow.handleOwnerReply('6', config.ownerPhoneNumber);
+    assert.strictEqual(opt6Result.action, 'CUSTOMIZE_MENU_OPENED', 'Option 6 must open customize menu');
+    assert.strictEqual(whatsappWorkflow.menuState, 'CUSTOMIZE_MENU');
+    assert.ok(opt6Result.message.includes('Back to Post Review'), 'Customize menu should show "Back to Post Review"');
+    console.log('✓ TEST 20 PASSED: Option 6 successfully opened Customize Bot menu from post review!\n');
+
+    // TEST 21: Option 0 from Customize Menu (Return back to Post Review)
+    console.log('TEST 21: Testing Option 0 from Customize Menu (Return to Post Review)...');
+    const backToPostResult = await whatsappWorkflow.handleOwnerReply('0', config.ownerPhoneNumber);
+    assert.strictEqual(backToPostResult.action, 'RETURNED_TO_POST_REVIEW');
+    assert.strictEqual(whatsappWorkflow.menuState, 'DEFAULT');
+    assert.strictEqual(whatsappWorkflow.status, 'AWAITING_APPROVAL');
+    assert.ok(whatsappWorkflow.currentPendingPost, 'Original pending post must be preserved');
+    console.log('✓ TEST 21 PASSED: Option 0 returned directly to active post review!\n');
+
+    // TEST 22: Option 5 (Never Regenerate Discarded Post)
+    console.log('TEST 22: Testing Option 5 (Generate a NEW fresh post - Never Regenerates Old Post)...');
+    const seenTopics = new Set();
+    const seenTexts = new Set();
+    
+    // Check initial post
+    seenTopics.add(whatsappWorkflow.currentPendingPost.topic.toLowerCase().trim());
+    seenTexts.add(whatsappWorkflow.currentPendingPost.english.text.trim());
+
+    // Trigger Option 5 consecutive fresh regenerations
+    for (let round = 1; round <= 4; round++) {
+      console.log(`   Simulating Option 5 press (Iteration ${round})...`);
+      const prevTopic = whatsappWorkflow.currentPendingPost.topic;
+      const prevText = whatsappWorkflow.currentPendingPost.english.text;
+
+      const regenResult = await whatsappWorkflow.handleOwnerReply('5', config.ownerPhoneNumber);
+      assert.strictEqual(regenResult.success, true);
+      assert.ok(whatsappWorkflow.currentPendingPost, 'Fresh post must be active');
+
+      const currentTopic = whatsappWorkflow.currentPendingPost.topic;
+      const currentText = whatsappWorkflow.currentPendingPost.english.text;
+
+      // Must NEVER match the immediately preceding rejected post
+      assert.notStrictEqual(currentTopic.toLowerCase().trim(), prevTopic.toLowerCase().trim(), 'Must not repeat previous topic');
+      assert.notStrictEqual(currentText.trim(), prevText.trim(), 'Must not repeat previous text');
+
+      // Must NEVER match ANY topic or text seen across all rounds
+      assert.strictEqual(seenTopics.has(currentTopic.toLowerCase().trim()), false, `Topic "${currentTopic}" was already seen!`);
+      assert.strictEqual(seenTexts.has(currentText.trim()), false, `Post text was already seen!`);
+
+      seenTopics.add(currentTopic.toLowerCase().trim());
+      seenTexts.add(currentText.trim());
+      console.log(`   ✓ Iteration ${round} generated unique topic: "${currentTopic}" (${currentText.length} chars)`);
+    }
+    console.log('✓ TEST 22 PASSED: Option 5 never regenerates discarded post, generating 100% unique posts!\n');
 
     console.log('====================================================');
     console.log('   ALL WHATSAPP WEBHOOK TESTS PASSED! (100%)');

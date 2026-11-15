@@ -1,6 +1,6 @@
 {
-  "totalPosts": 18,
-  "updatedAt": "2026-11-15T06:44:21.104Z",
+  "totalPosts": 35,
+  "updatedAt": "2026-11-15T08:15:02.306Z",
   "posts": [
     {
       "hash": "cf010403450d07a18e28b67f83c481c3d59480679f03f1f8e7f1fb347387e853",
@@ -91,7 +91,7 @@
     },
     {
       "hash": "7983ef6b592f8cff25a74d7daaa5981d188f72a5a9633c6d2fe8fbc94aeca38e",
-      "topic": "Pakistan and the IMF: Debt Trap (Update 5132)",
+      "topic": "Pakistan and the IMF: Debt Trap (Update 6459)",
       "category": "PAKISTAN_POLITICS",
       "englishText": "Pakistan has entered 24 IMF programs since 1958. Today, over 70% of all federal tax revenues go directly toward servicing $130 billion in public debt.\n\nTo secure a $7 billion loan, electricity tariffs were hiked 45% and sales taxes raised, crushing 90 million low-income workers.\n\nHow can a nation of 240 million become independent if it borrows new money just to pay interest on old loans?",
       "romanUrduText": "Pakistan 1958 se ab tak 24 martaba IMF ja chuka hai. Aaj FBR ke 70% se zyada tax collections 130 arab dollar ke qarzay ka sood chukanay mein chalay jatay hain.\n\n7 arab dollar ke loan ke liye bijli 45% mehngi ki gayi aur taxes barhaye gaye.\n\n24 karor awam ka mulk azaad kaise banay ga agar naya qarza sirf puranay sood ko denay ke liye liya jaye?",
@@ -108,7 +108,7 @@
       ],
       "provider": "Curated Geopolitical Engine",
       "status": "PENDING",
-      "timestamp": "2026-11-15T06:41:05.132Z"
+      "timestamp": "2026-11-15T07:58:36.459Z"
     },
     {
       "hash": "67a99d1318a55379859492295252407b75cb49ffb40ef50880ad545098dee362",
@@ -326,6 +326,287 @@
       "provider": "Google Gemini Free API",
       "status": "PENDING",
       "timestamp": "2026-11-15T06:44:21.104Z"
+    },
+    {
+      "hash": "29ae2119fdc7d4cd5cd125b706f6eb4f76436287fe4773af2a5a0d29be52c461",
+      "topic": "India vs Pakistan: Weapons vs Welfare (Series 743)",
+      "category": "PAK_VS_IND",
+      "englishText": "India spends $86.6 billion on military modernization, while Pakistan spends $8.8 billion on defence upkeep. At the exact same time, 28 million young children across the subcontinent never set foot inside a secondary school.\n\nBoth states purchase foreign weapon systems while rural public schools lack clean drinking water and desks.\n\nWhat is the point of national defence if our citizens are dying of poverty?",
+      "romanUrduText": "India foji modernization par 86.6 arab dollar kharch karta hai jabke Pakistan 8.8 arab dollar. Usi waqt dono mulkon ke 28 million bachay school ki shakal nahi dekhte.\n\nDono mulk radar khareedte hain jabke schools mein peenay ka paani nahi.\n\nAise difa ka kya faida jab aane wali nasal anparh reh jaye?",
+      "plainUrduText": "بھارت جدید ترین فوجی سازوسامان پر 86.6 ارب ڈالر اور پاکستان 8.8 ارب ڈالر خرچ کرتا ہے۔ عین اسی وقت دونوں ممالک کے 28 ملین بچے بنیادی تعلیم سے مکمل محروم ہیں۔\n\nدونوں ریاستیں راڈار سسٹمز خریدتی ہیں جبکہ اسکولوں میں پینے کا پانی نہیں۔\n\nایسے دفاع کی کیا اہمیت ہے اگر پوری نسل کو جہالت کے اندھیروں میں چھوڑ دیا جائے؟",
+      "numbers": [
+        "86.6",
+        "8.8",
+        "28"
+      ],
+      "provider": "Curated Geopolitical Engine",
+      "status": "PENDING",
+      "timestamp": "2026-11-15T07:37:45.820Z"
+    },
+    {
+      "hash": "fa481eae0477988e4470149c81c897d70f76f0cd5e41387334b013dd07237800",
+      "topic": "Test Autonomous AI topic",
+      "category": "PAK_VS_IND",
+      "englishText": "India spends $75 billion on its army, while Pakistan spends $7 billion. India outspends Pakistan by nearly 11 times on military power.\n\nYet 35 percent of people in both lands lack clean water, and 20 million kids never see a school. Both states buy $80M tanks while local clinics have no basic drugs.\n\nWhat is the real use of big missiles if everyday people are suffering and dying of hunger?",
+      "romanUrduText": "",
+      "plainUrduText": "",
+      "numbers": [
+        "75",
+        "7",
+        "11",
+        "35",
+        "20",
+        "80m"
+      ],
+      "provider": "Google Gemini Free API",
+      "status": "PENDING",
+      "timestamp": "2026-11-15T07:58:32.882Z"
+    },
+    {
+      "hash": "735d578f515b88583a4e8b3c90cc00f7ae8e5a65f4594b4c1ef44eba3ae0fe70",
+      "topic": "China vs USA: Business or Control? (Update 4654)",
+      "category": "GEOPOLITICS",
+      "englishText": "The US operates over 750 overseas military bases with an $886 billion defence budget. Meanwhile, China invested over $1 trillion in roads, ports, and energy across 150 countries via Belt and Road.\n\nAmerica controls the sea lanes with aircraft carriers. China controls the supply chains with manufacturing.\n\nAre smaller nations forming genuine alliances, or are they just pawns in a trillion-dollar trade war?",
+      "romanUrduText": "America 886 arab dollar ke foji budget se 750 se zyada foji adday chalata hai. Doosri taraf China ne Belt and Road ke zariye 150 mulkon mein 1 trillion dollar lagaye hain.\n\nAmerica bahr-e-jahaz se samundar control karta hai, aur China factories se aalmi supply chain control karta hai.\n\nKya chhotay mumalik dost ban rahay hain ya sirf trillion-dollar jung ke mohray hain?",
+      "plainUrduText": "امریکہ 886 ارب ڈالر کے دفاعی بجٹ کے ساتھ دنیا بھر میں 750 سے زیادہ فوجی اڈے چلاتا ہے۔ دوسری طرف چین نے بیلٹ اینڈ روڈ کے ذریعے 150 ممالک میں ایک ٹریلین ڈالر سے زیادہ سرمایہ کاری کی ہے۔\n\nامریکہ طیارہ بردار جہازوں سے سمندری راستوں پر راج کرتا ہے جبکہ چین عالمی سپلائی چین پر قابض ہے۔\n\nکیا چھوٹے ممالک اتحادی بن رہے ہیں یا کھربوں ڈالر کی معاشی جنگ کے مہرے؟",
+      "numbers": [
+        "750",
+        "886",
+        "1",
+        "150"
+      ],
+      "provider": "Curated Geopolitical Engine",
+      "status": "PENDING",
+      "timestamp": "2026-11-15T07:58:34.655Z"
+    },
+    {
+      "hash": "fef316f61d8b030fa3aebe91dce6b587671384d3aca9148afda7286360886380",
+      "topic": "India vs Pakistan: Weapons vs Welfare (Series 165)",
+      "category": "PAK_VS_IND",
+      "englishText": "India spends $84.1 billion on military modernization, while Pakistan spends $8.6 billion on defence upkeep. At the exact same time, 27 million young children across the subcontinent never set foot inside a secondary school.\n\nBoth states purchase foreign weapon systems while rural public schools lack clean drinking water and desks.\n\nWhat is the point of national defence if our citizens are dying of poverty?",
+      "romanUrduText": "India foji modernization par 84.1 arab dollar kharch karta hai jabke Pakistan 8.6 arab dollar. Usi waqt dono mulkon ke 27 million bachay school ki shakal nahi dekhte.\n\nDono mulk radar khareedte hain jabke schools mein peenay ka paani nahi.\n\nAise difa ka kya faida jab aane wali nasal anparh reh jaye?",
+      "plainUrduText": "بھارت جدید ترین فوجی سازوسامان پر 84.1 ارب ڈالر اور پاکستان 8.6 ارب ڈالر خرچ کرتا ہے۔ عین اسی وقت دونوں ممالک کے 27 ملین بچے بنیادی تعلیم سے مکمل محروم ہیں۔\n\nدونوں ریاستیں راڈار سسٹمز خریدتی ہیں جبکہ اسکولوں میں پینے کا پانی نہیں۔\n\nایسے دفاع کی کیا اہمیت ہے اگر پوری نسل کو جہالت کے اندھیروں میں چھوڑ دیا جائے؟",
+      "numbers": [
+        "84.1",
+        "8.6",
+        "27"
+      ],
+      "provider": "Curated Geopolitical Engine",
+      "status": "PENDING",
+      "timestamp": "2026-11-15T07:58:43.418Z"
+    },
+    {
+      "hash": "8566448be6ae88dcae7879e9fed065c237727fc58d5e1c2b4333bba3e3a47a24",
+      "topic": "India vs Pakistan: Weapons vs Welfare (Series 582)",
+      "category": "PAK_VS_IND",
+      "englishText": "India spends $86.8 billion on military modernization, while Pakistan spends $9.5 billion on defence upkeep. At the exact same time, 25 million young children across the subcontinent never set foot inside a secondary school.\n\nBoth states purchase foreign weapon systems while rural public schools lack clean drinking water and desks.\n\nWhat is the point of national defence if our citizens are dying of poverty?",
+      "romanUrduText": "India foji modernization par 86.8 arab dollar kharch karta hai jabke Pakistan 9.5 arab dollar. Usi waqt dono mulkon ke 25 million bachay school ki shakal nahi dekhte.\n\nDono mulk radar khareedte hain jabke schools mein peenay ka paani nahi.\n\nAise difa ka kya faida jab aane wali nasal anparh reh jaye?",
+      "plainUrduText": "بھارت جدید ترین فوجی سازوسامان پر 86.8 ارب ڈالر اور پاکستان 9.5 ارب ڈالر خرچ کرتا ہے۔ عین اسی وقت دونوں ممالک کے 25 ملین بچے بنیادی تعلیم سے مکمل محروم ہیں۔\n\nدونوں ریاستیں راڈار سسٹمز خریدتی ہیں جبکہ اسکولوں میں پینے کا پانی نہیں۔\n\nایسے دفاع کی کیا اہمیت ہے اگر پوری نسل کو جہالت کے اندھیروں میں چھوڑ دیا جائے؟",
+      "numbers": [
+        "86.8",
+        "9.5",
+        "25"
+      ],
+      "provider": "Curated Geopolitical Engine",
+      "status": "PENDING",
+      "timestamp": "2026-11-15T08:08:26.205Z"
+    },
+    {
+      "hash": "29c81b2b7cf824b514beae04fcca3bb975f39d222f39d4968bc313c0c6dcbcc4",
+      "topic": "Global Power & Warfare: Critical Analysis (Series 823)",
+      "category": "AI_HUMAN_SOCIETY",
+      "englishText": "Global military expenditures surged past $2.4 trillion in 2024, yet 730 million people face acute food insecurity worldwide. The top 5 military powers control 75% of global arms exports while developing states face crushing external debt.\n\nGreat powers wage proxy competition while ordinary working families bear the inflation.\n\nWho truly benefits when war budgets rise while basic human survival is ignored?",
+      "romanUrduText": "Dunya bhar ka foji budget 2.4 trillion dollar se tajawuz kar gaya, magar 730 million log bhook ka shikar hain. Top 5 taqatein 75% hathyar bechti hain jabke ghareeb mulk qarzay mein doob chuke hain.\n\nBari taqatein mufaad ki jang larti hain jabke awam mehngai se mar rahi hai.\n\nAise foji kharchon ka kya faida jab insaniyat bhook se mar rahi ho?",
+      "plainUrduText": "دنیا بھر کے فوجی اخراجات چوبیس سو ارب ڈالر سے تجاوز کر چکے ہیں مگر تہتر کروڑ عوام بھوک اور افلاس کا شکار ہیں۔ پانچ بڑی طاقتیں پچھتر فیصد ہتھیار فروخت کرتی ہیں جبکہ غریب ممالک قرضوں میں جکڑے ہوئے ہیں۔\n\nبڑے ممالک اپنے مفادات کی جنگ لڑتے ہیں جبکہ عام شہری مہنگائی تلے دب رہے ہیں۔\n\nاس عسکری دوڑ کا کیا فائدہ جب عام انسان کی بقا ہی خطرے میں ہو؟",
+      "numbers": [
+        "2.4",
+        "2024",
+        "730",
+        "5",
+        "75"
+      ],
+      "provider": "Curated Geopolitical Engine",
+      "status": "PENDING",
+      "timestamp": "2026-11-15T08:11:56.687Z"
+    },
+    {
+      "hash": "55d73a8fa5c306cb00b30ea50b24f8517e2c0633d996b78b2a1aeebd0c18edfb",
+      "topic": "India vs Pakistan: Weapons vs Welfare (Series 669)",
+      "category": "PAK_VS_IND",
+      "englishText": "India spends $84.0 billion on military modernization, while Pakistan spends $8.7 billion on defence upkeep. At the exact same time, 26 million young children across the subcontinent never set foot inside a secondary school.\n\nBoth states purchase foreign weapon systems while rural public schools lack clean drinking water and desks.\n\nWhat is the point of national defence if our citizens are dying of poverty?",
+      "romanUrduText": "India foji modernization par 84.0 arab dollar kharch karta hai jabke Pakistan 8.7 arab dollar. Usi waqt dono mulkon ke 26 million bachay school ki shakal nahi dekhte.\n\nDono mulk radar khareedte hain jabke schools mein peenay ka paani nahi.\n\nAise difa ka kya faida jab aane wali nasal anparh reh jaye?",
+      "plainUrduText": "بھارت جدید ترین فوجی سازوسامان پر 84.0 ارب ڈالر اور پاکستان 8.7 ارب ڈالر خرچ کرتا ہے۔ عین اسی وقت دونوں ممالک کے 26 ملین بچے بنیادی تعلیم سے مکمل محروم ہیں۔\n\nدونوں ریاستیں راڈار سسٹمز خریدتی ہیں جبکہ اسکولوں میں پینے کا پانی نہیں۔\n\nایسے دفاع کی کیا اہمیت ہے اگر پوری نسل کو جہالت کے اندھیروں میں چھوڑ دیا جائے؟",
+      "numbers": [
+        "84.0",
+        "8.7",
+        "26"
+      ],
+      "provider": "Curated Geopolitical Engine",
+      "status": "PENDING",
+      "timestamp": "2026-11-15T08:11:26.277Z"
+    },
+    {
+      "hash": "5012034c70ce85f1f8fff9ea3945fccf378b59e19add0a91eb9e679336169723",
+      "topic": "India vs Pakistan: Weapons vs Welfare (Series 809)",
+      "category": "PAK_VS_IND",
+      "englishText": "India spends $82.5 billion on military modernization, while Pakistan spends $8.4 billion on defence upkeep. At the exact same time, 27 million young children across the subcontinent never set foot inside a secondary school.\n\nBoth states purchase foreign weapon systems while rural public schools lack clean drinking water and desks.\n\nWhat is the point of national defence if our citizens are dying of poverty?",
+      "romanUrduText": "India foji modernization par 82.5 arab dollar kharch karta hai jabke Pakistan 8.4 arab dollar. Usi waqt dono mulkon ke 27 million bachay school ki shakal nahi dekhte.\n\nDono mulk radar khareedte hain jabke schools mein peenay ka paani nahi.\n\nAise difa ka kya faida jab aane wali nasal anparh reh jaye?",
+      "plainUrduText": "بھارت جدید ترین فوجی سازوسامان پر 82.5 ارب ڈالر اور پاکستان 8.4 ارب ڈالر خرچ کرتا ہے۔ عین اسی وقت دونوں ممالک کے 27 ملین بچے بنیادی تعلیم سے مکمل محروم ہیں۔\n\nدونوں ریاستیں راڈار سسٹمز خریدتی ہیں جبکہ اسکولوں میں پینے کا پانی نہیں۔\n\nایسے دفاع کی کیا اہمیت ہے اگر پوری نسل کو جہالت کے اندھیروں میں چھوڑ دیا جائے؟",
+      "numbers": [
+        "82.5",
+        "8.4",
+        "27"
+      ],
+      "provider": "Curated Geopolitical Engine",
+      "status": "PENDING",
+      "timestamp": "2026-11-15T08:11:41.937Z"
+    },
+    {
+      "hash": "19d2b19cab4c109fbab1673f045acb1a6cdcb0a130a2cb56718b571c764e7c25",
+      "topic": "India vs Pakistan: Weapons vs Welfare (Series 795)",
+      "category": "PAK_VS_IND",
+      "englishText": "India spends $86.6 billion on military modernization, while Pakistan spends $9.9 billion on defence upkeep. At the exact same time, 24 million young children across the subcontinent never set foot inside a secondary school.\n\nBoth states purchase foreign weapon systems while rural public schools lack clean drinking water and desks.\n\nWhat is the point of national defence if our citizens are dying of poverty?",
+      "romanUrduText": "India foji modernization par 86.6 arab dollar kharch karta hai jabke Pakistan 9.9 arab dollar. Usi waqt dono mulkon ke 24 million bachay school ki shakal nahi dekhte.\n\nDono mulk radar khareedte hain jabke schools mein peenay ka paani nahi.\n\nAise difa ka kya faida jab aane wali nasal anparh reh jaye?",
+      "plainUrduText": "بھارت جدید ترین فوجی سازوسامان پر 86.6 ارب ڈالر اور پاکستان 9.9 ارب ڈالر خرچ کرتا ہے۔ عین اسی وقت دونوں ممالک کے 24 ملین بچے بنیادی تعلیم سے مکمل محروم ہیں۔\n\nدونوں ریاستیں راڈار سسٹمز خریدتی ہیں جبکہ اسکولوں میں پینے کا پانی نہیں۔\n\nایسے دفاع کی کیا اہمیت ہے اگر پوری نسل کو جہالت کے اندھیروں میں چھوڑ دیا جائے؟",
+      "numbers": [
+        "86.6",
+        "9.9",
+        "24"
+      ],
+      "provider": "Curated Geopolitical Engine",
+      "status": "PENDING",
+      "timestamp": "2026-11-15T08:14:07.576Z"
+    },
+    {
+      "hash": "59e1a2b03df5839661db6e00184ef8324b05f98c1de3875553582f5467d32dd1",
+      "topic": "AI Revolution: Data Centers vs Water Scarcity",
+      "category": "GEOPOLITICS",
+      "englishText": "Advanced AI data centres now consume 4.2% of global electricity, using over 5 million litres of clean water every day just for cooling. Meanwhile, 2.2 billion citizens lack safe drinking water at home, and rural hospitals face continuous blackouts.\n\nTech corporations spend billions training software while ordinary human communities dry up.\n\nAre we building smart technology to serve human life, or sacrificing humans for digital power?",
+      "romanUrduText": "AI data centres dunya ki 4.2% bijli aur rozana 5 million litre saaf paani thanda karne ke liye istemal karte hain. Doosri taraf 2.2 arab log saaf paani se mehroom hain aur dehati hospitals mein load shedding hai.\n\nBari companies software par arbon laga rahi hain jabke insani bastiyan sookh rahi hain.\n\nKya technology insaniyat ki khidmat ke liye hai ya digital taqat ke liye?",
+      "plainUrduText": "جدید ترین ڈیٹا سینٹرز دنیا کی چار فیصد سے زیادہ بجلی اور روزانہ پچاس لاکھ لیٹر پینے کا صاف پانی استعمال کر رہے ہیں۔ دوسری طرف سوا دو ارب شہری صاف پانی سے محروم ہیں اور اسپتالوں میں بجلی نہیں۔\n\nکارپوریشنز سافٹ ویئر پر اربوں بہا رہی ہیں جبکہ عام بستیاں پیاسی مر رہی ہیں۔\n\nکیا ہم انسانوں کی بہتری کے لیے ٹیکنالوجی بنا رہے ہیں یا ڈیجیٹل طاقت کے لیے انسان قربان کر رہے ہیں؟",
+      "numbers": [
+        "4.2",
+        "5",
+        "2.2"
+      ],
+      "provider": "Curated Geopolitical Engine",
+      "status": "PENDING",
+      "timestamp": "2026-11-15T08:14:19.163Z"
+    },
+    {
+      "hash": "06dd1fc5e4bc52e6a5dc221bc9f40d06f47ac9d43727d7b76270df0ca3b49852",
+      "topic": "Global Debt: Foreign Debt vs Public Healthcare",
+      "category": "PAKISTAN_POLITICS",
+      "englishText": "Developing nations now spend $480 billion annually servicing foreign debt, which is four times more than their combined health budgets. In many countries, over 65% of all national tax collection goes directly to foreign bankers rather than schools or clinics.\n\nGovernments cut food subsidies to protect international credit ratings.\n\nWhy must poor citizens sacrifice their daily bread to pay off debts they never approved?",
+      "romanUrduText": "Taraqqi-pazeer mulk qarz ki adayigi par 480 arab dollar saalana kharch karte hain jo unke sehat ke budget se 4 guna zyada hai. Kayi mulkon mein 65% tax direct ghair-mulki bankers ko jata hai bajaaye schools ya clinics ke.\n\nHukoomatein credit rating bachane ke liye roti par subsidy khatam karti hain.\n\nGhareeb awam aisi qarz ke liye kyon maray jo usne li hi nahi?",
+      "plainUrduText": "ترقی پذیر ممالک غیر ملکی قرضوں کی ادائیگی پر سالانہ 480 ارب ڈالر خرچ کرتے ہیں جو ان کے صحت کے بجٹ سے چار گنا زیادہ ہے۔ پینسٹھ فیصد سے زائد ٹیکس براہ راست غیر ملکی بینکرز کو جاتا ہے۔\n\nحکومتیں کریڈٹ ریٹنگ بچانے کے لیے روٹی پر سبسڈی ختم کرتی ہیں۔\n\nغریب شہری ان قرضوں کی قیمت اپنے نوالے چھنوا کر کیوں ادا کریں جو انہوں نے کبھی لیے ہی نہیں؟",
+      "numbers": [
+        "480",
+        "65"
+      ],
+      "provider": "Curated Geopolitical Engine",
+      "status": "PENDING",
+      "timestamp": "2026-11-15T08:14:24.205Z"
+    },
+    {
+      "hash": "1cf0033c5bb589f82ba6ac2bb8fad03ae8e7e10f376c5378c0607937e53183ed",
+      "topic": "India vs Pakistan: Weapons vs Welfare (Series 898)",
+      "category": "PAK_VS_IND",
+      "englishText": "India spends $82.5 billion on military modernization, while Pakistan spends $9.9 billion on defence upkeep. At the exact same time, 21 million young children across the subcontinent never set foot inside a secondary school.\n\nBoth states purchase foreign weapon systems while rural public schools lack clean drinking water and desks.\n\nWhat is the point of national defence if our citizens are dying of poverty?",
+      "romanUrduText": "India foji modernization par 82.5 arab dollar kharch karta hai jabke Pakistan 9.9 arab dollar. Usi waqt dono mulkon ke 21 million bachay school ki shakal nahi dekhte.\n\nDono mulk radar khareedte hain jabke schools mein peenay ka paani nahi.\n\nAise difa ka kya faida jab aane wali nasal anparh reh jaye?",
+      "plainUrduText": "بھارت جدید ترین فوجی سازوسامان پر 82.5 ارب ڈالر اور پاکستان 9.9 ارب ڈالر خرچ کرتا ہے۔ عین اسی وقت دونوں ممالک کے 21 ملین بچے بنیادی تعلیم سے مکمل محروم ہیں۔\n\nدونوں ریاستیں راڈار سسٹمز خریدتی ہیں جبکہ اسکولوں میں پینے کا پانی نہیں۔\n\nایسے دفاع کی کیا اہمیت ہے اگر پوری نسل کو جہالت کے اندھیروں میں چھوڑ دیا جائے؟",
+      "numbers": [
+        "82.5",
+        "9.9",
+        "21"
+      ],
+      "provider": "Curated Geopolitical Engine",
+      "status": "PENDING",
+      "timestamp": "2026-11-15T08:14:29.373Z"
+    },
+    {
+      "hash": "781aa30aa16ea0530a4c58612cad90fb0ca835431d521be1ef02bc31a465ee98",
+      "topic": "Maritime Chokepoints: Oil Stand-offs vs Citizen Inflation",
+      "category": "SOCIAL_ETHNIC_ISSUES",
+      "englishText": "Over 21% of the world's daily petroleum passes through the narrow Strait of Hormuz, worth $1.2 billion every single hour. Yet international sanctions and geopolitical naval standoffs have driven diesel and fertilizer costs up by 45% in vulnerable nations.\n\nGlobal powers battle for maritime dominance while small farmers cannot afford fuel.\n\nWhy should ordinary citizens pay the price of imperial trade wars?",
+      "romanUrduText": "Dunya ka 21% tail rozana Strait of Hormuz se guzarta hai jiski qeemat har ghantay 1.2 arab dollar hai. Magar pabandiyon aur behri tanaao ne kamzor mulkon mein diesel aur khaad 45% mehngi kar di hai.\n\nAalmi taqatein samundari qabzay ke liye larti hain jabke kisan fuel nahi khareed sakta.\n\nAam awam aalmi tijarti jangon ki keemat kyon chukaye?",
+      "plainUrduText": "دنیا کا اکیس فیصد تیل آبنائے ہرمز سے گزرتا ہے جس کی مالیت ہر گھنٹے سوا ارب ڈالر ہے۔ مگر پابندیوں اور بحری کشیدگی نے کمزور ممالک میں ڈیزل اور کھاد پینتالیس فیصد مہنگی کر دی ہے۔\n\nعالمی طاقتیں سمندری راستوں پر غلبے کے لیے لڑتی ہیں جبکہ چھوٹا کسان ایندھن نہیں خرید سکتا۔\n\nعام شہری ان طاقتوں کی تجارتی جنگوں کی قیمت کیوں چکائیں؟",
+      "numbers": [
+        "21",
+        "1.2",
+        "45"
+      ],
+      "provider": "Curated Geopolitical Engine",
+      "status": "DISCARDED",
+      "timestamp": "2026-11-15T08:14:36.708Z"
+    },
+    {
+      "hash": "15fa1b93e34bf9bd4a4099f0f3d144ca20474bcd59313fedb5856c328370d206",
+      "topic": "Fighter Aircraft vs Public School Desks",
+      "category": "AI_HUMAN_SOCIETY",
+      "englishText": "A single modern fifth-generation fighter jet costs $115 million to buy and $35,000 per flight hour to operate. That single jet costs more than the total annual operating budgets of 45 public district hospitals in developing countries.\n\nLeaders announce massive new defence procurement packages while state schools lack basic textbooks.\n\nWhat good is an expensive jet in the sky when schools collapse on the ground?",
+      "romanUrduText": "Ek fifth-generation jahaz 115 million dollar ka hai aur har ghantay uranay par 35,000 dollar lagtay hain. Ek jahaz ki qeemat 45 zillai hospitals ke saalana budget se zyada hai.\n\nHukmaran arbon ke difai muaahiday karte hain jabke sarkari schools mein kitaabein nahi hain.\n\nAasman mein mehangay jahaz ka kya faida jab zameen par schools dhal rahay hon?",
+      "plainUrduText": "ایک جدید ترین لڑاکا طیارہ ساڑھے گیارہ کروڑ ڈالر کا ہے اور اس کی ایک گھنٹے کی پرواز پر پینتیس ہزار ڈالر خرچ ہوتے ہیں۔ یہ لاگت پینتالیس ضلعی اسپتالوں کے سالانہ بجٹ سے زیادہ ہے۔\n\nحکمران دفاعی سودوں پر اربوں لٹاتے ہیں جبکہ سرکاری اسکولوں میں کتابیں تک میسر نہیں۔\n\nآسمان میں اڑتے مہنگے طیارے کا کیا فائدہ جب زمین پر تعلیمی ادارے ملبے کا ڈھیر بن رہے ہوں؟",
+      "numbers": [
+        "115",
+        "35",
+        "000",
+        "45"
+      ],
+      "provider": "Curated Geopolitical Engine",
+      "status": "DISCARDED",
+      "timestamp": "2026-11-15T08:14:42.132Z"
+    },
+    {
+      "hash": "e6473d6160766ce67fc16b22e34dd7f1f263dbcf07340f6f3098908d84322225",
+      "topic": "Global Power & Warfare: Critical Analysis (Series 192)",
+      "category": "CLIMATE_GLOBAL_POWER",
+      "englishText": "Global military expenditures reached $2.2 trillion in 2024, while 721 million people face acute food insecurity across developing nations. The wealthiest states spend 28% of their federal budgets on advanced arms while rural schools lack clean drinking water.\n\nGovernments prioritize foreign weapon deals while public welfare systems collapse.\n\nWhat is the real worth of national power when ordinary citizens are left to starve?",
+      "romanUrduText": "Aalmi foji budget 2024 mein 2.2 trillion dollar pohanch gaya jabke 721 million log bhook se lar rahay hain. Baray mulk budget ka 28% hathyar par lagatay hain jabke schools mein saaf paani nahi.\n\nHukoomatein hathyar khareedti hain jabke awam ghurbat se mar rahi hai.\n\nAisi taqat ka kya faida jab aam shehri bhooka so jaye?",
+      "plainUrduText": "عالمی عسکری بجٹ 2.2 کھرب ڈالر تک پہنچ گیا ہے جبکہ 721 ملین انسان شدید غذائی قلت کا شکار ہیں۔ امیر ترین ریاستیں اپنے بجٹ کا 28 فیصد اسلحے پر جھونکتی ہیں جبکہ اسکولوں میں پینے کا پانی نہیں۔\n\nحکومتیں غیر ملکی ہتھیاروں کو ترجیح دیتی ہیں جبکہ فلاحی نظام تباہ ہو چکا ہے۔\n\nایسی قومی طاقت کی کیا وقعت ہے اگر عام شہری بنیادی روٹی کو ترس رہے ہوں؟",
+      "numbers": [
+        "2.2",
+        "2024",
+        "721",
+        "28"
+      ],
+      "provider": "Curated Geopolitical Engine",
+      "status": "DISCARDED",
+      "timestamp": "2026-11-15T08:14:47.159Z"
+    },
+    {
+      "hash": "43e4768c1a0e33ba5e130fca4cdb97c925dfe2ffd998b666cea5437cddf443ce",
+      "topic": "Global Power & Warfare: Critical Analysis (Series 702)",
+      "category": "SATIRICAL_COMMENTARY",
+      "englishText": "Global military expenditures reached $2.2 trillion in 2024, while 719 million people face acute food insecurity across developing nations. The wealthiest states spend 22% of their federal budgets on advanced arms while rural schools lack clean drinking water.\n\nGovernments prioritize foreign weapon deals while public welfare systems collapse.\n\nWhat is the real worth of national power when ordinary citizens are left to starve?",
+      "romanUrduText": "Aalmi foji budget 2024 mein 2.2 trillion dollar pohanch gaya jabke 719 million log bhook se lar rahay hain. Baray mulk budget ka 22% hathyar par lagatay hain jabke schools mein saaf paani nahi.\n\nHukoomatein hathyar khareedti hain jabke awam ghurbat se mar rahi hai.\n\nAisi taqat ka kya faida jab aam shehri bhooka so jaye?",
+      "plainUrduText": "عالمی عسکری بجٹ 2.2 کھرب ڈالر تک پہنچ گیا ہے جبکہ 719 ملین انسان شدید غذائی قلت کا شکار ہیں۔ امیر ترین ریاستیں اپنے بجٹ کا 22 فیصد اسلحے پر جھونکتی ہیں جبکہ اسکولوں میں پینے کا پانی نہیں۔\n\nحکومتیں غیر ملکی ہتھیاروں کو ترجیح دیتی ہیں جبکہ فلاحی نظام تباہ ہو چکا ہے۔\n\nایسی قومی طاقت کی کیا وقعت ہے اگر عام شہری بنیادی روٹی کو ترس رہے ہوں؟",
+      "numbers": [
+        "2.2",
+        "2024",
+        "719",
+        "22"
+      ],
+      "provider": "Curated Geopolitical Engine",
+      "status": "DISCARDED",
+      "timestamp": "2026-11-15T08:14:57.263Z"
+    },
+    {
+      "hash": "4546cafeb3bdaa011846fb1d818d59923386780f0acc18aa0f2b732800eeb251",
+      "topic": "Global Power & Warfare: Critical Analysis (Series 331)",
+      "category": "CUSTOM_SPACE_CYBER_DEFENCE_6529",
+      "englishText": "Global military expenditures reached $2.5 trillion in 2024, while 750 million people face acute food insecurity across developing nations. The wealthiest states spend 22% of their federal budgets on advanced arms while rural schools lack clean drinking water.\n\nGovernments prioritize foreign weapon deals while public welfare systems collapse.\n\nWhat is the real worth of national power when ordinary citizens are left to starve?",
+      "romanUrduText": "Aalmi foji budget 2024 mein 2.5 trillion dollar pohanch gaya jabke 750 million log bhook se lar rahay hain. Baray mulk budget ka 22% hathyar par lagatay hain jabke schools mein saaf paani nahi.\n\nHukoomatein hathyar khareedti hain jabke awam ghurbat se mar rahi hai.\n\nAisi taqat ka kya faida jab aam shehri bhooka so jaye?",
+      "plainUrduText": "عالمی عسکری بجٹ 2.5 کھرب ڈالر تک پہنچ گیا ہے جبکہ 750 ملین انسان شدید غذائی قلت کا شکار ہیں۔ امیر ترین ریاستیں اپنے بجٹ کا 22 فیصد اسلحے پر جھونکتی ہیں جبکہ اسکولوں میں پینے کا پانی نہیں۔\n\nحکومتیں غیر ملکی ہتھیاروں کو ترجیح دیتی ہیں جبکہ فلاحی نظام تباہ ہو چکا ہے۔\n\nایسی قومی طاقت کی کیا وقعت ہے اگر عام شہری بنیادی روٹی کو ترس رہے ہوں؟",
+      "numbers": [
+        "2.5",
+        "2024",
+        "750",
+        "22"
+      ],
+      "provider": "Curated Geopolitical Engine",
+      "status": "PENDING",
+      "timestamp": "2026-11-15T08:15:02.306Z"
     }
   ]
 }

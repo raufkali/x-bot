@@ -14,6 +14,7 @@ import { config } from '../config.js';
 import { ansi } from '../utils/ansi.js';
 import { keepAliveService } from '../utils/keepAlive.js';
 import { markPostApproved, markPostDiscarded, markPostPublished } from '../db/postModel.js';
+import { historyStore } from '../db/historyStore.js';
 import { xService } from '../x/xService.js';
 import { genreManager } from '../generator/genreManager.js';
 
@@ -29,8 +30,9 @@ class WhatsAppWorkflowManager extends EventEmitter {
   /**
    * Generates 1 good English post and dispatches it to owner's WhatsApp with 5 options
    * @param {string} [customTopic]
+   * @param {string} [excludedTopic]
    */
-  async generateAndSend(customTopic = '') {
+  async generateAndSend(customTopic = '', excludedTopic = '') {
     const primary = genreManager.getPrimaryGenre();
     if (primary) {
       console.log(ansi.emeraldText(`⚡ [Primary Genre Active: ${primary.name}] Generating post exclusively for this genre...`));
@@ -38,7 +40,7 @@ class WhatsAppWorkflowManager extends EventEmitter {
       console.log(ansi.emeraldText('⚡ Generating 1 high-quality English post for WhatsApp review...'));
     }
 
-    const gen = await generateEnglishPost(customTopic);
+    const gen = await generateEnglishPost(customTopic, excludedTopic);
     this.currentPendingPost = {
       topic: gen.topic,
       category: gen.category,
@@ -303,19 +305,20 @@ class WhatsAppWorkflowManager extends EventEmitter {
     // ------------------------------------------------------------
     // CUSTOMIZE BOT MENU FLOW
     // ------------------------------------------------------------
-    // Check if owner sent "customize" or "custom" at any time, or pressed 2 from DEFAULT menu state
+    // Check if owner sent "customize" or "custom" at any time, or pressed 2 (when idle) or 6 (when post review active)
     if (
       (!this.currentPendingPost && this.menuState === 'DEFAULT' && (input === '2' || input === 'customize' || input === 'custom')) ||
-      (this.currentPendingPost && (input === 'customize' || input === 'custom'))
+      (this.currentPendingPost && (input === '6' || input === 'customize' || input === 'custom'))
     ) {
       this.menuState = 'CUSTOMIZE_MENU';
       console.log(ansi.emeraldText('\n⚙️ [WhatsApp Action] Owner opened Customize Bot menu...'));
+      const backLabel = this.currentPendingPost ? 'Back to Post Review' : 'Back to Main Menu';
       const menuText =
         `⚙️ *Customize Bot:*\n\n` +
         `• *1* ➔ Add another genre\n` +
         `• *2* ➔ Show all genres\n` +
         `• *3* ➔ Make a genre primary\n` +
-        `• *0* ➔ Back to Main Menu\n\n` +
+        `• *0* ➔ ${backLabel}\n\n` +
         `_Reply with a number (0–3) to choose._`;
 
       if (whatsappClient.isConfigured() && fromNumber) {
@@ -446,27 +449,47 @@ class WhatsAppWorkflowManager extends EventEmitter {
         return { action: 'AWAITING_PRIMARY_SELECTION', message: selMsg };
       }
 
-      // 0: Back to main menu
+      // 0: Back to main menu or post review
       if (input === '0' || input === 'back' || input === 'menu' || input === 'cancel') {
         this.menuState = 'DEFAULT';
-        this.status = 'AWAITING_GENERATE';
-        const backMsg =
-          `👋 *Main Menu:*\n\n` +
-          `• *1* ➔ Generate new post\n` +
-          `• *2* ➔ Customize the bot`;
-        if (whatsappClient.isConfigured() && fromNumber) {
-          try { await whatsappClient.sendText(fromNumber, backMsg); } catch (e) {}
+        if (this.currentPendingPost) {
+          this.status = 'AWAITING_APPROVAL';
+          console.log(ansi.emeraldText('\n↩️ [WhatsApp Action] Returning to current pending post review...'));
+          if (whatsappClient.isConfigured() && fromNumber) {
+            try {
+              if (this.currentPendingPost.activeView === 'ROMAN_URDU') {
+                await whatsappClient.sendRomanUrduVersion(fromNumber, this.currentPendingPost);
+              } else if (this.currentPendingPost.activeView === 'PLAIN_URDU') {
+                await whatsappClient.sendPlainUrduVersion(fromNumber, this.currentPendingPost);
+              } else {
+                await whatsappClient.sendEnglishPostForReview(fromNumber, this.currentPendingPost);
+              }
+            } catch (e) {
+              console.warn('[WhatsApp Send Warning]', e.message);
+            }
+          }
+          return { action: 'RETURNED_TO_POST_REVIEW', post: this.currentPendingPost };
+        } else {
+          this.status = 'AWAITING_GENERATE';
+          const backMsg =
+            `👋 *Main Menu:*\n\n` +
+            `• *1* ➔ Generate new post\n` +
+            `• *2* ➔ Customize the bot`;
+          if (whatsappClient.isConfigured() && fromNumber) {
+            try { await whatsappClient.sendText(fromNumber, backMsg); } catch (e) {}
+          }
+          return { action: 'MAIN_MENU', message: backMsg };
         }
-        return { action: 'MAIN_MENU', message: backMsg };
       }
 
       // Default helper in customize menu
+      const backLabel = this.currentPendingPost ? 'Back to Post Review' : 'Back to Main Menu';
       const helpMsg =
         `⚙️ *Customize Bot:*\n\n` +
         `• *1* ➔ Add another genre\n` +
         `• *2* ➔ Show all genres\n` +
         `• *3* ➔ Make a genre primary\n` +
-        `• *0* ➔ Back to Main Menu`;
+        `• *0* ➔ ${backLabel}`;
       if (whatsappClient.isConfigured() && fromNumber) {
         try { await whatsappClient.sendText(fromNumber, helpMsg); } catch (e) {}
       }
@@ -626,7 +649,9 @@ class WhatsAppWorkflowManager extends EventEmitter {
       // Option 5: Generate a brand NEW fresh post (Discard current and generate new)
       if (input === '5' || input.includes('retry') || input.includes('regen') || input.includes('new') || input.includes('fresh')) {
         console.log(ansi.yellowText('\n⟳ [WhatsApp Action] Owner requested a completely NEW fresh post...'));
-        markPostDiscarded(post.topic).catch(() => {});
+        const oldTopic = post.topic;
+        markPostDiscarded(oldTopic).catch(() => {});
+        historyStore.markDiscarded(oldTopic);
         this.currentPendingPost = null;
         if (whatsappClient.isConfigured() && fromNumber) {
           try {
@@ -635,7 +660,29 @@ class WhatsAppWorkflowManager extends EventEmitter {
             console.warn('[WhatsApp Send Warning]', e.message);
           }
         }
-        return await this.generateAndSend();
+        return await this.generateAndSend('', oldTopic);
+      }
+
+      // Option 6: Customize the bot
+      if (input === '6' || input === 'customize' || input === 'custom') {
+        this.menuState = 'CUSTOMIZE_MENU';
+        console.log(ansi.emeraldText('\n⚙️ [WhatsApp Action] Owner opened Customize Bot menu from English post review...'));
+        const menuText =
+          `⚙️ *Customize Bot:*\n\n` +
+          `• *1* ➔ Add another genre\n` +
+          `• *2* ➔ Show all genres\n` +
+          `• *3* ➔ Make a genre primary\n` +
+          `• *0* ➔ Back to Post Review\n\n` +
+          `_Reply with a number (0–3) to choose._`;
+
+        if (whatsappClient.isConfigured() && fromNumber) {
+          try {
+            await whatsappClient.sendText(fromNumber, menuText);
+          } catch (e) {
+            console.warn('[WhatsApp Send Warning]', e.message);
+          }
+        }
+        return { action: 'CUSTOMIZE_MENU_OPENED', status: this.status, message: menuText };
       }
     }
 
@@ -697,7 +744,6 @@ class WhatsAppWorkflowManager extends EventEmitter {
         markPostApproved(post.topic, 'English').catch(() => {});
         console.log(ansi.emeraldText('\n✓ [WhatsApp Action] Owner APPROVED & POSTED ENGLISH directly!'));
 
-        // Publish to real X account in production
         const tweetDetails = await this.publishToX('English', post.english, post.topic);
         this.approvedPost.tweet = tweetDetails;
 
@@ -730,7 +776,9 @@ class WhatsAppWorkflowManager extends EventEmitter {
       // 5: Generate a brand NEW fresh post
       if (input === '5' || input.includes('retry') || input.includes('regen') || input.includes('new') || input.includes('fresh')) {
         console.log(ansi.yellowText('\n⟳ [WhatsApp Action] Owner requested a completely NEW fresh post from Roman Urdu view...'));
-        markPostDiscarded(post.topic).catch(() => {});
+        const oldTopic = post.topic;
+        markPostDiscarded(oldTopic).catch(() => {});
+        historyStore.markDiscarded(oldTopic);
         this.currentPendingPost = null;
         if (whatsappClient.isConfigured() && fromNumber) {
           try {
@@ -739,7 +787,29 @@ class WhatsAppWorkflowManager extends EventEmitter {
             console.warn('[WhatsApp Send Warning]', e.message);
           }
         }
-        return await this.generateAndSend();
+        return await this.generateAndSend('', oldTopic);
+      }
+
+      // Option 6: Customize the bot
+      if (input === '6' || input === 'customize' || input === 'custom') {
+        this.menuState = 'CUSTOMIZE_MENU';
+        console.log(ansi.emeraldText('\n⚙️ [WhatsApp Action] Owner opened Customize Bot menu from Roman Urdu review...'));
+        const menuText =
+          `⚙️ *Customize Bot:*\n\n` +
+          `• *1* ➔ Add another genre\n` +
+          `• *2* ➔ Show all genres\n` +
+          `• *3* ➔ Make a genre primary\n` +
+          `• *0* ➔ Back to Post Review\n\n` +
+          `_Reply with a number (0–3) to choose._`;
+
+        if (whatsappClient.isConfigured() && fromNumber) {
+          try {
+            await whatsappClient.sendText(fromNumber, menuText);
+          } catch (e) {
+            console.warn('[WhatsApp Send Warning]', e.message);
+          }
+        }
+        return { action: 'CUSTOMIZE_MENU_OPENED', status: this.status, message: menuText };
       }
     }
 
@@ -834,7 +904,9 @@ class WhatsAppWorkflowManager extends EventEmitter {
       // 5: Generate a brand NEW fresh post
       if (input === '5' || input.includes('retry') || input.includes('regen') || input.includes('new') || input.includes('fresh')) {
         console.log(ansi.yellowText('\n⟳ [WhatsApp Action] Owner requested a completely NEW fresh post from Plain Urdu view...'));
-        markPostDiscarded(post.topic).catch(() => {});
+        const oldTopic = post.topic;
+        markPostDiscarded(oldTopic).catch(() => {});
+        historyStore.markDiscarded(oldTopic);
         this.currentPendingPost = null;
         if (whatsappClient.isConfigured() && fromNumber) {
           try {
@@ -843,7 +915,29 @@ class WhatsAppWorkflowManager extends EventEmitter {
             console.warn('[WhatsApp Send Warning]', e.message);
           }
         }
-        return await this.generateAndSend();
+        return await this.generateAndSend('', oldTopic);
+      }
+
+      // Option 6: Customize the bot
+      if (input === '6' || input === 'customize' || input === 'custom') {
+        this.menuState = 'CUSTOMIZE_MENU';
+        console.log(ansi.emeraldText('\n⚙️ [WhatsApp Action] Owner opened Customize Bot menu from Plain Urdu review...'));
+        const menuText =
+          `⚙️ *Customize Bot:*\n\n` +
+          `• *1* ➔ Add another genre\n` +
+          `• *2* ➔ Show all genres\n` +
+          `• *3* ➔ Make a genre primary\n` +
+          `• *0* ➔ Back to Post Review\n\n` +
+          `_Reply with a number (0–3) to choose._`;
+
+        if (whatsappClient.isConfigured() && fromNumber) {
+          try {
+            await whatsappClient.sendText(fromNumber, menuText);
+          } catch (e) {
+            console.warn('[WhatsApp Send Warning]', e.message);
+          }
+        }
+        return { action: 'CUSTOMIZE_MENU_OPENED', status: this.status, message: menuText };
       }
     }
 
@@ -852,7 +946,7 @@ class WhatsAppWorkflowManager extends EventEmitter {
       try {
         await whatsappClient.sendText(
           fromNumber,
-          `🤖 *Options:*\n• *1* ➔ Generate in Roman Urdu\n• *2* ➔ Generate in Urdu\n• *3* ➔ Post directly in English\n• *4* ➔ Discard post\n• *5* ➔ Generate a NEW fresh post`
+          `🤖 *X ASSISTANT — POST REVIEW*\nReply with:\n• *1* ➔ Generate in Roman Urdu\n• *2* ➔ Generate in Urdu (اردو)\n• *3* ➔ Post directly to X\n• *4* ➔ Discard post\n• *5* ➔ Generate a NEW fresh post\n• *6* ➔ ⚙️ Customize the bot`
         );
       } catch (e) {}
     }

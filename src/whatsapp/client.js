@@ -204,9 +204,11 @@ export class WhatsAppClient {
   async sendEnglishPostForReview(to, post) {
     const english = post.english || post;
     const body = english.fullPost || english.text;
-    const message = `🇬🇧 *NEW POST (ENGLISH)*
+    const genreStr = post.category ? `\n🏷️ *Genre:* ${post.category}` : '';
+    const message = `🤖 *X ASSISTANT — POST REVIEW*
+🇬🇧 *NEW POST (ENGLISH)*
 
-📌 *Topic:* ${post.topic || 'Trending Insight'}
+📌 *Topic:* ${post.topic || 'Trending Insight'}${genreStr}
 
 ━━━━━━━━━━━━━━━━━━━━
 ${body}
@@ -218,7 +220,8 @@ Reply with:
 • *2* ➔ Generate in Urdu (اردو)
 • *3* ➔ Post directly to X (Twitter)
 • *4* ➔ Discard post
-• *5* ➔ Generate a NEW fresh post`;
+• *5* ➔ Generate a NEW fresh post
+• *6* ➔ ⚙️ Customize the bot`;
 
     return this.sendText(to, message);
   }
@@ -228,9 +231,11 @@ Reply with:
    */
   async sendRomanUrduVersion(to, post) {
     const body = post.romanUrdu.fullPost || post.romanUrdu.text;
-    const message = `🇵🇰 *ROMAN URDU VERSION*
+    const genreStr = post.category ? `\n🏷️ *Genre:* ${post.category}` : '';
+    const message = `🤖 *X ASSISTANT — POST REVIEW*
+🇵🇰 *ROMAN URDU VERSION*
 
-📌 *Topic:* ${post.topic || ''}
+📌 *Topic:* ${post.topic || ''}${genreStr}
 
 ━━━━━━━━━━━━━━━━━━━━
 ${body}
@@ -242,7 +247,8 @@ Reply with:
 • *2* ➔ Generate in Urdu (اردو)
 • *3* ➔ Post English directly to X
 • *4* ➔ Discard post
-• *5* ➔ Generate a NEW fresh post`;
+• *5* ➔ Generate a NEW fresh post
+• *6* ➔ ⚙️ Customize the bot`;
 
     return this.sendText(to, message);
   }
@@ -252,9 +258,11 @@ Reply with:
    */
   async sendPlainUrduVersion(to, post) {
     const body = post.plainUrdu.fullPost || post.plainUrdu.text;
-    const message = `🇵🇰 *URDU VERSION (اردو)*
+    const genreStr = post.category ? `\n🏷️ *Genre:* ${post.category}` : '';
+    const message = `🤖 *X ASSISTANT — POST REVIEW*
+🇵🇰 *URDU VERSION (اردو)*
 
-📌 *Topic:* ${post.topic || ''}
+📌 *Topic:* ${post.topic || ''}${genreStr}
 
 ━━━━━━━━━━━━━━━━━━━━
 ${body}
@@ -266,7 +274,8 @@ Reply with:
 • *2* ➔ Generate in Roman Urdu
 • *3* ➔ Post English directly to X
 • *4* ➔ Discard post
-• *5* ➔ Generate a NEW fresh post`;
+• *5* ➔ Generate a NEW fresh post
+• *6* ➔ ⚙️ Customize the bot`;
 
     return this.sendText(to, message);
   }

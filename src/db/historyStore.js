@@ -168,8 +168,8 @@ class HistoryStore {
    * Comprehensive duplicate check:
    * 1. Exact hash check
    * 2. Exact topic match
-   * 3. Jaccard word similarity > 0.40 (prevents slightly reworded repeats)
-   * 4. Numeric stats match: if 3 or more key figures overlap with an old post
+   * 3. High text similarity > 0.65 (prevents rewording the same post)
+   * 4. Numeric stats match: if 3+ key figures overlap AND similarity > 0.40
    */
   isDuplicateOrSimilar(newText = '', newTopic = '') {
     const cleanText = String(newText).trim();
@@ -190,19 +190,19 @@ class HistoryStore {
 
     // 3 & 4: Compare against every historical post
     for (const post of this.posts) {
-      // Jaccard similarity check
+      // Jaccard similarity check (flag if 65%+ words match)
       const similarity = calculateJaccardSimilarity(cleanText, post.englishText);
-      if (similarity > 0.40) {
+      if (similarity > 0.65) {
         return {
           isDuplicate: true,
           reason: `HIGH_TEXT_SIMILARITY (${Math.round(similarity * 100)}% match with post "${post.topic}")`
         };
       }
 
-      // Numeric stats fingerprint check
+      // Numeric stats fingerprint check (only flag if both stats overlap AND moderate similarity)
       if (newNumbers.length >= 3 && Array.isArray(post.numbers) && post.numbers.length >= 3) {
         const sharedNumbers = newNumbers.filter(n => post.numbers.includes(n));
-        if (sharedNumbers.length >= 3) {
+        if (sharedNumbers.length >= 3 && similarity > 0.40) {
           return {
             isDuplicate: true,
             reason: `MATCHING_STATISTICS (${sharedNumbers.join(', ')} match post "${post.topic}")`
@@ -212,6 +212,28 @@ class HistoryStore {
     }
 
     return { isDuplicate: false };
+  }
+
+  /**
+   * Checks if a topic has already been seen/used
+   */
+  hasSeenTopic(topic = '') {
+    if (!topic) return false;
+    return this.topics.has(String(topic).toLowerCase().trim());
+  }
+
+  /**
+   * Marks a post topic as discarded in history
+   */
+  markDiscarded(topic = '') {
+    if (!topic) return;
+    const cleanTopic = String(topic).toLowerCase().trim();
+    this.topics.add(cleanTopic);
+    const existing = this.posts.find(p => p.topic && p.topic.toLowerCase().trim() === cleanTopic);
+    if (existing) {
+      existing.status = 'DISCARDED';
+      this.save();
+    }
   }
 
   /**

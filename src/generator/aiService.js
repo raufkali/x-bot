@@ -23,6 +23,7 @@
  * - Strict HistoryStore & MongoDB SHA-256 deduplication & anti-repetition engine
  */
 
+import https from 'https';
 import Groq from 'groq-sdk';
 import { calculateXCharacterCount } from '../utils/validation.js';
 import {
@@ -101,6 +102,66 @@ export const CURATED_STORY_TOPICS = [
     },
     plainUrdu: {
       text: "بھارت نے 8.7 ارب ڈالر کے رافیل طیارے خریدے اور پاکستان نے ڈیڑھ ارب ڈالر جے ایف 17 پر لگائے۔ دوسری طرف صحت کا بجٹ جی ڈی پی کے 1.5 فیصد سے بھی کم ہے جہاں 1400 افراد کے لیے صرف ایک بیڈ ہے۔\n\nہر سال لاکھوں شہری قابل علاج بیماریوں سے دم توڑ دیتے ہیں۔\n\nفضائی حدود کے دفاع کا کیا فائدہ جب سرکاری اسپتال معمولی بخار کی دوا تک نہ دے سکیں؟"
+    }
+  },
+
+  // 5. Pak vs Ind: Nuclear Warheads vs Classrooms
+  {
+    topic: "India vs Pakistan: Nuclear Warheads vs Classrooms",
+    category: 'PAK_VS_IND',
+    english: {
+      text: "India and Pakistan now hold over 340 nuclear warheads, spending more than $4.5 billion annually to maintain them. Yet over 50 million citizens in both countries cannot write their own names, and 30,000 public schools lack electricity or basic toilets.\n\nWe invest billions in atomic warheads designed never to be used while classrooms crumble.\n\nWhat strategic glory is there in an atomic bomb if our next generation grows up uneducated and poor?"
+    },
+    romanUrdu: {
+      text: "India aur Pakistan 340 se zyada atomic warheads rakhte hain jinki hifazat par 4.5 arab dollar lagtay hain. Magar 5 karor log apna naam tak nahi likh saktay aur 30,000 schools mein bijli ya toilets nahi hain.\n\nHum aisi atom bomb par arbon lagatay hain jo chal nahi sakti jabke school dhal rahay hain.\n\nAisi atomic taqat ka kya faida agar agli nasal anparh aur ghareeb reh jaye?"
+    },
+    plainUrdu: {
+      text: "بھارت اور پاکستان کے پاس 340 سے زیادہ ایٹمی ہتھیار ہیں جن کی دیکھ بھال پر ساڑھے چار ارب ڈالر خرچ ہوتے ہیں۔ مگر پانچ کروڑ شہری اپنا نام تک نہیں لکھ سکتے اور تیس ہزار اسکولوں میں بجلی یا بیت الخلا تک نہیں۔\n\nہم ان بموں پر اربوں لٹاتے ہیں جنہیں چلا نہیں سکتے جبکہ تعلیمی ادارے تباہ ہو رہے ہیں۔\n\nایسی طاقت کا کیا فخر اگر اگلی نسل بنیادی تعلیم سے بھی محروم رہے؟"
+    }
+  },
+
+  // 6. Pak vs Ind: Border Radars vs Farmer Crises
+  {
+    topic: "India vs Pakistan: Border Radars vs Farmer Crises",
+    category: 'PAK_VS_IND',
+    english: {
+      text: "India and Pakistan spend $1.8 billion on thermal border sensors, electronic fences, and surveillance radars. At the exact same time, underground water tables in Punjab on both sides have dropped by 15 metres, forcing over 100,000 farmers into severe debt.\n\nBoth nations scan the sky for enemy drones while our agricultural heartland runs out of water.\n\nWhat will our armies eat when fertile fields turn to dust?"
+    },
+    romanUrdu: {
+      text: "India aur Pakistan sarhad par radar aur sensors par 1.8 arab dollar kharch karte hain. Doosri taraf Punjab mein zameen ka paani 15 meter neeche gir chuka hai aur 1 laakh kisan qarzay mein doob gaye hain.\n\nHum asman par drones dhoondhte hain jabke zameen ka paani sookh raha hai.\n\nFoj kya khaye gi jab hamaray khet sahra ban jayenge?"
+    },
+    plainUrdu: {
+      text: "بھارت اور پاکستان سرحدی راڈار اور سینسرز پر پونے دو ارب ڈالر خرچ کرتے ہیں۔ دوسری طرف پنجاب میں زیر زمین پانی پندرہ میٹر نیچے گر چکا ہے اور ایک لاکھ کسان برباد ہو چکے ہیں۔\n\nہم ڈرونز تلاش کرنے پر اربوں لگاتے ہیں جبکہ ہمارے کھیت پانی کو ترس رہے ہیں۔\n\nافواج کیا کھائیں گی جب ہماری زرخیز زمینیں بنجر ریگستان بن جائیں گی؟"
+    }
+  },
+
+  // 7. Pak vs Ind: Military Pensions vs Rural Doctors
+  {
+    topic: "India vs Pakistan: Military Pensions vs Rural Doctors",
+    category: 'PAK_VS_IND',
+    english: {
+      text: "Pakistan spends $3.2 billion on military pensions, while India allocates $16 billion annually. Yet rural districts across both countries have only 1 doctor for every 10,000 villagers, and 60% of rural health clinics lack basic emergency medicines or ultrasound machines.\n\nWe guarantee pensions for soldiers while leaving pregnant mothers to die on highway roads.\n\nWho protects our citizens from systemic medical neglect?"
+    },
+    romanUrdu: {
+      text: "Pakistan foji pensions par 3.2 arab dollar aur India 16 arab dollar kharch karta hai. Magar dehaton mein 10,000 logon ke liye sirf ek doctor hai aur 60% clinics mein basic medicines nahi hain.\n\nHum pensions ka intizam karte hain magar maaoon ko ilaj nahi milta.\n\nShehriyon ko is medical barbadi se kon bachaye ga?"
+    },
+    plainUrdu: {
+      text: "پاکستان فوجی پنشن پر سوا تین ارب ڈالر اور بھارت سولہ ارب ڈالر خرچ کرتا ہے۔ مگر دیہات میں دس ہزار شہریوں کے لیے صرف ایک ڈاکٹر ہے اور ساٹھ فیصد کلینکس میں بنیادی ادویات تک نہیں۔\n\nہم پنشن کا بجٹ پورا کرتے ہیں مگر ماؤں کو علاج میسر نہیں۔\n\nشہریوں کو اسپتالوں کے اس المیے سے کون بچائے گا؟"
+    }
+  },
+
+  // 8. Pak vs Ind: Space Satellites vs Dying Irrigation
+  {
+    topic: "India vs Pakistan: Space Satellites vs Dying Irrigation",
+    category: 'PAK_VS_IND',
+    english: {
+      text: "India operates 55 active military and radar satellites while Pakistan has 6 in orbit, spending $1.6 billion on space defence commands. Yet over 60% of small farmers in both nations lack basic canal irrigation for their crops.\n\nMillions of poor farming families depend only on rain, watching fertile fields dry up and fail.\n\nWhat is the point of mapping space when our own citizens cannot even afford basic food?"
+    },
+    romanUrdu: {
+      text: "India 55 military aur radar satellites chalata hai jabke Pakistan ke paas 6 hain, aur 1.6 arab dollar space defence par lagtay hain. Magar dono mulkon ke 60% chhotay kisan nehri paani se mehroom hain.\n\nLaakhon kisan sirf barish ke reham-o-karam par hain.\n\nKhala ki nigrani ka kya faida jab awam ke paas do waqt ki roti na ho?"
+    },
+    plainUrdu: {
+      text: "بھارت 55 فوجی اور راڈار سیٹلائٹس چلاتا ہے جبکہ پاکستان کے پاس 6 ہیں اور خلائی دفاع پر پونے دو ارب ڈالر خرچ ہوتے ہیں۔ مگر دونوں ممالک کے 60 فیصد چھوٹے کسان نہری پانی سے محروم ہیں۔\n\nلاکھوں کسان صرف بارش کے رحم و کرم پر ہیں جبکہ فصلیں سوکھ رہی ہیں۔\n\nخلا پر نظر رکھنے کا کیا فائدہ جب شہریوں کو دو وقت کی روٹی میسر نہ ہو؟"
     }
   },
 
@@ -376,13 +437,18 @@ Return ONLY valid JSON matching this exact structure:
    GENERATE ENGLISH POST (NEVER REGENERATES OLD POST)
 ======================================================== */
 
-export async function generateEnglishPost(customTopic = '') {
+export async function generateEnglishPost(customTopic = '', excludedTopic = '') {
   const geminiKey = process.env.GEMINI_API_KEY;
   const xaiKey = process.env.GROK_API_KEY || process.env.XAI_API_KEY;
   const groqKey = process.env.GROQ_API_KEY;
 
+  const cleanExcluded = String(excludedTopic || '').toLowerCase().trim();
+
   // Retrieve comprehensive past topics and avoid list from permanent historyStore and Mongo
   const avoidList = historyStore.getRecentAvoidList(30);
+  if (cleanExcluded) {
+    avoidList.unshift(`DISCARDED_TOPIC_TO_NEVER_REPEAT: "${cleanExcluded}"`);
+  }
   const recordedTopics = historyStore.getAllUsedTopics();
 
   let mongoTopics = [];
@@ -393,6 +459,9 @@ export async function generateEnglishPost(customTopic = '') {
   }
 
   const allUsedTopics = Array.from(new Set([...recordedTopics, ...mongoTopics]));
+  if (cleanExcluded) {
+    allUsedTopics.push(cleanExcluded);
+  }
   const normalizedUsedTopics = allUsedTopics.map(t => String(t).toLowerCase().trim());
 
   // Check if owner has configured a Primary Genre
@@ -410,6 +479,9 @@ export async function generateEnglishPost(customTopic = '') {
   }
 
   let chosenTopic = customTopic.trim();
+  if (chosenTopic && cleanExcluded && chosenTopic.toLowerCase() === cleanExcluded) {
+    chosenTopic = '';
+  }
   let chosenCategory = targetCategory.id;
 
   // If user passed a topic indicating Pak vs Ind, adjust category accordingly
@@ -423,7 +495,9 @@ export async function generateEnglishPost(customTopic = '') {
     const categoryUnusedCurated = CURATED_STORY_TOPICS.filter(
       item =>
         item.category === targetCategory.id &&
+        (!cleanExcluded || item.topic.toLowerCase().trim() !== cleanExcluded) &&
         !normalizedUsedTopics.includes(item.topic.toLowerCase().trim()) &&
+        !historyStore.hasSeenTopic(item.topic) &&
         !historyStore.isDuplicateOrSimilar(item.english.text, item.topic).isDuplicate
     );
 
@@ -444,21 +518,25 @@ export async function generateEnglishPost(customTopic = '') {
         'India vs Pakistan: Space Satellites vs Farmer Irrigation'
       ];
       const unusedAngles = dynamicAngles.filter(
-        a => !normalizedUsedTopics.includes(a.toLowerCase().trim())
+        a => (!cleanExcluded || a.toLowerCase().trim() !== cleanExcluded) &&
+             !normalizedUsedTopics.includes(a.toLowerCase().trim()) &&
+             !historyStore.hasSeenTopic(a)
       );
       chosenTopic = unusedAngles.length > 0
         ? unusedAngles[Math.floor(Math.random() * unusedAngles.length)]
-        : `India vs Pakistan: Defence vs Citizens ${Date.now().toString().slice(-4)}`;
+        : `India vs Pakistan: Defence vs Citizens (Batch ${Date.now().toString().slice(-4)})`;
       chosenCategory = 'PAK_VS_IND';
     } else {
       // Dynamic topic selection for other categories
       const keywords = targetCategory.keywords || [targetCategory.name];
       const unusedKeywords = keywords.filter(
-        k => !normalizedUsedTopics.includes(k.toLowerCase().trim())
+        k => (!cleanExcluded || k.toLowerCase().trim() !== cleanExcluded) &&
+             !normalizedUsedTopics.includes(k.toLowerCase().trim()) &&
+             !historyStore.hasSeenTopic(k)
       );
       chosenTopic = unusedKeywords.length > 0
         ? unusedKeywords[Math.floor(Math.random() * unusedKeywords.length)]
-        : `${targetCategory.name}: Global Analysis ${Date.now().toString().slice(-4)}`;
+        : `${targetCategory.name}: Analytical Insight ${Date.now().toString().slice(-4)}`;
       chosenCategory = targetCategory.id;
     }
   }
@@ -580,7 +658,8 @@ export async function generateEnglishPost(customTopic = '') {
    DYNAMIC PAK VS IND FALLBACK GENERATOR (GUARANTEES 100% FRESHNESS)
 ========================================================= */
 
-function generateDynamicPakVsIndFallback() {
+function generateDynamicPakVsIndFallback(excludedTopic = '') {
+  const cleanExcluded = String(excludedTopic || '').toLowerCase().trim();
   const pool = [
     {
       topic: "India vs Pakistan: Nuclear Warheads vs Classrooms",
@@ -624,16 +703,20 @@ function generateDynamicPakVsIndFallback() {
   ];
 
   for (const item of pool) {
-    if (!historyStore.isDuplicateOrSimilar(item.english.text, item.topic).isDuplicate) {
+    if (
+      (!cleanExcluded || item.topic.toLowerCase().trim() !== cleanExcluded) &&
+      !historyStore.hasSeenTopic(item.topic) &&
+      !historyStore.isDuplicateOrSimilar(item.english.text, item.topic).isDuplicate
+    ) {
       return item;
     }
   }
 
   // Synthesize dynamic fresh stats if all pools are exhausted
   const uniqueCode = Math.floor(100 + Math.random() * 900);
-  const defIndia = (82 + Math.random() * 5).toFixed(1);
-  const defPak = (8.5 + Math.random() * 1.5).toFixed(1);
-  const schoolDef = Math.floor(20 + Math.random() * 10);
+  const defIndia = (81 + Math.random() * 6).toFixed(1);
+  const defPak = (8.2 + Math.random() * 1.8).toFixed(1);
+  const schoolDef = Math.floor(21 + Math.random() * 9);
   return {
     topic: `India vs Pakistan: Weapons vs Welfare (Series ${uniqueCode})`,
     category: 'PAK_VS_IND',
@@ -649,37 +732,133 @@ function generateDynamicPakVsIndFallback() {
   };
 }
 
+function generateDynamicFallbackForCategory(category, excludedTopic = '') {
+  const cleanExcluded = String(excludedTopic || '').toLowerCase().trim();
+  if (category === 'PAK_VS_IND') {
+    return generateDynamicPakVsIndFallback(cleanExcluded);
+  }
+
+  const categoryPool = [
+    {
+      topic: "Global Power: War Budgets vs Human Survival",
+      category: category || 'GEOPOLITICS',
+      english: {
+        text: "Global military expenditures reached $2.4 trillion in 2024, yet 730 million people face severe hunger worldwide. The five permanent UN Security Council members control 73% of major weapons exports while developing nations drown in foreign debt.\n\nGreat powers wage proxy conflicts while ordinary working families pay for food inflation.\n\nWho truly benefits when war profits skyrocket while basic human survival is ignored?"
+      },
+      romanUrdu: {
+        text: "Aalmi foji kharche 2024 mein 2.4 trillion dollar tak pohanch gaye, magar 730 million log bhook ka shikar hain. Security Council ke 5 baray mulk 73% hathyar bechte hain jabke chhotay mulk qarzay mein doob chuke hain.\n\nBari taqatein proxy jung larti hain jabke ghareeb awam mehngai se marti hai.\n\nIn foji kharchon ka kya faida jab insaniyat bhook se mar rahi ho?"
+      },
+      plainUrdu: {
+        text: "عالمی فوجی اخراجات چوبیس سو ارب ڈالر تک پہنچ چکے ہیں مگر تہتر کروڑ افراد شدید بھوک کا شکار ہیں۔ سلامتی کونسل کے مستقل ارکان تہتر فیصد ہتھیار فروخت کرتے ہیں جبکہ ترقی پذیر ممالک قرضوں میں ڈوبے ہوئے ہیں۔\n\nطاقتور ممالک مفادات کی جنگ لڑتے ہیں جبکہ عام خاندان مہنگائی تلے دب رہے ہیں۔\n\nاس عسکری دوڑ کا کیا فائدہ جب عام انسان کی بقا ہی خطرے میں ہو؟"
+      }
+    },
+    {
+      topic: "AI Revolution: Data Centers vs Water Scarcity",
+      category: category || 'AI_SOCIETY',
+      english: {
+        text: "Advanced AI data centres now consume 4.2% of global electricity, using over 5 million litres of clean water every day just for cooling. Meanwhile, 2.2 billion citizens lack safe drinking water at home, and rural hospitals face continuous blackouts.\n\nTech corporations spend billions training software while ordinary human communities dry up.\n\nAre we building smart technology to serve human life, or sacrificing humans for digital power?"
+      },
+      romanUrdu: {
+        text: "AI data centres dunya ki 4.2% bijli aur rozana 5 million litre saaf paani thanda karne ke liye istemal karte hain. Doosri taraf 2.2 arab log saaf paani se mehroom hain aur dehati hospitals mein load shedding hai.\n\nBari companies software par arbon laga rahi hain jabke insani bastiyan sookh rahi hain.\n\nKya technology insaniyat ki khidmat ke liye hai ya digital taqat ke liye?"
+      },
+      plainUrdu: {
+        text: "جدید ترین ڈیٹا سینٹرز دنیا کی چار فیصد سے زیادہ بجلی اور روزانہ پچاس لاکھ لیٹر پینے کا صاف پانی استعمال کر رہے ہیں۔ دوسری طرف سوا دو ارب شہری صاف پانی سے محروم ہیں اور اسپتالوں میں بجلی نہیں۔\n\nکارپوریشنز سافٹ ویئر پر اربوں بہا رہی ہیں جبکہ عام بستیاں پیاسی مر رہی ہیں۔\n\nکیا ہم انسانوں کی بہتری کے لیے ٹیکنالوجی بنا رہے ہیں یا ڈیجیٹل طاقت کے لیے انسان قربان کر رہے ہیں؟"
+      }
+    },
+    {
+      topic: "Global Debt: Foreign Debt vs Public Healthcare",
+      category: category || 'PAK_POLITICS',
+      english: {
+        text: "Developing nations now spend $480 billion annually servicing foreign debt, which is four times more than their combined health budgets. In many countries, over 65% of all national tax collection goes directly to foreign bankers rather than schools or clinics.\n\nGovernments cut food subsidies to protect international credit ratings.\n\nWhy must poor citizens sacrifice their daily bread to pay off debts they never approved?"
+      },
+      romanUrdu: {
+        text: "Taraqqi-pazeer mulk qarz ki adayigi par 480 arab dollar saalana kharch karte hain jo unke sehat ke budget se 4 guna zyada hai. Kayi mulkon mein 65% tax direct ghair-mulki bankers ko jata hai bajaaye schools ya clinics ke.\n\nHukoomatein credit rating bachane ke liye roti par subsidy khatam karti hain.\n\nGhareeb awam aisi qarz ke liye kyon maray jo usne li hi nahi?"
+      },
+      plainUrdu: {
+        text: "ترقی پذیر ممالک غیر ملکی قرضوں کی ادائیگی پر سالانہ 480 ارب ڈالر خرچ کرتے ہیں جو ان کے صحت کے بجٹ سے چار گنا زیادہ ہے۔ پینسٹھ فیصد سے زائد ٹیکس براہ راست غیر ملکی بینکرز کو جاتا ہے۔\n\nحکومتیں کریڈٹ ریٹنگ بچانے کے لیے روٹی پر سبسڈی ختم کرتی ہیں۔\n\nغریب شہری ان قرضوں کی قیمت اپنے نوالے چھنوا کر کیوں ادا کریں جو انہوں نے کبھی لیے ہی نہیں؟"
+      }
+    },
+    {
+      topic: "Maritime Chokepoints: Oil Stand-offs vs Citizen Inflation",
+      category: category || 'GEOPOLITICS',
+      english: {
+        text: "Over 21% of the world's daily petroleum passes through the narrow Strait of Hormuz, worth $1.2 billion every single hour. Yet international sanctions and geopolitical naval standoffs have driven diesel and fertilizer costs up by 45% in vulnerable nations.\n\nGlobal powers battle for maritime dominance while small farmers cannot afford fuel.\n\nWhy should ordinary citizens pay the price of imperial trade wars?"
+      },
+      romanUrdu: {
+        text: "Dunya ka 21% tail rozana Strait of Hormuz se guzarta hai jiski qeemat har ghantay 1.2 arab dollar hai. Magar pabandiyon aur behri tanaao ne kamzor mulkon mein diesel aur khaad 45% mehngi kar di hai.\n\nAalmi taqatein samundari qabzay ke liye larti hain jabke kisan fuel nahi khareed sakta.\n\nAam awam aalmi tijarti jangon ki keemat kyon chukaye?"
+      },
+      plainUrdu: {
+        text: "دنیا کا اکیس فیصد تیل آبنائے ہرمز سے گزرتا ہے جس کی مالیت ہر گھنٹے سوا ارب ڈالر ہے۔ مگر پابندیوں اور بحری کشیدگی نے کمزور ممالک میں ڈیزل اور کھاد پینتالیس فیصد مہنگی کر دی ہے۔\n\nعالمی طاقتیں سمندری راستوں پر غلبے کے لیے لڑتی ہیں جبکہ چھوٹا کسان ایندھن نہیں خرید سکتا۔\n\nعام شہری ان طاقتوں کی تجارتی جنگوں کی قیمت کیوں چکائیں؟"
+      }
+    },
+    {
+      topic: "Fighter Aircraft vs Public School Desks",
+      category: category || 'GEOPOLITICS',
+      english: {
+        text: "A single modern fifth-generation fighter jet costs $115 million to buy and $35,000 per flight hour to operate. That single jet costs more than the total annual operating budgets of 45 public district hospitals in developing countries.\n\nLeaders announce massive new defence procurement packages while state schools lack basic textbooks.\n\nWhat good is an expensive jet in the sky when schools collapse on the ground?"
+      },
+      romanUrdu: {
+        text: "Ek fifth-generation jahaz 115 million dollar ka hai aur har ghantay uranay par 35,000 dollar lagtay hain. Ek jahaz ki qeemat 45 zillai hospitals ke saalana budget se zyada hai.\n\nHukmaran arbon ke difai muaahiday karte hain jabke sarkari schools mein kitaabein nahi hain.\n\nAasman mein mehangay jahaz ka kya faida jab zameen par schools dhal rahay hon?"
+      },
+      plainUrdu: {
+        text: "ایک جدید ترین لڑاکا طیارہ ساڑھے گیارہ کروڑ ڈالر کا ہے اور اس کی ایک گھنٹے کی پرواز پر پینتیس ہزار ڈالر خرچ ہوتے ہیں۔ یہ لاگت پینتالیس ضلعی اسپتالوں کے سالانہ بجٹ سے زیادہ ہے۔\n\nحکمران دفاعی سودوں پر اربوں لٹاتے ہیں جبکہ سرکاری اسکولوں میں کتابیں تک میسر نہیں۔\n\nآسمان میں اڑتے مہنگے طیارے کا کیا فائدہ جب زمین پر تعلیمی ادارے ملبے کا ڈھیر بن رہے ہوں؟"
+      }
+    }
+  ];
+
+  for (const item of categoryPool) {
+    if (
+      (!cleanExcluded || item.topic.toLowerCase().trim() !== cleanExcluded) &&
+      !historyStore.hasSeenTopic(item.topic) &&
+      !historyStore.isDuplicateOrSimilar(item.english.text, item.topic).isDuplicate
+    ) {
+      return item;
+    }
+  }
+
+  // Synthesize dynamic fresh stats if all pools are exhausted
+  const uniqueCode = Math.floor(100 + Math.random() * 900);
+  const milExp = (2.1 + Math.random() * 0.7).toFixed(1);
+  const foodInsec = Math.floor(700 + Math.random() * 80);
+  const wealthExp = Math.floor(20 + Math.random() * 10);
+  return {
+    topic: `Global Power & Warfare: Critical Analysis (Series ${uniqueCode})`,
+    category: category || 'GEOPOLITICS',
+    english: {
+      text: `Global military expenditures reached $${milExp} trillion in 2024, while ${foodInsec} million people face acute food insecurity across developing nations. The wealthiest states spend ${wealthExp}% of their federal budgets on advanced arms while rural schools lack clean drinking water.\n\nGovernments prioritize foreign weapon deals while public welfare systems collapse.\n\nWhat is the real worth of national power when ordinary citizens are left to starve?`
+    },
+    romanUrdu: {
+      text: `Aalmi foji budget 2024 mein ${milExp} trillion dollar pohanch gaya jabke ${foodInsec} million log bhook se lar rahay hain. Baray mulk budget ka ${wealthExp}% hathyar par lagatay hain jabke schools mein saaf paani nahi.\n\nHukoomatein hathyar khareedti hain jabke awam ghurbat se mar rahi hai.\n\nAisi taqat ka kya faida jab aam shehri bhooka so jaye?`
+    },
+    plainUrdu: {
+      text: `عالمی عسکری بجٹ ${milExp} کھرب ڈالر تک پہنچ گیا ہے جبکہ ${foodInsec} ملین انسان شدید غذائی قلت کا شکار ہیں۔ امیر ترین ریاستیں اپنے بجٹ کا ${wealthExp} فیصد اسلحے پر جھونکتی ہیں جبکہ اسکولوں میں پینے کا پانی نہیں۔\n\nحکومتیں غیر ملکی ہتھیاروں کو ترجیح دیتی ہیں جبکہ فلاحی نظام تباہ ہو چکا ہے۔\n\nایسی قومی طاقت کی کیا وقعت ہے اگر عام شہری بنیادی روٹی کو ترس رہے ہوں؟`
+    }
+  };
+}
+
 /* ---------------- 4. CURATED ANALYTICAL ENGINE (UNUSED ONLY) ---------------- */
-  // Find a curated entry that has NOT been generated or stored yet
+  // Find a curated entry that has NOT been generated or stored yet and is NOT excludedTopic
   let found = CURATED_STORY_TOPICS.find(
     item =>
       item.category === chosenCategory &&
+      (!cleanExcluded || item.topic.toLowerCase().trim() !== cleanExcluded) &&
+      !historyStore.hasSeenTopic(item.topic) &&
       !historyStore.isDuplicateOrSimilar(item.english.text, item.topic).isDuplicate
   );
 
   // If no primary genre is set and all in current category are used, check any unused in the bank
   if (!found && !primaryGenre) {
     found = CURATED_STORY_TOPICS.find(
-      item => !historyStore.isDuplicateOrSimilar(item.english.text, item.topic).isDuplicate
+      item =>
+        (!cleanExcluded || item.topic.toLowerCase().trim() !== cleanExcluded) &&
+        !historyStore.hasSeenTopic(item.topic) &&
+        !historyStore.isDuplicateOrSimilar(item.english.text, item.topic).isDuplicate
     );
   }
 
-  // If all curated topics in PAK_VS_IND have been used, dynamically synthesize a fresh unique post
-  if (!found && chosenCategory === 'PAK_VS_IND') {
-    found = generateDynamicPakVsIndFallback();
-  }
-
-  // If still not found, pick the oldest and create a dynamic variation
+  // If all curated topics in current category are used, generate a dynamic fresh post
   if (!found) {
-    const fallbackBase =
-      CURATED_STORY_TOPICS.find(item => item.category === chosenCategory) ||
-      CURATED_STORY_TOPICS[storyCounter % CURATED_STORY_TOPICS.length];
-    storyCounter++;
-
-    found = {
-      ...fallbackBase,
-      topic: `${fallbackBase.topic} (Update ${Date.now().toString().slice(-4)})`
-    };
+    found = generateDynamicFallbackForCategory(chosenCategory, cleanExcluded);
   }
 
   const entry = formatEntry(found.english.text);
@@ -928,38 +1107,66 @@ async function callXai(prompt, model = 'grok-beta') {
 
 async function callGemini(prompt, apiKey) {
   const models = [
-    process.env.GEMINI_MODEL || 'gemini-3.5-flash',
-    'gemini-3.5-flash-lite',
-    'gemini-3.1-flash-lite'
+    process.env.GEMINI_MODEL || 'gemini-3.8-flash',
+    'gemini-flash-latest'
   ];
 
   let lastError = null;
   for (const model of models) {
-    const url = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`;
     try {
-      const response = await fetch(url, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
+      const parsed = await new Promise((resolve, reject) => {
+        const postData = JSON.stringify({
           contents: [{ parts: [{ text: prompt }] }],
           generationConfig: {
             temperature: 0.6,
             responseMimeType: 'application/json'
           }
-        })
+        });
+
+        const req = https.request(
+          `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`,
+          {
+            method: 'POST',
+            family: 4,
+            timeout: 2500,
+            headers: {
+              'Content-Type': 'application/json',
+              'Content-Length': Buffer.byteLength(postData)
+            }
+          },
+          (res) => {
+            let data = '';
+            res.on('data', chunk => data += chunk);
+            res.on('end', () => {
+              if (res.statusCode < 200 || res.statusCode >= 300) {
+                return reject(new Error(`Gemini ${model} HTTP ${res.statusCode}: ${data.slice(0, 150)}`));
+              }
+              try {
+                const json = JSON.parse(data);
+                const rawText = json.candidates?.[0]?.content?.parts?.[0]?.text;
+                if (!rawText) return reject(new Error('Empty Gemini output'));
+
+                const match = rawText.match(/\{[\s\S]*\}/);
+                if (!match) return reject(new Error('No JSON object found in Gemini response'));
+                resolve(JSON.parse(match[0]));
+              } catch (err) {
+                reject(err);
+              }
+            });
+          }
+        );
+
+        req.on('timeout', () => {
+          req.destroy();
+          reject(new Error(`Gemini ${model} request timed out (2.5s)`));
+        });
+
+        req.on('error', reject);
+        req.write(postData);
+        req.end();
       });
 
-      if (!response.ok) {
-        throw new Error(`Gemini ${model} HTTP ${response.status}`);
-      }
-
-      const json = await response.json();
-      const rawText = json.candidates?.[0]?.content?.parts?.[0]?.text;
-      if (!rawText) throw new Error('Empty Gemini output');
-
-      const match = rawText.match(/\{[\s\S]*\}/);
-      if (!match) throw new Error('No JSON object found in Gemini response');
-      return JSON.parse(match[0]);
+      return parsed;
     } catch (err) {
       lastError = err;
     }
