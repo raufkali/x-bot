@@ -16,6 +16,7 @@ import { keepAliveService } from '../utils/keepAlive.js';
 import { initMongo, isMongoConnected } from '../db/mongo.js';
 import { PostModel } from '../db/postModel.js';
 import { xService } from '../x/xService.js';
+import { genreManager } from '../generator/genreManager.js';
 import { ansi } from '../utils/ansi.js';
 
 const app = express();
@@ -474,7 +475,18 @@ app.get('/status', async (req, res) => {
       themes: config.contentThemes
     },
     schedule: postScheduler.getStatus(),
+    genres: {
+      primaryGenre: genreManager.getPrimaryGenre()?.name || 'Random (All Genres)',
+      totalGenres: genreManager.getAllGenres().length
+    },
     state: whatsappWorkflow.getCurrentState()
+  });
+});
+
+app.get('/genres', (req, res) => {
+  res.json({
+    primary: genreManager.getPrimaryGenre(),
+    all: genreManager.getAllGenres()
   });
 });
 

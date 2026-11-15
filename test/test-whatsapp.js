@@ -8,6 +8,8 @@ import { whatsappWorkflow } from '../src/whatsapp/workflow.js';
 import { postScheduler } from '../src/utils/scheduler.js';
 import { keepAliveService } from '../src/utils/keepAlive.js';
 import { config } from '../src/config.js';
+import { genreManager } from '../src/generator/genreManager.js';
+import { historyStore } from '../src/db/historyStore.js';
 
 console.log('====================================================');
 console.log('        TESTING WHATSAPP WEBHOOK & WORKFLOW');
@@ -132,8 +134,12 @@ async function runTests() {
     const wakeResult = await whatsappWorkflow.handleOwnerReply('Hello there!', config.ownerPhoneNumber);
     assert.strictEqual(wakeResult.action, 'GREETING_SENT');
     assert.strictEqual(wakeResult.status, 'AWAITING_GENERATE');
-    assert.strictEqual(wakeResult.message, 'HI, welcome to your X Assistant press 1 to generate new post');
-    console.log('✓ TEST 8 PASSED: Initial SMS greeted owner with "HI, welcome to your X Assistant press 1 to generate new post"\n');
+    assert.ok(
+      wakeResult.message.includes('HI, welcome to your X Assistant press 1 to generate new post'),
+      'Greeting message must contain base welcome instruction'
+    );
+    assert.ok(wakeResult.message.includes('2 to customize the bot'), 'Greeting message must include customize option');
+    console.log('✓ TEST 8 PASSED: Initial SMS greeted owner with refined menu.\n');
 
     // TEST 9: Owner Pressing "1" to Generate New Post
     console.log('TEST 9: Simulating Owner Pressing "1" to Generate Post...');
@@ -199,6 +205,90 @@ async function runTests() {
     assert.strictEqual(whatsappWorkflow.isOwner('923999888777'), false);
     assert.strictEqual(whatsappWorkflow.isOwner(config.ownerPhoneNumber), true);
     console.log('✓ TEST 12 PASSED: Non-owner messages safely ignored. Normal WhatsApp preserved for other contacts!\n');
+
+    // TEST 13: Opening Customize Bot Menu (Pressing 2)
+    console.log('TEST 13: Testing Customize Bot Menu Opening...');
+    whatsappWorkflow.currentPendingPost = null;
+    const customMenuResult = await whatsappWorkflow.handleOwnerReply('2', config.ownerPhoneNumber);
+    assert.strictEqual(customMenuResult.action, 'CUSTOMIZE_MENU_OPENED');
+    assert.strictEqual(whatsappWorkflow.menuState, 'CUSTOMIZE_MENU');
+    assert.ok(customMenuResult.message.includes('Add another genre'));
+    assert.ok(customMenuResult.message.includes('Show all genres'));
+    assert.ok(customMenuResult.message.includes('Make a genre primary'));
+    console.log('✓ TEST 13 PASSED: Customize Bot menu successfully opened!\n');
+
+    // TEST 14: Option 1 — Adding a New Custom Genre
+    console.log('TEST 14: Testing Option 1: Adding a New Custom Genre...');
+    const option1Result = await whatsappWorkflow.handleOwnerReply('1', config.ownerPhoneNumber);
+    assert.strictEqual(option1Result.action, 'AWAITING_NEW_GENRE');
+    assert.strictEqual(whatsappWorkflow.menuState, 'AWAITING_NEW_GENRE');
+
+    const addGenreResult = await whatsappWorkflow.handleOwnerReply('Space & Cyber Defence', config.ownerPhoneNumber);
+    assert.strictEqual(addGenreResult.action, 'GENRE_ADDED');
+    assert.strictEqual(addGenreResult.genre.name, 'Space & Cyber Defence');
+    const allGenresNow = genreManager.getAllGenres();
+    assert.ok(allGenresNow.some(g => g.name === 'Space & Cyber Defence'), 'New genre must be saved in genreManager');
+    console.log('✓ TEST 14 PASSED: New genre "Space & Cyber Defence" added and persisted!\n');
+
+    // TEST 15: Option 2 — Show All Genres
+    console.log('TEST 15: Testing Option 2: Show All Genres...');
+    const option2Result = await whatsappWorkflow.handleOwnerReply('2', config.ownerPhoneNumber);
+    assert.strictEqual(option2Result.action, 'LIST_GENRES');
+    assert.ok(option2Result.message.includes('Pak vs Ind'), 'List must include "Pak vs Ind"');
+    assert.ok(option2Result.message.includes('Space & Cyber Defence'), 'List must include newly added genre');
+    console.log('✓ TEST 15 PASSED: All genres correctly listed with numbers!\n');
+
+    // TEST 16: Option 3 — Make a Genre Primary ("Pak vs Ind")
+    console.log('TEST 16: Testing Option 3: Make "Pak vs Ind" the Primary Genre...');
+    const option3Result = await whatsappWorkflow.handleOwnerReply('3', config.ownerPhoneNumber);
+    assert.strictEqual(option3Result.action, 'AWAITING_PRIMARY_SELECTION');
+    assert.ok(option3Result.message.includes('Random'));
+    assert.ok(option3Result.message.includes('Pak vs Ind'));
+
+    // Select 1 for Pak vs Ind
+    const selectPrimaryResult = await whatsappWorkflow.handleOwnerReply('1', config.ownerPhoneNumber);
+    assert.strictEqual(selectPrimaryResult.action, 'PRIMARY_GENRE_SET');
+    assert.strictEqual(selectPrimaryResult.isRandom, false);
+    assert.strictEqual(selectPrimaryResult.genre.id, 'PAK_VS_IND');
+    assert.strictEqual(genreManager.getPrimaryGenre()?.id, 'PAK_VS_IND');
+    console.log('✓ TEST 16 PASSED: "Pak vs Ind" successfully set as exclusive Primary Genre!\n');
+
+    // TEST 17: Post Generation with Primary Genre Active
+    console.log('TEST 17: Verifying Post Generation Strictly Obeys Primary Genre ("Pak vs Ind")...');
+    whatsappWorkflow.currentPendingPost = null;
+    const pakVsIndGen = await whatsappWorkflow.generateAndSend();
+    assert.strictEqual(pakVsIndGen.success, true);
+    assert.strictEqual(pakVsIndGen.post.category, 'PAK_VS_IND', 'Post must strictly belong to PAK_VS_IND genre');
+    assert.ok(pakVsIndGen.post.english.charCount >= 380 && pakVsIndGen.post.english.charCount <= 500, 'Must meet 400-500 char length');
+    assert.ok(
+      pakVsIndGen.post.english.text.toLowerCase().includes('india') &&
+      pakVsIndGen.post.english.text.toLowerCase().includes('pakistan'),
+      'Must contain India vs Pakistan comparison'
+    );
+    console.log(`   Generated Text Preview (${pakVsIndGen.post.english.charCount} chars):\n   "${pakVsIndGen.post.english.text.slice(0, 120)}..."`);
+    console.log('✓ TEST 17 PASSED: Bot generates strictly from active primary genre!\n');
+
+    // TEST 18: Anti-Duplication & Never Regenerates Old Post Guard
+    console.log('TEST 18: Testing Anti-Duplication Guard (Never Regenerate Old Post)...');
+    const existingCheck = historyStore.isDuplicateOrSimilar(
+      pakVsIndGen.post.english.text,
+      pakVsIndGen.post.topic
+    );
+    assert.strictEqual(existingCheck.isDuplicate, true, 'HistoryStore must detect already recorded post');
+    console.log(`   Duplicate detection reason: ${existingCheck.reason}`);
+    console.log('✓ TEST 18 PASSED: Duplicate or similar historical post successfully rejected!\n');
+
+    // TEST 19: Switching Primary Genre back to 0 (Random)
+    console.log('TEST 19: Testing Resetting Primary Genre to 0 (Random Rotation)...');
+    whatsappWorkflow.currentPendingPost = null;
+    whatsappWorkflow.status = 'IDLE';
+    await whatsappWorkflow.handleOwnerReply('2', config.ownerPhoneNumber); // open customize
+    await whatsappWorkflow.handleOwnerReply('3', config.ownerPhoneNumber); // select primary
+    const resetResult = await whatsappWorkflow.handleOwnerReply('0', config.ownerPhoneNumber); // choose 0 for random
+    assert.strictEqual(resetResult.action, 'PRIMARY_GENRE_SET');
+    assert.strictEqual(resetResult.isRandom, true);
+    assert.strictEqual(genreManager.getPrimaryGenre(), null, 'Primary genre must now be null (Random)');
+    console.log('✓ TEST 19 PASSED: Primary genre reset to Random (rotating across all genres)!\n');
 
     console.log('====================================================');
     console.log('   ALL WHATSAPP WEBHOOK TESTS PASSED! (100%)');
