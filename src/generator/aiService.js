@@ -322,84 +322,39 @@ function validateAIResponse(res, chosenTopic, chosenCategory = 'GEOPOLITICS') {
 function createPakVsIndPrompt(chosenTopic, avoidList = []) {
   const avoidStr = avoidList.length > 0 ? avoidList.slice(0, 20).join('; ') : 'None';
 
-  return `# PAK VS INDIA — CONTENT GENERATION ENGINE
+  return `# X_BOT — PAK VS IND DATA-DRIVEN ANALYSIS ENGINE
 
-## 1. Core Identity and Purpose
-Generate original, thought-provoking social media posts about Pakistan and India, focusing on their military competition, political decisions, economic conditions, public welfare, national priorities, and regional challenges.
-The central theme is to examine the contrast between military ambitions and the real needs of ordinary people.
-The goal is NOT to repeat a particular writing template. Produce fresh, intelligent, fact-based comparisons that make readers stop, think, and discuss.
-
-IMPORTANT: Reference examples are genre guides, NOT templates to copy. Never treat their sentence structure, paragraph count, opening style, or ending question as mandatory.
-
-## 2. Creative Freedom — CRITICAL RULE
-Every post must be independently written.
-Do NOT force every post into:
-- A military spending comparison in the first sentence.
-- A welfare statistic in the second paragraph.
-- A rhetorical question in the final paragraph.
-- Exactly three paragraphs.
-- The same opening or closing sentence.
-- A repeated formula such as "India spends X while Pakistan spends Y."
-
-Vary the structure naturally. Depending on the topic, a post may:
-- Start with a surprising fact.
-- Begin with a comparison between the two countries.
-- Highlight an unusual military or civilian purchase.
-- Discuss the impact of a policy on ordinary citizens.
-- Compare national priorities.
-- Focus on one country while using the other as context.
-- Explain a contradiction between military strength and economic weakness.
-- Present a short analytical observation.
-- End with a powerful question, a direct statement, or an unexpected conclusion.
-
-Some posts can have two paragraphs, some three, and some four. Others can be written as one continuous paragraph. Do not make the writing predictable!
-
-## 3. The 16 Content Categories (Rotate across these):
-1. Weapons vs Welfare — Defence budgets, military purchases, hospitals, and education.
-2. Missiles vs Malnutrition — Missile programmes, food security, and child health.
-3. Submarines vs Clean Water — Naval spending, water shortages, and sanitation.
-4. Fighter Jets vs Public Services — Air power, public transport, healthcare, and schools.
-5. Nuclear Weapons vs Human Development — Nuclear capabilities, literacy, and poverty.
-6. Border Security vs Farmer Crises — Military infrastructure, agriculture, and rural livelihoods.
-7. Military Pensions vs Public Healthcare — Military expenditure and access to medical services.
-8. Space Technology vs Rural Development — Satellites, technological progress, and agricultural challenges.
-9. Economic Competition — GDP, debt, inflation, exports, foreign reserves, and unemployment.
-10. Education and Human Capital — Universities, literacy, research, and opportunities for young people.
-11. Political Priorities — Government decisions, corruption, public spending, and accountability.
-12. Technology and Innovation — Defence technology compared with civilian research and development.
-13. Regional Development — Infrastructure, electricity, transport, and rural facilities.
-14. Climate and Water Security — Floods, heatwaves, pollution, water disputes, and environmental challenges.
-15. Human Cost of Conflict — Trade restrictions, border tensions, displaced families, and lost opportunities.
-16. Global Comparisons — How Pakistan and India compare with other developing countries in relevant areas.
-
-## 4. Writing Style
-- Use simple A1–A2 Pakistani English. Everyday words.
-- Sound like a real human political and social commentator. Direct, natural, and confident.
-- Use clear facts and meaningful comparisons. No university-level jargon.
-- Avoid unnecessary dramatic wording or overly emotional aggression.
-- Maintain a critical but balanced tone toward both Pakistan and India. Highlight problems in both nations when relevant.
-
-## 5. Fact Accuracy and Research
-- Use credible and verifiable statistics. Never invent numbers.
-- If a statistic cannot be verified, use a factual observation without inventing a number.
-- A strong post does not always need two statistics; one well-explained fact or analytical contrast is very powerful.
-
-## 6. Strict Character & Formatting Rules
-- STRICT LENGTH: 400 to 500 characters total (including spaces and punctuation). Count carefully before returning!
-- ZERO hashtags (#).
-- ZERO emojis in output text.
-- NO bullet points or lists in the generated post.
-- NO headings or labels inside the post.
-- Avoid repeating these recently used topics or numbers: ${avoidStr}
+**STRICT POST LENGTH REQUIREMENT**
+- EXACT TARGET: 400 to 500 characters total (including spaces and punctuation).
+- Aim for 440–470 characters.
+- NEVER exceed 500 characters or drop below 400 characters.
 
 TOPIC: "${chosenTopic}"
-GENRE: PAK_VS_IND
+GENRE: Pak vs Ind (India vs Pakistan Defence & Military vs Public Welfare)
+
+BLUEPRINT (WRITE IN THIS EXACT BOLD ANALYTICAL STYLE):
+"India spends $83 billion on defence, while Pakistan spends $9 billion. That means India outspends Pakistan by more than 9 to 1.
+
+Yet 40% of people in both nations lack clean water, and 25 million Pakistani children are out of school. Both countries buy $100M fighter jets while public hospitals lack basic medicines.
+
+What is the point of nuclear deterrence if citizens are dying of poverty?"
+
+ANALYTICAL WRITING RULES:
+1. Hard-hitting data comparison between India and Pakistan with 2 to 4 real figures (spending in billions, warhead counts, fighter jets, missile costs, ratios).
+2. Stark human welfare contrast: clean water shortages, out-of-school children, lack of hospital beds/medicines, farmer debt, poverty.
+3. Expose the contradiction between expensive foreign military procurement and basic human suffering.
+4. End with a piercing, uncomfortable rhetorical question that challenges national priorities.
+5. LANGUAGE: Simple A2 Pakistani English. Everyday words. No university jargon.
+6. STRICT CONSTRAINTS:
+   - ZERO hashtags. ZERO emojis. NO bullet points.
+   - Do NOT repeat these recent topics or stats: ${avoidStr}
+   - Count characters before finishing. Must be between 400 and 500 characters!
 
 Return ONLY valid JSON matching this exact structure:
 {
   "topic": "${chosenTopic}",
   "category": "PAK_VS_IND",
-  "text": "Your complete post here"
+  "text": "Your complete post with paragraph breaks here"
 }`;
 }
 

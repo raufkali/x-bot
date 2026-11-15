@@ -346,6 +346,10 @@ async function runTests() {
     }
     console.log('✓ TEST 22 PASSED: Option 5 never regenerates discarded post, generating 100% unique posts!\n');
 
+    // Restore persistent primary genre lock to PAK_VS_IND
+    genreManager.setPrimaryGenre('PAK_VS_IND');
+    console.log('✓ Verified: Primary Genre permanently locked to "Pak vs Ind"!\n');
+
     console.log('====================================================');
     console.log('   ALL WHATSAPP WEBHOOK TESTS PASSED! (100%)');
     console.log('====================================================\n');

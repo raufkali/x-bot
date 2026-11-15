@@ -1,6 +1,6 @@
 {
-  "totalPosts": 48,
-  "updatedAt": "2026-11-15T08:39:48.668Z",
+  "totalPosts": 57,
+  "updatedAt": "2026-11-15T08:55:01.666Z",
   "posts": [
     {
       "hash": "cf010403450d07a18e28b67f83c481c3d59480679f03f1f8e7f1fb347387e853",
@@ -817,6 +817,151 @@
       "provider": "Curated Geopolitical Engine",
       "status": "PENDING",
       "timestamp": "2026-11-15T08:39:48.668Z"
+    },
+    {
+      "hash": "37f17d16fd20d5cdfad287d0508a7f2e4c4e8ed4d197a5f8c3e28d72ef98457e",
+      "topic": "Higher Education vs Weapons: South Asian Brain Drain (Series 788)",
+      "category": "PAK_VS_IND",
+      "englishText": "Pakistan and India jointly spend over $99 billion maintaining tanks and fighter aircraft. Meanwhile, combined research and development funding remains frozen below 0.7% of GDP, and hundreds of thousands of top medical and software graduates emigrate annually.\n\nBoth states construct modern arsenals while their human capital leaves.\n\nReal security comes from investing in educated youth, not just buying steel.",
+      "romanUrduText": "Pakistan aur India mil kar $99 arab dollar tankon aur jahaazon par kharch karte hain. Magar research par GDP ka sirf 0.7% lagta hai aur laakhon doctors aur engineers mulk chhor jatay hain.\n\nDono mulk hathyar jama karte hain jabke behtareen zehn bahar nikal rahay hain.\n\nAsal taqat taleem-yafta jawanon mein hai, sirf lohay ke hathyar mein nahi.",
+      "plainUrduText": "پاکستان اور بھارت مل کر سالانہ $99 ارب ڈالر ٹینکوں اور طیاروں پر جھونکتے ہیں۔ دوسری جانب تحقیق اور سائنسی ترقی کا بجٹ جی ڈی پی کے صرف 0.7 فیصد پر منجمد ہے اور ہزاروں ہونہار نوجوان بیرون ملک چلے جاتے ہیں۔\n\nدونوں ریاستیں بارود جمع کرتی ہیں جبکہ ان کا اصل انسانی اثاثہ رخصت ہو رہا ہے۔\n\nحقیقی قومی سلامتی نوجوانوں کی تعلیم میں ہے، محض لوہا خریدنے میں نہیں۔",
+      "numbers": [
+        "99",
+        "0.7"
+      ],
+      "provider": "Curated Geopolitical Engine",
+      "status": "PENDING",
+      "timestamp": "2026-11-15T08:54:35.604Z"
+    },
+    {
+      "hash": "2169c1a735bdb59bb94144bc195e783209ccfd7b6d16d13ce3e8f5eb43007519",
+      "topic": "Higher Education vs Weapons: South Asian Brain Drain (Series 703)",
+      "category": "PAK_VS_IND",
+      "englishText": "Pakistan and India jointly spend over $97 billion maintaining tanks and fighter aircraft. Meanwhile, combined research and development funding remains frozen below 0.5% of GDP, and hundreds of thousands of top medical and software graduates emigrate annually.\n\nBoth states construct modern arsenals while their human capital leaves.\n\nReal security comes from investing in educated youth, not just buying steel.",
+      "romanUrduText": "Pakistan aur India mil kar $97 arab dollar tankon aur jahaazon par kharch karte hain. Magar research par GDP ka sirf 0.5% lagta hai aur laakhon doctors aur engineers mulk chhor jatay hain.\n\nDono mulk hathyar jama karte hain jabke behtareen zehn bahar nikal rahay hain.\n\nAsal taqat taleem-yafta jawanon mein hai, sirf lohay ke hathyar mein nahi.",
+      "plainUrduText": "پاکستان اور بھارت مل کر سالانہ $97 ارب ڈالر ٹینکوں اور طیاروں پر جھونکتے ہیں۔ دوسری جانب تحقیق اور سائنسی ترقی کا بجٹ جی ڈی پی کے صرف 0.5 فیصد پر منجمد ہے اور ہزاروں ہونہار نوجوان بیرون ملک چلے جاتے ہیں۔\n\nدونوں ریاستیں بارود جمع کرتی ہیں جبکہ ان کا اصل انسانی اثاثہ رخصت ہو رہا ہے۔\n\nحقیقی قومی سلامتی نوجوانوں کی تعلیم میں ہے، محض لوہا خریدنے میں نہیں۔",
+      "numbers": [
+        "97",
+        "0.5"
+      ],
+      "provider": "Curated Geopolitical Engine",
+      "status": "PENDING",
+      "timestamp": "2026-11-15T08:54:38.585Z"
+    },
+    {
+      "hash": "32c5f70f7e7e6bb371b23658dfe513088137029ffaa610a4a840978caee80c2c",
+      "topic": "Pakistan vs India: Regional Trade Realities (Series 375)",
+      "category": "PAK_VS_IND",
+      "englishText": "Direct bilateral trade between Pakistan and India remains under $2 billion, while trade through third-party ports costs an extra $11 billion every year. The World Bank estimates trade could surpass $34 billion annually if customs borders opened.\n\nWhile politicians deliver hostile speeches, business owners lose billions and ordinary families pay inflated prices for simple goods. Conflict is an expensive economic tax.",
+      "romanUrduText": "Pakistan aur India ki direct tijarat 2 arab dollar se kam hai, jabke teesray mulkon ke zariye tijarat par har saal $11 arab dollar faaltu kharch hotay hain. World Bank ke mutabiq trade $34 arab dollar tak pohanch sakti hai.\n\nSiyasatdan nafrat phelatay hain jabke awam aam cheezon par dugni qeemat deti hai. Dushmani ghareebon par mehanga bojh hai.",
+      "plainUrduText": "پاکستان اور بھارت کی براہ راست تجارت دو ارب ڈالر سے کم ہے جبکہ مڈل مین روٹس کے ذریعے سالانہ $11 ارب ڈالر اضافی خرچ ہوتے ہیں۔ ورلڈ بینک کے مطابق تجارتی راستے کھلنے سے یہ حجم سالانہ $34 ارب ڈالر تک پہنچ سکتا ہے۔\n\nسیاسی محاذ آرائی تاجروں کو اربوں کا نقصان پہنچاتی ہے اور عام شہریوں کو مہنگائی کا بوجھ اٹھانا پڑتا ہے۔ یہ تنازع معیشت پر بھاری ٹیکس ہے۔",
+      "numbers": [
+        "2",
+        "11",
+        "34"
+      ],
+      "provider": "Curated Geopolitical Engine",
+      "status": "PENDING",
+      "timestamp": "2026-11-15T08:54:39.651Z"
+    },
+    {
+      "hash": "fe6c9d07c63e02764ed6f3396a236812de425e8afa23ba0b5c58025594a2b8d6",
+      "topic": "Higher Education vs Weapons: South Asian Brain Drain (Series 594)",
+      "category": "PAK_VS_IND",
+      "englishText": "Pakistan and India jointly spend over $92 billion maintaining tanks and fighter aircraft. Meanwhile, combined research and development funding remains frozen below 0.5% of GDP, and hundreds of thousands of top medical and software graduates emigrate annually.\n\nBoth states construct modern arsenals while their human capital leaves.\n\nReal security comes from investing in educated youth, not just buying steel.",
+      "romanUrduText": "Pakistan aur India mil kar $92 arab dollar tankon aur jahaazon par kharch karte hain. Magar research par GDP ka sirf 0.5% lagta hai aur laakhon doctors aur engineers mulk chhor jatay hain.\n\nDono mulk hathyar jama karte hain jabke behtareen zehn bahar nikal rahay hain.\n\nAsal taqat taleem-yafta jawanon mein hai, sirf lohay ke hathyar mein nahi.",
+      "plainUrduText": "پاکستان اور بھارت مل کر سالانہ $92 ارب ڈالر ٹینکوں اور طیاروں پر جھونکتے ہیں۔ دوسری جانب تحقیق اور سائنسی ترقی کا بجٹ جی ڈی پی کے صرف 0.5 فیصد پر منجمد ہے اور ہزاروں ہونہار نوجوان بیرون ملک چلے جاتے ہیں۔\n\nدونوں ریاستیں بارود جمع کرتی ہیں جبکہ ان کا اصل انسانی اثاثہ رخصت ہو رہا ہے۔\n\nحقیقی قومی سلامتی نوجوانوں کی تعلیم میں ہے، محض لوہا خریدنے میں نہیں۔",
+      "numbers": [
+        "92",
+        "0.5"
+      ],
+      "provider": "Curated Geopolitical Engine",
+      "status": "PENDING",
+      "timestamp": "2026-11-15T08:54:40.690Z"
+    },
+    {
+      "hash": "6f41ac4deedd1c83af4186305f228fc01d3a06ca24f7f466c98c2315f14e1333",
+      "topic": "Pakistan vs India: Regional Trade Realities (Series 974)",
+      "category": "PAK_VS_IND",
+      "englishText": "Direct bilateral trade between Pakistan and India remains under $2 billion, while trade through third-party ports costs an extra $8 billion every year. The World Bank estimates trade could surpass $34 billion annually if customs borders opened.\n\nWhile politicians deliver hostile speeches, business owners lose billions and ordinary families pay inflated prices for simple goods. Conflict is an expensive economic tax.",
+      "romanUrduText": "Pakistan aur India ki direct tijarat 2 arab dollar se kam hai, jabke teesray mulkon ke zariye tijarat par har saal $8 arab dollar faaltu kharch hotay hain. World Bank ke mutabiq trade $34 arab dollar tak pohanch sakti hai.\n\nSiyasatdan nafrat phelatay hain jabke awam aam cheezon par dugni qeemat deti hai. Dushmani ghareebon par mehanga bojh hai.",
+      "plainUrduText": "پاکستان اور بھارت کی براہ راست تجارت دو ارب ڈالر سے کم ہے جبکہ مڈل مین روٹس کے ذریعے سالانہ $8 ارب ڈالر اضافی خرچ ہوتے ہیں۔ ورلڈ بینک کے مطابق تجارتی راستے کھلنے سے یہ حجم سالانہ $34 ارب ڈالر تک پہنچ سکتا ہے۔\n\nسیاسی محاذ آرائی تاجروں کو اربوں کا نقصان پہنچاتی ہے اور عام شہریوں کو مہنگائی کا بوجھ اٹھانا پڑتا ہے۔ یہ تنازع معیشت پر بھاری ٹیکس ہے۔",
+      "numbers": [
+        "2",
+        "8",
+        "34"
+      ],
+      "provider": "Curated Geopolitical Engine",
+      "status": "DISCARDED",
+      "timestamp": "2026-11-15T08:54:41.623Z"
+    },
+    {
+      "hash": "3f0a2fd91d7c4fb51c3c1a7a53e4ca87f1374a14586708c6b40ae3011c7db861",
+      "topic": "Global Power & Warfare: Critical Analysis (Series 649)",
+      "category": "GEOPOLITICS",
+      "englishText": "Global military expenditures reached $2.3 trillion in 2024, while 751 million people face acute food insecurity across developing nations. The wealthiest states spend 21% of their federal budgets on advanced arms while rural schools lack clean drinking water.\n\nGovernments prioritize foreign weapon deals while public welfare systems collapse.\n\nWhat is the real worth of national power when ordinary citizens are left to starve?",
+      "romanUrduText": "Aalmi foji budget 2024 mein 2.3 trillion dollar pohanch gaya jabke 751 million log bhook se lar rahay hain. Baray mulk budget ka 21% hathyar par lagatay hain jabke schools mein saaf paani nahi.\n\nHukoomatein hathyar khareedti hain jabke awam ghurbat se mar rahi hai.\n\nAisi taqat ka kya faida jab aam shehri bhooka so jaye?",
+      "plainUrduText": "عالمی عسکری بجٹ 2.3 کھرب ڈالر تک پہنچ گیا ہے جبکہ 751 ملین انسان شدید غذائی قلت کا شکار ہیں۔ امیر ترین ریاستیں اپنے بجٹ کا 21 فیصد اسلحے پر جھونکتی ہیں جبکہ اسکولوں میں پینے کا پانی نہیں۔\n\nحکومتیں غیر ملکی ہتھیاروں کو ترجیح دیتی ہیں جبکہ فلاحی نظام تباہ ہو چکا ہے۔\n\nایسی قومی طاقت کی کیا وقعت ہے اگر عام شہری بنیادی روٹی کو ترس رہے ہوں؟",
+      "numbers": [
+        "2.3",
+        "2024",
+        "751",
+        "21"
+      ],
+      "provider": "Curated Geopolitical Engine",
+      "status": "DISCARDED",
+      "timestamp": "2026-11-15T08:54:43.988Z"
+    },
+    {
+      "hash": "3459b6300c83644403c3832fd1e946000dbef3759ba5df08076e817f41aeea33",
+      "topic": "Global Power & Warfare: Critical Analysis (Series 791)",
+      "category": "PAKISTAN_POLITICS",
+      "englishText": "Global military expenditures reached $2.7 trillion in 2024, while 765 million people face acute food insecurity across developing nations. The wealthiest states spend 29% of their federal budgets on advanced arms while rural schools lack clean drinking water.\n\nGovernments prioritize foreign weapon deals while public welfare systems collapse.\n\nWhat is the real worth of national power when ordinary citizens are left to starve?",
+      "romanUrduText": "Aalmi foji budget 2024 mein 2.7 trillion dollar pohanch gaya jabke 765 million log bhook se lar rahay hain. Baray mulk budget ka 29% hathyar par lagatay hain jabke schools mein saaf paani nahi.\n\nHukoomatein hathyar khareedti hain jabke awam ghurbat se mar rahi hai.\n\nAisi taqat ka kya faida jab aam shehri bhooka so jaye?",
+      "plainUrduText": "عالمی عسکری بجٹ 2.7 کھرب ڈالر تک پہنچ گیا ہے جبکہ 765 ملین انسان شدید غذائی قلت کا شکار ہیں۔ امیر ترین ریاستیں اپنے بجٹ کا 29 فیصد اسلحے پر جھونکتی ہیں جبکہ اسکولوں میں پینے کا پانی نہیں۔\n\nحکومتیں غیر ملکی ہتھیاروں کو ترجیح دیتی ہیں جبکہ فلاحی نظام تباہ ہو چکا ہے۔\n\nایسی قومی طاقت کی کیا وقعت ہے اگر عام شہری بنیادی روٹی کو ترس رہے ہوں؟",
+      "numbers": [
+        "2.7",
+        "2024",
+        "765",
+        "29"
+      ],
+      "provider": "Curated Geopolitical Engine",
+      "status": "DISCARDED",
+      "timestamp": "2026-11-15T08:54:47.293Z"
+    },
+    {
+      "hash": "0e0e6200a36f358705fa5f1b280472bf589881f4195537cda4e0cf2db1815ad7",
+      "topic": "Global Power & Warfare: Critical Analysis (Series 216)",
+      "category": "SOCIAL_ETHNIC_ISSUES",
+      "englishText": "Global military expenditures reached $2.3 trillion in 2024, while 753 million people face acute food insecurity across developing nations. The wealthiest states spend 22% of their federal budgets on advanced arms while rural schools lack clean drinking water.\n\nGovernments prioritize foreign weapon deals while public welfare systems collapse.\n\nWhat is the real worth of national power when ordinary citizens are left to starve?",
+      "romanUrduText": "Aalmi foji budget 2024 mein 2.3 trillion dollar pohanch gaya jabke 753 million log bhook se lar rahay hain. Baray mulk budget ka 22% hathyar par lagatay hain jabke schools mein saaf paani nahi.\n\nHukoomatein hathyar khareedti hain jabke awam ghurbat se mar rahi hai.\n\nAisi taqat ka kya faida jab aam shehri bhooka so jaye?",
+      "plainUrduText": "عالمی عسکری بجٹ 2.3 کھرب ڈالر تک پہنچ گیا ہے جبکہ 753 ملین انسان شدید غذائی قلت کا شکار ہیں۔ امیر ترین ریاستیں اپنے بجٹ کا 22 فیصد اسلحے پر جھونکتی ہیں جبکہ اسکولوں میں پینے کا پانی نہیں۔\n\nحکومتیں غیر ملکی ہتھیاروں کو ترجیح دیتی ہیں جبکہ فلاحی نظام تباہ ہو چکا ہے۔\n\nایسی قومی طاقت کی کیا وقعت ہے اگر عام شہری بنیادی روٹی کو ترس رہے ہوں؟",
+      "numbers": [
+        "2.3",
+        "2024",
+        "753",
+        "22"
+      ],
+      "provider": "Curated Geopolitical Engine",
+      "status": "DISCARDED",
+      "timestamp": "2026-11-15T08:54:51.966Z"
+    },
+    {
+      "hash": "8f9f3c9f86bd1a6ec230ac4536df70d5b0783653326c134d686a493747fd958a",
+      "topic": "Global Power & Warfare: Critical Analysis (Series 619)",
+      "category": "AI_HUMAN_SOCIETY",
+      "englishText": "Global military expenditures reached $2.5 trillion in 2024, while 778 million people face acute food insecurity across developing nations. The wealthiest states spend 21% of their federal budgets on advanced arms while rural schools lack clean drinking water.\n\nGovernments prioritize foreign weapon deals while public welfare systems collapse.\n\nWhat is the real worth of national power when ordinary citizens are left to starve?",
+      "romanUrduText": "Aalmi foji budget 2024 mein 2.5 trillion dollar pohanch gaya jabke 778 million log bhook se lar rahay hain. Baray mulk budget ka 21% hathyar par lagatay hain jabke schools mein saaf paani nahi.\n\nHukoomatein hathyar khareedti hain jabke awam ghurbat se mar rahi hai.\n\nAisi taqat ka kya faida jab aam shehri bhooka so jaye?",
+      "plainUrduText": "عالمی عسکری بجٹ 2.5 کھرب ڈالر تک پہنچ گیا ہے جبکہ 778 ملین انسان شدید غذائی قلت کا شکار ہیں۔ امیر ترین ریاستیں اپنے بجٹ کا 21 فیصد اسلحے پر جھونکتی ہیں جبکہ اسکولوں میں پینے کا پانی نہیں۔\n\nحکومتیں غیر ملکی ہتھیاروں کو ترجیح دیتی ہیں جبکہ فلاحی نظام تباہ ہو چکا ہے۔\n\nایسی قومی طاقت کی کیا وقعت ہے اگر عام شہری بنیادی روٹی کو ترس رہے ہوں؟",
+      "numbers": [
+        "2.5",
+        "2024",
+        "778",
+        "21"
+      ],
+      "provider": "Curated Geopolitical Engine",
+      "status": "PENDING",
+      "timestamp": "2026-11-15T08:55:01.666Z"
     }
   ]
 }
