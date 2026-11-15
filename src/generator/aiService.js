@@ -320,40 +320,86 @@ function validateAIResponse(res, chosenTopic, chosenCategory = 'GEOPOLITICS') {
 ========================================================= */
 
 function createPakVsIndPrompt(chosenTopic, avoidList = []) {
-  const avoidStr = avoidList.length > 0 ? avoidList.slice(0, 15).join('; ') : 'None';
+  const avoidStr = avoidList.length > 0 ? avoidList.slice(0, 20).join('; ') : 'None';
 
-  return `# X_BOT — PAK VS IND DATA-DRIVEN ANALYSIS ENGINE
+  return `# PAK VS INDIA — CONTENT GENERATION ENGINE
 
-**STRICT POST LENGTH REQUIREMENT**
-- EXACT TARGET: 400 to 500 characters total (including spaces and punctuation).
-- Aim for 440–470 characters.
-- NEVER exceed 500 characters or drop below 400 characters.
+## 1. Core Identity and Purpose
+Generate original, thought-provoking social media posts about Pakistan and India, focusing on their military competition, political decisions, economic conditions, public welfare, national priorities, and regional challenges.
+The central theme is to examine the contrast between military ambitions and the real needs of ordinary people.
+The goal is NOT to repeat a particular writing template. Produce fresh, intelligent, fact-based comparisons that make readers stop, think, and discuss.
+
+IMPORTANT: Reference examples are genre guides, NOT templates to copy. Never treat their sentence structure, paragraph count, opening style, or ending question as mandatory.
+
+## 2. Creative Freedom — CRITICAL RULE
+Every post must be independently written.
+Do NOT force every post into:
+- A military spending comparison in the first sentence.
+- A welfare statistic in the second paragraph.
+- A rhetorical question in the final paragraph.
+- Exactly three paragraphs.
+- The same opening or closing sentence.
+- A repeated formula such as "India spends X while Pakistan spends Y."
+
+Vary the structure naturally. Depending on the topic, a post may:
+- Start with a surprising fact.
+- Begin with a comparison between the two countries.
+- Highlight an unusual military or civilian purchase.
+- Discuss the impact of a policy on ordinary citizens.
+- Compare national priorities.
+- Focus on one country while using the other as context.
+- Explain a contradiction between military strength and economic weakness.
+- Present a short analytical observation.
+- End with a powerful question, a direct statement, or an unexpected conclusion.
+
+Some posts can have two paragraphs, some three, and some four. Others can be written as one continuous paragraph. Do not make the writing predictable!
+
+## 3. The 16 Content Categories (Rotate across these):
+1. Weapons vs Welfare — Defence budgets, military purchases, hospitals, and education.
+2. Missiles vs Malnutrition — Missile programmes, food security, and child health.
+3. Submarines vs Clean Water — Naval spending, water shortages, and sanitation.
+4. Fighter Jets vs Public Services — Air power, public transport, healthcare, and schools.
+5. Nuclear Weapons vs Human Development — Nuclear capabilities, literacy, and poverty.
+6. Border Security vs Farmer Crises — Military infrastructure, agriculture, and rural livelihoods.
+7. Military Pensions vs Public Healthcare — Military expenditure and access to medical services.
+8. Space Technology vs Rural Development — Satellites, technological progress, and agricultural challenges.
+9. Economic Competition — GDP, debt, inflation, exports, foreign reserves, and unemployment.
+10. Education and Human Capital — Universities, literacy, research, and opportunities for young people.
+11. Political Priorities — Government decisions, corruption, public spending, and accountability.
+12. Technology and Innovation — Defence technology compared with civilian research and development.
+13. Regional Development — Infrastructure, electricity, transport, and rural facilities.
+14. Climate and Water Security — Floods, heatwaves, pollution, water disputes, and environmental challenges.
+15. Human Cost of Conflict — Trade restrictions, border tensions, displaced families, and lost opportunities.
+16. Global Comparisons — How Pakistan and India compare with other developing countries in relevant areas.
+
+## 4. Writing Style
+- Use simple A1–A2 Pakistani English. Everyday words.
+- Sound like a real human political and social commentator. Direct, natural, and confident.
+- Use clear facts and meaningful comparisons. No university-level jargon.
+- Avoid unnecessary dramatic wording or overly emotional aggression.
+- Maintain a critical but balanced tone toward both Pakistan and India. Highlight problems in both nations when relevant.
+
+## 5. Fact Accuracy and Research
+- Use credible and verifiable statistics. Never invent numbers.
+- If a statistic cannot be verified, use a factual observation without inventing a number.
+- A strong post does not always need two statistics; one well-explained fact or analytical contrast is very powerful.
+
+## 6. Strict Character & Formatting Rules
+- STRICT LENGTH: 400 to 500 characters total (including spaces and punctuation). Count carefully before returning!
+- ZERO hashtags (#).
+- ZERO emojis in output text.
+- NO bullet points or lists in the generated post.
+- NO headings or labels inside the post.
+- Avoid repeating these recently used topics or numbers: ${avoidStr}
 
 TOPIC: "${chosenTopic}"
-GENRE: Pak vs Ind (India vs Pakistan Defence & Military vs Public Welfare)
-
-BLUEPRINT (WRITE IN THIS EXACT STYLE & STRUCTURE):
-"India spends $83 billion on defence, while Pakistan spends $9 billion. That means India outspends Pakistan by more than 9 to 1.
-
-Yet 40% of people in both nations lack clean water, and 25 million Pakistani children are out of school. Both countries buy $100M fighter jets while public hospitals lack basic medicines.
-
-What is the point of nuclear deterrence if citizens are dying of poverty?"
-
-KEY RULES:
-1. PARAGRAPH 1: Direct military or defence spending comparison between India and Pakistan with 2 real data points and a clear ratio or dollar contrast.
-2. PARAGRAPH 2: Stark human welfare contrast (clean water %, out-of-school children, lack of hospital beds/medicines, child malnutrition, poverty).
-3. PARAGRAPH 3: A piercing, thought-provoking rhetorical question challenging the purpose of military dominance when citizens are dying of poverty.
-4. LANGUAGE: Simple A2 Pakistani English. Everyday words. No university jargon.
-5. STRICT CONSTRAINTS:
-   - ZERO hashtags. ZERO emojis. NO bullet points.
-   - Do NOT repeat these recent topics or stats: ${avoidStr}
-   - Count characters before finishing. Must be between 400 and 500 characters!
+GENRE: PAK_VS_IND
 
 Return ONLY valid JSON matching this exact structure:
 {
   "topic": "${chosenTopic}",
   "category": "PAK_VS_IND",
-  "text": "Your complete post with paragraph breaks here"
+  "text": "Your complete post here"
 }`;
 }
 
@@ -506,16 +552,24 @@ export async function generateEnglishPost(customTopic = '', excludedTopic = '') 
       chosenTopic = categoryUnusedCurated[idx].topic;
       chosenCategory = categoryUnusedCurated[idx].category;
     } else if (targetCategory.id === 'PAK_VS_IND') {
-      // Dynamic angles for Pak vs Ind to guarantee fresh topics every time
+      // Dynamic angles for Pak vs Ind rotating across all 16 thematic categories
       const dynamicAngles = [
-        'India vs Pakistan: Military Pensions vs Rural Schools',
-        'India vs Pakistan: Ammunition Imports vs Wheat Shortages',
-        'India vs Pakistan: Naval Submarines vs Dying Groundwater',
-        'India vs Pakistan: Border Radars vs Clean Drinking Water',
-        'India vs Pakistan: Ballistic Missiles vs Child Malnutrition',
-        'India vs Pakistan: Fighter Aircraft vs Public Health Clinics',
-        'India vs Pakistan: Nuclear Arsenals vs Out-of-School Children',
-        'India vs Pakistan: Space Satellites vs Farmer Irrigation'
+        'Pakistan vs India: Weapons vs Welfare Priorities',
+        'India vs Pakistan: Missiles vs Child Malnutrition',
+        'Pakistan vs India: Nuclear Submarines vs Clean Water',
+        'India vs Pakistan: Modern Fighter Jets vs Public Clinics',
+        'Pakistan vs India: 340 Nuclear Warheads vs Classrooms',
+        'India vs Pakistan: Border Radars vs Farmer Crises',
+        'Pakistan vs India: Military Pensions vs Rural Doctors',
+        'India vs Pakistan: Space Technology vs Canal Irrigation',
+        'Pakistan vs India: Foreign Debt vs Economic Reserves',
+        'India vs Pakistan: Higher Education vs Brain Drain',
+        'Pakistan vs India: Defense Budgets vs Youth Opportunities',
+        'India vs Pakistan: Civilian R&D vs Tank Procurement',
+        'Pakistan vs India: Rural Development vs Border Security',
+        'India vs Pakistan: Toxic Smog & Cross-Border Pollution',
+        'Pakistan vs India: The $37 Billion Lost Bilateral Trade',
+        'South Asia vs ASEAN: Regional Peace and Economic Growth'
       ];
       const unusedAngles = dynamicAngles.filter(
         a => (!cleanExcluded || a.toLowerCase().trim() !== cleanExcluded) &&
@@ -524,7 +578,7 @@ export async function generateEnglishPost(customTopic = '', excludedTopic = '') 
       );
       chosenTopic = unusedAngles.length > 0
         ? unusedAngles[Math.floor(Math.random() * unusedAngles.length)]
-        : `India vs Pakistan: Defence vs Citizens (Batch ${Date.now().toString().slice(-4)})`;
+        : `India vs Pakistan: Strategic Reality (Batch ${Date.now().toString().slice(-4)})`;
       chosenCategory = 'PAK_VS_IND';
     } else {
       // Dynamic topic selection for other categories
@@ -662,42 +716,81 @@ function generateDynamicPakVsIndFallback(excludedTopic = '') {
   const cleanExcluded = String(excludedTopic || '').toLowerCase().trim();
   const pool = [
     {
-      topic: "India vs Pakistan: Nuclear Warheads vs Classrooms",
+      topic: "Pakistan vs India: The Lost Trade Opportunity",
       category: 'PAK_VS_IND',
       english: {
-        text: "India and Pakistan now hold over 340 nuclear warheads, spending more than $4.5 billion annually to maintain them. Yet over 50 million citizens in both countries cannot write their own names, and 30,000 public schools lack electricity or basic toilets.\n\nWe invest billions in atomic warheads designed never to be used while classrooms crumble.\n\nWhat strategic glory is there in an atomic bomb if our next generation grows up uneducated and poor?"
+        text: "Direct trade between Pakistan and India remains under $2 billion, while indirect trade through Dubai exceeds $10 billion with heavy transport fees. The World Bank estimates bilateral trade could easily reach $37 billion every year if borders opened.\n\nBusinesses on both sides pay massive middleman charges while ordinary consumers face inflated food and medicine prices. Political confrontation is an expensive tax on the poor."
       },
       romanUrdu: {
-        text: "India aur Pakistan 340 se zyada atomic warheads rakhte hain jinki hifazat par 4.5 arab dollar lagtay hain. Magar 5 karor log apna naam tak nahi likh saktay aur 30,000 schools mein bijli ya toilets nahi hain.\n\nHum aisi atom bomb par arbon lagatay hain jo chal nahi sakti jabke school dhal rahay hain.\n\nAisi atomic taqat ka kya faida agar agli nasal anparh aur ghareeb reh jaye?"
+        text: "Pakistan aur India ki direct tijarat 2 arab dollar se kam hai, jabke Dubai ke zariye indirect trade 10 arab dollar se tajawuz karti hai. World Bank ke mutabiq agar raste khul jayein toh tijarat 37 arab dollar tak pohanch sakti hai.\n\nDono taraf ke karobari afraad arbon dollar middleman ko detay hain jabke aam awam mehngi dawaiyan khareedti hai. Siyasi dushmani ghareebon par ek mehanga tax hai."
       },
       plainUrdu: {
-        text: "بھارت اور پاکستان کے پاس 340 سے زیادہ ایٹمی ہتھیار ہیں جن کی دیکھ بھال پر ساڑھے چار ارب ڈالر خرچ ہوتے ہیں۔ مگر پانچ کروڑ شہری اپنا نام تک نہیں لکھ سکتے اور تیس ہزار اسکولوں میں بجلی یا بیت الخلا تک نہیں۔\n\nہم ان بموں پر اربوں لٹاتے ہیں جنہیں چلا نہیں سکتے جبکہ تعلیمی ادارے تباہ ہو رہے ہیں۔\n\nایسی طاقت کا کیا فخر اگر اگلی نسل بنیادی تعلیم سے بھی محروم رہے؟"
+        text: "پاکستان اور بھارت کی براہ راست تجارت دو ارب ڈالر سے کم ہے جبکہ دبئی کے ذریعے غیر مستقیم تجارت دس ارب ڈالر سے تجاوز کر چکی ہے۔ ورلڈ بینک کے مطابق تجارتی راستے کھلنے سے یہ حجم سالانہ سینتیس ارب ڈالر تک پہنچ سکتا ہے۔\n\nدونوں اطراف کے تاجر بھاری مڈل مین چارجز ادا کرتے ہیں جبکہ عام شہری مہنگی اشیائے خورونوش خریدنے پر مجبور ہیں۔ سیاسی محاذ آرائی غریب عوام پر ایک مہنگا ٹیکس ہے۔"
       }
     },
     {
-      topic: "India vs Pakistan: Border Radars vs Farmer Crises",
+      topic: "Lahore to Delhi: The Toxic Smog Crisis",
       category: 'PAK_VS_IND',
       english: {
-        text: "India and Pakistan spend $1.8 billion on thermal border sensors, electronic fences, and surveillance radars. At the exact same time, underground water tables in Punjab on both sides have dropped by 15 metres, forcing over 100,000 farmers into severe debt.\n\nBoth nations scan the sky for enemy drones while our agricultural heartland runs out of water.\n\nWhat will our armies eat when fertile fields turn to dust?"
+        text: "Every winter, hazardous toxic smog covers Pakistan and India from Lahore to New Delhi, pushing air quality index levels above 1,000 and hospitalising tens of thousands of citizens with lung failure. The wind carries poison across the border regardless of radar systems and armed outposts.\n\nBoth governments invest billions defending borders from each other, but neither can defend their citizens from the air they breathe together."
       },
       romanUrdu: {
-        text: "India aur Pakistan sarhad par radar aur sensors par 1.8 arab dollar kharch karte hain. Doosri taraf Punjab mein zameen ka paani 15 meter neeche gir chuka hai aur 1 laakh kisan qarzay mein doob gaye hain.\n\nHum asman par drones dhoondhte hain jabke zameen ka paani sookh raha hai.\n\nFoj kya khaye gi jab hamaray khet sahra ban jayenge?"
+        text: "Har sardi mein shadeed zehreeli smog Pakistan aur India mein Lahore se New Delhi tak phailti hai, jahan AQI 1,000 se oopar chala jata hai aur hazaron log saans ki bemariyon se hospitals pohanchtay hain. Hawa sarhad ki parwah kiye baghair zehar phailati hai.\n\nDono hukoomatein arbon dollar difa par lagati hain, magar dono apnay shehriyon ko us hawa se nahi bacha sakein jo woh sath saans letay hain."
       },
       plainUrdu: {
-        text: "بھارت اور پاکستان سرحدی راڈار اور سینسرز پر پونے دو ارب ڈالر خرچ کرتے ہیں۔ دوسری طرف پنجاب میں زیر زمین پانی پندرہ میٹر نیچے گر چکا ہے اور ایک لاکھ کسان برباد ہو چکے ہیں۔\n\nہم ڈرونز تلاش کرنے پر اربوں لگاتے ہیں جبکہ ہمارے کھیت پانی کو ترس رہے ہیں۔\n\nافواج کیا کھائیں گی جب ہماری زرخیز زمینیں بنجر ریگستان بن جائیں گی؟"
+        text: "ہر موسم سرما میں زہریلا اسموگ پاکستان اور بھارت میں لاہور سے نئی دہلی تک پھیل جاتا ہے جہاں ایئر کوالٹی انڈیکس ایک ہزار سے تجاوز کر جاتا ہے اور ہزاروں شہری اسپتال پہنچ جاتے ہیں۔ زہریلی ہوائیں راڈار اور سرحدی باڑ کی پروا کیے بغیر سرحد پار کرتی ہیں۔\n\nدونوں حکومتیں ایک دوسرے سے سرحد بچانے پر اربوں لگاتی ہیں مگر اپنے شہریوں کو اس زہریلی ہوا سے نہیں بچا سکتیں جس میں وہ سانس لیتے ہیں۔"
       }
     },
     {
-      topic: "India vs Pakistan: Military Pensions vs Rural Doctors",
+      topic: "Indus Basin: Glacial Melt vs Water Security",
       category: 'PAK_VS_IND',
       english: {
-        text: "Pakistan spends $3.2 billion on military pensions, while India allocates $16 billion annually. Yet rural districts across both countries have only 1 doctor for every 10,000 villagers, and 60% of rural health clinics lack basic emergency medicines or ultrasound machines.\n\nWe guarantee pensions for soldiers while leaving pregnant mothers to die on highway roads.\n\nWho protects our citizens from systemic medical neglect?"
+        text: "Himalayan glaciers feeding the Indus basin are melting at record rates, threatening freshwater supply for 300 million people across Pakistan and India.\n\nWhile politicians argue over dam projects and treaty clauses, groundwater levels in both Punjabs drop by a metre every year.\n\nThe real security threat of the next decade is not an enemy army. It is running completely out of clean drinking water."
       },
       romanUrdu: {
-        text: "Pakistan foji pensions par 3.2 arab dollar aur India 16 arab dollar kharch karta hai. Magar dehaton mein 10,000 logon ke liye sirf ek doctor hai aur 60% clinics mein basic medicines nahi hain.\n\nHum pensions ka intizam karte hain magar maaoon ko ilaj nahi milta.\n\nShehriyon ko is medical barbadi se kon bachaye ga?"
+        text: "Indus basin ko paani denay walay Himalayan glaciers tareekhi raftaar se pighal rahay hain, jis se Pakistan aur India ke 30 karor logon ke liye peenay ka paani khatray mein hai.\n\nSiyasatdan dam aur muaahidon par lartay hain jabke dono Punjabon mein zameen ka paani har saal ek meter neeche gir raha hai.\n\nAgli dahai ka asal khatra dushman fouj nahi, balkay peenay ke saaf paani ka mukammal khatam hona hai."
       },
       plainUrdu: {
-        text: "پاکستان فوجی پنشن پر سوا تین ارب ڈالر اور بھارت سولہ ارب ڈالر خرچ کرتا ہے۔ مگر دیہات میں دس ہزار شہریوں کے لیے صرف ایک ڈاکٹر ہے اور ساٹھ فیصد کلینکس میں بنیادی ادویات تک نہیں۔\n\nہم پنشن کا بجٹ پورا کرتے ہیں مگر ماؤں کو علاج میسر نہیں۔\n\nشہریوں کو اسپتالوں کے اس المیے سے کون بچائے گا؟"
+        text: "دریائے سندھ کو پانی فراہم کرنے والے گلیشیئرز ریکارڈ رفتار سے پگھل رہے ہیں جس سے پاکستان اور بھارت کے تیس کروڑ انسانوں کے لیے پینے کا پانی خطرے میں ہے۔\n\nسیاستدان ڈیموں اور معاہدوں کی شقوں پر الجھتے ہیں جبکہ دونوں پنجابوں میں زیر زمین پانی ہر سال ایک میٹر نیچے گر رہا ہے۔\n\nاگلی دہائی کا اصل سیکیورٹی خطرہ کوئی دشمن فوج نہیں بلکہ پینے کے صاف پانی کی مکمل کمی ہے۔"
+      }
+    },
+    {
+      topic: "Higher Education: Defence Budgets vs Brain Drain",
+      category: 'PAK_VS_IND',
+      english: {
+        text: "Together, Pakistan and India spend over $95 billion on military hardware and weapons maintenance.\n\nYet neither country has a single university ranked among the top 100 worldwide. Both states lose their best engineers and software developers to Europe and America because local research funding remains under 0.7% of GDP.\n\nBuying foreign weapons does not make a nation modern when its best minds leave."
+      },
+      romanUrdu: {
+        text: "Pakistan aur India mil kar 95 arab dollar se zyada fouji aslahay aur maintenance par kharch karte hain.\n\nMagar dono mulkon ki ek bhi university dunya ki top 100 mein shamil nahi. Dono mulk apnay behtareen engineers aur developers Europe aur America kho bethtay hain kyonke research budget GDP ka 0.7% se kam hai.\n\nGhair-mulki hathyar khareedna watan ko taraqqi-yafta nahi banata jab azeem zehn mulk chhor jayein."
+      },
+      plainUrdu: {
+        text: "پاکستان اور بھارت مل کر 95 ارب ڈالر سے زائد رقم فوجی سازوسامان اور اسلحے پر خرچ کرتے ہیں۔\n\nمگر دونوں ممالک کی ایک بھی یونیورسٹی دنیا کی بہترین سو جامعات میں شامل نہیں۔ دونوں ریاستیں اپنے باصلاحیت انجینئرز اور سائنسدانوں کو کھو رہی ہیں کیونکہ تحقیق کا بجٹ جی ڈی پی کے 0.7 فیصد سے بھی کم ہے۔\n\nجدید غیر ملکی اسلحہ خریدنا ملک کو طاقتور نہیں بناتا جب آپ کے قابل ترین ذہن ملک چھوڑ جائیں۔"
+      }
+    },
+    {
+      topic: "India vs Pakistan: Weapons vs Welfare",
+      category: 'PAK_VS_IND',
+      english: {
+        text: "India spends $83 billion on defence, while Pakistan spends $9 billion. That means India outspends Pakistan by more than 9 to 1.\n\nYet 40% of people in both nations lack clean water, and 25 million Pakistani children are out of school. Both countries buy $100M fighter jets while public hospitals lack basic medicines.\n\nWhat is the point of nuclear deterrence if citizens are dying of poverty?"
+      },
+      romanUrdu: {
+        text: "India defence par 83 arab dollar kharch karta hai jabke Pakistan 9 arab dollar. Yani India Pakistan se 9 guna zyada kharch kar raha hai.\n\nMagar dono mulkon ke 40% log saaf paani se mehroom hain aur 2.5 karor Pakistani bachay school nahi jatay. Dono mulk 100 million dollar ke jahaz khareedte hain jabke hospitals mein dawai nahi.\n\nAisi atomic taqat ka kya faida agar awam ghurbat se mar rahi ho?"
+      },
+      plainUrdu: {
+        text: "بھارت دفاع پر 83 ارب ڈالر خرچ کرتا ہے جبکہ پاکستان کا بجٹ صرف 9 ارب ڈالر ہے۔ یعنی بھارت نو گنا زیادہ رقم خرچ کر رہا ہے۔\n\nمگر دونوں ممالک کے 40 فیصد شہری پینے کے صاف پانی سے محروم ہیں اور ڈھائی کروڑ پاکستانی بچے اسکولوں سے باہر ہیں۔ دونوں ملک سو ملین ڈالر کے جنگی جہاز خریدتے ہیں جبکہ سرکاری اسپتالوں میں دوائیں نہیں۔\n\nایسی ایٹمی طاقت کا کیا فائدہ اگر عوام بھوک اور مفلسی سے مر رہے ہوں؟"
+      }
+    },
+    {
+      topic: "India vs Pakistan: Missiles vs Malnutrition",
+      category: 'PAK_VS_IND',
+      english: {
+        text: "India and Pakistan spent $18 billion building long-range ballistic missile arsenals. Yet 38% of children under five in both countries suffer from chronic stunting and malnutrition.\n\nBoth capitals proudly display missiles that travel 5,000 kilometres while millions of mothers cannot afford clean milk or basic nutrition.\n\nWhat security does a ballistic missile provide to a child starving in a village?"
+      },
+      romanUrdu: {
+        text: "India aur Pakistan ne long-range missiles par 18 arab dollar lagaye. Magar dono mulkon ke 38% bachay khurak ki shadeed kami aur stunting ka shikaar hain.\n\nDono hukmaran 5,000 km tak mar karnay walay missiles ki numaish karte hain jabke laakhon maayein bachon ke liye doodh nahi khareed sakein.\n\nEk bhookay bachay ko ballistic missile konsi hifazat deta hai?"
+      },
+      plainUrdu: {
+        text: "بھارت اور پاکستان نے طویل فاصلے تک مار کرنے والے میزائلوں پر 18 ارب ڈالر لگائے۔ مگر دونوں ممالک کے 38 فیصد بچے خوراک کی شدید کمی کا شکار ہیں۔\n\nدونوں دارالحکومت پانچ ہزار کلومیٹر تک جانے والے میزائلوں پر فخر کرتے ہیں جبکہ لاکھوں مائیں دودھ تک نہیں خرید سکتیں۔\n\nایک بھوکے اور لاچار بچے کو بیلسٹک میزائل کون سا تحفظ فراہم کرتا ہے؟"
       }
     }
   ];
@@ -712,8 +805,48 @@ function generateDynamicPakVsIndFallback(excludedTopic = '') {
     }
   }
 
-  // Synthesize dynamic fresh stats if all pools are exhausted
+  // Synthesize dynamic fresh stats if all pools are exhausted with varied structure
   const uniqueCode = Math.floor(100 + Math.random() * 900);
+  const styles = ['ECONOMIC', 'EDUCATION', 'DEFENCE'];
+  const chosenStyle = styles[Math.floor(Math.random() * styles.length)];
+
+  if (chosenStyle === 'ECONOMIC') {
+    const tradePotential = Math.floor(32 + Math.random() * 10);
+    const middleCost = Math.floor(8 + Math.random() * 5);
+    return {
+      topic: `Pakistan vs India: Regional Trade Realities (Series ${uniqueCode})`,
+      category: 'PAK_VS_IND',
+      english: {
+        text: `Direct bilateral trade between Pakistan and India remains under $2 billion, while trade through third-party ports costs an extra $${middleCost} billion every year. The World Bank estimates trade could surpass $${tradePotential} billion annually if customs borders opened.\n\nWhile politicians deliver hostile speeches, business owners lose billions and ordinary families pay inflated prices for simple goods. Conflict is an expensive economic tax.`
+      },
+      romanUrdu: {
+        text: `Pakistan aur India ki direct tijarat 2 arab dollar se kam hai, jabke teesray mulkon ke zariye tijarat par har saal $${middleCost} arab dollar faaltu kharch hotay hain. World Bank ke mutabiq trade $${tradePotential} arab dollar tak pohanch sakti hai.\n\nSiyasatdan nafrat phelatay hain jabke awam aam cheezon par dugni qeemat deti hai. Dushmani ghareebon par mehanga bojh hai.`
+      },
+      plainUrdu: {
+        text: `پاکستان اور بھارت کی براہ راست تجارت دو ارب ڈالر سے کم ہے جبکہ مڈل مین روٹس کے ذریعے سالانہ $${middleCost} ارب ڈالر اضافی خرچ ہوتے ہیں۔ ورلڈ بینک کے مطابق تجارتی راستے کھلنے سے یہ حجم سالانہ $${tradePotential} ارب ڈالر تک پہنچ سکتا ہے۔\n\nسیاسی محاذ آرائی تاجروں کو اربوں کا نقصان پہنچاتی ہے اور عام شہریوں کو مہنگائی کا بوجھ اٹھانا پڑتا ہے۔ یہ تنازع معیشت پر بھاری ٹیکس ہے۔`
+      }
+    };
+  }
+
+  if (chosenStyle === 'EDUCATION') {
+    const totalDef = Math.floor(90 + Math.random() * 15);
+    const researchPct = (0.5 + Math.random() * 0.3).toFixed(1);
+    return {
+      topic: `Higher Education vs Weapons: South Asian Brain Drain (Series ${uniqueCode})`,
+      category: 'PAK_VS_IND',
+      english: {
+        text: `Pakistan and India jointly spend over $${totalDef} billion maintaining tanks and fighter aircraft. Meanwhile, combined research and development funding remains frozen below ${researchPct}% of GDP, and hundreds of thousands of top medical and software graduates emigrate annually.\n\nBoth states construct modern arsenals while their human capital leaves.\n\nReal security comes from investing in educated youth, not just buying steel.`
+      },
+      romanUrdu: {
+        text: `Pakistan aur India mil kar $${totalDef} arab dollar tankon aur jahaazon par kharch karte hain. Magar research par GDP ka sirf ${researchPct}% lagta hai aur laakhon doctors aur engineers mulk chhor jatay hain.\n\nDono mulk hathyar jama karte hain jabke behtareen zehn bahar nikal rahay hain.\n\nAsal taqat taleem-yafta jawanon mein hai, sirf lohay ke hathyar mein nahi.`
+      },
+      plainUrdu: {
+        text: `پاکستان اور بھارت مل کر سالانہ $${totalDef} ارب ڈالر ٹینکوں اور طیاروں پر جھونکتے ہیں۔ دوسری جانب تحقیق اور سائنسی ترقی کا بجٹ جی ڈی پی کے صرف ${researchPct} فیصد پر منجمد ہے اور ہزاروں ہونہار نوجوان بیرون ملک چلے جاتے ہیں۔\n\nدونوں ریاستیں بارود جمع کرتی ہیں جبکہ ان کا اصل انسانی اثاثہ رخصت ہو رہا ہے۔\n\nحقیقی قومی سلامتی نوجوانوں کی تعلیم میں ہے، محض لوہا خریدنے میں نہیں۔`
+      }
+    };
+  }
+
+  // DEFENCE STYLE
   const defIndia = (81 + Math.random() * 6).toFixed(1);
   const defPak = (8.2 + Math.random() * 1.8).toFixed(1);
   const schoolDef = Math.floor(21 + Math.random() * 9);
