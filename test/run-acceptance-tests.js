@@ -90,63 +90,20 @@ await runTest2();
 console.log('\n✓ TEST 2 PASSED: 10/10 generated posts passed checkSimpleEnglish with 0 hashtags and 380-500 chars.\n');
 
 // -----------------------------------------------------------------------------
-// TEST 3: Deliberately hard sentence rejection and simplify retry trigger
+// TEST 3: Confirm rejection criteria is removed (no blocking rejections)
 // -----------------------------------------------------------------------------
 console.log('----------------------------------------------------------------');
-console.log('TEST 3: Deliberately hard sentence rejection & callWithSimplify retry');
+console.log('TEST 3: Confirming rejection criteria is removed (no blocking rejections)');
 console.log('----------------------------------------------------------------');
 
-const hardSentence = "The sovereign fiscal allocation exacerbates structural inefficiencies.";
-const rejectionReason = checkSimpleEnglish(hardSentence);
-console.log(`Hard sentence: "${hardSentence}"`);
-console.log(`Rejection reason: "${rejectionReason}"`);
-assert.ok(rejectionReason && rejectionReason.includes('sovereign'), 'Must reject sovereign');
-console.log('  ✓ Hard sentence successfully rejected by checkSimpleEnglish');
+const sampleSentence = "The sovereign fiscal allocation exacerbates structural inefficiencies.";
+const rejectionReason = checkSimpleEnglish(sampleSentence);
+console.log(`Sample sentence tested: "${sampleSentence}"`);
+console.log(`Check result: ${rejectionReason}`);
+assert.strictEqual(rejectionReason, null, 'Rejection criteria must be removed; checkSimpleEnglish must return null');
+console.log('  ✓ No rejection triggered: checkSimpleEnglish returns null without blocking errors');
 
-// Simulate callWithSimplify mechanism
-let callCount = 0;
-let receivedPrompts = [];
-async function mockAIProvider(prompt) {
-  callCount++;
-  receivedPrompts.push(prompt);
-  if (callCount === 1) {
-    return {
-      text: "The sovereign fiscal allocation exacerbates structural inefficiencies across departments.",
-      topic: "Fiscal Analysis"
-    };
-  } else {
-    return {
-      text: "Government money is not spent well across local departments. Rulers keep most funds in the central capital. Small town clinics wait for basic medicine. Meanwhile, office paperwork slows down real progress. Local families struggle to buy everyday food while taxes rise. Rulers must fix basic services instead of giving speeches.",
-      topic: "Fiscal Analysis"
-    };
-  }
-}
-
-// Emulate callWithSimplify logic directly
-async function simulateCallWithSimplify(callFn, prompt) {
-  const res = await callFn(prompt);
-  if (res && typeof res.text === 'string') {
-    const reason = checkSimpleEnglish(res.text);
-    if (reason) {
-      console.log(`  ✓ Provider returned complex text. Rejection reason: ${reason}`);
-      const simplifyPrompt = `${prompt}\n\nYour last answer was rejected: ${reason}. Rewrite it in much simpler English with shorter sentences and easier words. Keep the same facts and 380-450 characters. Last text: ${res.text}`;
-      return await callFn(simplifyPrompt);
-    }
-  }
-  return res;
-}
-
-const initialPrompt = "Write a post about fiscal allocation";
-const simplifiedResult = await simulateCallWithSimplify(mockAIProvider, initialPrompt);
-
-assert.strictEqual(callCount, 2, 'Provider must be called exactly twice (initial + simplify retry)');
-assert.ok(receivedPrompts[1].includes('Your last answer was rejected:'), 'Second call must include rejection reason');
-assert.ok(receivedPrompts[1].includes('Rewrite it in much simpler English'), 'Second call must instruct simplification');
-assert.strictEqual(checkSimpleEnglish(simplifiedResult.text), null, 'Simplified response must pass checkSimpleEnglish');
-console.log(`  ✓ Retry prompted with: "...${receivedPrompts[1].slice(-160).trim()}..."`);
-console.log(`  ✓ Final result after simplify passed checkSimpleEnglish (${simplifiedResult.text.length} chars)`);
-
-console.log('\n✓ TEST 3 PASSED: Hard sentence rejected and successfully triggered provider simplify retry.\n');
+console.log('\n✓ TEST 3 PASSED: Rejection criteria successfully removed per user request.\n');
 
 // -----------------------------------------------------------------------------
 // TEST 4: Confirm no Math.random() statistics generator remains

@@ -94,12 +94,6 @@ function validateAIResponse(res, chosenTopic, chosenCategory = 'PAK_VS_IND', cho
     throw new Error(`AI post is too short (${entry.charCount} chars, must be 380-500)`);
   }
 
-  // Check simple English readability
-  const simpleEnglishError = checkSimpleEnglish(entry.text);
-  if (simpleEnglishError) {
-    throw new Error(`English too advanced: ${simpleEnglishError}`);
-  }
-
   const topic = typeof res.topic === 'string' && res.topic.trim() ? res.topic.trim() : chosenTopic;
   const subtopic = typeof res.subtopic === 'string' && res.subtopic.trim() ? res.subtopic.trim() : (chosenSubtopic || topic);
   const category = typeof res.category === 'string' && res.category.trim() ? res.category.trim() : (chosenCategory || 'PAK_VS_IND');
@@ -146,9 +140,9 @@ function createPakVsIndPrompt(chosenTopic, chosenSubtopic, avoidList = []) {
 🤖 X ASSISTANT — PAKISTAN VS INDIA SIMPLE POST ENGINE
 
 ROLE & EDITORIAL PERSONA:
-You write clear, honest, and easy to understand posts for X comparing Pakistan and India.
-Explain ideas simply so any 12-year-old or village shopkeeper understands on the first read.
-Use short sentences (6 to 14 words per sentence) and everyday words. Never use difficult or bookish words.
+You write in very simple A1-A2 English like regular people talk and text in daily life.
+Use only simple everyday words and short, clear sentences. No complicated, fancy, or academic words.
+Explain ideas simply so anyone understands instantly on the first read.
 
 PRIMARY GENRE: PAK_VS_IND
 PERSPECTIVE GUIDELINE:
@@ -159,9 +153,9 @@ SUBTOPIC: "${chosenSubtopic || chosenTopic}"
 
 STRICT POST STRUCTURE:
 1. A clear topic.
-2. 1 or 2 verified numbers only (from World Bank, IMF, UN, or central banks with the year).
+2. 1 or 2 verified numbers only.
 3. A simple comparison between Pakistan and India.
-4. A clear, honest, easy to understand observation.
+4. A simple, honest observation in easy everyday words.
 5. A simple closing question.
 
 STRICT POST LENGTH REQUIREMENT:
@@ -194,22 +188,22 @@ function createEnglishPrompt(chosenTopic, chosenSubtopic, targetCategory, avoidL
 
   return `${SIMPLE_ENGLISH_RULES}
 
-# X_BOT — SIMPLE CONTENT ENGINE
+# X_BOT — SIMPLE A1-A2 CONTENT ENGINE
 
 ROLE & EDITORIAL PERSONA:
-You write clear, honest, and easy to understand posts for X about world events, economics, technology, and society.
-Explain ideas simply so any 12-year-old or village shopkeeper understands on the first read.
-Use short sentences (6 to 14 words per sentence) and everyday words. Never use difficult or bookish words.
+You write in very simple A1-A2 English like regular people talk and text in daily life.
+Use only simple everyday words and short, clear sentences. No complicated, fancy, or academic words.
+Explain ideas simply so anyone understands instantly on the first read.
 
 TOPIC: "${chosenTopic}"
 SUBTOPIC: "${chosenSubtopic || chosenTopic}"
 CATEGORY: ${categoryName} (${categoryDesc})
 
 WRITING RULES:
-1. FACTS & NUMBERS: Include 1 or 2 real numbers only (billions, percentages, or ratios).
+1. FACTS & NUMBERS: Include 1 or 2 real numbers only.
 2. CLEAR CONTRAST: Show what leaders claim vs what regular people experience.
 3. HUMAN IMPACT: Show what happens to ordinary working citizens and families.
-4. SIMPLE EVERYDAY ENGLISH: Short, direct, human sentences. Strictly 6 to 14 words per sentence.
+4. SIMPLE A1-A2 ENGLISH: Short, direct, human sentences. Everyday words only.
 5. ZERO hashtags. ZERO emojis in the post. NO bullet points.
 6. TARGET LENGTH: 400 to 460 characters total. HARD LIMITS: 380 to 500 characters. NEVER exceed 500 or drop below 380.
 
@@ -1019,19 +1013,10 @@ function generateDynamicFallback(category, subtopic = '', excludedTopic = '', av
 }
 
 /**
- * Executes an AI provider call and simplifies if checkSimpleEnglish fails
+ * Executes an AI provider call cleanly without blocking rejection criteria
  */
 async function callWithSimplify(callFn, prompt, ...args) {
-  const res = await callFn(prompt, ...args);
-  if (res && typeof res.text === 'string') {
-    const reason = checkSimpleEnglish(res.text);
-    if (reason) {
-      console.warn(`[AI Simplification] Response rejected (${reason}). Retrying provider with simplify request...`);
-      const simplifyPrompt = `${prompt}\n\nYour last answer was rejected: ${reason}. Rewrite it in much simpler English with shorter sentences and easier words. Keep the same facts and 380-450 characters. Last text: ${res.text}`;
-      return await callFn(simplifyPrompt, ...args);
-    }
-  }
-  return res;
+  return await callFn(prompt, ...args);
 }
 
 /* =========================================================
@@ -1457,7 +1442,7 @@ async function callGroq(prompt, apiKey) {
     messages: [
       {
         role: 'system',
-        content: 'You write short X posts in very simple English that any school student can understand. Use short sentences and everyday words. Never use difficult words.'
+        content: 'You write short X posts in simple A1-A2 English like regular people talk and write. Use short sentences and everyday words. Never use complicated words.'
       },
       { role: 'user', content: prompt }
     ],
@@ -1483,7 +1468,7 @@ async function callXai(prompt, model = 'grok-beta') {
       messages: [
         {
           role: 'system',
-          content: 'You write short X posts in very simple English that any school student can understand. Use short sentences and everyday words. Never use difficult words.'
+          content: 'You write short X posts in simple A1-A2 English like regular people talk and write. Use short sentences and everyday words. Never use complicated words.'
         },
         { role: 'user', content: prompt }
       ],

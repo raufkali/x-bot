@@ -37,12 +37,11 @@ Generate exactly ${postWord}. Each idea must communicate a distinct angle or poi
 For EVERY post idea, generate exactly three language versions communicating the same core message:
 
 LANGUAGE 1 — ENGLISH
-- Prioritize natural storytelling, simplest everyday English, readability, and logical flow.
-- Every sentence must be strictly 6 to 14 words long, with one clear idea per sentence.
-- Use simple, everyday, direct words (never use complex vocabulary, academic jargon, or difficult words).
-- Present one central idea and develop it clearly so a 12-year-old or village shopkeeper understands on the first read.
-- Include only 1 or 2 well-known, verified numbers per post.
-- Readability > Natural Flow > Clear Meaning > Simple Words.
+- Use very simple A1-A2 English like regular people talk and write every day.
+- Use only common, daily words. Never use complicated, fancy, or academic words.
+- Keep sentences short, natural, and direct.
+- Present one simple thought at a time so anyone understands on the first read.
+- Include only 1 or 2 numbers per post.
 
 LANGUAGE 2 — ROMAN URDU
 - Write Urdu using English alphabets.
@@ -159,7 +158,7 @@ ${
     ? `- Write Urdu using English alphabets in natural Pakistani conversational phrasing.\n- Do not translate word-by-word.\n- Keep vocabulary easy, engaging, and readable.`
     : language.toLowerCase().includes('plain') || language.toLowerCase().includes('urdu')
     ? `- Write proper Urdu script (اردو).\n- Use grammatically correct, natural Pakistani Urdu.\n- Maintain high readability and avoid unnecessary English words.`
-    : `- Use the simplest possible everyday English.\n- Sentences strictly 6 to 14 words, everyday vocabulary, no difficult words.\n- 1 or 2 numbers only.`
+    : `- Use simple everyday A1-A2 English like regular writing.\n- Short sentences, everyday words, no complicated words.\n- 1 or 2 numbers only.`
 }
 - ZERO hashtags. Always output "Hashtags: NONE".
 - ZERO emojis.
@@ -210,7 +209,7 @@ Audience: ${audience}
 ${feedback.trim() ? `USER FEEDBACK / IMPROVEMENT REQUEST:\n"${feedback.trim()}"\n` : ''}
 
 Generate fresh versions in:
-1. ENGLISH (Simplest everyday English, sentences 6 to 14 words, 1 or 2 numbers only)
+1. ENGLISH (Simple everyday A1-A2 English, short sentences, no complicated words, 1 or 2 numbers only)
 2. ROMAN URDU (Conversational Pakistani Urdu in English alphabets)
 3. PLAIN URDU (Proper Urdu script, natural Pakistani phrasing)
 
