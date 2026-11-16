@@ -184,9 +184,17 @@ H. International influence (global diplomacy, Gulf partnerships, relations with 
 I. Pakistan-focused achievements (world-class IT talent, surgical and sports goods exports, startup scale, diaspora investments)
 J. General South Asian observations (shared ecological vulnerabilities, transboundary waters, technological leapfrogging)
 
-WRITING STYLE RULES:
-- Clear, straightforward English with natural editorial flow.
-- Avoid generic patriotic slogans, repetitive AI phrases, clickbait, and artificial melodrama.
+WRITING STYLE RULES — HUMANIZED & SIMPLE EVERYDAY ENGLISH:
+- Write in the SIMPLEST everyday English that regular people speak in daily life.
+- ABSOLUTELY NO hard synonyms, NO heavy bookish words, NO academic jargon, and NO pretentious vocabulary.
+- Speak naturally like a smart friend explaining facts over tea. Short, clean, punchy sentences.
+- Use words that an average college student or 15-year-old understands instantly without a dictionary.
+  * Instead of "discretionary allocations", say "extra budget" or "special funds".
+  * Instead of "contiguous gravity network", say "canal system" or "irrigation network".
+  * Instead of "institutional drag" or "administrative deadweight", say "red tape" or "slow offices".
+  * Instead of "subordinated to", say "ignored for" or "takes second place to".
+  * Instead of "statutory benchmarks", say "official targets".
+  * Instead of "border posturing" or "confrontations", say "border fights" or "border disputes".
 - ZERO hashtags. ZERO emojis in the post body. NO bullet points.
 - Distinguish estimates from confirmed figures. Never invent or falsify statistics.
 
@@ -228,12 +236,12 @@ TOPIC: "${chosenTopic}"
 SUBTOPIC: "${chosenSubtopic || chosenTopic}"
 CATEGORY: ${categoryName} (${categoryDesc})
 
-WRITING RULES:
+WRITING RULES — HUMANIZED & SIMPLE EVERYDAY ENGLISH:
 1. DATA-FIRST ANALYSIS: Include 2 to 4 real, relevant data points (billions, percentages, ratios, trade volumes, consumption numbers).
 2. EXPOSE CONTRADICTIONS: Show what leaders/powers claim vs what the actual data shows.
 3. HUMAN IMPACT: Show who benefits and what happens to ordinary working citizens.
-4. LANGUAGE: Simple A2 Pakistani English. Short, direct sentences.
-5. ZERO hashtags. ZERO emojis. NO bullet points.
+4. SIMPLE EVERYDAY ENGLISH: Use the simplest everyday English that ordinary people use in daily life. NO hard synonyms. NO heavy academic or bookish words. Short, direct, human sentences.
+5. ZERO hashtags. ZERO emojis in the post. NO bullet points.
 6. AVOID REPETITIVE HOOKS: Avoid formulaic openings like "Did you know" or "By 2035". Start directly with the core data point, policy paradox, or reality.
 
 MANDATORY HISTORICAL AVOIDANCE (DO NOT REPEAT THESE TOPICS, ARGUMENTS OR STATS):
@@ -272,7 +280,7 @@ export const CURATED_STORY_TOPICS = [
     importantStatistics: ["$193B India", "4th global rank", "1.5M developers", "$3.2B Pakistan", "24% growth"],
     keywords: ["it freelancing", "software exports", "upwork", "fiverr", "tech talent"],
     english: {
-      text: "While India leads corporate IT services with $193B in exports, Pakistan has emerged as the world fourth largest freelance software workforce on Upwork and Fiverr. Over 1.5 million young Pakistani developers generated $3.2B in IT receipts in 2024, growing 24% annually.\n\nIndia built corporate IT campuses; Pakistan is building an agile decentralized workforce.\n\nCan grassroots digital agility outpace institutional scale?"
+      text: "India is famous for massive IT companies that export $193B a year, but Pakistan is doing something different. Over 1.5 million young Pakistanis now work as online freelancers on Upwork and Fiverr, bringing in $3.2B in 2024 and growing 24% every year.\n\nIndia built giant office parks for big tech firms, while Pakistan built a huge network of young remote coders.\n\nCan independent young talent beat big corporate offices?"
     },
     romanUrdu: {
       text: "India $193 arab dollar ki IT services exports ke sath corporate lead kar raha hai, magar Pakistan Upwork aur Fiverr par dunya ki chothi barri freelance software workforce ban chuka hai. 15 lakh se zyada Pakistani developers ne 2024 mein $3.2 arab dollar kamaye jo saalana 24% barh rahay hain.\n\nIndia ne baray IT campuses banaye; Pakistan decentralized digital fauj kharri kar raha hai.\n\nKya muqami digital salahiyat corporate dhabon ko peechay chorr sakti hai?"
@@ -295,7 +303,7 @@ export const CURATED_STORY_TOPICS = [
     importantStatistics: ["45M acres", "135M tonnes India", "30 days Pakistan", "120 days India"],
     keywords: ["indus basin", "irrigation", "water storage", "agriculture", "basmati"],
     english: {
-      text: "Pakistan Indus Basin irrigation spans 45 million acres, forming the world largest contiguous gravity canal network. While India yields 135M tonnes of rice via heavy state subsidies, Pakistan achieves competitive Basmati export margins with far lower fiscal support.\n\nYet Pakistan holds barely 30 days of water storage compared to India 120 days.\n\nAgricultural resilience demands storage, not just fertile soil."
+      text: "Pakistan has one of the biggest canal systems in the world, watering over 45 million acres of farmland. India spends billions helping its farmers grow rice, but Pakistani farmers still export top-quality Basmati rice at lower costs.\n\nYet Pakistan can only save 30 days of river water, while India stores 120 days.\n\nGood soil and hard work help, but farmers cannot grow food without water storage."
     },
     romanUrdu: {
       text: "Pakistan ka Indus Basin nehri nizam 4.5 crore acre par phaila dunya ka sab se bara contiguous gravity network hai. India bhari sarkari subsidies se 13.5 crore ton chawal paida karta hai, jabke Pakistan kam fiscal support ke bawajood behtar Basmati export margins hasil karta hai.\n\nMagar Pakistan ke pas sirf 30 din ka pani store karne ki salahiyat hai jabke India ke pas 120 din hain.\n\nZarai taraqqi ke liye sirf zarkhez mitti nahi, pani ka zakhira bhi zaroori hai."
@@ -964,55 +972,55 @@ function generateDynamicFallback(category, subtopic = '', excludedTopic = '', av
     const patterns = [
       // Pattern 0: Direct factual breakdown (2 paragraphs, factual conclusion)
       {
-        eng: `On ${freshSubtopic}, official expenditure records reveal striking structural parallels between India and Pakistan. Central ministries control over ${percentC}% of consolidated tax revenues, leaving provincial units with under $${statB} billion for basic civic infrastructure.\n\nWhile both capitals direct $${statA} billion to prestige deals, regional healthcare systems face chronic deficits. Both states preach federal devolution while tightening financial control.`,
-        arg: `Fiscal centralism on ${freshSubtopic} starves regional administrations of essential municipal delivery capital`,
+        eng: `Looking at ${freshSubtopic}, governments in India and Pakistan make the same mistake. Central leaders keep over ${percentC}% of all tax money in the capital, leaving provincial towns with under $${statB} billion for basic clinics and schools.\n\nBoth capitals spend over $${statA} billion on flashy projects while regular hospitals run out of beds. Leaders promise to help local towns, but hold all the cash.`,
+        arg: `Fiscal centralism on ${freshSubtopic} starves local administrations of basic healthcare and school funds`,
         stat: [`${percentC}%`, `$${statB}b`, `$${statA}b`],
-        angle: "Comparative fiscal autonomy",
+        angle: "Local spending vs central power",
         roman: `India aur Pakistan mein ${freshSubtopic} par wazeh maslay samnay atay hain. Markazi hukoomatein ${percentC}% taxes control karti hain jabke soobon ko $${statB} billion bhi nahi miltay. Flagship projects par $${statA} billion lagaye jatay hain magar aam awam bunyadi sahuliyat se mehroom rehti hai.`,
         plain: `بھارت اور پاکستان میں ${freshSubtopic} کے حوالے سے یکساں انتظامی تضادات موجود ہیں۔ مرکزی وزارتیں ${percentC} فیصد ٹیکس کنٹرول کرتی ہیں جبکہ صوبوں کو بنیادی بلدیاتی ڈھانچے کے لیے محض $${statB} ارب ڈالر ملتے ہیں۔ بڑے نمائشی منصوبوں پر $${statA} ارب ڈالر لگائے جاتے ہیں مگر عوامی شعبے محروم رہتے ہیں۔`
       },
       // Pattern 1: Budget paradox (2 paragraphs, sharp punchline)
       {
-        eng: `Audits on ${freshSubtopic} demonstrate an acute contradiction across the South Asian subcontinent. India and Pakistan jointly direct over $${statA} billion toward competitive border confrontations, yet cross-border social welfare initiatives receive barely $${statB} billion.\n\nOver ${percentC}% of vulnerable frontier households lack reliable social safety nets. True national security begins with household economic stability, not endless military posturing.`,
-        arg: `Bilateral spending priorities on ${freshSubtopic} sacrifice grassroots household resilience for border posturing`,
+        eng: `Official budget numbers on ${freshSubtopic} show a clear truth in South Asia. India and Pakistan spend over $${statA} billion trying to outdo each other on borders, but spend less than $${statB} billion on joint public welfare programs.\n\nOver ${percentC}% of border families struggle to buy basic groceries every month. Real national strength means having food and savings at home, not fancy parades.`,
+        arg: `Border spending on ${freshSubtopic} hurts regular family budgets and basic living standards`,
         stat: [`$${statA}b`, `$${statB}b`, `${percentC}%`],
-        angle: "Resource allocation paradox",
+        angle: "Border spending vs family grocery costs",
         roman: `Sarkari kharchay ke audits batatay hain ke ${freshSubtopic} par India aur Pakistan $${statA} billion border programs par lagatay hain, magar awami falah ke liye sirf $${statB} billion bachtay hain. ${percentC}% ghareeb khandan bunyadi sahulat se mehroom hain. Asal taqat awam ki maashi hifazat mein hoti hai.`,
         plain: `سرکاری آڈٹ کے مطابق ${freshSubtopic} کے معاملے پر بھارت اور پاکستان $${statA} ارب ڈالر سرحدی پروگراموں پر خرچ کرتے ہیں جبکہ عوامی بہبود کے اقدامات کو بمشکل $${statB} ارب ڈالر ملتے ہیں۔ خطے کے ${percentC} فیصد پسماندہ خاندان بنیادی تحفظ سے محروم ہیں اور طاقت کا معیار عوامی فلاح نہیں۔`
       },
       // Pattern 2: Institutional friction (2 paragraphs, governance critique)
       {
-        eng: `Decades of administrative policies regarding ${freshSubtopic} have generated deep friction across India and Pakistan. Centralized decisions continually bypass local representatives, absorbing $${statA} billion in bureaucratic overhead.\n\nFrontline development programs struggle on a meager $${statB} billion outlay while ${percentC}% of citizen grievances remain ignored. Power stays centralized in both countries to avoid local accountability.`,
-        arg: `Centralized administrative hierarchies in ${freshSubtopic} impose commercial and governance deadweight`,
+        eng: `Years of government rules on ${freshSubtopic} have created serious headaches for regular people across India and Pakistan. Big offices in capital cities waste over $${statA} billion on red tape, while real work on the ground gets barely $${statB} billion.\n\nOver ${percentC}% of public complaints get buried under paperwork. Offices stay slow because leaders rarely answer to regular voters in small towns.`,
+        arg: `Government red tape and slow offices in ${freshSubtopic} ignore regular citizen needs`,
         stat: [`$${statA}b`, `$${statB}b`, `${percentC}%`],
-        angle: "Administrative bureaucracy",
+        angle: "Government red tape vs citizen service",
         roman: `India aur Pakistan mein ${freshSubtopic} par dahaiyon ki markazi policies ne soobai tanaao barha diya hai. Markaz $${statA} billion bureaucratic kharchon mein ulat deta hai jabke muqami taraqqi ko sirf $${statB} billion miltay hain. ${percentC}% maslay hal nahi hotay kyonke afsar-shahi awami jawab-dehi se azaad hai.`,
         plain: `بھارت اور پاکستان میں ${freshSubtopic} پر دہائیوں کی مرکزی پالیسیوں نے شدید انتظامی تناؤ پیدا کیا ہے۔ مرکزی فیصلے مقامی نمائندوں کو نظر انداز کر کے $${statA} ارب ڈالر کی بیوروکریسی پر خرچ ہو جاتے ہیں جبکہ فیلڈ پراجیکٹس کو صرف $${statB} ارب ڈالر ملتے ہیں۔ تقریبا ${percentC} فیصد عوامی شکایات دبا دی جاتی ہیں۔`
       },
       // Pattern 3: Economic and commercial comparison (2 paragraphs, consumer impact)
       {
-        eng: `Trade bottlenecks and political friction surrounding ${freshSubtopic} drain roughly $${statA} billion from potential regional exchange between India and Pakistan each year. Third-party transit routes inflate essential commodity prices by ${percentC}%, while bilateral coordination mechanisms receive under $${statB} billion.\n\nWorking consumers absorb this commercial penalty every day, subsidizing prolonged diplomatic standoff through higher living costs.`,
-        arg: `Trade barriers and logistics bottlenecks on ${freshSubtopic} impose a direct consumption tax on working households`,
+        eng: `Border politics and trade bans around ${freshSubtopic} cost India and Pakistan nearly $${statA} billion every single year. Because direct trade is blocked, everyday goods take long routes and cost ${percentC}% more for regular buyers, while trade talks get under $${statB} billion.\n\nOrdinary working families pay the bill every week through higher food prices just to keep old political fights alive.`,
+        arg: `Trade barriers on ${freshSubtopic} make food and everyday goods more expensive for regular buyers`,
         stat: [`$${statA}b`, `${percentC}%`, `$${statB}b`],
-        angle: "Commercial deadweight and consumer impact",
+        angle: "Closed trade routes vs everyday grocery costs",
         roman: `India aur Pakistan ke darmiyan ${freshSubtopic} ke tajarati raste band honay se har saal $${statA} billion ka nuqsan hota hai. Teesray mulkon ke zariye saman manganay se cheezain ${percentC}% mehangi milti hain jabke rabtay par sirf $${statB} billion lagtay hain. Aam awam har maheenay mehangai ki soorat mein is tanaao ka jurmana ada karti hai.`,
         plain: `بھارت اور پاکستان کے درمیان ${freshSubtopic} پر تجارتی رکاوٹوں کی وجہ سے سالانہ تقریباً $${statA} ارب ڈالر کا علاقائی نقصان ہوتا ہے۔ تیسرے ممالک کے راستے تجارت سے اشیائے خورونوش پر ${percentC} فیصد اضافی لاگت آتی ہے۔ دونوں ممالک کے عام محنت کش روزمرہ مہنگائی کی صورت میں اس سفارتی تعطل کا تاوان بھرتے ہیں۔`
       },
       // Pattern 4: Historical legacy vs modern reality (3 paragraphs, structural principle)
       {
-        eng: `Colonial administrative structures around ${freshSubtopic} were engineered for central control across India and Pakistan. Central ministries retain $${statA} billion in discretionary funds while regional councils receive merely $${statB} billion.\n\nOver ${percentC}% of administrative civil codes remain largely unchanged since 1947.\n\nChanging the national flag never fundamentally liberated the relationship between state and citizen.`,
-        arg: `Post-colonial administrative survivals in ${freshSubtopic} preserve imperial control over provincial welfare`,
+        eng: `Old British laws around ${freshSubtopic} were made to control people rather than help their daily lives. Today, central leaders in India and Pakistan hold $${statA} billion in special funds, while local councils receive barely $${statB} billion for basic repairs.\n\nOver ${percentC}% of old government rules have not changed since 1947.\n\nChanging the flag never changed how rulers treat ordinary citizens.`,
+        arg: `Old colonial laws in ${freshSubtopic} keep power in central offices instead of helping local people`,
         stat: [`$${statA}b`, `$${statB}b`, `${percentC}%`],
-        angle: "Colonial continuity and institutional reform",
+        angle: "Old colonial laws vs everyday citizen rights",
         roman: `1947 ke baad India aur Pakistan mein ${freshSubtopic} par angrezon ke daur ke qawaneen barqarar rakhay gaye. Markaz $${statA} billion apne ikhtiyar mein rakhta hai jabke muqami idaron ko sirf $${statB} billion miltay hain. ${percentC}% afsar-shahi puranay qawaneen par chalti hai. Jhanda badal gaya magar riyasat ka rawaiyya nahi badla.`,
         plain: `1947 کے بعد بھارت اور پاکستان میں ${freshSubtopic} کے نظام میں شہریوں کو بااختیار بنانے کے بجائے مرکزی کنٹرول قائم رکھا گیا۔ مرکزی وزارتیں $${statA} ارب ڈالر اپنے پاس رکھتی ہیں جبکہ صوبائی کونسلوں کو بمشکل $${statB} ارب ڈالر ملتے ہیں۔ پرچم تو بدل گیا لیکن حاکم اور محکوم کا نوآبادیاتی رشتہ نہیں بدلا۔`
       },
       // Pattern 5: Investigative contrast (2 paragraphs, provocative question)
       {
-        eng: `When examining ${freshSubtopic}, official balance sheets across India and Pakistan reveal realities absent from televised debates. Over $${statA} billion is guaranteed to corporate subsidies and institutional perks, compared to $${statB} billion spent modernizing public infrastructure.\n\nNearly ${percentC}% of audited developmental targets missed statutory deadlines. Whose security does this system protect when basic public commitments remain unfulfilled?`,
-        arg: `Elite corporate patronage in ${freshSubtopic} crowds out statutory public infrastructure modernization`,
+        eng: `Official bank accounts on ${subtopic} tell a story politicians never talk about on evening TV news. Big business friends in India and Pakistan get $${statA} billion in special tax breaks, while basic public healthcare receives barely $${statB} billion.\n\nOver ${percentC}% of basic health goals were missed last year. Who does this government system really protect: wealthy elites or regular taxpayers?`,
+        arg: `Big tax breaks for connected businesses in ${freshSubtopic} leave public hospitals empty of funds`,
         stat: [`$${statA}b`, `$${statB}b`, `${percentC}%`],
-        angle: "Public balance sheet audit",
+        angle: "Big business tax breaks vs public hospital funds",
         roman: `India aur Pakistan mein ${freshSubtopic} par sarkari accounts asal kahani bayan karte hain. $${statA} billion baray contractors aur imtiyazaat ko milay jabke awami infrastructure ko sirf $${statB} billion diay gaye. ${percentC}% tarqqiyati ahdaf adhooray reh gaye. Riyasat aam shehri ki hifazat kab karegi jab bunyadi wadey hi poore na hon?`,
         plain: `بھارت اور پاکستان میں ${freshSubtopic} کے سرکاری کھاتے وہ حقائق کھولتے ہیں جو بیانات میں نہیں ملتے۔ کارپوریٹ رعایتوں پر $${statA} ارب ڈالر اڑائے گئے جبکہ عوامی انفراسٹرکچر کو محض $${statB} ارب ڈالر ملے۔ گزشتہ سال ${percentC} فیصد ترقیاتی اہداف پورے نہ ہو سکے۔ یہ نظام کس کے مفادات کا تحفظ کر رہا ہے؟`
       }
@@ -1029,55 +1037,55 @@ function generateDynamicFallback(category, subtopic = '', excludedTopic = '', av
     const patterns = [
       // Pattern 0: Structural governance mismatch
       {
-        eng: `Institutional evaluations of ${freshSubtopic} expose persistent policy contradictions across ${targetCategoryObj.name}. Central departments command over $${statA} billion in discretionary allocations, while frontline administrative delivery receives barely $${statB} billion.\n\nOver ${percentC}% of audited programs fail statutory performance benchmarks. Policy elites prioritize high-visibility contracts over sustainable long-term modernisation.`,
-        arg: `Public sector prestige spending on ${freshSubtopic} contrasts sharply with deteriorating frontline citizen delivery`,
+        eng: `Looking at ${freshSubtopic}, public offices across ${targetCategoryObj.name} show a big gap between words and reality. Top departments control over $${statA} billion in big budgets, while local town offices get barely $${statB} billion for everyday work.\n\nOver ${percentC}% of government plans missed their promises last year. Leaders keep spending money on flashy projects while regular citizens wait for basic help.`,
+        arg: `Big city offices take most budget while small towns in ${freshSubtopic} wait for basic help`,
         stat: [`$${statA}b`, `$${statB}b`, `${percentC}%`],
-        angle: "Institutional performance and expenditure audit",
+        angle: "Big project spending vs small town services",
         roman: `${targetCategoryObj.name} mein ${freshSubtopic} par wazeh tanaao nazar ata hai. Idaray $${statA} billion apne ikhtiyar mein rakhtay hain jabke aam falah ko sirf $${statB} billion miltay hain. ${percentC}% mansoobay nakam rehtay hain kyonke tarjeehat ghalat hain.`,
         plain: `${targetCategoryObj.name} کے تحت ${freshSubtopic} کی جانچ پڑتال پالیسی تضادات کو بے نقاب کرتی ہے۔ مرکزی محکمے $${statA} ارب ڈالر اپنے پاس رکھتے ہیں جبکہ عوامی خدمات کو محض $${statB} ارب ڈالر ملتے ہیں۔ تقریبا ${percentC} فیصد منصوبے ناکام رہتے ہیں۔`
       },
       // Pattern 1: Regulatory friction and market deadweight
       {
-        eng: `Regulatory bottlenecks surrounding ${freshSubtopic} impose substantial deadweight across ${targetCategoryObj.name}. Compliance costs consume an estimated $${statA} billion annually, while operational oversight systems receive under $${statB} billion in modern tech upgrades.\n\nNearly ${percentC}% of commercial enterprises report significant bureaucratic delays. Productive economic growth is continually subordinated to administrative control.`,
-        arg: `Regulatory compliance bottlenecks and administrative friction in ${freshSubtopic} impose severe commercial deadweight`,
+        eng: `Heavy paperwork around ${freshSubtopic} is holding back small businesses across ${targetCategoryObj.name}. Dealing with government red tape wastes nearly $${statA} billion every year, while offices spend under $${statB} billion on modern computer tools.\n\nNearly ${percentC}% of small business owners report long delays for simple routine permits. When paperwork moves this slowly, hardworking people pay the price.`,
+        arg: `Government red tape and slow permits in ${freshSubtopic} hold back hardworking small businesses`,
         stat: [`$${statA}b`, `$${statB}b`, `${percentC}%`],
-        angle: "Regulatory deadweight and commercial compliance",
+        angle: "Government paperwork vs small business growth",
         roman: `${freshSubtopic} par puranay qawaneen aur rukawatein har saal $${statA} billion ka nuqsan karti hain. System ko behtar karne par sirf $${statB} billion lagtay hain jabke ${percentC}% karobar takheer ka shikar hain. Afsar-shahi taraqqi ko dabati hai.`,
         plain: `${freshSubtopic} پر بیوروکریسی کی رکاوٹیں سالانہ $${statA} ارب ڈالر ضائع کرتی ہیں جبکہ جدید نظام پر محض $${statB} ارب ڈالر لگائے جاتے ہیں۔ تقریبا ${percentC} فیصد کاروباری ادارے تاخیر کا شکار ہیں اور ترقی متاثر ہوتی ہے۔`
       },
       // Pattern 2: Capital misallocation and debt
       {
-        eng: `Public sector balance sheets regarding ${freshSubtopic} illustrate how distorted state priorities impact ${targetCategoryObj.name}. Sovereign debt liabilities exceed $${statA} billion, crowding out critical investment funds and leaving frontline initiatives under $${statB} billion.\n\nOver ${percentC}% of annual tax revenues flow into debt servicing. Lasting economic resilience cannot emerge while essential structural reform is deferred.`,
-        arg: `Unproductive debt liabilities crowd out frontline capital modernization needed for ${freshSubtopic}`,
+        eng: `Government balance sheets on ${freshSubtopic} show why families across ${targetCategoryObj.name} feel the squeeze. State debt has crossed $${statA} billion, leaving less than $${statB} billion for public schools and clinics in regular towns.\n\nOver ${percentC}% of citizen taxes go straight into paying bank interest on old loans. A country cannot build a strong future when yesterday debts eat tomorrow money.`,
+        arg: `Heavy debt interest payments on ${freshSubtopic} leave public schools and clinics without money`,
         stat: [`$${statA}b`, `$${statB}b`, `${percentC}%`],
-        angle: "Fiscal sustainability and sovereign liability",
+        angle: "High national debt vs money for public clinics",
         roman: `${freshSubtopic} par sarkari accounts batatay hain ke qarzay $${statA} billion se tajawuz kar chukay hain. Taraqqi ke liye sirf $${statB} billion bachtay hain jabke ${percentC}% revenue sood mein chali jati hai. Jab tak structural islaahaat na hon, maashiyat nahi sambhal sakti.`,
         plain: `${freshSubtopic} کے سرکاری کھاتے مالی بدانتظامی ظاہر کرتے ہیں۔ قرضوں کا بوجھ $${statA} ارب ڈالر سے تجاوز کر چکا ہے جبکہ اہم شعبوں کو صرف $${statB} ارب ڈالر ملتے ہیں۔ ٹیکسوں کا ${percentC} فیصد سود کی نذر ہو جاتا ہے۔`
       },
       // Pattern 3: Technology and human displacement
       {
-        eng: `The rapid evolution of ${freshSubtopic} creates profound socio-economic dilemmas across ${targetCategoryObj.name}. Capital spending by global corporations exceeds $${statA} billion, while worker retraining and transition funds get barely $${statB} billion.\n\nOver ${percentC}% of frontline personnel face automated displacement within five years. Innovation without structural worker protection converts productivity gains into social vulnerability.`,
-        arg: `Rapid technological displacement in ${freshSubtopic} outpaces statutory worker retraining and social security frameworks`,
+        eng: `Fast changes in ${freshSubtopic} are creating tough choices for working people in ${targetCategoryObj.name}. Giant tech corporations invest over $${statA} billion in software tools, while training funds for regular workers get barely $${statB} billion.\n\nOver ${percentC}% of young office workers worry about losing jobs to automation. Tech progress is great, but only if it creates new paths for regular people.`,
+        arg: `Fast tech tools in ${freshSubtopic} need real training funds so regular office workers do not lose jobs`,
         stat: [`$${statA}b`, `$${statB}b`, `${percentC}%`],
-        angle: "Technological displacement and labour equity",
+        angle: "New tech tools vs regular jobs and training",
         roman: `${freshSubtopic} ki tez raftari se lakhon log mutasir ho rahay hain. Corporations $${statA} billion lagati hain magar mazdoor ki tarbiyat par sirf $${statB} billion kharch hotay hain. ${percentC}% afrad ki nokri khatray mein hai. Taraqqi agar awam ko be-rozgar kar day toh wo taraqqi nahi.`,
         plain: `${freshSubtopic} کی تبدیلیوں سے روزگار کو شدید خطرات لاحق ہیں۔ کمپنیاں $${statA} ارب ڈالر آٹومیشن پر لگاتی ہیں مگر مزدوروں کی تربیت پر بمشکل $${statB} ارب ڈالر خرچ ہوتے ہیں۔ پانچ سال میں ${percentC} فیصد ملازمین متاثر ہونے کا خدشہ ہے۔`
       },
       // Pattern 4: Resource extraction vs community equity
       {
-        eng: `Resource distribution audits in ${freshSubtopic} expose severe structural imbalances across ${targetCategoryObj.name}. State concessions generate $${statA} billion in centralized earnings, yet host communities receive less than $${statB} billion in local development.\n\nMore than ${percentC}% of residents in resource-rich areas lack access to basic amenities. National wealth extraction that bypasses local communities destabilizes social cohesion.`,
-        arg: `Centralized resource extraction in ${freshSubtopic} denies host communities statutory developmental equity`,
+        eng: `Audits of natural resources in ${freshSubtopic} show deep unfairness across ${targetCategoryObj.name}. Mining contracts bring $${statA} billion into central bank accounts, yet local towns get under $${statB} billion for clean drinking water and roads.\n\nOver ${percentC}% of families in resource towns still live without basic electricity. Taking wealth from poor towns without helping them breaks public trust.`,
+        arg: `Mining wealth in ${freshSubtopic} must be shared with local towns for clean water and roads`,
         stat: [`$${statA}b`, `$${statB}b`, `${percentC}%`],
-        angle: "Resource federalism and local equity",
+        angle: "Mining earnings vs basic clean water in local towns",
         roman: `${freshSubtopic} ke wasail ki taqseem mein sakht na-insafi hai. Riyasat $${statA} billion kamati hai magar muqami logon ko sirf $${statB} billion miltay hain. ${percentC}% log bunyadi sahuliyat se mehroom hain. Muqami haqooq dabanay se be-chaini barhti hai.`,
         plain: `${freshSubtopic} کے وسائل کی تقسیم میں شدید عدم مساوات ہے۔ ریاست $${statA} ارب ڈالر کماتی ہے لیکن مقامی آبادی کو محض $${statB} ارب ڈالر کے ترقیاتی فنڈز ملتے ہیں۔ وسائل سے مالامال علاقوں کے ${percentC} فیصد شہری پینے کے صاف پانی سے بھی محروم ہیں۔`
       },
       // Pattern 5: Power concentration and institutional accountability
       {
-        eng: `Scrutiny of ${freshSubtopic} demonstrates how centralized authority operates across ${targetCategoryObj.name}. Institutional monopolies control contracts valued at $${statA} billion, while independent regulatory bodies operate on under $${statB} billion.\n\nOver ${percentC}% of public procurement contracts bypass competitive bidding procedures. Whose interests does state oversight serve when transparency mechanisms remain defunded?`,
-        arg: `Centralized administrative discretion over ${freshSubtopic} favors entrenched cartels at the expense of ordinary citizens`,
+        eng: `Reports on ${freshSubtopic} reveal how power works behind closed doors in ${targetCategoryObj.name}. Big corporate groups get contracts worth $${statA} billion, while official public watchdog offices get less than $${statB} billion to check the books.\n\nOver ${percentC}% of major state contracts were given without open public bidding. Who is government really serving: connected friends or the people who vote?`,
+        arg: `Giving contracts without public bidding in ${freshSubtopic} favors connected friends over regular citizens`,
         stat: [`$${statA}b`, `$${statB}b`, `${percentC}%`],
-        angle: "Procurement transparency and institutional capture",
+        angle: "Open bidding vs deals for connected friends",
         roman: `${freshSubtopic} par markazi qabza saaf zahir hai. Cartels ko $${statA} billion ke contracts miltay hain jabke ehtisab ke idaron ko sirf $${statB} billion diay jatay hain. ${percentC}% thekay baghair muqablay ke hotay hain. Riyasati nigrani kis ke faiday ke liye hai?`,
         plain: `${freshSubtopic} کے معاملات پر مخصوص اجارہ داریاں حاوی ہیں۔ کارٹلز کو $${statA} ارب ڈالر کے ٹھیکے دیے جاتے ہیں جبکہ احتسابی اداروں کو محض $${statB} ارب ڈالر کا بجٹ ملتا ہے۔ پچپن سے ${percentC} فیصد سودے بغیر کھلی بولی کے ہوتے ہیں۔`
       }
