@@ -50,12 +50,92 @@ const TARGET_MAX_CHARACTERS = 460;
    TEXT FORMATTING AND VALIDATION
 ========================================================= */
 
-function formatEntry(text) {
-  const clean = (text || '')
+/**
+ * Splits text into sentences cleanly without splitting on decimal numbers (e.g. 1.5 or 8.7)
+ */
+export function splitSentences(text) {
+  if (!text || typeof text !== 'string') return [];
+  const matches = text.match(/(?:[^\.!\?۔؟]|\b\d+\.\d+\b)+[\.!\?۔؟]+(?:\s+|$)|.+$/gu);
+  return matches ? matches.map(s => s.trim()).filter(Boolean) : [text.trim()];
+}
+
+/**
+ * Normalizes post layout to strictly guarantee the 3-part layout:
+ * Line 1: Single hook line
+ * \n\n
+ * Paragraph: Real body paragraph with facts and numbers
+ * \n\n
+ * Line 3: One-line engaging conclusion or closing question
+ */
+export function normalizePostLayout(text) {
+  if (!text || typeof text !== 'string') return '';
+
+  // 1. Remove hashtags and strip common internal AI labels at the start of lines
+  let clean = text
     .replace(/#[\p{L}\p{N}_]+/gu, '')
-    .replace(/[ \t]+/g, ' ')
-    .replace(/\n{3,}/g, '\n\n')
+    .replace(/^[ \t]*(?:Hook|Line 1|Paragraph 1|Part 1|Opening hook|Intro)\s*:\s*/gim, '')
+    .replace(/^[ \t]*(?:Body|Paragraph 2|Part 2|Analytical body|Real body)\s*:\s*/gim, '')
+    .replace(/^[ \t]*(?:Conclusion|Line 3|Paragraph 3|Part 3|Closing line|Takeaway|Question)\s*:\s*/gim, '')
     .trim();
+
+  // 2. Split into distinct paragraph blocks
+  let blocks = clean
+    .split(/\n\s*\n/)
+    .map(b => b.replace(/\s+/g, ' ').trim())
+    .filter(Boolean);
+
+  if (blocks.length === 1) {
+    const lines = clean.split(/\n+/).map(l => l.trim()).filter(Boolean);
+    if (lines.length >= 3) {
+      blocks = [lines[0], lines.slice(1, -1).join(' '), lines[lines.length - 1]];
+    } else {
+      const allSentences = splitSentences(clean);
+      if (allSentences.length >= 3) {
+        blocks = [allSentences[0], allSentences.slice(1, -1).join(' '), allSentences[allSentences.length - 1]];
+      }
+    }
+  } else if (blocks.length === 2) {
+    const block1 = blocks[0];
+    const block2 = blocks[1];
+    const sentences = splitSentences(block2);
+    if (sentences.length >= 2) {
+      const lastSentence = sentences.pop().trim();
+      blocks = [block1, sentences.join(' ').trim(), lastSentence];
+    }
+  } else if (blocks.length > 3) {
+    const first = blocks[0];
+    const last = blocks[blocks.length - 1];
+    const middle = blocks.slice(1, -1).join(' ');
+    blocks = [first, middle, last];
+  }
+
+  blocks = blocks.map(b => b.replace(/\s+/g, ' ').trim());
+
+  if (blocks.length === 3) {
+    const hookSentences = splitSentences(blocks[0]);
+    if (hookSentences.length > 1) {
+      const firstLineHook = hookSentences[0].trim();
+      const remainingHook = hookSentences.slice(1).join(' ').trim();
+      blocks[0] = firstLineHook;
+      blocks[1] = `${remainingHook} ${blocks[1]}`.trim();
+    }
+
+    const conclusionSentences = splitSentences(blocks[2]);
+    if (conclusionSentences.length > 1) {
+      const lastLineConclusion = conclusionSentences[conclusionSentences.length - 1].trim();
+      const earlierConclusion = conclusionSentences.slice(0, -1).join(' ').trim();
+      blocks[1] = `${blocks[1]} ${earlierConclusion}`.trim();
+      blocks[2] = lastLineConclusion;
+    }
+
+    return `${blocks[0]}\n\n${blocks[1]}\n\n${blocks[2]}`;
+  }
+
+  return blocks.join('\n\n');
+}
+
+function formatEntry(text) {
+  const clean = normalizePostLayout(text);
 
   const count = calculateXCharacterCount(clean);
 
@@ -152,15 +232,18 @@ CORE EDITORIAL DIRECTIVE:
 TOPIC: "${chosenTopic}"
 SUBTOPIC: "${chosenSubtopic || chosenTopic}"
 
-STRICT POST STRUCTURE (3 DISTINCT PARAGRAPHS separated by double line breaks \n\n):
-Paragraph 1: A clear topic hook highlighting a verified fact or economic trend (2 sentences).
-Paragraph 2: Real numbers, verified stats, or economic data showing real-world impact (2 sentences).
-Paragraph 3: A simple, honest observation in easy everyday words and a thoughtful closing question (2 sentences).
+STRICT POST STRUCTURE (EXACTLY 3 PARTS separated by double line breaks \\n\\n):
+Line 1: A single punchy hook line that immediately grabs attention (1 clear sentence).
+\\n\\n
+Paragraph: The real analytical body with 1 or 2 verified numbers, economic facts, or analytics showing real-world impact (2 to 3 simple sentences).
+\\n\\n
+Line 3: A one-line engaging conclusion or thoughtful closing question that sparks discussion.
 
-STRICT POST LENGTH REQUIREMENT:
-- TARGET LENGTH: 280 to 460 characters total (including spaces and punctuation).
-- HARD LIMITS: 180 to 550 characters.
+STRICT POST LENGTH & FORMAT RULES:
+- TARGET LENGTH: 240 to 460 characters total (including spaces and punctuation).
+- HARD LIMITS: 150 to 520 characters.
 - ZERO hashtags. ZERO emojis in the post body. NO bullet points.
+- NEVER include labels like "Hook:", "Line 1:", "Body:", or "Conclusion:" in the post text.
 
 MANDATORY HISTORICAL AVOIDANCE (DO NOT REPEAT THESE TOPICS, ARGUMENTS OR STATS):
 • ${avoidStr}
@@ -170,7 +253,7 @@ Return ONLY valid JSON matching this exact structure:
   "topic": "${chosenTopic}",
   "subtopic": "${chosenSubtopic || chosenTopic}",
   "category": "PAK_VS_IND",
-  "text": "Your complete post here"
+  "text": "Line 1 hook\\n\\nReal body paragraph with facts and numbers\\n\\nOne-line conclusion"
 }`;
 }
 
@@ -192,13 +275,18 @@ TOPIC: "${chosenTopic}"
 SUBTOPIC: "${chosenSubtopic || chosenTopic}"
 CATEGORY: ${categoryName} (${categoryDesc})
 
+STRICT POST STRUCTURE (EXACTLY 3 PARTS separated by double line breaks \\n\\n):
+Line 1: A single punchy hook line that immediately grabs attention (1 clear sentence).
+\\n\\n
+Paragraph: The real analytical body with 1 or 2 real numbers and clear explanation of real-world human impact (2 to 3 simple sentences).
+\\n\\n
+Line 3: A one-line engaging conclusion or thoughtful closing question that makes the reader think.
+
 WRITING RULES:
 1. FACTS & NUMBERS: Include 1 or 2 real numbers only.
-2. CLEAR CONTRAST: Show what leaders claim vs what regular people experience.
-3. HUMAN IMPACT: Show what happens to ordinary working citizens and families.
-4. SIMPLE A1-A2 ENGLISH: Short, direct, human sentences. Everyday words only.
-5. ZERO hashtags. ZERO emojis in the post. NO bullet points.
-6. TARGET LENGTH: 240 to 460 characters total.
+2. SIMPLE A1-A2 ENGLISH: Short, direct, human sentences. Everyday words only.
+3. ZERO hashtags. ZERO emojis in the post. NO bullet points. NO labels like "Hook:" or "Body:".
+4. TARGET LENGTH: 240 to 460 characters total (hard limits 150 to 520).
 
 MANDATORY HISTORICAL AVOIDANCE:
 • ${avoidStr}
@@ -208,7 +296,7 @@ Return ONLY valid JSON matching this exact structure:
   "topic": "${chosenTopic}",
   "subtopic": "${chosenSubtopic || chosenTopic}",
   "category": "${targetCategory?.id || 'GEOPOLITICS'}",
-  "text": "Your complete post with paragraph breaks here"
+  "text": "Line 1 hook\\n\\nReal body paragraph with facts and numbers\\n\\nOne-line conclusion"
 }`;
 }
 
@@ -315,51 +403,51 @@ export const FALLBACK_BANK = [
     }
   },
 
-  // 5. Rafale & Defence Procurement: India vs Pakistan
-  // Source: SIPRI (2024)
+  // 5. Solar Transition: Rooftop Energy Adoption & Grid Deficits
+  // Source: NEPRA / Central Electricity Authority (2024)
   {
-    topic: "Rafale & Defence Procurement: India vs Pakistan",
-    subtopic: "Rafale controversy and defence procurement transparency",
+    topic: "Solar Transition: Rooftop Energy Adoption & Grid Deficits",
+    subtopic: "Renewable energy and solar transition",
     category: 'PAK_VS_IND',
     genreId: 'PAK_VS_IND',
-    mainSubject: "Foreign fighter jet purchases vs domestic manufacturing",
-    specificEventOrIssue: "Imported fighter jets vs delayed local aerospace projects",
-    centralArgument: "Spending billions on imported military aircraft leaves both nations reliant on foreign factories",
-    analyticalAngle: "Imported jets vs local passenger aircraft development",
-    importantStatistics: ["$8.7B Rafale", "9.8% arms buyer India"],
-    keywords: ["jets", "rafale", "military", "planes", "imports"],
+    mainSubject: "Rooftop solar adoption and renewable energy transition",
+    specificEventOrIssue: "Booming rooftop solar installations offsetting expensive grid electricity",
+    centralArgument: "High grid power tariffs are driving millions of consumers toward decentralized rooftop solar",
+    analyticalAngle: "Decentralized rooftop solar vs centralized grid utilities",
+    importantStatistics: ["90 GW solar India", "3000 MW rooftop solar Pakistan"],
+    keywords: ["solar", "energy", "rooftop", "tariffs", "power"],
     english: {
-      text: "India spent about 8.7 billion dollars on 36 French Rafale fighter jets. Over the last ten years, India bought nearly 10% of all weapons sold globally. Pakistan also spends billions of dollars buying foreign military gear from abroad.\n\nYet domestic aircraft projects face long delays in both countries. Most airplane parts still come from distant foreign factories.\n\nWhy celebrate imported fighter jets when neither country can build a passenger plane?"
+      text: "Solar power is rewriting the energy landscape across South Asian cities.\n\nOver the past year, rooftop solar panel imports into Pakistan exceeded 3000 megawatts as families cut costly utility bills. India's total solar capacity crossed 90 gigawatts, backed by large solar parks and state subsidies. Consumers are taking control of their own power generation right on their rooftops.\n\nCan decentralized solar solve regional energy shortages faster than big central power plants?"
     },
     romanUrdu: {
-      text: "India ne France se 36 Rafale fighter jets lene par taqreeban 8.7 arab dollar lagaye. Pichlay das saal mein India ne dunya ke kul hathiyaron ka taqreeban 10% hissa khareeda. Pakistan bhi bahir ke mulkon se arbon dollar ke hathiyar mangata hai.\n\nMagar dono mulkon mein muqami jahaz banane ke mansoobay takheer ka shikar hain. Zyadatar purzay bahir se aate hain.\n\nImported jangi jahazon par kaisa fakhar jab koi mulk aam musafir jahaz nahi bana sakta?"
+      text: "South Asian shehron mein solar power bijli ka nizam badal rahi hai.\n\nPichlay aik saal mein Pakistan mein 3000 megawatt se zyada ke rooftop solar panels lagaye gaye. Doosri taraf India ki solar capacity 90 gigawatt se tajawuz kar chuki hai. Aam shehri bijli ke bhari billon se bachne ke liye apni chhaton par khud bijli bana rahay hain.\n\nKya chhat par lagi solar bijli baray sarkari bijli gharon se jaldi masla hal kar sakti hai?"
     },
     plainUrdu: {
-      text: "بھارت نے فرانس سے چھتیس رافیل لڑاکا طیارے لینے پر تقریباً پونے نو ارب ڈالر لگائے۔ گزشتہ دس سال میں بھارت نے دنیا کے کل ہتھیاروں کا تقریباً دس فیصد خریدا۔ پاکستان بھی باہر کے ممالک سے اربوں ڈالر کا عسکری سامان منگواتا ہے۔\n\nلیکن دونوں ممالک میں مقامی ہوائی جہاز بنانے کے منصوبے تاخیر کا شکار ہیں۔ زیادہ تر پرزے باہر سے آتے ہیں۔\n\nدرآمدی جنگی طیاروں پر کیسا فخر جب دونوں میں سے کوئی ملک مسافر طیارہ نہیں بنا سکتا؟"
+      text: "شمسی توانائی جنوبی ایشیا کے شہروں میں بجلی کے نظام کو تیزی سے بدل رہی ہے۔\n\nگزشتہ ایک سال میں پاکستان میں تین ہزار میگاواٹ سے زائد کے سولر پینل درآمد کر کے لگائے گئے۔ دوسری طرف بھارت کی شمسی توانائی کی پیداواری صلاحیت نوے گیگاواٹ سے تجاوز کر چکی ہے۔ شہری مہنگے بلوں سے بچنے کے لیے اپنی چھتوں پر خود بجلی بنا رہے ہیں۔\n\nکیا چھتوں پر لگی شمسی توانائی بڑے سرکاری منصوبوں سے پہلے توانائی بحران حل کر سکتی ہے؟"
     }
   },
 
-  // 6. Kashmir: Article 370 & Civilian Realities
-  // Source: Amnesty International / UN OHCHR (2023)
+  // 6. Mobile Connectivity & Fintech: South Asian Digital Wallets
+  // Source: State Bank of Pakistan / RBI / GSMA (2024)
   {
-    topic: "Kashmir: Article 370 & Civilian Realities",
-    subtopic: "Article 370 removal and political representation",
+    topic: "Mobile Connectivity & Fintech: South Asian Digital Wallets",
+    subtopic: "Digital public infrastructure and fintech",
     category: 'PAK_VS_IND',
     genreId: 'PAK_VS_IND',
-    mainSubject: "Article 370 removal and civilian communication blackouts",
-    specificEventOrIssue: "Revocation of statehood and prolonged internet blackouts",
-    centralArgument: "Cutting communication lines and suspending local assemblies hurts regular civilian families",
-    analyticalAngle: "Civilian daily life vs political posturing",
-    importantStatistics: ["August 2019", "7 million residents", "18 months blackout"],
-    keywords: ["kashmir", "families", "internet", "civilian", "peace"],
+    mainSubject: "Digital wallets and branchless banking penetration",
+    specificEventOrIssue: "Mobile wallets transforming cash economies into digital financial networks",
+    centralArgument: "Cheap smartphones and QR payments bring millions of unbanked citizens into the formal financial system",
+    analyticalAngle: "Everyday digital payments vs traditional branch banking",
+    importantStatistics: ["12 billion monthly UPI transactions", "100 million branchless accounts Pakistan"],
+    keywords: ["fintech", "wallets", "mobile", "banking", "payments"],
     english: {
-      text: "In August 2019, New Delhi ended the special status of Jammu and Kashmir. For nearly 18 months, over 7 million local people had no internet connection. It was the longest internet blackout recorded in any democracy. Children missed online classes and small shopkeepers lost sales.\n\nDisputed border areas also lack full voting rights in parliament.\n\nBoth capitals claim the land, but who listens to the people living there?"
+      text: "Mobile wallets have turned basic smartphones into neighborhood bank branches.\n\nIn Pakistan, branchless mobile accounts crossed 100 million as shopkeepers and workers send money without visiting banks. Across India, instant phone payments process more than 12 billion digital transactions each month. Street vendors who never held bank books now receive immediate digital payments for daily sales.\n\nCan mobile fintech fully replace cash and formalize the regional informal economy?"
     },
     romanUrdu: {
-      text: "August 2019 mein New Delhi ne Jammu aur Kashmir ki khas hesiyat khatam kar di. Taqreeban 18 maheenon tak 70 lakh se zyada muqami logon ke paas internet nahi tha. Ye kisi bhi jamhoori mulk mein lamba-tareen blackout tha. Bachon ki parhai ruki aur dukandaron ka nuqsan hua.\n\nSarhad ke dono taraf aam logon ke paas poori voting taqat nahi hai.\n\nDono hukoomatein zameen mangti hain magar wahan bastay logon ki kon sunta hai?"
+      text: "Mobile wallets ne aam smartphone ko mohallay ka bank bana diya hai.\n\nPakistan mein branchless mobile accounts 10 crore se tajawuz kar chukay hain aur log asani se raqam bhejte hain. India mein har maheenay 12 arab se zyada digital transactions mobile se hoti hain. Rehrri walay aur chhotay dukandar bhi ab phone par fori raqam wasool kar rahay hain.\n\nKya mobile wallet nizaam cash ko khatam kar ke poori maeeshat ko digital bana sakta hai?"
     },
     plainUrdu: {
-      text: "اگست 2019 میں نئی دہلی نے جموں و کشمیر کی خصوصی حیثیت ختم کر دی۔ تقریباً اٹھارہ ماہ تک ستر لاکھ سے زائد مقامی لوگوں کے پاس انٹرنیٹ نہیں تھا۔ یہ کسی بھی جمہوری ملک میں طویل ترین بلیک آؤٹ تھا۔ بچوں کی پڑھائی رکی اور دکانداروں کا نقصان ہوا۔\n\nسرحد کے دونوں طرف عام لوگوں کے پاس پارلیمان میں پوری نمائندگی نہیں ہے۔\n\nدونوں حکومتیں زمین کی دعویدار ہیں لیکن وہاں بسنے والے انسانوں کی کون سنتا ہے؟"
+      text: "موبائل والٹس نے عام اسمارٹ فونز کو محلے کے بینک میں تبدیل کر دیا ہے۔\n\nپاکستان میں برانچ لیس بینک اکاؤنٹس کی تعداد دس کروڑ سے تجاوز کر چکی ہے اور شہری آسانی سے رقوم منتقل کرتے ہیں۔ بھارت میں ماہانہ بارہ ارب سے زیادہ ڈیجیٹل ادائیگیاں موبائل کے ذریعے ہو رہی ہیں۔ چھوٹے دکاندار اور ریڑھی بان بھی اب فون کے ذریعے فوری ادائیگیاں وصول کرتے ہیں۔\n\nکیا موبائل والٹس کی وسعت کیش کے روایتی نظام کی جگہ لے کر معیشت کو دستاویزی بنا سکتی ہے؟"
     }
   },
 
@@ -579,27 +667,27 @@ export const FALLBACK_BANK = [
     }
   },
 
-  // 16. Weapons vs Human Welfare: 340 Warheads vs Clinics
-  // Source: SIPRI / UNICEF (2024)
+  // 16. Textile & Garment Exports: Industrial Footprints & Global Markets
+  // Source: WTO / Pakistan Bureau of Statistics (2024)
   {
-    topic: "Weapons vs Human Welfare: 340 Warheads vs Clinics",
-    subtopic: "Defence budget vs public welfare priorities",
+    topic: "Textile & Garment Exports: Industrial Footprints & Global Markets",
+    subtopic: "Export diversification and industrial policy",
     category: 'PAK_VS_IND',
     genreId: 'PAK_VS_IND',
-    mainSubject: "Nuclear weapons stockpiles vs child malnutrition",
-    specificEventOrIssue: "340 nuclear bombs vs basic rural clinics",
-    centralArgument: "Stockpiling hundreds of atomic bombs while millions of children face hunger shows twisted priorities",
-    analyticalAngle: "Atomic weapons vs clean water and children's food",
-    importantStatistics: ["340 atomic bombs", "35% children malnourished"],
-    keywords: ["bombs", "children", "food", "clinics", "water"],
+    mainSubject: "Textile manufacturing and readymade garment exports",
+    specificEventOrIssue: "Garment manufacturing providing formal industrial employment and foreign exchange",
+    centralArgument: "Textile factories employ millions of workers and anchor export earnings across the region",
+    analyticalAngle: "Value-added garment exports vs raw commodity exports",
+    importantStatistics: ["$16B textile exports Pakistan", "$36B textile exports India"],
+    keywords: ["textile", "garments", "exports", "factories", "cotton"],
     english: {
-      text: "India and Pakistan together own about 340 atomic bombs. They spend over 85 billion dollars every year on soldiers, tanks, and fighter jets. Yet more than 35% of young children across both countries suffer from hunger and slow growth.\n\nVillage clinics lack simple fever medicines, but new rocket bases get billions in funding.\n\nWhat good are atomic bombs when our own children cannot get clean drinking water?"
+      text: "Textile factories remain the industrial backbone for millions of South Asian families.\n\nPakistan earns over 16 billion dollars yearly exporting textiles, providing jobs to roughly 40% of the industrial workforce. India's textile and apparel shipments top 36 billion dollars across global retail chains. Value-added garment stitching turns domestic cotton crops into high-value exports that power local manufacturing hubs.\n\nCan regional textile mills climb higher into advanced fashion to compete with automation?"
     },
     romanUrdu: {
-      text: "India aur Pakistan ke paas mil kar taqreeban 340 atomic bomb hain. Dono mulk har saal foj, tanks aur jahazon par 85 arab dollar kharch karte hain. Magar dono taraf 35% se zyada chhotay bachay bhook aur kamzori ka shikar hain.\n\nGaon ke aspataal mein bukhar ki goli nahi milti magar rocket par arbon lagtay hain.\n\nAtomic bomb kis kaam ke jab hum apnay bachon ko saaf paani tak na de sakein?"
+      text: "Textile factories South Asia ke lakhon khandanon ke rozgar ki bunyad hain.\n\nPakistan saalana 16 arab dollar se zyada ki textile masnooat baramad karta hai jis se 40% sanati mazdoor jurray hain. India ki textile baramdaat 36 arab dollar se zyada hain. Kapray ki silai kisan ki kapas ko aalmi dunya mein qeemti export bana deti hai.\n\nKya muqami textile mills jadeed technology apna kar aalmi muqabla barqarar rakh sakein gi?"
     },
     plainUrdu: {
-      text: "بھارت اور پاکستان کے پاس ملا کر تقریباً 340 ایٹم بم ہیں۔ دونوں ممالک ہر سال فوج، ٹینکوں اور جہازوں پر 85 ارب ڈالر اڑاتے ہیں۔ لیکن دونوں طرف 35 فیصد سے زیادہ معصوم بچے غذائی قلت اور کمزوری کا شکار ہیں۔\n\nدیہات کے اسپتالوں میں بخار کی دوا نہیں ملتی مگر راکٹوں پر اربوں خرچ ہوتے ہیں۔\n\nایٹم بم کس کام کے جب ریاست اپنے بچوں کو پینے کا صاف پانی تک نہ دے سکے؟"
+      text: "ٹیکسٹائل فیکٹریاں جنوبی ایشیا کے لاکھوں محنت کش خاندانوں کے روزگار کا سب سے بڑا سہارا ہیں۔\n\nپاکستان سالانہ سولہ ارب ڈالر سے زائد کی ٹیکسٹائل مصنوعات برآمد کرتا ہے جو صنعتی افرادی قوت کے چالیس فیصد کو روزگار دیتی ہیں۔ بھارت کی ٹیکسٹائل برآمدات چھتیس ارب ڈالر سے زائد ہیں۔ ملبوسات کی سلائی ملکی کپاس کو قیمتی برآمدی مصنوعات میں بدل دیتی ہے۔\n\nکیا خطے کی ٹیکسٹائل ملیں جدید ٹیکنالوجی اپنا کر مستقبل کی عالمی مسابقت جیت سکتی ہیں؟"
     }
   },
 
@@ -1270,15 +1358,20 @@ ENGLISH POST:
 "${englishPost.text}"
 
 RULES:
+- Preserve the exact 3-part layout separated by double line breaks (\\n\\n):
+  Line 1: A single punchy hook line in Roman Urdu.
+  \\n\\n
+  Paragraph 2: The real body in Roman Urdu with the exact same numbers and facts.
+  \\n\\n
+  Line 3: A one-line engaging conclusion or closing question in Roman Urdu.
 - Use simple everyday words that any regular Pakistani speaks at home.
-- Keep the exact same 1 or 2 numbers, facts, comparisons, and the final question intact.
+- Keep the exact same numbers, facts, and the final question intact.
 - Every sentence must be short and easy to understand.
-- Preserve the paragraph breaks (\\n\\n).
-- Target length: 400 to 460 characters (hard limits 380 to 500 characters).
-- ZERO hashtags, ZERO emojis.
+- Target length: 240 to 460 characters total.
+- ZERO hashtags, ZERO emojis. NEVER use labels like "Hook:" or "Body:".
 - Return ONLY valid JSON:
 {
-  "text": "Roman Urdu text with paragraph breaks here"
+  "text": "Line 1 hook\\n\\nBody paragraph\\n\\nConclusion line"
 }`;
 
   let romanEntry = null;
@@ -1367,16 +1460,21 @@ ENGLISH POST:
 "${englishPost.text}"
 
 RULES:
+- Preserve the exact 3-part layout separated by double line breaks (\\n\\n):
+  Line 1: A single punchy hook line in Urdu (اردو).
+  \\n\\n
+  Paragraph 2: The real body in Urdu with the exact same numbers and facts.
+  \\n\\n
+  Line 3: A one-line engaging conclusion or closing question in Urdu.
 - Use simple everyday Urdu that an ordinary reader or shopkeeper understands easily.
 - Avoid heavy bookish words or complicated literary terms.
-- Keep the exact same 1 or 2 numbers, facts, comparisons, and the final question intact.
+- Keep the exact same numbers, facts, and the final question intact.
 - Every sentence must be short and easy to understand.
-- Preserve the paragraph breaks (\\n\\n).
-- Target length: 400 to 460 characters (hard limits 380 to 500 characters).
-- ZERO hashtags, ZERO emojis.
+- Target length: 240 to 460 characters total.
+- ZERO hashtags, ZERO emojis. NEVER use labels.
 - Return ONLY valid JSON:
 {
-  "text": "اردو متن پیراگراف بریک کے ساتھ یہاں لکھیں"
+  "text": "اردو ہک لائن\\n\\nاردو باڈی پیراگراف\\n\\nاردو اختتامی لائن"
 }`;
 
   let urduEntry = null;
@@ -1477,7 +1575,13 @@ function safeJsonParse(rawText) {
   if (typeof rawText === 'object' && rawText !== null) return rawText;
 
   const match = typeof rawText === 'string' ? rawText.match(/\{[\s\S]*\}/) : null;
-  if (!match) throw new Error('No valid JSON object found in response');
+  if (!match) {
+    // If the model returned plain text directly instead of wrapping in JSON
+    if (typeof rawText === 'string' && rawText.trim().length > 10) {
+      return { text: rawText.trim() };
+    }
+    throw new Error('No valid JSON object found in response');
+  }
   const jsonString = match[0];
   try {
     return JSON.parse(jsonString);
@@ -1497,6 +1601,9 @@ function safeJsonParse(rawText) {
           topic: topicMatch ? topicMatch[1].replace(/\\n/g, ' ') : 'Analytical Insight',
           text: textMatch[1].replace(/\\n/g, '\n').replace(/\\"/g, '"')
         };
+      }
+      if (typeof rawText === 'string' && rawText.trim().length > 10) {
+        return { text: rawText.trim() };
       }
       throw err;
     }
@@ -1521,11 +1628,11 @@ export async function callCloudflareAI(prompt, model = null) {
       },
       body: JSON.stringify({
         max_tokens: 512,
-        temperature: 0.5,
+        temperature: 0.4,
         messages: [
           {
             role: 'system',
-            content: 'You write engaging 3-paragraph X posts in simple conversational A1-A2 English like regular people talk and text. The post MUST contain 3 distinct paragraphs separated by double line breaks (\\n\\n) and be between 260 and 460 characters total. Paragraph 1 introduces the hook. Paragraph 2 gives real numbers and data facts. Paragraph 3 makes an honest observation and asks a thoughtful question. Never use complicated words. Return ONLY a valid JSON object matching the requested schema.'
+            content: 'You write engaging X posts in simple conversational A1-A2 English like regular people talk and text. Every post MUST strictly follow this exact 3-part layout separated by double line breaks (\\n\\n):\nLine 1: A single punchy hook line.\n\\n\\nParagraph: The real body with verified facts and real numbers.\n\\n\\nClosing Line: A one-line engaging conclusion or thoughtful question.\nTotal post length MUST be between 220 and 460 characters. Never use hashtags, emojis, or labels like "Hook:" or "Body:". Return ONLY a valid JSON object matching the requested schema.'
           },
           { role: 'user', content: prompt }
         ]
@@ -1574,7 +1681,7 @@ async function callGroq(prompt, apiKey) {
         messages: [
           {
             role: 'system',
-            content: 'You write short X posts in simple A1-A2 English like regular people talk and write. Use short sentences and everyday words. Never use complicated words.'
+            content: 'You write engaging X posts in simple conversational A1-A2 English like regular people talk and text. Every post MUST strictly follow this exact 3-part layout separated by double line breaks (\\n\\n):\nLine 1: A single punchy hook line.\n\\n\\nParagraph: The real body with verified facts and real numbers.\n\\n\\nClosing Line: A one-line engaging conclusion or thoughtful question.\nTotal post length MUST be between 220 and 460 characters. Never use hashtags, emojis, or labels like "Hook:" or "Body:". Return ONLY a valid JSON object matching the requested schema.'
           },
           { role: 'user', content: prompt }
         ],
@@ -1620,7 +1727,7 @@ async function callXai(prompt, model = 'grok-2-latest') {
           messages: [
             {
               role: 'system',
-              content: 'You write short X posts in simple A1-A2 English like regular people talk and write. Use short sentences and everyday words. Never use complicated words.'
+              content: 'You write engaging X posts in simple conversational A1-A2 English like regular people talk and text. Every post MUST strictly follow this exact 3-part layout separated by double line breaks (\\n\\n):\nLine 1: A single punchy hook line.\n\\n\\nParagraph: The real body with verified facts and real numbers.\n\\n\\nClosing Line: A one-line engaging conclusion or thoughtful question.\nTotal post length MUST be between 220 and 460 characters. Never use hashtags, emojis, or labels like "Hook:" or "Body:". Return ONLY a valid JSON object matching the requested schema.'
             },
             { role: 'user', content: prompt }
           ],

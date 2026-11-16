@@ -187,6 +187,25 @@ assert.strictEqual(generator.getSession().ideas[0].romanUrduRejected, true);
 assert.strictEqual(generator.getSession().ideas[0].approvedVersion, 'english', 'English approval retained');
 console.log('✓ TEST 8 PASSED: Approval and rejection workflow operating cleanly in-memory.\n');
 
+// TEST 9: Post Structure Refinement (Line 1 Hook, Space, Body Paragraph, Space, One-Line Conclusion)
+console.log('TEST 9: Testing Post Layout Normalization & 3-Part Structure...');
+const { normalizePostLayout, splitSentences } = await import('../src/generator/aiService.js');
+
+const rawAIOutputWithLabels = `Hook: Solar power is expanding across the region.
+Body: Over 1.5 million homes installed solar panels saving 15% on power bills. Domestic manufacturers produced 8.7 gigawatts of new clean energy.
+Conclusion: Can affordable solar power transform the energy future?`;
+
+const normalizedOutput = normalizePostLayout(rawAIOutputWithLabels);
+const sections = normalizedOutput.split('\n\n');
+assert.strictEqual(sections.length, 3, 'Must produce exactly 3 sections separated by double line breaks');
+assert.ok(!sections[0].includes('Hook:'), 'Hook label must be stripped');
+assert.ok(sections[0].includes('Solar power is expanding'), 'Line 1 is the hook line');
+assert.ok(sections[1].includes('1.5 million'), 'Middle paragraph contains real body with decimal numbers intact');
+assert.ok(sections[1].includes('8.7 gigawatts'), 'Middle paragraph preserves 8.7 decimal correctly');
+assert.ok(sections[2].startsWith('Can affordable solar power'), 'Line 3 is the one-line engaging conclusion');
+
+console.log('✓ TEST 9 PASSED: Post layout normalization strictly guarantees 3-part structure.\n');
+
 console.log('====================================================');
-console.log('    ALL 8 TESTS PASSED SUCCESSFULLY! (100%)');
+console.log('    ALL 9 TESTS PASSED SUCCESSFULLY! (100%)');
 console.log('====================================================\n');
