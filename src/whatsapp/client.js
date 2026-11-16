@@ -221,7 +221,8 @@ Reply with:
 • *3* ➔ Post directly to X (Twitter)
 • *4* ➔ Discard post
 • *5* ➔ Generate a NEW fresh post
-• *6* ➔ ⚙️ Customize the bot`;
+• *6* ➔ ⚙️ Customize the bot
+• *7* ➔ 🔒 Mark post as used (never reuse)`;
 
     return this.sendText(to, message);
   }
@@ -248,7 +249,8 @@ Reply with:
 • *3* ➔ Post English directly to X
 • *4* ➔ Discard post
 • *5* ➔ Generate a NEW fresh post
-• *6* ➔ ⚙️ Customize the bot`;
+• *6* ➔ ⚙️ Customize the bot
+• *7* ➔ 🔒 Mark post as used (never reuse)`;
 
     return this.sendText(to, message);
   }
@@ -275,7 +277,8 @@ Reply with:
 • *3* ➔ Post English directly to X
 • *4* ➔ Discard post
 • *5* ➔ Generate a NEW fresh post
-• *6* ➔ ⚙️ Customize the bot`;
+• *6* ➔ ⚙️ Customize the bot
+• *7* ➔ 🔒 Mark post as used (never reuse)`;
 
     return this.sendText(to, message);
   }

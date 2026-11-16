@@ -30,6 +30,9 @@ export async function initMongo() {
     isConnected = true;
     console.log('[MongoDB] ✓ Successfully connected to MongoDB Atlas (x_bot database).');
 
+    // Sync all historical posts into historyStore
+    import('./postModel.js').then(m => m.syncMongoHistory()).catch(() => {});
+
     mongoose.connection.on('disconnected', () => {
       isConnected = false;
       console.warn('[MongoDB] Disconnected from MongoDB Atlas.');
@@ -38,6 +41,7 @@ export async function initMongo() {
     mongoose.connection.on('reconnected', () => {
       isConnected = true;
       console.log('[MongoDB] ✓ Reconnected to MongoDB Atlas.');
+      import('./postModel.js').then(m => m.syncMongoHistory()).catch(() => {});
     });
 
     return true;

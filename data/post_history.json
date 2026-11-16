@@ -1,967 +1,409 @@
 {
-  "totalPosts": 57,
-  "updatedAt": "2026-11-15T08:55:01.666Z",
+  "totalPosts": 7,
+  "updatedAt": "2026-11-16T07:11:34.652Z",
   "posts": [
     {
       "hash": "cf010403450d07a18e28b67f83c481c3d59480679f03f1f8e7f1fb347387e853",
-      "topic": "India vs Pakistan: Weapons vs Welfare (Update 5432)",
+      "topic": "India vs Pakistan: Weapons vs Welfare Priorities",
+      "subtopic": "Defence budget vs public welfare priorities",
+      "genreId": "PAK_VS_IND",
       "category": "PAK_VS_IND",
+      "mainSubject": "India vs Pakistan Defence Spending",
+      "specificEventOrIssue": "India vs Pakistan Defence Spending",
+      "centralArgument": "Massive defence spending of $83B vs $9B compromises clean water and public schooling for millions",
+      "analyticalAngle": "Military spending vs human welfare deprivation",
+      "importantStatistics": [
+        "$83b",
+        "$9b",
+        "40%",
+        "25m",
+        "$100m"
+      ],
+      "keywords": [
+        "india",
+        "spend",
+        "billion",
+        "pakistan",
+        "lack",
+        "defence",
+        "mean",
+        "outspend",
+        "yet",
+        "people",
+        "nation",
+        "clean",
+        "water",
+        "million",
+        "pakistani",
+        "children",
+        "school",
+        "countri",
+        "buy",
+        "100m",
+        "fighter",
+        "jet",
+        "public",
+        "hospital",
+        "basic"
+      ],
+      "normalizedText": "india spends 83 billion on defence while pakistan spends 9 billion that means india outspends pakistan by more than 9 to 1 yet 40 of people in both nations lack clean water and 25 million pakistani children are out of school both countries buy 100m fighter jets while public hospitals lack basic medicines what is the point of nuclear deterrence if citizens are dying of poverty",
       "englishText": "India spends $83 billion on defence, while Pakistan spends $9 billion. That means India outspends Pakistan by more than 9 to 1.\n\nYet 40% of people in both nations lack clean water, and 25 million Pakistani children are out of school. Both countries buy $100M fighter jets while public hospitals lack basic medicines.\n\nWhat is the point of nuclear deterrence if citizens are dying of poverty?",
-      "romanUrduText": "India defence par 83 arab dollar kharch karta hai jabke Pakistan 9 arab dollar. Yani India Pakistan se 9 guna zyada kharch kar raha hai.\n\nMagar dono mulkon ke 40% log saaf paani se mehroom hain aur 2.5 karor Pakistani bachay school nahi jatay. Dono mulk 100 million dollar ke jahaz khareedte hain jabke hospitals mein dawai nahi.\n\nAisi atomic taqat ka kya faida agar awam ghurbat se mar rahi ho?",
-      "plainUrduText": "بھارت دفاع پر 83 ارب ڈالر خرچ کرتا ہے جبکہ پاکستان کا بجٹ صرف 9 ارب ڈالر ہے۔ یعنی بھارت نو گنا زیادہ رقم خرچ کر رہا ہے۔\n\nمگر دونوں ممالک کے 40 فیصد شہری پینے کے صاف پانی سے محروم ہیں اور ڈھائی کروڑ پاکستانی بچے اسکولوں سے باہر ہیں۔ دونوں ملک سو ملین ڈالر کے جنگی جہاز خریدتے ہیں جبکہ سرکاری اسپتالوں میں دوائیں نہیں۔\n\nایسی ایٹمی طاقت کا کیا فائدہ اگر عوام بھوک اور مفلسی سے مر رہے ہوں؟",
+      "romanUrduText": "",
+      "plainUrduText": "",
       "numbers": [
-        "83",
-        "9",
-        "1",
-        "40",
-        "25",
-        "100m"
+        "$83b",
+        "$9b",
+        "40%",
+        "25m",
+        "$100m"
       ],
-      "provider": "Curated Geopolitical Engine",
+      "provider": "AI",
       "status": "PENDING",
-      "timestamp": "2026-11-15T06:35:35.433Z"
+      "timestamp": "2026-11-16T07:11:21.370Z"
     },
     {
-      "hash": "09815e714e1114d6e04300000f14a89a7fd55cf3620f79f1ded8b8bdacc1478c",
-      "topic": "China vs USA: Business or Control?",
+      "hash": "308806e41de3e36a23ca28fe57b503c795d3525630f75f9d8382378189c74c04",
+      "topic": "Semiconductor Choke Points: Taiwan Strait Security",
+      "subtopic": "Taiwan Strait and global microchip supply security",
+      "genreId": "GEOPOLITICS",
       "category": "GEOPOLITICS",
-      "englishText": "The US spends $877 billion on defense and maintains 750 foreign military bases. China spends $290 billion on defense, but dominates global commerce with $6.3 trillion in total trade.\n\nWashington relies on military force for control, while Beijing buys power through business. Despite heavy sanctions, bilateral trade between them hit $690 billion.\n\nAmerica protects the world order with weapons. China owns the supply chains. Who actually runs the planet?",
+      "mainSubject": "Taiwan Semiconductor Security",
+      "specificEventOrIssue": "Taiwan Semiconductor Security",
+      "centralArgument": "Taiwan's 90% microchip dominance means a strait blockade causes $2.6T loss that military power cannot prevent",
+      "analyticalAngle": "Taiwan Strait Security",
+      "importantStatistics": [
+        "90%",
+        "$2.6t",
+        "2030"
+      ],
+      "keywords": [
+        "taiwan",
+        "world",
+        "manufactur",
+        "advanc",
+        "microchip",
+        "naval",
+        "blockade",
+        "strait",
+        "cost",
+        "trillion",
+        "first",
+        "year",
+        "alone",
+        "china",
+        "spend",
+        "hundred",
+        "billion",
+        "domestic",
+        "foundri",
+        "replace",
+        "2030",
+        "military",
+        "power",
+        "rule",
+        "silicon"
+      ],
+      "normalizedText": "taiwan manufactures 90 of the world s advanced microchips a naval blockade in the taiwan strait would cost 2 6 trillion in the first year alone both the us and china spend hundreds of billions on domestic foundries but cannot replace taiwan before 2030 does military power rule the world or does a silicon wafer",
+      "englishText": "Taiwan manufactures 90% of the world's advanced microchips. A naval blockade in the Taiwan Strait would cost $2.6 trillion in the first year alone.\n\nBoth the US and China spend hundreds of billions on domestic foundries but cannot replace Taiwan before 2030.\n\nDoes military power rule the world or does a silicon wafer?",
       "romanUrduText": "",
       "plainUrduText": "",
       "numbers": [
-        "877",
-        "750",
-        "290",
-        "6.3",
-        "690"
+        "90%",
+        "$2.6t",
+        "2030"
       ],
-      "provider": "Google Gemini Free API",
+      "provider": "AI",
       "status": "PENDING",
-      "timestamp": "2026-11-15T06:27:30.148Z"
+      "timestamp": "2026-11-16T07:11:21.382Z"
     },
     {
-      "hash": "3347446dc4c4426557b3795bf68bef91e3992504e636e853cd9899f5db0f264b",
-      "topic": "Test Trigger AI",
-      "category": "PAKISTAN_POLITICS",
-      "englishText": "Pakistan spends 18 percent of its budget on debt servicing while education receives less than 2 percent. This gap reveals a broken priority list. With inflation hitting 30 percent, the state prefers borrowing from the IMF to pay interest rather than investing in human capital. Elite families continue to control key sectors while the common man faces record poverty. Is this system designed to serve the public or just to keep the debt cycle spinning forever? Who truly pays for these choices?",
-      "romanUrduText": "",
-      "plainUrduText": "",
-      "numbers": [
-        "18",
-        "2",
-        "30"
-      ],
-      "provider": "Google Gemini Free API",
-      "status": "PENDING",
-      "timestamp": "2026-11-15T06:27:38.912Z"
-    },
-    {
-      "hash": "a5a226df67bd15901c4c262d9ed34225f692d023453b0960d47346f8f9d5cd3d",
-      "topic": "India vs Pakistan: Missiles vs Malnutrition",
+      "hash": "404ec004505b4e63e241f8dc2e9da895a86829f5ab1bed26f5bf0adc51971b1e",
+      "topic": "India & Pakistan: Post-Colonial Centralization",
+      "subtopic": "Why India became centralized after 1947",
+      "genreId": "PAK_VS_IND",
       "category": "PAK_VS_IND",
-      "englishText": "India and Pakistan spent $18 billion building long-range ballistic missile arsenals. Yet 38% of children under five in both countries suffer from chronic stunting and malnutrition.\n\nBoth capitals proudly display missiles that travel 5,000 kilometres while millions of mothers cannot afford clean milk or basic nutrition.\n\nWhat security does a ballistic missile provide to a child starving in a village?",
-      "romanUrduText": "India aur Pakistan ne long-range missiles par 18 arab dollar lagaye. Magar dono mulkon ke 38% bachay khurak ki shadeed kami aur stunting ka shikaar hain.\n\nDono hukmaran 5,000 km tak mar karnay walay missiles ki numaish karte hain jabke laakhon maayein bachon ke liye doodh nahi khareed sakein.\n\nEk bhookay bachay ko ballistic missile konsi hifazat deta hai?",
-      "plainUrduText": "بھارت اور پاکستان نے طویل فاصلے تک مار کرنے والے میزائلوں پر 18 ارب ڈالر لگائے۔ مگر دونوں ممالک کے 38 فیصد بچے خوراک کی شدید کمی کا شکار ہیں۔\n\nدونوں دارالحکومت پانچ ہزار کلومیٹر تک جانے والے میزائلوں پر فخر کرتے ہیں جبکہ لاکھوں مائیں دودھ تک نہیں خرید سکتیں۔\n\nایک بھوکے اور لاچار بچے کو بیلسٹک میزائل کون سا تحفظ فراہم کرتا ہے؟",
-      "numbers": [
-        "18",
-        "38",
-        "5",
-        "000"
-      ],
-      "provider": "Curated Geopolitical Engine",
-      "status": "PENDING",
-      "timestamp": "2026-11-15T06:29:53.457Z"
-    },
-    {
-      "hash": "1696c1e10f57554696fd1aacf1f26db968afe054c780246f937e817ccedfcece",
-      "topic": "India vs Pakistan: Submarines vs Clean Water",
-      "category": "PAK_VS_IND",
-      "englishText": "Both nations are spending over $12 billion building nuclear submarines and naval fleets. Yet 70% of drinking water across Pakistan and India is contaminated with toxic bacteria.\n\nOne nuclear submarine costs $3.5 billion, enough to provide clean tap water for 80 million people in both countries.\n\nWhy spend billions to guard the deep ocean when your own citizens are being poisoned by their tap?",
-      "romanUrduText": "Dono mulk atomic submarines aur behri jahaazon par 12 arab dollar se zyada kharch kar rahay hain. Magar 70% peenay ka paani zehreelay jaraseem se bhara hai.\n\nEk submarine 3.5 arab dollar ki hai, jis se 8 karor logon ko saaf paani mil sakta tha.\n\nGehray samundar ki hifazat par arbon kyon lagayein jab apnay hi shehri nalay ka ganda paani peenay par majboor hon?",
-      "plainUrduText": "دونوں ممالک ایٹمی آبدوزوں اور بحری بیڑوں پر 12 ارب ڈالر سے زیادہ خرچ کر رہے ہیں۔ مگر پاکستان اور بھارت میں 70 فیصد پینے کا پانی آلودہ ہے۔\n\nایک ایٹمی آبدوز کی لاگت ساڑھے تین ارب ڈالر ہے جس سے آٹھ کروڑ عوام کو پینے کا صاف پانی مل سکتا ہے۔\n\nسمندر کی گہرائیوں پر اربوں لٹانے کا کیا فائدہ جب شہری نلکے کا زہریلا پانی پینے پر مجبور ہوں؟",
-      "numbers": [
-        "12",
-        "70",
-        "3.5",
-        "80"
-      ],
-      "provider": "Curated Geopolitical Engine",
-      "status": "PENDING",
-      "timestamp": "2026-11-15T06:29:59.702Z"
-    },
-    {
-      "hash": "7983ef6b592f8cff25a74d7daaa5981d188f72a5a9633c6d2fe8fbc94aeca38e",
-      "topic": "Pakistan and the IMF: Debt Trap (Update 6459)",
-      "category": "PAKISTAN_POLITICS",
-      "englishText": "Pakistan has entered 24 IMF programs since 1958. Today, over 70% of all federal tax revenues go directly toward servicing $130 billion in public debt.\n\nTo secure a $7 billion loan, electricity tariffs were hiked 45% and sales taxes raised, crushing 90 million low-income workers.\n\nHow can a nation of 240 million become independent if it borrows new money just to pay interest on old loans?",
-      "romanUrduText": "Pakistan 1958 se ab tak 24 martaba IMF ja chuka hai. Aaj FBR ke 70% se zyada tax collections 130 arab dollar ke qarzay ka sood chukanay mein chalay jatay hain.\n\n7 arab dollar ke loan ke liye bijli 45% mehngi ki gayi aur taxes barhaye gaye.\n\n24 karor awam ka mulk azaad kaise banay ga agar naya qarza sirf puranay sood ko denay ke liye liya jaye?",
-      "plainUrduText": "پاکستان 1958 سے اب تک 24 مرتبہ آئی ایم ایف جا چکا ہے۔ آج وفاقی ٹیکس محصولات کا 70 فیصد سے زائد حصہ 130 ارب ڈالر کے عوامی قرضوں کا سود بھرنے میں چلا جاتا ہے۔\n\nسات ارب ڈالر کے قرضے کے لیے بجلی کے نرخ 45 فیصد بڑھائے گئے جس سے نو کروڑ غریب پس گئے۔\n\nچوبیس کروڑ کا ملک خودمختار کیسے ہوگا اگر نیا ادھار صرف پرانے سود کی ادائیگی کے لیے لیا جائے؟",
-      "numbers": [
-        "24",
-        "1958",
-        "70",
-        "130",
-        "7",
-        "45",
-        "90",
-        "240"
-      ],
-      "provider": "Curated Geopolitical Engine",
-      "status": "PENDING",
-      "timestamp": "2026-11-15T07:58:36.459Z"
-    },
-    {
-      "hash": "67a99d1318a55379859492295252407b75cb49ffb40ef50880ad545098dee362",
-      "topic": "India vs Pakistan: Fighter Jets vs Hospital Beds",
-      "category": "PAK_VS_IND",
-      "englishText": "India bought 36 French Rafale jets for $8.7 billion, while Pakistan spends $1.5 billion on JF-17 fighters. Meanwhile, public healthcare spending sits below 1.5% of GDP in both nations, leaving one hospital bed for every 1,400 people.\n\nMillions die from treatable diseases each year.\n\nHow can a nation be defended from the skies when its hospitals cannot even treat a fever?",
-      "romanUrduText": "India ne 8.7 arab dollar ke Rafale jahaz khareeday aur Pakistan ne 1.5 arab dollar JF-17 par lagaye. Jabke sehat ka budget GDP ka 1.5% se bhi kam hai, aur 1,400 logon ke liye sirf ek hospital bed hai.\n\nHar saal laakhon log mamooli bemariyon se mar jatay hain.\n\nAasman se watan ka difa kaise hoga jab zameen par hospitals bukhar ka ilaj tak na kar sakein?",
-      "plainUrduText": "بھارت نے 8.7 ارب ڈالر کے رافیل طیارے خریدے اور پاکستان نے ڈیڑھ ارب ڈالر جے ایف 17 پر لگائے۔ دوسری طرف صحت کا بجٹ جی ڈی پی کے 1.5 فیصد سے بھی کم ہے جہاں 1400 افراد کے لیے صرف ایک بیڈ ہے۔\n\nہر سال لاکھوں شہری قابل علاج بیماریوں سے دم توڑ دیتے ہیں۔\n\nفضائی حدود کے دفاع کا کیا فائدہ جب سرکاری اسپتال معمولی بخار کی دوا تک نہ دے سکیں؟",
-      "numbers": [
-        "36",
-        "8.7",
-        "1.5",
-        "17",
-        "1",
-        "400"
-      ],
-      "provider": "Curated Geopolitical Engine",
-      "status": "PENDING",
-      "timestamp": "2026-11-15T06:32:26.001Z"
-    },
-    {
-      "hash": "eefc095952b1da35a9016b3988c7c541a386a3f24cbbebedb44b53c812296ea4",
-      "topic": "Sugar vs Guns: The Hidden Danger",
-      "category": "SATIRICAL_COMMENTARY",
-      "englishText": "In Pakistan, gun violence kills around 4,000 people each year. But diabetes, driven by excessive sugar consumption, claims over 400,000 lives annually. That is 100 times deadlier than bullets.\n\nWe fear armed men on the street, yet we happily drink three spoons of white sugar in every cup of chai.\n\nWhat is the real threat to national security: the rifle outside your gate, or the sugar inside your teacup?",
-      "romanUrduText": "Pakistan mein goli se har saal 4,000 log marnay ka shikaar hotay hain. Lekin cheeni se honay wali diabetes har saal 4 laakh se zyada jaanein leti hai. Yeh bandook se 100 guna zyada khatarnak hai.\n\nHum sadak par kharay musallah shakhs se dartay hain, magar chai mein teen chamach cheeni maze se peetay hain.\n\nAsal khatra kya hai: darwazay par khari bandook ya chai ki pyali mein ghuli cheeni?",
-      "plainUrduText": "پاکستان میں فائرنگ سے ہر سال تقریباً چار ہزار اموات ہوتی ہیں۔ لیکن ضرورت سے زیادہ چینی سے ہونے والی ذیابیطس چار لاکھ سے زائد جانیں لیتی ہے۔ یہ گولی سے سو گنا زیادہ مہلک ہے۔\n\nہم گلی میں کھڑے مسلح شخص سے خوف کھاتے ہیں، مگر چائے کی ہر پیالی میں تین چمچ چینی خوشی سے پیتے ہیں۔\n\nقومی سلامتی کے لیے اصل خطرہ کیا ہے: گیٹ پر موجود بندوق یا چائے میں گھلی چینی؟",
-      "numbers": [
-        "4",
-        "000",
-        "400",
-        "100"
-      ],
-      "provider": "Curated Geopolitical Engine",
-      "status": "PENDING",
-      "timestamp": "2026-11-15T06:32:32.210Z"
-    },
-    {
-      "hash": "a8fa90854fc61e52b1bacb1c138c216e550107c8e713b19ed36bbe73498ee1ea",
-      "topic": "AI Data Centres: The Hidden Resource Cost",
-      "category": "AI_HUMAN_SOCIETY",
-      "englishText": "Training one advanced AI model consumes over 700,000 litres of clean water and enough electricity to power 100 homes for a year. Global tech giants plan to spend $150 billion on new data centres by 2026.\n\nMeanwhile, 1.2 billion people worldwide face acute water shortages.\n\nIs artificial intelligence genuinely serving humanity, or is it quietly drinking our future dry?",
-      "romanUrduText": "Ek baray AI model ki training par 7 laakh litre saaf paani aur 100 gharon ki saalana bijli kharch hoti hai. Tech companies 2026 tak data centres par 150 arab dollar lagane ja rahi hain.\n\nJabke dunya ke 1.2 arab log saaf paani ki shadeed killat jhel rahay hain.\n\nKya AI sach mein insaniyat ki khidmat kar rahi hai, ya chupchap hamara mustaqbil pee rahi hai?",
-      "plainUrduText": "ایک جدید AI ماڈل کی ٹریننگ پر سات لاکھ لیٹر سے زیادہ پینے کا پانی اور سو گھروں کی سالانہ بجلی خرچ ہوتی ہے۔ بڑی ٹیک کمپنیاں ڈیٹا سینٹرز پر 150 ارب ڈالر لگا رہی ہیں۔\n\nدوسری طرف دنیا کے ایک ارب سے زائد انسان پینے کے صاف پانی کی شدید قلت کا سامنا کر رہے ہیں۔\n\nکیا مصنوعی ذہانت واقعی انسانیت کی خدمت کر رہی ہے یا ہمارا مستقبل چاٹ رہی ہے؟",
-      "numbers": [
-        "700",
-        "000",
+      "mainSubject": "Why India became centralized after 1947",
+      "specificEventOrIssue": "Why India became centralized after 1947",
+      "centralArgument": "While both promised federal democracy, New Delhi dismissed elected state governments over 100 times under Article 356, and Islamabad suspended provincial autonomy repeatedly.",
+      "analyticalAngle": "Post-Colonial Centralization",
+      "importantStatistics": [
+        "1947",
+        "1935",
         "100",
-        "150",
-        "2026",
-        "1.2"
-      ],
-      "provider": "Curated Geopolitical Engine",
-      "status": "PENDING",
-      "timestamp": "2026-11-15T06:32:38.318Z"
-    },
-    {
-      "hash": "4aa2ba7f4b3aeedfb7a7860da3b23494990604fc3178fb1a02738820e82c11fa",
-      "topic": "India vs Pakistan: Military Pensions vs Rural Schools",
-      "category": "PAK_VS_IND",
-      "englishText": "India spends $14 billion on military pensions, while Pakistan spends $5 billion. India pays its ex-soldiers nearly 3 times more than Pakistan pays its own.\n\nYet half of all villages lack high schools, and 12 million kids work in fields. Both nations build tanks while rural kids study under trees.\n\nWhat is the point of a massive military pension if our children grow up illiterate and poor?",
-      "romanUrduText": "",
-      "plainUrduText": "",
-      "numbers": [
-        "14",
-        "5",
-        "3",
-        "12"
-      ],
-      "provider": "Google Gemini Free API",
-      "status": "PENDING",
-      "timestamp": "2026-11-15T06:39:34.001Z"
-    },
-    {
-      "hash": "e1ba37460c980aaf360550ebde231fd5474a64e33c26e63b09d0756030d993b2",
-      "topic": "India vs Pakistan: Space Satellites vs Farmer Irrigation",
-      "category": "PAK_VS_IND",
-      "englishText": "India operates 55 active satellites while Pakistan has only 6 in orbit. India spends $1.6 billion on its space program, outspending Pakistan by more than 50 to 1.\n\nYet over 60% of farmers in both countries lack basic canal irrigation for their fields. Millions of poor farmers depend only on rain, watching their crops dry up and fail every season.\n\nWhat is the point of mapping space when our own farmers do not even have water to grow basic food?",
-      "romanUrduText": "",
-      "plainUrduText": "",
-      "numbers": [
-        "55",
-        "6",
-        "1.6",
-        "50",
-        "1",
-        "60"
-      ],
-      "provider": "Google Gemini Free API",
-      "status": "PENDING",
-      "timestamp": "2026-11-15T06:39:45.621Z"
-    },
-    {
-      "hash": "304dfc02520abe1279bdcbfa94634d5b3a627e8c0fce90c797190cf4434e77fa",
-      "topic": "Balochistan: Rich Land, Poor People",
-      "category": "SOCIAL_ETHNIC_ISSUES",
-      "englishText": "Balochistan produces 20% of Pakistan's natural gas and holds $1 trillion in untapped copper and gold. Yet 62% of Balochistan lives in multidimensional poverty, and 70% of homes lack piped drinking water.\n\nWhile gas pipelines heat factories in Punjab and Sindh, local families burn wood for cooking.\n\nCan any federation build genuine unity when half its land feeds everyone except its own people?",
-      "romanUrduText": "Balochistan Pakistan ki 20% gas paida karta hai aur 1 trillion dollar ke maadiniat rakhta hai. Magar 62% abadi ghareeb hai aur 70% gharon mein saaf paani ka pipe tak nahi.\n\nGas pipelines Punjab aur Sindh ke factories chalati hain, jabke maqami log lakriyan jala rahay hain.\n\nWifaq mein yakjehti kaise aayegi jab aadhi zameen sab ko khilaye siwaye apnay logon ke?",
-      "plainUrduText": "بلوچستان پاکستان کی 20 فیصد قدرتی گیس پیدا کرتا ہے اور ایک ٹریلین ڈالر کے تانبے اور سونے کا مالک ہے۔ مگر 62 فیصد آبادی غربت میں ہے اور 70 فیصد گھروں میں پینے کا پانی نہیں۔\n\nگیس پائپ لائنیں پنجاب اور سندھ کی فیکٹریاں چلاتی ہیں جبکہ مقامی خاندان لکڑیاں جلاتے ہیں۔\n\nوفاق میں حقیقی اتحاد کیسے بنے گا جب آدھی سرزمین سب کو کھلائے سوائے اپنے لوگوں کے؟",
-      "numbers": [
-        "20",
-        "1",
-        "62",
+        "356",
         "70"
       ],
-      "provider": "Curated Geopolitical Engine",
-      "status": "PENDING",
-      "timestamp": "2026-11-15T06:40:50.983Z"
-    },
-    {
-      "hash": "f3a5e66af70ebec773f4b5f509829880e78d693c8cbc5e66ecd0463b36a19d02",
-      "topic": "Climate Injustice: Who Pollutes and Who Drowns?",
-      "category": "CLIMATE_GLOBAL_POWER",
-      "englishText": "Pakistan generates less than 0.9% of global carbon emissions. Yet the 2022 floods submerged 33% of the country, killing 1,700 people and causing $30 billion in damages.\n\nThe world's richest 10% produce 50% of global pollution, but send tiny interest-bearing loans instead of climate compensation.\n\nIs climate change an environmental accident, or the world's most unequal economic crime against poor nations?",
-      "romanUrduText": "Pakistan aalmi carbon aaloodgi mein 0.9% se bhi kam hissa dalta hai. Magar 2022 ke sailab ne 33% mulk dabo diya, 1,700 jaanein le lein aur 30 arab dollar ka nuqsan kiya.\n\nAmeer 10% mumalik 50% aaloodgi phailatay hain magar madad ke bajaye soodi qarza bhejte hain.\n\nKya yeh mausam ka haadsa hai ya ghareeb mulkon ke khilaf aalmi jurm?",
-      "plainUrduText": "پاکستان دنیا کی کاربن آلودگی میں 0.9 فیصد سے بھی کم پیدا کرتا ہے۔ مگر 2022 کے سیلاب نے ملک کا 33 فیصد حصہ ڈبو دیا، 1700 اموات ہوئیں اور 30 ارب ڈالر کا نقصان ہوا۔\n\nدس فیصد امیر ممالک 50 فیصد آلودگی پھیلاتے ہیں لیکن معاوضے کے بجائے سودی قرضے بھیجتے ہیں۔\n\nکیا موسمیاتی تبدیلی محض قدرتی حادثہ ہے یا غریب اقوام کے خلاف ایک تاریخی معاشی جرم؟",
-      "numbers": [
-        "0.9",
-        "2022",
-        "33",
-        "1",
-        "700",
-        "30",
-        "10",
-        "50"
-      ],
-      "provider": "Curated Geopolitical Engine",
-      "status": "PENDING",
-      "timestamp": "2026-11-15T06:40:59.012Z"
-    },
-    {
-      "hash": "fd92017d6cd683df59eabba919ea8093f38e85741fccd92bc66103d8f5b7517f",
-      "topic": "India vs Pakistan: Nuclear Warheads vs Classrooms",
-      "category": "PAK_VS_IND",
-      "englishText": "India and Pakistan hold over 340 nuclear warheads, costing $4.5 billion annually to maintain. Yet 50 million citizens in both countries cannot write their names, and 30,000 public schools lack electricity.\n\nWe spend billions on warheads we can never fire while classrooms crumble into dust.\n\nWhat glory is there in an atomic bomb if our children cannot read?",
-      "romanUrduText": "India aur Pakistan 340 se zyada atomic warheads rakhte hain jinki hifazat par 4.5 arab dollar lagtay hain. Magar 5 karor log parh likh nahi saktay aur 30,000 schools mein bijli nahi.\n\nHum aisi atom bomb par arbon lagatay hain jo chal nahi sakti jabke school dhal rahay hain.\n\nAisi taqat ka kya faida agar bachay taleem se mehroom hon?",
-      "plainUrduText": "بھارت اور پاکستان کے پاس 340 سے زیادہ ایٹمی ہتھیار ہیں جن کی دیکھ بھال پر ساڑھے چار ارب ڈالر خرچ ہوتے ہیں۔ مگر پانچ کروڑ شہری ان پڑھ ہیں اور تیس ہزار اسکولوں میں بجلی نہیں۔\n\nہم ان بموں پر اربوں لٹاتے ہیں جنہیں چلا نہیں سکتے جبکہ اسکول تباہ ہو رہے ہیں۔\n\nایسی طاقت کا کیا فخر اگر اگلی نسل بنیادی تعلیم سے بھی محروم رہے؟",
-      "numbers": [
-        "340",
-        "4.5",
-        "50",
-        "30",
-        "000"
-      ],
-      "provider": "Curated Geopolitical Engine",
-      "status": "PENDING",
-      "timestamp": "2026-11-15T06:41:11.346Z"
-    },
-    {
-      "hash": "f7c80b4595103f1fae07513c958e1f9da90c2defcc04d2b3fb608e157dcdfcf9",
-      "topic": "India vs Pakistan: Border Radars vs Farmer Crises",
-      "category": "PAK_VS_IND",
-      "englishText": "India and Pakistan spend $1.8 billion on thermal border sensors, electronic fences, and surveillance radars. At the exact same time, underground water tables in Punjab on both sides have dropped by 15 metres, forcing over 100,000 farmers into severe debt.\n\nBoth nations scan the sky for enemy drones while our agricultural heartland runs out of water.\n\nWhat will our armies eat when fertile fields turn to dust?",
-      "romanUrduText": "India aur Pakistan sarhad par radar aur sensors par 1.8 arab dollar kharch karte hain. Doosri taraf Punjab mein zameen ka paani 15 meter neeche gir chuka hai aur 1 laakh kisan qarzay mein doob gaye hain.\n\nHum asman par drones dhoondhte hain jabke zameen ka paani sookh raha hai.\n\nFoj kya khaye gi jab hamaray khet sahra ban jayenge?",
-      "plainUrduText": "بھارت اور پاکستان سرحدی راڈار اور سینسرز پر پونے دو ارب ڈالر خرچ کرتے ہیں۔ دوسری طرف پنجاب میں زیر زمین پانی پندرہ میٹر نیچے گر چکا ہے اور ایک لاکھ کسان برباد ہو چکے ہیں۔\n\nہم ڈرونز تلاش کرنے پر اربوں لگاتے ہیں جبکہ ہمارے کھیت پانی کو ترس رہے ہیں۔\n\nافواج کیا کھائیں گی جب ہماری زرخیز زمینیں بنجر ریگستان بن جائیں گی؟",
-      "numbers": [
-        "1.8",
-        "15",
+      "keywords": [
+        "india",
+        "government",
+        "1947",
+        "pakistan",
+        "inherit",
+        "colonial",
+        "1935",
+        "govern",
+        "act",
+        "promis",
+        "federal",
+        "democracy",
+        "new",
+        "delhi",
+        "dismiss",
+        "elect",
+        "state",
         "100",
-        "000"
+        "tim",
+        "article",
+        "356",
+        "islamabad",
+        "suspend",
+        "provincial",
+        "autonomy"
       ],
-      "provider": "Curated Geopolitical Engine",
-      "status": "PENDING",
-      "timestamp": "2026-11-15T06:44:12.149Z"
+      "normalizedText": "in 1947 both india and pakistan inherited the colonial 1935 government of india act while both promised federal democracy new delhi dismissed elected state governments over 100 times under article 356 and islamabad suspended provincial autonomy repeatedly today central governments in both capitals control 70 of tax collections leaving provinces begging for basic funds did independence liberate the states or simply replace a white viceroy with a brown one",
+      "englishText": "In 1947, both India and Pakistan inherited the colonial 1935 Government of India Act. While both promised federal democracy, New Delhi dismissed elected state governments over 100 times under Article 356, and Islamabad suspended provincial autonomy repeatedly.\n\nToday, central governments in both capitals control 70% of tax collections, leaving provinces begging for basic funds.\n\nDid independence liberate the states, or simply replace a white viceroy with a brown one?",
+      "romanUrduText": "1947 mein India aur Pakistan dono ne angrezon ka 1935 Act apnaya. Jamhooriyat ka wada kiya magar New Delhi ne 100 se zyada baar soobai hukoomatein bar-taraf keen aur Islamabad ne bhi soobon ki khud-mukhtari dabayi.\n\nAaj dono dar-ul-hukoomat 70% tax control karte hain aur soobay bunyadi fund ke liye tarastay hain.\n\nKya azaadi ne soobon ko azaad kiya ya sirf goray viceroy ki jagah desi hukmaran bitha diye?",
+      "plainUrduText": "1947 میں پاکستان اور بھارت دونوں کو نوآبادیاتی گورنمنٹ آف انڈیا ایکٹ وراثت میں ملا۔ وفاقی جمہوریت کے وعدے کے باوجود نئی دہلی نے آرٹیکل 356 کے تحت سو سے زائد بار صوبائی حکومتیں گرائیں اور اسلام آباد نے بھی خود مختاری پامال کی۔\n\nآج دونوں دارالحکومت 70 فیصد ٹیکس ریونیو پر قابض ہیں جبکہ صوبے بنیادی فنڈز کے محتاج ہیں۔\n\nکیا آزادی نے صوبوں کو خود مختار بنایا یا صرف سفید فام وائسرائے کی جگہ دیسی حکمران بٹھا دیے؟",
+      "numbers": [
+        "1947",
+        "1935",
+        "100",
+        "356",
+        "70"
+      ],
+      "provider": "Curated Analytical Engine",
+      "status": "DISCARDED",
+      "timestamp": "2026-11-16T07:11:23.489Z"
     },
     {
-      "hash": "89d64f2e7863e4728b6303d249245cbfc5304e325df1e7fd12e5ff074c3a2122",
-      "topic": "India vs Pakistan: Nuclear Arsenals vs Out-of-School Children",
+      "hash": "e1b3361ab4d91ae56fd36743492f2bbcbcd8f01d4e80279f02a622e3d9207f04",
+      "topic": "India Politics: Electoral Bonds & Party Wealth",
+      "subtopic": "Election machinery and campaign funding",
+      "genreId": "PAK_VS_IND",
       "category": "PAK_VS_IND",
-      "englishText": "India holds 164 nuclear warheads, while Pakistan has 170. Both nations keep expanding deadly atomic arsenals year after year.\n\nYet 30 percent of children suffer from severe stunting, and millions of young students sit under trees because schools have no roofs or walls. Both governments buy costly missiles while public clinics lack basic lifesaving drugs.\n\nWhat is the point of nuclear power if children starve?",
-      "romanUrduText": "",
-      "plainUrduText": "",
-      "numbers": [
-        "164",
-        "170",
-        "30"
-      ],
-      "provider": "Google Gemini Free API",
-      "status": "PENDING",
-      "timestamp": "2026-11-15T06:44:14.520Z"
-    },
-    {
-      "hash": "790cea924aef927062e2c5d9f84ddf97ca0758f12342a0c0135e29f9045463f6",
-      "topic": "India vs Pakistan: Military Pensions vs Rural Doctors",
-      "category": "PAK_VS_IND",
-      "englishText": "Pakistan spends $3.2 billion on military pensions, while India allocates $16 billion annually. Yet rural districts across both countries have only 1 doctor for every 10,000 villagers, and 60% of rural health clinics lack basic emergency medicines or ultrasound machines.\n\nWe guarantee pensions for soldiers while leaving pregnant mothers to die on highway roads.\n\nWho protects our citizens from systemic medical neglect?",
-      "romanUrduText": "Pakistan foji pensions par 3.2 arab dollar aur India 16 arab dollar kharch karta hai. Magar dehaton mein 10,000 logon ke liye sirf ek doctor hai aur 60% clinics mein basic medicines nahi hain.\n\nHum pensions ka intizam karte hain magar maaoon ko ilaj nahi milta.\n\nShehriyon ko is medical barbadi se kon bachaye ga?",
-      "plainUrduText": "پاکستان فوجی پنشن پر سوا تین ارب ڈالر اور بھارت سولہ ارب ڈالر خرچ کرتا ہے۔ مگر دیہات میں دس ہزار شہریوں کے لیے صرف ایک ڈاکٹر ہے اور ساٹھ فیصد کلینکس میں بنیادی ادویات تک نہیں۔\n\nہم پنشن کا بجٹ پورا کرتے ہیں مگر ماؤں کو علاج میسر نہیں۔\n\nشہریوں کو اسپتالوں کے اس المیے سے کون بچائے گا؟",
-      "numbers": [
-        "3.2",
-        "16",
-        "1",
-        "10",
-        "000",
-        "60"
-      ],
-      "provider": "Curated Geopolitical Engine",
-      "status": "PENDING",
-      "timestamp": "2026-11-15T06:44:16.230Z"
-    },
-    {
-      "hash": "b6477f87978a2bc090d4efce541feba3e19c178fb440c3f194aeb6663985f3b3",
-      "topic": "India vs Pakistan: Ballistic Missiles vs Child Malnutrition",
-      "category": "PAK_VS_IND",
-      "englishText": "India spends $74 billion on military, and Pakistan spends $7 billion. India outspends Pakistan nearly 10 to 1 on armed forces.\n\nYet 35 percent of kids under five face severe malnutrition, and millions go to sleep hungry daily. Both nations buy costly missiles while basic food prices rise every week.\n\nWhat is the point of nuclear power if our children suffer from hunger every single day?",
-      "romanUrduText": "",
-      "plainUrduText": "",
-      "numbers": [
-        "74",
-        "7",
-        "10",
-        "1",
-        "35"
-      ],
-      "provider": "Google Gemini Free API",
-      "status": "PENDING",
-      "timestamp": "2026-11-15T06:44:21.104Z"
-    },
-    {
-      "hash": "29ae2119fdc7d4cd5cd125b706f6eb4f76436287fe4773af2a5a0d29be52c461",
-      "topic": "India vs Pakistan: Weapons vs Welfare (Series 743)",
-      "category": "PAK_VS_IND",
-      "englishText": "India spends $86.6 billion on military modernization, while Pakistan spends $8.8 billion on defence upkeep. At the exact same time, 28 million young children across the subcontinent never set foot inside a secondary school.\n\nBoth states purchase foreign weapon systems while rural public schools lack clean drinking water and desks.\n\nWhat is the point of national defence if our citizens are dying of poverty?",
-      "romanUrduText": "India foji modernization par 86.6 arab dollar kharch karta hai jabke Pakistan 8.8 arab dollar. Usi waqt dono mulkon ke 28 million bachay school ki shakal nahi dekhte.\n\nDono mulk radar khareedte hain jabke schools mein peenay ka paani nahi.\n\nAise difa ka kya faida jab aane wali nasal anparh reh jaye?",
-      "plainUrduText": "بھارت جدید ترین فوجی سازوسامان پر 86.6 ارب ڈالر اور پاکستان 8.8 ارب ڈالر خرچ کرتا ہے۔ عین اسی وقت دونوں ممالک کے 28 ملین بچے بنیادی تعلیم سے مکمل محروم ہیں۔\n\nدونوں ریاستیں راڈار سسٹمز خریدتی ہیں جبکہ اسکولوں میں پینے کا پانی نہیں۔\n\nایسے دفاع کی کیا اہمیت ہے اگر پوری نسل کو جہالت کے اندھیروں میں چھوڑ دیا جائے؟",
-      "numbers": [
-        "86.6",
-        "8.8",
-        "28"
-      ],
-      "provider": "Curated Geopolitical Engine",
-      "status": "PENDING",
-      "timestamp": "2026-11-15T07:37:45.820Z"
-    },
-    {
-      "hash": "fa481eae0477988e4470149c81c897d70f76f0cd5e41387334b013dd07237800",
-      "topic": "Test Autonomous AI topic",
-      "category": "PAK_VS_IND",
-      "englishText": "India spends $75 billion on its army, while Pakistan spends $7 billion. India outspends Pakistan by nearly 11 times on military power.\n\nYet 35 percent of people in both lands lack clean water, and 20 million kids never see a school. Both states buy $80M tanks while local clinics have no basic drugs.\n\nWhat is the real use of big missiles if everyday people are suffering and dying of hunger?",
-      "romanUrduText": "",
-      "plainUrduText": "",
-      "numbers": [
-        "75",
-        "7",
-        "11",
-        "35",
-        "20",
-        "80m"
-      ],
-      "provider": "Google Gemini Free API",
-      "status": "PENDING",
-      "timestamp": "2026-11-15T07:58:32.882Z"
-    },
-    {
-      "hash": "735d578f515b88583a4e8b3c90cc00f7ae8e5a65f4594b4c1ef44eba3ae0fe70",
-      "topic": "China vs USA: Business or Control? (Update 4654)",
-      "category": "GEOPOLITICS",
-      "englishText": "The US operates over 750 overseas military bases with an $886 billion defence budget. Meanwhile, China invested over $1 trillion in roads, ports, and energy across 150 countries via Belt and Road.\n\nAmerica controls the sea lanes with aircraft carriers. China controls the supply chains with manufacturing.\n\nAre smaller nations forming genuine alliances, or are they just pawns in a trillion-dollar trade war?",
-      "romanUrduText": "America 886 arab dollar ke foji budget se 750 se zyada foji adday chalata hai. Doosri taraf China ne Belt and Road ke zariye 150 mulkon mein 1 trillion dollar lagaye hain.\n\nAmerica bahr-e-jahaz se samundar control karta hai, aur China factories se aalmi supply chain control karta hai.\n\nKya chhotay mumalik dost ban rahay hain ya sirf trillion-dollar jung ke mohray hain?",
-      "plainUrduText": "امریکہ 886 ارب ڈالر کے دفاعی بجٹ کے ساتھ دنیا بھر میں 750 سے زیادہ فوجی اڈے چلاتا ہے۔ دوسری طرف چین نے بیلٹ اینڈ روڈ کے ذریعے 150 ممالک میں ایک ٹریلین ڈالر سے زیادہ سرمایہ کاری کی ہے۔\n\nامریکہ طیارہ بردار جہازوں سے سمندری راستوں پر راج کرتا ہے جبکہ چین عالمی سپلائی چین پر قابض ہے۔\n\nکیا چھوٹے ممالک اتحادی بن رہے ہیں یا کھربوں ڈالر کی معاشی جنگ کے مہرے؟",
-      "numbers": [
-        "750",
-        "886",
-        "1",
-        "150"
-      ],
-      "provider": "Curated Geopolitical Engine",
-      "status": "PENDING",
-      "timestamp": "2026-11-15T07:58:34.655Z"
-    },
-    {
-      "hash": "fef316f61d8b030fa3aebe91dce6b587671384d3aca9148afda7286360886380",
-      "topic": "India vs Pakistan: Weapons vs Welfare (Series 165)",
-      "category": "PAK_VS_IND",
-      "englishText": "India spends $84.1 billion on military modernization, while Pakistan spends $8.6 billion on defence upkeep. At the exact same time, 27 million young children across the subcontinent never set foot inside a secondary school.\n\nBoth states purchase foreign weapon systems while rural public schools lack clean drinking water and desks.\n\nWhat is the point of national defence if our citizens are dying of poverty?",
-      "romanUrduText": "India foji modernization par 84.1 arab dollar kharch karta hai jabke Pakistan 8.6 arab dollar. Usi waqt dono mulkon ke 27 million bachay school ki shakal nahi dekhte.\n\nDono mulk radar khareedte hain jabke schools mein peenay ka paani nahi.\n\nAise difa ka kya faida jab aane wali nasal anparh reh jaye?",
-      "plainUrduText": "بھارت جدید ترین فوجی سازوسامان پر 84.1 ارب ڈالر اور پاکستان 8.6 ارب ڈالر خرچ کرتا ہے۔ عین اسی وقت دونوں ممالک کے 27 ملین بچے بنیادی تعلیم سے مکمل محروم ہیں۔\n\nدونوں ریاستیں راڈار سسٹمز خریدتی ہیں جبکہ اسکولوں میں پینے کا پانی نہیں۔\n\nایسے دفاع کی کیا اہمیت ہے اگر پوری نسل کو جہالت کے اندھیروں میں چھوڑ دیا جائے؟",
-      "numbers": [
-        "84.1",
-        "8.6",
-        "27"
-      ],
-      "provider": "Curated Geopolitical Engine",
-      "status": "PENDING",
-      "timestamp": "2026-11-15T07:58:43.418Z"
-    },
-    {
-      "hash": "8566448be6ae88dcae7879e9fed065c237727fc58d5e1c2b4333bba3e3a47a24",
-      "topic": "India vs Pakistan: Weapons vs Welfare (Series 582)",
-      "category": "PAK_VS_IND",
-      "englishText": "India spends $86.8 billion on military modernization, while Pakistan spends $9.5 billion on defence upkeep. At the exact same time, 25 million young children across the subcontinent never set foot inside a secondary school.\n\nBoth states purchase foreign weapon systems while rural public schools lack clean drinking water and desks.\n\nWhat is the point of national defence if our citizens are dying of poverty?",
-      "romanUrduText": "India foji modernization par 86.8 arab dollar kharch karta hai jabke Pakistan 9.5 arab dollar. Usi waqt dono mulkon ke 25 million bachay school ki shakal nahi dekhte.\n\nDono mulk radar khareedte hain jabke schools mein peenay ka paani nahi.\n\nAise difa ka kya faida jab aane wali nasal anparh reh jaye?",
-      "plainUrduText": "بھارت جدید ترین فوجی سازوسامان پر 86.8 ارب ڈالر اور پاکستان 9.5 ارب ڈالر خرچ کرتا ہے۔ عین اسی وقت دونوں ممالک کے 25 ملین بچے بنیادی تعلیم سے مکمل محروم ہیں۔\n\nدونوں ریاستیں راڈار سسٹمز خریدتی ہیں جبکہ اسکولوں میں پینے کا پانی نہیں۔\n\nایسے دفاع کی کیا اہمیت ہے اگر پوری نسل کو جہالت کے اندھیروں میں چھوڑ دیا جائے؟",
-      "numbers": [
-        "86.8",
-        "9.5",
-        "25"
-      ],
-      "provider": "Curated Geopolitical Engine",
-      "status": "PENDING",
-      "timestamp": "2026-11-15T08:08:26.205Z"
-    },
-    {
-      "hash": "29c81b2b7cf824b514beae04fcca3bb975f39d222f39d4968bc313c0c6dcbcc4",
-      "topic": "Global Power & Warfare: Critical Analysis (Series 823)",
-      "category": "AI_HUMAN_SOCIETY",
-      "englishText": "Global military expenditures surged past $2.4 trillion in 2024, yet 730 million people face acute food insecurity worldwide. The top 5 military powers control 75% of global arms exports while developing states face crushing external debt.\n\nGreat powers wage proxy competition while ordinary working families bear the inflation.\n\nWho truly benefits when war budgets rise while basic human survival is ignored?",
-      "romanUrduText": "Dunya bhar ka foji budget 2.4 trillion dollar se tajawuz kar gaya, magar 730 million log bhook ka shikar hain. Top 5 taqatein 75% hathyar bechti hain jabke ghareeb mulk qarzay mein doob chuke hain.\n\nBari taqatein mufaad ki jang larti hain jabke awam mehngai se mar rahi hai.\n\nAise foji kharchon ka kya faida jab insaniyat bhook se mar rahi ho?",
-      "plainUrduText": "دنیا بھر کے فوجی اخراجات چوبیس سو ارب ڈالر سے تجاوز کر چکے ہیں مگر تہتر کروڑ عوام بھوک اور افلاس کا شکار ہیں۔ پانچ بڑی طاقتیں پچھتر فیصد ہتھیار فروخت کرتی ہیں جبکہ غریب ممالک قرضوں میں جکڑے ہوئے ہیں۔\n\nبڑے ممالک اپنے مفادات کی جنگ لڑتے ہیں جبکہ عام شہری مہنگائی تلے دب رہے ہیں۔\n\nاس عسکری دوڑ کا کیا فائدہ جب عام انسان کی بقا ہی خطرے میں ہو؟",
-      "numbers": [
-        "2.4",
+      "mainSubject": "Election machinery and campaign funding",
+      "specificEventOrIssue": "Election machinery and campaign funding",
+      "centralArgument": "Between 2018 and 2024, Indian political parties cashed $2 billion in secretive Electoral Bonds before the Supreme Court struck them down.",
+      "analyticalAngle": "Electoral Bonds & Party Wealth",
+      "importantStatistics": [
+        "2018",
         "2024",
-        "730",
-        "5",
-        "75"
+        "2b",
+        "55",
+        "1.5b"
       ],
-      "provider": "Curated Geopolitical Engine",
+      "keywords": [
+        "parti",
+        "cash",
+        "billion",
+        "2018",
+        "2024",
+        "indian",
+        "political",
+        "secretive",
+        "electoral",
+        "bond",
+        "supreme",
+        "court",
+        "struck",
+        "rul",
+        "bjp",
+        "receiv",
+        "corporate",
+        "donation",
+        "outspend",
+        "opposi",
+        "combin",
+        "national",
+        "election",
+        "acros",
+        "border"
+      ],
+      "normalizedText": "between 2018 and 2024 indian political parties cashed 2 billion in secretive electoral bonds before the supreme court struck them down the ruling bjp received over 55 of all corporate donations outspending all opposition parties combined in national elections across the border pakistani election campaigns cost an estimated 1 5 billion almost entirely funded by undocumented cash and patronage cartels when money buys power do ordinary votes really matter",
+      "englishText": "Between 2018 and 2024, Indian political parties cashed $2 billion in secretive Electoral Bonds before the Supreme Court struck them down. The ruling BJP received over 55% of all corporate donations, outspending all opposition parties combined in national elections.\n\nAcross the border, Pakistani election campaigns cost an estimated $1.5 billion, almost entirely funded by undocumented cash and patronage cartels.\n\nWhen money buys power, do ordinary votes really matter?",
+      "romanUrduText": "2018 se 2024 ke darmiyan Indian siyasi jamaton ne 2 arab dollar ke Electoral Bonds cash karwaye. Hukmaran BJP ko 55% se zyada corporate chanda mila jis ne poori opposition ke barabar kharch kiya.\n\nDoosri taraf Pakistani intikhabat par 1.5 arab dollar lagtay hain jo zyadatar ghair-qanooni sarmaye se atay hain.\n\nJab daulat se iqtedar khareeda jaye toh aam shehri ke vote ki kya hesiyat reh jati hai?",
+      "plainUrduText": "2018 سے 2024 کے دوران بھارتی سیاسی جماعتوں نے دو ارب ڈالر کے الیکٹورل بانڈز کیش کرائے جس میں سے پچپن فیصد سے زائد حصہ اکیلی حکمراں بی جے پی کو ملا۔\n\nدوسری طرف پاکستانی انتخابی مہمات پر ڈیڑھ ارب ڈالر سے زائد رقم لٹائی جاتی ہے جو زیادہ تر غیر دستاویزی سرمائے اور نجی کارٹلز پر مشتمل ہوتی ہے۔\n\nجب بے پناہ دولت اقتدار کا فیصلہ کرے تو عام شہری کے ووٹ کی کیا وقعت رہ جاتی ہے؟",
+      "numbers": [
+        "2018",
+        "2024",
+        "2b",
+        "55",
+        "1.5b"
+      ],
+      "provider": "Curated Analytical Engine",
       "status": "PENDING",
-      "timestamp": "2026-11-15T08:11:56.687Z"
+      "timestamp": "2026-11-16T07:11:27.281Z"
     },
     {
-      "hash": "55d73a8fa5c306cb00b30ea50b24f8517e2c0633d996b78b2a1aeebd0c18edfb",
-      "topic": "India vs Pakistan: Weapons vs Welfare (Series 669)",
+      "hash": "e8d9d09776c807dc08f5f0599133325b58b5f2d9bd025529f042ab000e2cc1b3",
+      "topic": "Rafale & Defence Procurement: India vs Pakistan",
+      "subtopic": "Rafale controversy and defence procurement transparency",
+      "genreId": "PAK_VS_IND",
       "category": "PAK_VS_IND",
-      "englishText": "India spends $84.0 billion on military modernization, while Pakistan spends $8.7 billion on defence upkeep. At the exact same time, 26 million young children across the subcontinent never set foot inside a secondary school.\n\nBoth states purchase foreign weapon systems while rural public schools lack clean drinking water and desks.\n\nWhat is the point of national defence if our citizens are dying of poverty?",
-      "romanUrduText": "India foji modernization par 84.0 arab dollar kharch karta hai jabke Pakistan 8.7 arab dollar. Usi waqt dono mulkon ke 26 million bachay school ki shakal nahi dekhte.\n\nDono mulk radar khareedte hain jabke schools mein peenay ka paani nahi.\n\nAise difa ka kya faida jab aane wali nasal anparh reh jaye?",
-      "plainUrduText": "بھارت جدید ترین فوجی سازوسامان پر 84.0 ارب ڈالر اور پاکستان 8.7 ارب ڈالر خرچ کرتا ہے۔ عین اسی وقت دونوں ممالک کے 26 ملین بچے بنیادی تعلیم سے مکمل محروم ہیں۔\n\nدونوں ریاستیں راڈار سسٹمز خریدتی ہیں جبکہ اسکولوں میں پینے کا پانی نہیں۔\n\nایسے دفاع کی کیا اہمیت ہے اگر پوری نسل کو جہالت کے اندھیروں میں چھوڑ دیا جائے؟",
-      "numbers": [
-        "84.0",
-        "8.7",
-        "26"
-      ],
-      "provider": "Curated Geopolitical Engine",
-      "status": "PENDING",
-      "timestamp": "2026-11-15T08:11:26.277Z"
-    },
-    {
-      "hash": "5012034c70ce85f1f8fff9ea3945fccf378b59e19add0a91eb9e679336169723",
-      "topic": "India vs Pakistan: Weapons vs Welfare (Series 809)",
-      "category": "PAK_VS_IND",
-      "englishText": "India spends $82.5 billion on military modernization, while Pakistan spends $8.4 billion on defence upkeep. At the exact same time, 27 million young children across the subcontinent never set foot inside a secondary school.\n\nBoth states purchase foreign weapon systems while rural public schools lack clean drinking water and desks.\n\nWhat is the point of national defence if our citizens are dying of poverty?",
-      "romanUrduText": "India foji modernization par 82.5 arab dollar kharch karta hai jabke Pakistan 8.4 arab dollar. Usi waqt dono mulkon ke 27 million bachay school ki shakal nahi dekhte.\n\nDono mulk radar khareedte hain jabke schools mein peenay ka paani nahi.\n\nAise difa ka kya faida jab aane wali nasal anparh reh jaye?",
-      "plainUrduText": "بھارت جدید ترین فوجی سازوسامان پر 82.5 ارب ڈالر اور پاکستان 8.4 ارب ڈالر خرچ کرتا ہے۔ عین اسی وقت دونوں ممالک کے 27 ملین بچے بنیادی تعلیم سے مکمل محروم ہیں۔\n\nدونوں ریاستیں راڈار سسٹمز خریدتی ہیں جبکہ اسکولوں میں پینے کا پانی نہیں۔\n\nایسے دفاع کی کیا اہمیت ہے اگر پوری نسل کو جہالت کے اندھیروں میں چھوڑ دیا جائے؟",
-      "numbers": [
-        "82.5",
-        "8.4",
-        "27"
-      ],
-      "provider": "Curated Geopolitical Engine",
-      "status": "PENDING",
-      "timestamp": "2026-11-15T08:11:41.937Z"
-    },
-    {
-      "hash": "19d2b19cab4c109fbab1673f045acb1a6cdcb0a130a2cb56718b571c764e7c25",
-      "topic": "India vs Pakistan: Weapons vs Welfare (Series 795)",
-      "category": "PAK_VS_IND",
-      "englishText": "India spends $86.6 billion on military modernization, while Pakistan spends $9.9 billion on defence upkeep. At the exact same time, 24 million young children across the subcontinent never set foot inside a secondary school.\n\nBoth states purchase foreign weapon systems while rural public schools lack clean drinking water and desks.\n\nWhat is the point of national defence if our citizens are dying of poverty?",
-      "romanUrduText": "India foji modernization par 86.6 arab dollar kharch karta hai jabke Pakistan 9.9 arab dollar. Usi waqt dono mulkon ke 24 million bachay school ki shakal nahi dekhte.\n\nDono mulk radar khareedte hain jabke schools mein peenay ka paani nahi.\n\nAise difa ka kya faida jab aane wali nasal anparh reh jaye?",
-      "plainUrduText": "بھارت جدید ترین فوجی سازوسامان پر 86.6 ارب ڈالر اور پاکستان 9.9 ارب ڈالر خرچ کرتا ہے۔ عین اسی وقت دونوں ممالک کے 24 ملین بچے بنیادی تعلیم سے مکمل محروم ہیں۔\n\nدونوں ریاستیں راڈار سسٹمز خریدتی ہیں جبکہ اسکولوں میں پینے کا پانی نہیں۔\n\nایسے دفاع کی کیا اہمیت ہے اگر پوری نسل کو جہالت کے اندھیروں میں چھوڑ دیا جائے؟",
-      "numbers": [
-        "86.6",
-        "9.9",
-        "24"
-      ],
-      "provider": "Curated Geopolitical Engine",
-      "status": "PENDING",
-      "timestamp": "2026-11-15T08:14:07.576Z"
-    },
-    {
-      "hash": "59e1a2b03df5839661db6e00184ef8324b05f98c1de3875553582f5467d32dd1",
-      "topic": "AI Revolution: Data Centers vs Water Scarcity",
-      "category": "GEOPOLITICS",
-      "englishText": "Advanced AI data centres now consume 4.2% of global electricity, using over 5 million litres of clean water every day just for cooling. Meanwhile, 2.2 billion citizens lack safe drinking water at home, and rural hospitals face continuous blackouts.\n\nTech corporations spend billions training software while ordinary human communities dry up.\n\nAre we building smart technology to serve human life, or sacrificing humans for digital power?",
-      "romanUrduText": "AI data centres dunya ki 4.2% bijli aur rozana 5 million litre saaf paani thanda karne ke liye istemal karte hain. Doosri taraf 2.2 arab log saaf paani se mehroom hain aur dehati hospitals mein load shedding hai.\n\nBari companies software par arbon laga rahi hain jabke insani bastiyan sookh rahi hain.\n\nKya technology insaniyat ki khidmat ke liye hai ya digital taqat ke liye?",
-      "plainUrduText": "جدید ترین ڈیٹا سینٹرز دنیا کی چار فیصد سے زیادہ بجلی اور روزانہ پچاس لاکھ لیٹر پینے کا صاف پانی استعمال کر رہے ہیں۔ دوسری طرف سوا دو ارب شہری صاف پانی سے محروم ہیں اور اسپتالوں میں بجلی نہیں۔\n\nکارپوریشنز سافٹ ویئر پر اربوں بہا رہی ہیں جبکہ عام بستیاں پیاسی مر رہی ہیں۔\n\nکیا ہم انسانوں کی بہتری کے لیے ٹیکنالوجی بنا رہے ہیں یا ڈیجیٹل طاقت کے لیے انسان قربان کر رہے ہیں؟",
-      "numbers": [
-        "4.2",
-        "5",
-        "2.2"
-      ],
-      "provider": "Curated Geopolitical Engine",
-      "status": "PENDING",
-      "timestamp": "2026-11-15T08:14:19.163Z"
-    },
-    {
-      "hash": "06dd1fc5e4bc52e6a5dc221bc9f40d06f47ac9d43727d7b76270df0ca3b49852",
-      "topic": "Global Debt: Foreign Debt vs Public Healthcare",
-      "category": "PAKISTAN_POLITICS",
-      "englishText": "Developing nations now spend $480 billion annually servicing foreign debt, which is four times more than their combined health budgets. In many countries, over 65% of all national tax collection goes directly to foreign bankers rather than schools or clinics.\n\nGovernments cut food subsidies to protect international credit ratings.\n\nWhy must poor citizens sacrifice their daily bread to pay off debts they never approved?",
-      "romanUrduText": "Taraqqi-pazeer mulk qarz ki adayigi par 480 arab dollar saalana kharch karte hain jo unke sehat ke budget se 4 guna zyada hai. Kayi mulkon mein 65% tax direct ghair-mulki bankers ko jata hai bajaaye schools ya clinics ke.\n\nHukoomatein credit rating bachane ke liye roti par subsidy khatam karti hain.\n\nGhareeb awam aisi qarz ke liye kyon maray jo usne li hi nahi?",
-      "plainUrduText": "ترقی پذیر ممالک غیر ملکی قرضوں کی ادائیگی پر سالانہ 480 ارب ڈالر خرچ کرتے ہیں جو ان کے صحت کے بجٹ سے چار گنا زیادہ ہے۔ پینسٹھ فیصد سے زائد ٹیکس براہ راست غیر ملکی بینکرز کو جاتا ہے۔\n\nحکومتیں کریڈٹ ریٹنگ بچانے کے لیے روٹی پر سبسڈی ختم کرتی ہیں۔\n\nغریب شہری ان قرضوں کی قیمت اپنے نوالے چھنوا کر کیوں ادا کریں جو انہوں نے کبھی لیے ہی نہیں؟",
-      "numbers": [
-        "480",
+      "mainSubject": "Rafale controversy and defence procurement transparency",
+      "specificEventOrIssue": "Rafale controversy and defence procurement transparency",
+      "centralArgument": "India spent $8.7 billion on 36 French Rafale jets, while Pakistan spent over $1.5 billion expanding Chinese-origin fighter squadrons.",
+      "analyticalAngle": "India vs Pakistan",
+      "importantStatistics": [
+        "8.7b",
+        "36",
+        "1.5b",
+        "9.8",
         "65"
       ],
-      "provider": "Curated Geopolitical Engine",
+      "keywords": [
+        "india",
+        "spent",
+        "billion",
+        "jet",
+        "fighter",
+        "remain",
+        "arm",
+        "french",
+        "rafale",
+        "pakistan",
+        "expand",
+        "chinese",
+        "origin",
+        "squadron",
+        "last",
+        "decade",
+        "world",
+        "largest",
+        "importer",
+        "buy",
+        "global",
+        "export",
+        "yet",
+        "domestic",
+        "aircraft"
+      ],
+      "normalizedText": "india spent 8 7 billion on 36 french rafale jets while pakistan spent over 1 5 billion expanding chinese origin fighter squadrons over the last decade india remained the world s largest arms importer buying 9 8 of global arms exports yet domestic aircraft projects face decades of delays and 65 of military hardware remains dependent on foreign spare parts why celebrate imported fighter jets when neither country can build a commercial airliner",
+      "englishText": "India spent $8.7 billion on 36 French Rafale jets, while Pakistan spent over $1.5 billion expanding Chinese-origin fighter squadrons. Over the last decade, India remained the world's largest arms importer, buying 9.8% of global arms exports.\n\nYet domestic aircraft projects face decades of delays, and 65% of military hardware remains dependent on foreign spare parts.\n\nWhy celebrate imported fighter jets when neither country can build a commercial airliner?",
+      "romanUrduText": "India ne 36 French Rafale tayyaron par 8.7 arab dollar lagaye jabke Pakistan ne Cheeni fighters par 1.5 arab dollar kharch kiye. Pichlay 10 saalon mein India dunya ka sab se bara aslahah khareedar raha jo 9.8% aalmi hathyar khareedta hai.\n\nMagar muqami aircraft projects dahaiyon se takheer ka shikar hain aur 65% purzay bahir se atay hain.\n\nImported tayyaron par jashn kyon jab dono mulk aam musafir jahaz tak nahi bana saktay?",
+      "plainUrduText": "بھارت نے 36 فرانسیسی رافیل طیاروں پر پونے نو ارب ڈالر خرچ کیے جبکہ پاکستان نے چینی ساختہ لڑاکا طیاروں پر ڈیڑھ ارب ڈالر لگائے۔ گزشتہ دس برسوں میں بھارت دنیا کا سب سے بڑا ہتھیار خریدار رہا جس نے عالمی اسلحے کا تقریباً دس فیصد خریدا۔\n\nمگر مقامی ڈیفنس منصوبے دہائیوں سے تاخیر کا شکار ہیں اور پینسٹھ فیصد اسپیئر پارٹس درآمد ہوتے ہیں۔\n\nدرآمدی طیاروں پر جشن کیسا جب دونوں میں سے کوئی ملک ایک کمرشل مسافر طیارہ نہیں بنا سکتا؟",
+      "numbers": [
+        "8.7b",
+        "36",
+        "1.5b",
+        "9.8",
+        "65"
+      ],
+      "provider": "Curated Analytical Engine",
       "status": "PENDING",
-      "timestamp": "2026-11-15T08:14:24.205Z"
+      "timestamp": "2026-11-16T07:11:29.045Z"
     },
     {
-      "hash": "1cf0033c5bb589f82ba6ac2bb8fad03ae8e7e10f376c5378c0607937e53183ed",
-      "topic": "India vs Pakistan: Weapons vs Welfare (Series 898)",
+      "hash": "e0bddf6cf1e2ea1906332e896c7532563554b30aad236a43a7b0767058897f33",
+      "topic": "Kashmir: Article 370 & Legal Perspectives",
+      "subtopic": "Article 370 removal and political representation",
+      "genreId": "PAK_VS_IND",
       "category": "PAK_VS_IND",
-      "englishText": "India spends $82.5 billion on military modernization, while Pakistan spends $9.9 billion on defence upkeep. At the exact same time, 21 million young children across the subcontinent never set foot inside a secondary school.\n\nBoth states purchase foreign weapon systems while rural public schools lack clean drinking water and desks.\n\nWhat is the point of national defence if our citizens are dying of poverty?",
-      "romanUrduText": "India foji modernization par 82.5 arab dollar kharch karta hai jabke Pakistan 9.9 arab dollar. Usi waqt dono mulkon ke 21 million bachay school ki shakal nahi dekhte.\n\nDono mulk radar khareedte hain jabke schools mein peenay ka paani nahi.\n\nAise difa ka kya faida jab aane wali nasal anparh reh jaye?",
-      "plainUrduText": "بھارت جدید ترین فوجی سازوسامان پر 82.5 ارب ڈالر اور پاکستان 9.9 ارب ڈالر خرچ کرتا ہے۔ عین اسی وقت دونوں ممالک کے 21 ملین بچے بنیادی تعلیم سے مکمل محروم ہیں۔\n\nدونوں ریاستیں راڈار سسٹمز خریدتی ہیں جبکہ اسکولوں میں پینے کا پانی نہیں۔\n\nایسے دفاع کی کیا اہمیت ہے اگر پوری نسل کو جہالت کے اندھیروں میں چھوڑ دیا جائے؟",
-      "numbers": [
-        "82.5",
-        "9.9",
-        "21"
+      "mainSubject": "Article 370 removal and political representation",
+      "specificEventOrIssue": "Article 370 removal and political representation",
+      "centralArgument": "For 18 months, 7 million residents endured the longest high-speed internet shutdown ever recorded in a democracy.",
+      "analyticalAngle": "Article 370 & Legal Perspectives",
+      "importantStatistics": [
+        "2019",
+        "370",
+        "18",
+        "7m"
       ],
-      "provider": "Curated Geopolitical Engine",
+      "keywords": [
+        "kashmir",
+        "august",
+        "2019",
+        "india",
+        "unilaterally",
+        "revok",
+        "article",
+        "370",
+        "dismantl",
+        "jammu",
+        "statehood",
+        "two",
+        "federally",
+        "govern",
+        "union",
+        "territori",
+        "month",
+        "million",
+        "resident",
+        "endur",
+        "longest",
+        "high",
+        "spe",
+        "internet",
+        "shutdown"
+      ],
+      "normalizedText": "in august 2019 india unilaterally revoked article 370 dismantling jammu and kashmir s statehood into two federally governed union territories for 18 months 7 million residents endured the longest high speed internet shutdown ever recorded in a democracy across the line of control pakistan maintains azad kashmir and gilgit baltistan in political limbo without formal representation in the national assembly both capitals claim kashmir but does either listen to kashmiris",
+      "englishText": "In August 2019, India unilaterally revoked Article 370, dismantling Jammu and Kashmir's statehood into two federally governed union territories. For 18 months, 7 million residents endured the longest high-speed internet shutdown ever recorded in a democracy.\n\nAcross the Line of Control, Pakistan maintains Azad Kashmir and Gilgit-Baltistan in political limbo without formal representation in the National Assembly.\n\nBoth capitals claim Kashmir, but does either listen to Kashmiris?",
+      "romanUrduText": "August 2019 mein India ne Article 370 khatam kar ke Jammu aur Kashmir ko do union territories mein baant diya. 70 lakh shehriyon ne 18 maheenay tareekh ka taweel-tareen internet blackout bardasht kiya.\n\nLine of Control ke doosri taraf Pakistan ne Azad Kashmir aur Gilgit-Baltistan ko National Assembly mein numaindagi ke baghair muallaq rakha hai.\n\nDono dar-ul-hukoomat Kashmir ka dawah karte hain, magar kya koi Kashmiriyon ki awaz sunta hai?",
+      "plainUrduText": "اگست 2019 میں بھارت نے یکطرفہ طور پر آرٹیکل 370 ختم کر کے جموں و کشمیر کو دو وفاقی خطوں میں تقسیم کر دیا۔ ستر لاکھ شہریوں نے اٹھارہ ماہ طویل ترین انٹرنیٹ بلیک آؤٹ برداشت کیا۔\n\nکنٹرول لائن کے اس پار پاکستان نے آزاد کشمیر اور گلگت بلتستان کو قومی اسمبلی میں نمائندگی دیے بغیر آئینی التوا میں رکھا ہے۔\n\nدونوں دارالحکومت کشمیر کے دعویدار ہیں لیکن کیا کسی نے کبھی کشمیریوں کی سنی؟",
+      "numbers": [
+        "2019",
+        "370",
+        "18",
+        "7m"
+      ],
+      "provider": "Curated Analytical Engine",
       "status": "PENDING",
-      "timestamp": "2026-11-15T08:14:29.373Z"
+      "timestamp": "2026-11-16T07:11:32.365Z"
     },
     {
-      "hash": "781aa30aa16ea0530a4c58612cad90fb0ca835431d521be1ef02bc31a465ee98",
-      "topic": "Maritime Chokepoints: Oil Stand-offs vs Citizen Inflation",
-      "category": "SOCIAL_ETHNIC_ISSUES",
-      "englishText": "Over 21% of the world's daily petroleum passes through the narrow Strait of Hormuz, worth $1.2 billion every single hour. Yet international sanctions and geopolitical naval standoffs have driven diesel and fertilizer costs up by 45% in vulnerable nations.\n\nGlobal powers battle for maritime dominance while small farmers cannot afford fuel.\n\nWhy should ordinary citizens pay the price of imperial trade wars?",
-      "romanUrduText": "Dunya ka 21% tail rozana Strait of Hormuz se guzarta hai jiski qeemat har ghantay 1.2 arab dollar hai. Magar pabandiyon aur behri tanaao ne kamzor mulkon mein diesel aur khaad 45% mehngi kar di hai.\n\nAalmi taqatein samundari qabzay ke liye larti hain jabke kisan fuel nahi khareed sakta.\n\nAam awam aalmi tijarti jangon ki keemat kyon chukaye?",
-      "plainUrduText": "دنیا کا اکیس فیصد تیل آبنائے ہرمز سے گزرتا ہے جس کی مالیت ہر گھنٹے سوا ارب ڈالر ہے۔ مگر پابندیوں اور بحری کشیدگی نے کمزور ممالک میں ڈیزل اور کھاد پینتالیس فیصد مہنگی کر دی ہے۔\n\nعالمی طاقتیں سمندری راستوں پر غلبے کے لیے لڑتی ہیں جبکہ چھوٹا کسان ایندھن نہیں خرید سکتا۔\n\nعام شہری ان طاقتوں کی تجارتی جنگوں کی قیمت کیوں چکائیں؟",
-      "numbers": [
-        "21",
-        "1.2",
-        "45"
-      ],
-      "provider": "Curated Geopolitical Engine",
-      "status": "DISCARDED",
-      "timestamp": "2026-11-15T08:14:36.708Z"
-    },
-    {
-      "hash": "15fa1b93e34bf9bd4a4099f0f3d144ca20474bcd59313fedb5856c328370d206",
-      "topic": "Fighter Aircraft vs Public School Desks",
-      "category": "AI_HUMAN_SOCIETY",
-      "englishText": "A single modern fifth-generation fighter jet costs $115 million to buy and $35,000 per flight hour to operate. That single jet costs more than the total annual operating budgets of 45 public district hospitals in developing countries.\n\nLeaders announce massive new defence procurement packages while state schools lack basic textbooks.\n\nWhat good is an expensive jet in the sky when schools collapse on the ground?",
-      "romanUrduText": "Ek fifth-generation jahaz 115 million dollar ka hai aur har ghantay uranay par 35,000 dollar lagtay hain. Ek jahaz ki qeemat 45 zillai hospitals ke saalana budget se zyada hai.\n\nHukmaran arbon ke difai muaahiday karte hain jabke sarkari schools mein kitaabein nahi hain.\n\nAasman mein mehangay jahaz ka kya faida jab zameen par schools dhal rahay hon?",
-      "plainUrduText": "ایک جدید ترین لڑاکا طیارہ ساڑھے گیارہ کروڑ ڈالر کا ہے اور اس کی ایک گھنٹے کی پرواز پر پینتیس ہزار ڈالر خرچ ہوتے ہیں۔ یہ لاگت پینتالیس ضلعی اسپتالوں کے سالانہ بجٹ سے زیادہ ہے۔\n\nحکمران دفاعی سودوں پر اربوں لٹاتے ہیں جبکہ سرکاری اسکولوں میں کتابیں تک میسر نہیں۔\n\nآسمان میں اڑتے مہنگے طیارے کا کیا فائدہ جب زمین پر تعلیمی ادارے ملبے کا ڈھیر بن رہے ہوں؟",
-      "numbers": [
-        "115",
-        "35",
-        "000",
-        "45"
-      ],
-      "provider": "Curated Geopolitical Engine",
-      "status": "DISCARDED",
-      "timestamp": "2026-11-15T08:14:42.132Z"
-    },
-    {
-      "hash": "e6473d6160766ce67fc16b22e34dd7f1f263dbcf07340f6f3098908d84322225",
-      "topic": "Global Power & Warfare: Critical Analysis (Series 192)",
-      "category": "CLIMATE_GLOBAL_POWER",
-      "englishText": "Global military expenditures reached $2.2 trillion in 2024, while 721 million people face acute food insecurity across developing nations. The wealthiest states spend 28% of their federal budgets on advanced arms while rural schools lack clean drinking water.\n\nGovernments prioritize foreign weapon deals while public welfare systems collapse.\n\nWhat is the real worth of national power when ordinary citizens are left to starve?",
-      "romanUrduText": "Aalmi foji budget 2024 mein 2.2 trillion dollar pohanch gaya jabke 721 million log bhook se lar rahay hain. Baray mulk budget ka 28% hathyar par lagatay hain jabke schools mein saaf paani nahi.\n\nHukoomatein hathyar khareedti hain jabke awam ghurbat se mar rahi hai.\n\nAisi taqat ka kya faida jab aam shehri bhooka so jaye?",
-      "plainUrduText": "عالمی عسکری بجٹ 2.2 کھرب ڈالر تک پہنچ گیا ہے جبکہ 721 ملین انسان شدید غذائی قلت کا شکار ہیں۔ امیر ترین ریاستیں اپنے بجٹ کا 28 فیصد اسلحے پر جھونکتی ہیں جبکہ اسکولوں میں پینے کا پانی نہیں۔\n\nحکومتیں غیر ملکی ہتھیاروں کو ترجیح دیتی ہیں جبکہ فلاحی نظام تباہ ہو چکا ہے۔\n\nایسی قومی طاقت کی کیا وقعت ہے اگر عام شہری بنیادی روٹی کو ترس رہے ہوں؟",
-      "numbers": [
-        "2.2",
-        "2024",
-        "721",
-        "28"
-      ],
-      "provider": "Curated Geopolitical Engine",
-      "status": "DISCARDED",
-      "timestamp": "2026-11-15T08:14:47.159Z"
-    },
-    {
-      "hash": "43e4768c1a0e33ba5e130fca4cdb97c925dfe2ffd998b666cea5437cddf443ce",
-      "topic": "Global Power & Warfare: Critical Analysis (Series 702)",
-      "category": "SATIRICAL_COMMENTARY",
-      "englishText": "Global military expenditures reached $2.2 trillion in 2024, while 719 million people face acute food insecurity across developing nations. The wealthiest states spend 22% of their federal budgets on advanced arms while rural schools lack clean drinking water.\n\nGovernments prioritize foreign weapon deals while public welfare systems collapse.\n\nWhat is the real worth of national power when ordinary citizens are left to starve?",
-      "romanUrduText": "Aalmi foji budget 2024 mein 2.2 trillion dollar pohanch gaya jabke 719 million log bhook se lar rahay hain. Baray mulk budget ka 22% hathyar par lagatay hain jabke schools mein saaf paani nahi.\n\nHukoomatein hathyar khareedti hain jabke awam ghurbat se mar rahi hai.\n\nAisi taqat ka kya faida jab aam shehri bhooka so jaye?",
-      "plainUrduText": "عالمی عسکری بجٹ 2.2 کھرب ڈالر تک پہنچ گیا ہے جبکہ 719 ملین انسان شدید غذائی قلت کا شکار ہیں۔ امیر ترین ریاستیں اپنے بجٹ کا 22 فیصد اسلحے پر جھونکتی ہیں جبکہ اسکولوں میں پینے کا پانی نہیں۔\n\nحکومتیں غیر ملکی ہتھیاروں کو ترجیح دیتی ہیں جبکہ فلاحی نظام تباہ ہو چکا ہے۔\n\nایسی قومی طاقت کی کیا وقعت ہے اگر عام شہری بنیادی روٹی کو ترس رہے ہوں؟",
-      "numbers": [
-        "2.2",
-        "2024",
-        "719",
-        "22"
-      ],
-      "provider": "Curated Geopolitical Engine",
-      "status": "DISCARDED",
-      "timestamp": "2026-11-15T08:14:57.263Z"
-    },
-    {
-      "hash": "4546cafeb3bdaa011846fb1d818d59923386780f0acc18aa0f2b732800eeb251",
-      "topic": "Global Power & Warfare: Critical Analysis (Series 331)",
-      "category": "CUSTOM_SPACE_CYBER_DEFENCE_6529",
-      "englishText": "Global military expenditures reached $2.5 trillion in 2024, while 750 million people face acute food insecurity across developing nations. The wealthiest states spend 22% of their federal budgets on advanced arms while rural schools lack clean drinking water.\n\nGovernments prioritize foreign weapon deals while public welfare systems collapse.\n\nWhat is the real worth of national power when ordinary citizens are left to starve?",
-      "romanUrduText": "Aalmi foji budget 2024 mein 2.5 trillion dollar pohanch gaya jabke 750 million log bhook se lar rahay hain. Baray mulk budget ka 22% hathyar par lagatay hain jabke schools mein saaf paani nahi.\n\nHukoomatein hathyar khareedti hain jabke awam ghurbat se mar rahi hai.\n\nAisi taqat ka kya faida jab aam shehri bhooka so jaye?",
-      "plainUrduText": "عالمی عسکری بجٹ 2.5 کھرب ڈالر تک پہنچ گیا ہے جبکہ 750 ملین انسان شدید غذائی قلت کا شکار ہیں۔ امیر ترین ریاستیں اپنے بجٹ کا 22 فیصد اسلحے پر جھونکتی ہیں جبکہ اسکولوں میں پینے کا پانی نہیں۔\n\nحکومتیں غیر ملکی ہتھیاروں کو ترجیح دیتی ہیں جبکہ فلاحی نظام تباہ ہو چکا ہے۔\n\nایسی قومی طاقت کی کیا وقعت ہے اگر عام شہری بنیادی روٹی کو ترس رہے ہوں؟",
-      "numbers": [
-        "2.5",
-        "2024",
-        "750",
-        "22"
-      ],
-      "provider": "Curated Geopolitical Engine",
-      "status": "PENDING",
-      "timestamp": "2026-11-15T08:15:02.306Z"
-    },
-    {
-      "hash": "89e61f10b5923aa6ea2e1a54662d8c87cbd84a6df847a07ed2f31b16921bec37",
-      "topic": "Pakistan vs India: The Lost Trade Opportunity",
+      "hash": "f1772c640b8c018d907f1e8695f8534b7e498a941e0e944ca1af9c6437051adb",
+      "topic": "Cricket Diplomacy: BCCI Monopoly & Global Revenue",
+      "subtopic": "BCCI financial influence and IPL economics",
+      "genreId": "PAK_VS_IND",
       "category": "PAK_VS_IND",
-      "englishText": "Direct trade between Pakistan and India remains under $2 billion, while indirect trade through Dubai exceeds $10 billion with heavy transport fees. The World Bank estimates bilateral trade could easily reach $37 billion every year if borders opened.\n\nBusinesses on both sides pay massive middleman charges while ordinary consumers face inflated food and medicine prices. Political confrontation is an expensive tax on the poor.",
-      "romanUrduText": "Pakistan aur India ki direct tijarat 2 arab dollar se kam hai, jabke Dubai ke zariye indirect trade 10 arab dollar se tajawuz karti hai. World Bank ke mutabiq agar raste khul jayein toh tijarat 37 arab dollar tak pohanch sakti hai.\n\nDono taraf ke karobari afraad arbon dollar middleman ko detay hain jabke aam awam mehngi dawaiyan khareedti hai. Siyasi dushmani ghareebon par ek mehanga tax hai.",
-      "plainUrduText": "پاکستان اور بھارت کی براہ راست تجارت دو ارب ڈالر سے کم ہے جبکہ دبئی کے ذریعے غیر مستقیم تجارت دس ارب ڈالر سے تجاوز کر چکی ہے۔ ورلڈ بینک کے مطابق تجارتی راستے کھلنے سے یہ حجم سالانہ سینتیس ارب ڈالر تک پہنچ سکتا ہے۔\n\nدونوں اطراف کے تاجر بھاری مڈل مین چارجز ادا کرتے ہیں جبکہ عام شہری مہنگی اشیائے خورونوش خریدنے پر مجبور ہیں۔ سیاسی محاذ آرائی غریب عوام پر ایک مہنگا ٹیکس ہے۔",
-      "numbers": [
-        "2",
-        "10",
-        "37"
+      "mainSubject": "BCCI financial influence and IPL economics",
+      "specificEventOrIssue": "BCCI financial influence and IPL economics",
+      "centralArgument": "The BCCI controls nearly 38.5% of the International Cricket Council's annual revenue, pulling in $230 million every year.",
+      "analyticalAngle": "BCCI Monopoly & Global Revenue",
+      "importantStatistics": [
+        "38.5",
+        "230m",
+        "6.2b"
       ],
-      "provider": "Curated Geopolitical Engine",
+      "keywords": [
+        "cricket",
+        "revenue",
+        "sport",
+        "bcci",
+        "control",
+        "nearly",
+        "international",
+        "council",
+        "annual",
+        "pull",
+        "230",
+        "million",
+        "every",
+        "year",
+        "indian",
+        "premier",
+        "league",
+        "broadcast",
+        "right",
+        "sold",
+        "stagger",
+        "billion",
+        "dwarf",
+        "board",
+        "combin"
+      ],
+      "normalizedText": "the bcci controls nearly 38 5 of the international cricket council s annual revenue pulling in 230 million every year the indian premier league broadcast rights sold for a staggering 6 2 billion dwarfing all other cricket boards combined this economic monopoly allows new delhi to dictate tournament venues block bilateral tours with pakistan and isolate the pcb financially when television revenue determines sports policy has cricket ceased to be a sport",
+      "englishText": "The BCCI controls nearly 38.5% of the International Cricket Council's annual revenue, pulling in $230 million every year. The Indian Premier League broadcast rights sold for a staggering $6.2 billion, dwarfing all other cricket boards combined.\n\nThis economic monopoly allows New Delhi to dictate tournament venues, block bilateral tours with Pakistan, and isolate the PCB financially.\n\nWhen television revenue determines sports policy, has cricket ceased to be a sport?",
+      "romanUrduText": "BCCI aalmi cricket council ke 38.5% saalana revenue par qabiz hai jo saalana 230 million dollar banta hai. IPL ke media rights 6.2 arab dollar mein bikay jo baki tamam cricket boards ki majmooi aamdani se zyada hain.\n\nIs maali taqat se New Delhi tournament venues aur Pakistan se series tay karti hai.\n\nJab television ki daulat khel ke faislay kare, toh kya cricket ab sach mein khel raha hai?",
+      "plainUrduText": "بھارتی کرکٹ بورڈ آئی سی سی کے سالانہ ریونیو کے تقریباً ساڑھے اڑتیس فیصد پر قابض ہے جس سے اسے سالانہ 230 ملین ڈالر ملتے ہیں۔ آئی پی ایل کے نشریاتی حقوق سوا چھ ارب ڈالر میں فروخت ہوئے جو دنیا کے دیگر تمام بورڈز سے کہیں زیادہ ہیں۔\n\nاس مالیاتی اجارہ داری کے ذریعے نئی دہلی میچوں کے مقامات اور پاک بھارت کرکٹ کو یرغمال بناتی ہے۔\n\nجب ٹیلی ویژن کی کھربوں کی کمائی فیصلے کرے تو کیا کرکٹ اب بھی صرف ایک کھیل ہے؟",
+      "numbers": [
+        "38.5",
+        "230m",
+        "6.2b"
+      ],
+      "provider": "Curated Analytical Engine",
       "status": "PENDING",
-      "timestamp": "2026-11-15T08:38:06.294Z"
-    },
-    {
-      "hash": "a2d8a39aba4d70409959ce060ff5ba04a1ae217f3add5a021badc71187b8f4b7",
-      "topic": "Global Power & Warfare: Critical Analysis (Series 171)",
-      "category": "GEOPOLITICS",
-      "englishText": "Global military expenditures reached $2.5 trillion in 2024, while 778 million people face acute food insecurity across developing nations. The wealthiest states spend 28% of their federal budgets on advanced arms while rural schools lack clean drinking water.\n\nGovernments prioritize foreign weapon deals while public welfare systems collapse.\n\nWhat is the real worth of national power when ordinary citizens are left to starve?",
-      "romanUrduText": "Aalmi foji budget 2024 mein 2.5 trillion dollar pohanch gaya jabke 778 million log bhook se lar rahay hain. Baray mulk budget ka 28% hathyar par lagatay hain jabke schools mein saaf paani nahi.\n\nHukoomatein hathyar khareedti hain jabke awam ghurbat se mar rahi hai.\n\nAisi taqat ka kya faida jab aam shehri bhooka so jaye?",
-      "plainUrduText": "عالمی عسکری بجٹ 2.5 کھرب ڈالر تک پہنچ گیا ہے جبکہ 778 ملین انسان شدید غذائی قلت کا شکار ہیں۔ امیر ترین ریاستیں اپنے بجٹ کا 28 فیصد اسلحے پر جھونکتی ہیں جبکہ اسکولوں میں پینے کا پانی نہیں۔\n\nحکومتیں غیر ملکی ہتھیاروں کو ترجیح دیتی ہیں جبکہ فلاحی نظام تباہ ہو چکا ہے۔\n\nایسی قومی طاقت کی کیا وقعت ہے اگر عام شہری بنیادی روٹی کو ترس رہے ہوں؟",
-      "numbers": [
-        "2.5",
-        "2024",
-        "778",
-        "28"
-      ],
-      "provider": "Curated Geopolitical Engine",
-      "status": "PENDING",
-      "timestamp": "2026-11-15T08:38:15.669Z"
-    },
-    {
-      "hash": "9afad87b33ccd556bceff03ad151a8f0396e5eb2ccebee3138c446e0acabd5cf",
-      "topic": "Global Power & Warfare: Critical Analysis (Series 554)",
-      "category": "PAKISTAN_POLITICS",
-      "englishText": "Global military expenditures reached $2.7 trillion in 2024, while 701 million people face acute food insecurity across developing nations. The wealthiest states spend 28% of their federal budgets on advanced arms while rural schools lack clean drinking water.\n\nGovernments prioritize foreign weapon deals while public welfare systems collapse.\n\nWhat is the real worth of national power when ordinary citizens are left to starve?",
-      "romanUrduText": "Aalmi foji budget 2024 mein 2.7 trillion dollar pohanch gaya jabke 701 million log bhook se lar rahay hain. Baray mulk budget ka 28% hathyar par lagatay hain jabke schools mein saaf paani nahi.\n\nHukoomatein hathyar khareedti hain jabke awam ghurbat se mar rahi hai.\n\nAisi taqat ka kya faida jab aam shehri bhooka so jaye?",
-      "plainUrduText": "عالمی عسکری بجٹ 2.7 کھرب ڈالر تک پہنچ گیا ہے جبکہ 701 ملین انسان شدید غذائی قلت کا شکار ہیں۔ امیر ترین ریاستیں اپنے بجٹ کا 28 فیصد اسلحے پر جھونکتی ہیں جبکہ اسکولوں میں پینے کا پانی نہیں۔\n\nحکومتیں غیر ملکی ہتھیاروں کو ترجیح دیتی ہیں جبکہ فلاحی نظام تباہ ہو چکا ہے۔\n\nایسی قومی طاقت کی کیا وقعت ہے اگر عام شہری بنیادی روٹی کو ترس رہے ہوں؟",
-      "numbers": [
-        "2.7",
-        "2024",
-        "701",
-        "28"
-      ],
-      "provider": "Curated Geopolitical Engine",
-      "status": "PENDING",
-      "timestamp": "2026-11-15T08:38:20.707Z"
-    },
-    {
-      "hash": "9eafef348b04cc5859eef4eeaad292bc6fbe3952e656929d4a0e9c14aa4f9a3d",
-      "topic": "Lahore to Delhi: The Toxic Smog Crisis",
-      "category": "PAK_VS_IND",
-      "englishText": "Every winter, hazardous toxic smog covers Lahore and New Delhi, pushing air quality index levels above 1,000 and hospitalising tens of thousands of citizens with lung failure. The wind carries poison across the border regardless of radar systems and armed outposts.\n\nBoth governments invest billions defending borders from each other, but neither can defend their citizens from the air they breathe together.",
-      "romanUrduText": "Har sardi mein shadeed zehreeli smog Lahore aur New Delhi ko lapait mein leti hai, jahan AQI 1,000 se oopar chala jata hai aur hazaron log saans ki bemariyon se hospitals pohanchtay hain. Hawa radar aur fouji chokiyon ki parwah kiye baghair zehar phailati hai.\n\nDono hukoomatein arbon dollar sarhad ki hifazat par lagati hain, magar dono apnay shehriyon ko us hawa se nahi bacha sakein jo woh sath saans letay hain.",
-      "plainUrduText": "ہر موسم سرما میں زہریلا اسموگ لاہور اور نئی دہلی کو اپنی لپیٹ میں لے لیتا ہے جہاں ایئر کوالٹی انڈیکس ایک ہزار سے تجاوز کر جاتا ہے اور ہزاروں شہری اسپتال پہنچ جاتے ہیں۔ زہریلی ہوائیں راڈار اور سرحدی باڑ کی پروا کیے بغیر سرحد پار کرتی ہیں۔\n\nدونوں حکومتیں ایک دوسرے سے سرحد بچانے پر اربوں لگاتی ہیں مگر اپنے شہریوں کو اس زہریلی ہوا سے نہیں بچا سکتیں جس میں وہ سانس لیتے ہیں۔",
-      "numbers": [
-        "1",
-        "000"
-      ],
-      "provider": "Curated Geopolitical Engine",
-      "status": "PENDING",
-      "timestamp": "2026-11-15T08:38:25.773Z"
-    },
-    {
-      "hash": "291a6524d3afeb3bde89b17154db626ad44b90d8a09a857d6cb8eb399c5a2675",
-      "topic": "Indus Basin: Glacial Melt vs Water Security",
-      "category": "PAK_VS_IND",
-      "englishText": "Himalayan glaciers feeding the Indus basin are melting at record rates, threatening freshwater supply for 300 million people across Pakistan and India.\n\nWhile politicians argue over dam projects and treaty clauses, groundwater levels in both Punjabs drop by a metre every year.\n\nThe real security threat of the next decade is not an enemy army. It is running completely out of clean drinking water.",
-      "romanUrduText": "Indus basin ko paani denay walay Himalayan glaciers tareekhi raftaar se pighal rahay hain, jis se Pakistan aur India ke 30 karor logon ke liye peenay ka paani khatray mein hai.\n\nSiyasatdan dam aur muaahidon par lartay hain jabke dono Punjabon mein zameen ka paani har saal ek meter neeche gir raha hai.\n\nAgli dahai ka asal khatra dushman fouj nahi, balkay peenay ke saaf paani ka mukammal khatam hona hai.",
-      "plainUrduText": "دریائے سندھ کو پانی فراہم کرنے والے گلیشیئرز ریکارڈ رفتار سے پگھل رہے ہیں جس سے پاکستان اور بھارت کے تیس کروڑ انسانوں کے لیے پینے کا پانی خطرے میں ہے۔\n\nسیاستدان ڈیموں اور معاہدوں کی شقوں پر الجھتے ہیں جبکہ دونوں پنجابوں میں زیر زمین پانی ہر سال ایک میٹر نیچے گر رہا ہے۔\n\nاگلی دہائی کا اصل سیکیورٹی خطرہ کوئی دشمن فوج نہیں بلکہ پینے کے صاف پانی کی مکمل کمی ہے۔",
-      "numbers": [
-        "300"
-      ],
-      "provider": "Curated Geopolitical Engine",
-      "status": "PENDING",
-      "timestamp": "2026-11-15T08:39:25.665Z"
-    },
-    {
-      "hash": "16d239ed3d238a39450a4ddfe90068d6a1547a5b93bf40336c56ad237451faaf",
-      "topic": "Higher Education: Defence Budgets vs Brain Drain",
-      "category": "PAK_VS_IND",
-      "englishText": "Together, Pakistan and India spend over $95 billion on military hardware and weapons maintenance.\n\nYet neither country has a single university ranked among the top 100 worldwide. Both states lose their best engineers and software developers to Europe and America because local research funding remains under 0.7% of GDP.\n\nBuying foreign weapons does not make a nation modern when its best minds leave.",
-      "romanUrduText": "Pakistan aur India mil kar 95 arab dollar se zyada fouji aslahay aur maintenance par kharch karte hain.\n\nMagar dono mulkon ki ek bhi university dunya ki top 100 mein shamil nahi. Dono mulk apnay behtareen engineers aur developers Europe aur America kho bethtay hain kyonke research budget GDP ka 0.7% se kam hai.\n\nGhair-mulki hathyar khareedna watan ko taraqqi-yafta nahi banata jab azeem zehn mulk chhor jayein.",
-      "plainUrduText": "پاکستان اور بھارت مل کر 95 ارب ڈالر سے زائد رقم فوجی سازوسامان اور اسلحے پر خرچ کرتے ہیں۔\n\nمگر دونوں ممالک کی ایک بھی یونیورسٹی دنیا کی بہترین سو جامعات میں شامل نہیں۔ دونوں ریاستیں اپنے باصلاحیت انجینئرز اور سائنسدانوں کو کھو رہی ہیں کیونکہ تحقیق کا بجٹ جی ڈی پی کے 0.7 فیصد سے بھی کم ہے۔\n\nجدید غیر ملکی اسلحہ خریدنا ملک کو طاقتور نہیں بناتا جب آپ کے قابل ترین ذہن ملک چھوڑ جائیں۔",
-      "numbers": [
-        "95",
-        "100",
-        "0.7"
-      ],
-      "provider": "Curated Geopolitical Engine",
-      "status": "PENDING",
-      "timestamp": "2026-11-15T08:39:26.743Z"
-    },
-    {
-      "hash": "a3e9ca0eca5a71b7d9aeb6760dd442ffcd23b6a4f386c9fd107b60c2f80abbaa",
-      "topic": "India vs Pakistan: Weapons vs Welfare (Series 123)",
-      "category": "PAK_VS_IND",
-      "englishText": "India spends $83.0 billion on military modernization, while Pakistan spends $9.2 billion on defence upkeep. At the exact same time, 29 million young children across the subcontinent never set foot inside a secondary school.\n\nBoth states purchase foreign weapon systems while rural public schools lack clean drinking water and desks.\n\nWhat is the point of national defence if our citizens are dying of poverty?",
-      "romanUrduText": "India foji modernization par 83.0 arab dollar kharch karta hai jabke Pakistan 9.2 arab dollar. Usi waqt dono mulkon ke 29 million bachay school ki shakal nahi dekhte.\n\nDono mulk radar khareedte hain jabke schools mein peenay ka paani nahi.\n\nAise difa ka kya faida jab aane wali nasal anparh reh jaye?",
-      "plainUrduText": "بھارت جدید ترین فوجی سازوسامان پر 83.0 ارب ڈالر اور پاکستان 9.2 ارب ڈالر خرچ کرتا ہے۔ عین اسی وقت دونوں ممالک کے 29 ملین بچے بنیادی تعلیم سے مکمل محروم ہیں۔\n\nدونوں ریاستیں راڈار سسٹمز خریدتی ہیں جبکہ اسکولوں میں پینے کا پانی نہیں۔\n\nایسے دفاع کی کیا اہمیت ہے اگر پوری نسل کو جہالت کے اندھیروں میں چھوڑ دیا جائے؟",
-      "numbers": [
-        "83.0",
-        "9.2",
-        "29"
-      ],
-      "provider": "Curated Geopolitical Engine",
-      "status": "PENDING",
-      "timestamp": "2026-11-15T08:39:27.716Z"
-    },
-    {
-      "hash": "391304ff0b140670d9d8a87634210afef8ea8f5bce388f700f5c0fe1c0b791ac",
-      "topic": "Pakistan vs India: Regional Trade Realities (Series 922)",
-      "category": "PAK_VS_IND",
-      "englishText": "Direct bilateral trade between Pakistan and India remains under $2 billion, while trade through third-party ports costs an extra $12 billion every year. The World Bank estimates trade could surpass $40 billion annually if customs borders opened.\n\nWhile politicians deliver hostile speeches, business owners lose billions and ordinary families pay inflated prices for simple goods. Conflict is an expensive economic tax.",
-      "romanUrduText": "Pakistan aur India ki direct tijarat 2 arab dollar se kam hai, jabke teesray mulkon ke zariye tijarat par har saal $12 arab dollar faaltu kharch hotay hain. World Bank ke mutabiq trade $40 arab dollar tak pohanch sakti hai.\n\nSiyasatdan nafrat phelatay hain jabke awam aam cheezon par dugni qeemat deti hai. Dushmani ghareebon par mehanga bojh hai.",
-      "plainUrduText": "پاکستان اور بھارت کی براہ راست تجارت دو ارب ڈالر سے کم ہے جبکہ مڈل مین روٹس کے ذریعے سالانہ $12 ارب ڈالر اضافی خرچ ہوتے ہیں۔ ورلڈ بینک کے مطابق تجارتی راستے کھلنے سے یہ حجم سالانہ $40 ارب ڈالر تک پہنچ سکتا ہے۔\n\nسیاسی محاذ آرائی تاجروں کو اربوں کا نقصان پہنچاتی ہے اور عام شہریوں کو مہنگائی کا بوجھ اٹھانا پڑتا ہے۔ یہ تنازع معیشت پر بھاری ٹیکس ہے۔",
-      "numbers": [
-        "2",
-        "12",
-        "40"
-      ],
-      "provider": "Curated Geopolitical Engine",
-      "status": "PENDING",
-      "timestamp": "2026-11-15T08:39:28.749Z"
-    },
-    {
-      "hash": "746a97187b181340a47a230cb0e4b922916256034c2f2e4df5651b485c81b7a4",
-      "topic": "Higher Education vs Weapons: South Asian Brain Drain (Series 543)",
-      "category": "PAK_VS_IND",
-      "englishText": "Pakistan and India jointly spend over $95 billion maintaining tanks and fighter aircraft. Meanwhile, combined research and development funding remains frozen below 0.7% of GDP, and hundreds of thousands of top medical and software graduates emigrate annually.\n\nBoth states construct modern arsenals while their human capital leaves.\n\nReal security comes from investing in educated youth, not just buying steel.",
-      "romanUrduText": "Pakistan aur India mil kar $95 arab dollar tankon aur jahaazon par kharch karte hain. Magar research par GDP ka sirf 0.7% lagta hai aur laakhon doctors aur engineers mulk chhor jatay hain.\n\nDono mulk hathyar jama karte hain jabke behtareen zehn bahar nikal rahay hain.\n\nAsal taqat taleem-yafta jawanon mein hai, sirf lohay ke hathyar mein nahi.",
-      "plainUrduText": "پاکستان اور بھارت مل کر سالانہ $95 ارب ڈالر ٹینکوں اور طیاروں پر جھونکتے ہیں۔ دوسری جانب تحقیق اور سائنسی ترقی کا بجٹ جی ڈی پی کے صرف 0.7 فیصد پر منجمد ہے اور ہزاروں ہونہار نوجوان بیرون ملک چلے جاتے ہیں۔\n\nدونوں ریاستیں بارود جمع کرتی ہیں جبکہ ان کا اصل انسانی اثاثہ رخصت ہو رہا ہے۔\n\nحقیقی قومی سلامتی نوجوانوں کی تعلیم میں ہے، محض لوہا خریدنے میں نہیں۔",
-      "numbers": [
-        "95",
-        "0.7"
-      ],
-      "provider": "Curated Geopolitical Engine",
-      "status": "DISCARDED",
-      "timestamp": "2026-11-15T08:39:29.719Z"
-    },
-    {
-      "hash": "43a9759f27b6228cfeeb869d9484a4f7b64f6e2f3648130ca0dd68af69406309",
-      "topic": "Global Power & Warfare: Critical Analysis (Series 140)",
-      "category": "GEOPOLITICS",
-      "englishText": "Global military expenditures reached $2.4 trillion in 2024, while 733 million people face acute food insecurity across developing nations. The wealthiest states spend 26% of their federal budgets on advanced arms while rural schools lack clean drinking water.\n\nGovernments prioritize foreign weapon deals while public welfare systems collapse.\n\nWhat is the real worth of national power when ordinary citizens are left to starve?",
-      "romanUrduText": "Aalmi foji budget 2024 mein 2.4 trillion dollar pohanch gaya jabke 733 million log bhook se lar rahay hain. Baray mulk budget ka 26% hathyar par lagatay hain jabke schools mein saaf paani nahi.\n\nHukoomatein hathyar khareedti hain jabke awam ghurbat se mar rahi hai.\n\nAisi taqat ka kya faida jab aam shehri bhooka so jaye?",
-      "plainUrduText": "عالمی عسکری بجٹ 2.4 کھرب ڈالر تک پہنچ گیا ہے جبکہ 733 ملین انسان شدید غذائی قلت کا شکار ہیں۔ امیر ترین ریاستیں اپنے بجٹ کا 26 فیصد اسلحے پر جھونکتی ہیں جبکہ اسکولوں میں پینے کا پانی نہیں۔\n\nحکومتیں غیر ملکی ہتھیاروں کو ترجیح دیتی ہیں جبکہ فلاحی نظام تباہ ہو چکا ہے۔\n\nایسی قومی طاقت کی کیا وقعت ہے اگر عام شہری بنیادی روٹی کو ترس رہے ہوں؟",
-      "numbers": [
-        "2.4",
-        "2024",
-        "733",
-        "26"
-      ],
-      "provider": "Curated Geopolitical Engine",
-      "status": "DISCARDED",
-      "timestamp": "2026-11-15T08:39:30.983Z"
-    },
-    {
-      "hash": "ed26a739fcb4cf192ba21c6b066ebc5e4e9ce0dba44813e027a846cbfbbe6cfa",
-      "topic": "Global Power & Warfare: Critical Analysis (Series 166)",
-      "category": "PAKISTAN_POLITICS",
-      "englishText": "Global military expenditures reached $2.7 trillion in 2024, while 730 million people face acute food insecurity across developing nations. The wealthiest states spend 24% of their federal budgets on advanced arms while rural schools lack clean drinking water.\n\nGovernments prioritize foreign weapon deals while public welfare systems collapse.\n\nWhat is the real worth of national power when ordinary citizens are left to starve?",
-      "romanUrduText": "Aalmi foji budget 2024 mein 2.7 trillion dollar pohanch gaya jabke 730 million log bhook se lar rahay hain. Baray mulk budget ka 24% hathyar par lagatay hain jabke schools mein saaf paani nahi.\n\nHukoomatein hathyar khareedti hain jabke awam ghurbat se mar rahi hai.\n\nAisi taqat ka kya faida jab aam shehri bhooka so jaye?",
-      "plainUrduText": "عالمی عسکری بجٹ 2.7 کھرب ڈالر تک پہنچ گیا ہے جبکہ 730 ملین انسان شدید غذائی قلت کا شکار ہیں۔ امیر ترین ریاستیں اپنے بجٹ کا 24 فیصد اسلحے پر جھونکتی ہیں جبکہ اسکولوں میں پینے کا پانی نہیں۔\n\nحکومتیں غیر ملکی ہتھیاروں کو ترجیح دیتی ہیں جبکہ فلاحی نظام تباہ ہو چکا ہے۔\n\nایسی قومی طاقت کی کیا وقعت ہے اگر عام شہری بنیادی روٹی کو ترس رہے ہوں؟",
-      "numbers": [
-        "2.7",
-        "2024",
-        "730",
-        "24"
-      ],
-      "provider": "Curated Geopolitical Engine",
-      "status": "DISCARDED",
-      "timestamp": "2026-11-15T08:39:35.562Z"
-    },
-    {
-      "hash": "eafbddddf27729fe0092d88359c3ae3068525ca6cfdfdb42a62f34097f6f1a5b",
-      "topic": "Global Power & Warfare: Critical Analysis (Series 210)",
-      "category": "SOCIAL_ETHNIC_ISSUES",
-      "englishText": "Global military expenditures reached $2.4 trillion in 2024, while 732 million people face acute food insecurity across developing nations. The wealthiest states spend 26% of their federal budgets on advanced arms while rural schools lack clean drinking water.\n\nGovernments prioritize foreign weapon deals while public welfare systems collapse.\n\nWhat is the real worth of national power when ordinary citizens are left to starve?",
-      "romanUrduText": "Aalmi foji budget 2024 mein 2.4 trillion dollar pohanch gaya jabke 732 million log bhook se lar rahay hain. Baray mulk budget ka 26% hathyar par lagatay hain jabke schools mein saaf paani nahi.\n\nHukoomatein hathyar khareedti hain jabke awam ghurbat se mar rahi hai.\n\nAisi taqat ka kya faida jab aam shehri bhooka so jaye?",
-      "plainUrduText": "عالمی عسکری بجٹ 2.4 کھرب ڈالر تک پہنچ گیا ہے جبکہ 732 ملین انسان شدید غذائی قلت کا شکار ہیں۔ امیر ترین ریاستیں اپنے بجٹ کا 26 فیصد اسلحے پر جھونکتی ہیں جبکہ اسکولوں میں پینے کا پانی نہیں۔\n\nحکومتیں غیر ملکی ہتھیاروں کو ترجیح دیتی ہیں جبکہ فلاحی نظام تباہ ہو چکا ہے۔\n\nایسی قومی طاقت کی کیا وقعت ہے اگر عام شہری بنیادی روٹی کو ترس رہے ہوں؟",
-      "numbers": [
-        "2.4",
-        "2024",
-        "732",
-        "26"
-      ],
-      "provider": "Curated Geopolitical Engine",
-      "status": "DISCARDED",
-      "timestamp": "2026-11-15T08:39:40.604Z"
-    },
-    {
-      "hash": "6a8ac8c5ec81b8f92fdeb2712b16dedd10f8d705661583234efc653ede51f84f",
-      "topic": "Global Power & Warfare: Critical Analysis (Series 100)",
-      "category": "AI_HUMAN_SOCIETY",
-      "englishText": "Global military expenditures reached $2.7 trillion in 2024, while 774 million people face acute food insecurity across developing nations. The wealthiest states spend 27% of their federal budgets on advanced arms while rural schools lack clean drinking water.\n\nGovernments prioritize foreign weapon deals while public welfare systems collapse.\n\nWhat is the real worth of national power when ordinary citizens are left to starve?",
-      "romanUrduText": "Aalmi foji budget 2024 mein 2.7 trillion dollar pohanch gaya jabke 774 million log bhook se lar rahay hain. Baray mulk budget ka 27% hathyar par lagatay hain jabke schools mein saaf paani nahi.\n\nHukoomatein hathyar khareedti hain jabke awam ghurbat se mar rahi hai.\n\nAisi taqat ka kya faida jab aam shehri bhooka so jaye?",
-      "plainUrduText": "عالمی عسکری بجٹ 2.7 کھرب ڈالر تک پہنچ گیا ہے جبکہ 774 ملین انسان شدید غذائی قلت کا شکار ہیں۔ امیر ترین ریاستیں اپنے بجٹ کا 27 فیصد اسلحے پر جھونکتی ہیں جبکہ اسکولوں میں پینے کا پانی نہیں۔\n\nحکومتیں غیر ملکی ہتھیاروں کو ترجیح دیتی ہیں جبکہ فلاحی نظام تباہ ہو چکا ہے۔\n\nایسی قومی طاقت کی کیا وقعت ہے اگر عام شہری بنیادی روٹی کو ترس رہے ہوں؟",
-      "numbers": [
-        "2.7",
-        "2024",
-        "774",
-        "27"
-      ],
-      "provider": "Curated Geopolitical Engine",
-      "status": "PENDING",
-      "timestamp": "2026-11-15T08:39:48.668Z"
-    },
-    {
-      "hash": "37f17d16fd20d5cdfad287d0508a7f2e4c4e8ed4d197a5f8c3e28d72ef98457e",
-      "topic": "Higher Education vs Weapons: South Asian Brain Drain (Series 788)",
-      "category": "PAK_VS_IND",
-      "englishText": "Pakistan and India jointly spend over $99 billion maintaining tanks and fighter aircraft. Meanwhile, combined research and development funding remains frozen below 0.7% of GDP, and hundreds of thousands of top medical and software graduates emigrate annually.\n\nBoth states construct modern arsenals while their human capital leaves.\n\nReal security comes from investing in educated youth, not just buying steel.",
-      "romanUrduText": "Pakistan aur India mil kar $99 arab dollar tankon aur jahaazon par kharch karte hain. Magar research par GDP ka sirf 0.7% lagta hai aur laakhon doctors aur engineers mulk chhor jatay hain.\n\nDono mulk hathyar jama karte hain jabke behtareen zehn bahar nikal rahay hain.\n\nAsal taqat taleem-yafta jawanon mein hai, sirf lohay ke hathyar mein nahi.",
-      "plainUrduText": "پاکستان اور بھارت مل کر سالانہ $99 ارب ڈالر ٹینکوں اور طیاروں پر جھونکتے ہیں۔ دوسری جانب تحقیق اور سائنسی ترقی کا بجٹ جی ڈی پی کے صرف 0.7 فیصد پر منجمد ہے اور ہزاروں ہونہار نوجوان بیرون ملک چلے جاتے ہیں۔\n\nدونوں ریاستیں بارود جمع کرتی ہیں جبکہ ان کا اصل انسانی اثاثہ رخصت ہو رہا ہے۔\n\nحقیقی قومی سلامتی نوجوانوں کی تعلیم میں ہے، محض لوہا خریدنے میں نہیں۔",
-      "numbers": [
-        "99",
-        "0.7"
-      ],
-      "provider": "Curated Geopolitical Engine",
-      "status": "PENDING",
-      "timestamp": "2026-11-15T08:54:35.604Z"
-    },
-    {
-      "hash": "2169c1a735bdb59bb94144bc195e783209ccfd7b6d16d13ce3e8f5eb43007519",
-      "topic": "Higher Education vs Weapons: South Asian Brain Drain (Series 703)",
-      "category": "PAK_VS_IND",
-      "englishText": "Pakistan and India jointly spend over $97 billion maintaining tanks and fighter aircraft. Meanwhile, combined research and development funding remains frozen below 0.5% of GDP, and hundreds of thousands of top medical and software graduates emigrate annually.\n\nBoth states construct modern arsenals while their human capital leaves.\n\nReal security comes from investing in educated youth, not just buying steel.",
-      "romanUrduText": "Pakistan aur India mil kar $97 arab dollar tankon aur jahaazon par kharch karte hain. Magar research par GDP ka sirf 0.5% lagta hai aur laakhon doctors aur engineers mulk chhor jatay hain.\n\nDono mulk hathyar jama karte hain jabke behtareen zehn bahar nikal rahay hain.\n\nAsal taqat taleem-yafta jawanon mein hai, sirf lohay ke hathyar mein nahi.",
-      "plainUrduText": "پاکستان اور بھارت مل کر سالانہ $97 ارب ڈالر ٹینکوں اور طیاروں پر جھونکتے ہیں۔ دوسری جانب تحقیق اور سائنسی ترقی کا بجٹ جی ڈی پی کے صرف 0.5 فیصد پر منجمد ہے اور ہزاروں ہونہار نوجوان بیرون ملک چلے جاتے ہیں۔\n\nدونوں ریاستیں بارود جمع کرتی ہیں جبکہ ان کا اصل انسانی اثاثہ رخصت ہو رہا ہے۔\n\nحقیقی قومی سلامتی نوجوانوں کی تعلیم میں ہے، محض لوہا خریدنے میں نہیں۔",
-      "numbers": [
-        "97",
-        "0.5"
-      ],
-      "provider": "Curated Geopolitical Engine",
-      "status": "PENDING",
-      "timestamp": "2026-11-15T08:54:38.585Z"
-    },
-    {
-      "hash": "32c5f70f7e7e6bb371b23658dfe513088137029ffaa610a4a840978caee80c2c",
-      "topic": "Pakistan vs India: Regional Trade Realities (Series 375)",
-      "category": "PAK_VS_IND",
-      "englishText": "Direct bilateral trade between Pakistan and India remains under $2 billion, while trade through third-party ports costs an extra $11 billion every year. The World Bank estimates trade could surpass $34 billion annually if customs borders opened.\n\nWhile politicians deliver hostile speeches, business owners lose billions and ordinary families pay inflated prices for simple goods. Conflict is an expensive economic tax.",
-      "romanUrduText": "Pakistan aur India ki direct tijarat 2 arab dollar se kam hai, jabke teesray mulkon ke zariye tijarat par har saal $11 arab dollar faaltu kharch hotay hain. World Bank ke mutabiq trade $34 arab dollar tak pohanch sakti hai.\n\nSiyasatdan nafrat phelatay hain jabke awam aam cheezon par dugni qeemat deti hai. Dushmani ghareebon par mehanga bojh hai.",
-      "plainUrduText": "پاکستان اور بھارت کی براہ راست تجارت دو ارب ڈالر سے کم ہے جبکہ مڈل مین روٹس کے ذریعے سالانہ $11 ارب ڈالر اضافی خرچ ہوتے ہیں۔ ورلڈ بینک کے مطابق تجارتی راستے کھلنے سے یہ حجم سالانہ $34 ارب ڈالر تک پہنچ سکتا ہے۔\n\nسیاسی محاذ آرائی تاجروں کو اربوں کا نقصان پہنچاتی ہے اور عام شہریوں کو مہنگائی کا بوجھ اٹھانا پڑتا ہے۔ یہ تنازع معیشت پر بھاری ٹیکس ہے۔",
-      "numbers": [
-        "2",
-        "11",
-        "34"
-      ],
-      "provider": "Curated Geopolitical Engine",
-      "status": "PENDING",
-      "timestamp": "2026-11-15T08:54:39.651Z"
-    },
-    {
-      "hash": "fe6c9d07c63e02764ed6f3396a236812de425e8afa23ba0b5c58025594a2b8d6",
-      "topic": "Higher Education vs Weapons: South Asian Brain Drain (Series 594)",
-      "category": "PAK_VS_IND",
-      "englishText": "Pakistan and India jointly spend over $92 billion maintaining tanks and fighter aircraft. Meanwhile, combined research and development funding remains frozen below 0.5% of GDP, and hundreds of thousands of top medical and software graduates emigrate annually.\n\nBoth states construct modern arsenals while their human capital leaves.\n\nReal security comes from investing in educated youth, not just buying steel.",
-      "romanUrduText": "Pakistan aur India mil kar $92 arab dollar tankon aur jahaazon par kharch karte hain. Magar research par GDP ka sirf 0.5% lagta hai aur laakhon doctors aur engineers mulk chhor jatay hain.\n\nDono mulk hathyar jama karte hain jabke behtareen zehn bahar nikal rahay hain.\n\nAsal taqat taleem-yafta jawanon mein hai, sirf lohay ke hathyar mein nahi.",
-      "plainUrduText": "پاکستان اور بھارت مل کر سالانہ $92 ارب ڈالر ٹینکوں اور طیاروں پر جھونکتے ہیں۔ دوسری جانب تحقیق اور سائنسی ترقی کا بجٹ جی ڈی پی کے صرف 0.5 فیصد پر منجمد ہے اور ہزاروں ہونہار نوجوان بیرون ملک چلے جاتے ہیں۔\n\nدونوں ریاستیں بارود جمع کرتی ہیں جبکہ ان کا اصل انسانی اثاثہ رخصت ہو رہا ہے۔\n\nحقیقی قومی سلامتی نوجوانوں کی تعلیم میں ہے، محض لوہا خریدنے میں نہیں۔",
-      "numbers": [
-        "92",
-        "0.5"
-      ],
-      "provider": "Curated Geopolitical Engine",
-      "status": "PENDING",
-      "timestamp": "2026-11-15T08:54:40.690Z"
-    },
-    {
-      "hash": "6f41ac4deedd1c83af4186305f228fc01d3a06ca24f7f466c98c2315f14e1333",
-      "topic": "Pakistan vs India: Regional Trade Realities (Series 974)",
-      "category": "PAK_VS_IND",
-      "englishText": "Direct bilateral trade between Pakistan and India remains under $2 billion, while trade through third-party ports costs an extra $8 billion every year. The World Bank estimates trade could surpass $34 billion annually if customs borders opened.\n\nWhile politicians deliver hostile speeches, business owners lose billions and ordinary families pay inflated prices for simple goods. Conflict is an expensive economic tax.",
-      "romanUrduText": "Pakistan aur India ki direct tijarat 2 arab dollar se kam hai, jabke teesray mulkon ke zariye tijarat par har saal $8 arab dollar faaltu kharch hotay hain. World Bank ke mutabiq trade $34 arab dollar tak pohanch sakti hai.\n\nSiyasatdan nafrat phelatay hain jabke awam aam cheezon par dugni qeemat deti hai. Dushmani ghareebon par mehanga bojh hai.",
-      "plainUrduText": "پاکستان اور بھارت کی براہ راست تجارت دو ارب ڈالر سے کم ہے جبکہ مڈل مین روٹس کے ذریعے سالانہ $8 ارب ڈالر اضافی خرچ ہوتے ہیں۔ ورلڈ بینک کے مطابق تجارتی راستے کھلنے سے یہ حجم سالانہ $34 ارب ڈالر تک پہنچ سکتا ہے۔\n\nسیاسی محاذ آرائی تاجروں کو اربوں کا نقصان پہنچاتی ہے اور عام شہریوں کو مہنگائی کا بوجھ اٹھانا پڑتا ہے۔ یہ تنازع معیشت پر بھاری ٹیکس ہے۔",
-      "numbers": [
-        "2",
-        "8",
-        "34"
-      ],
-      "provider": "Curated Geopolitical Engine",
-      "status": "DISCARDED",
-      "timestamp": "2026-11-15T08:54:41.623Z"
-    },
-    {
-      "hash": "3f0a2fd91d7c4fb51c3c1a7a53e4ca87f1374a14586708c6b40ae3011c7db861",
-      "topic": "Global Power & Warfare: Critical Analysis (Series 649)",
-      "category": "GEOPOLITICS",
-      "englishText": "Global military expenditures reached $2.3 trillion in 2024, while 751 million people face acute food insecurity across developing nations. The wealthiest states spend 21% of their federal budgets on advanced arms while rural schools lack clean drinking water.\n\nGovernments prioritize foreign weapon deals while public welfare systems collapse.\n\nWhat is the real worth of national power when ordinary citizens are left to starve?",
-      "romanUrduText": "Aalmi foji budget 2024 mein 2.3 trillion dollar pohanch gaya jabke 751 million log bhook se lar rahay hain. Baray mulk budget ka 21% hathyar par lagatay hain jabke schools mein saaf paani nahi.\n\nHukoomatein hathyar khareedti hain jabke awam ghurbat se mar rahi hai.\n\nAisi taqat ka kya faida jab aam shehri bhooka so jaye?",
-      "plainUrduText": "عالمی عسکری بجٹ 2.3 کھرب ڈالر تک پہنچ گیا ہے جبکہ 751 ملین انسان شدید غذائی قلت کا شکار ہیں۔ امیر ترین ریاستیں اپنے بجٹ کا 21 فیصد اسلحے پر جھونکتی ہیں جبکہ اسکولوں میں پینے کا پانی نہیں۔\n\nحکومتیں غیر ملکی ہتھیاروں کو ترجیح دیتی ہیں جبکہ فلاحی نظام تباہ ہو چکا ہے۔\n\nایسی قومی طاقت کی کیا وقعت ہے اگر عام شہری بنیادی روٹی کو ترس رہے ہوں؟",
-      "numbers": [
-        "2.3",
-        "2024",
-        "751",
-        "21"
-      ],
-      "provider": "Curated Geopolitical Engine",
-      "status": "DISCARDED",
-      "timestamp": "2026-11-15T08:54:43.988Z"
-    },
-    {
-      "hash": "3459b6300c83644403c3832fd1e946000dbef3759ba5df08076e817f41aeea33",
-      "topic": "Global Power & Warfare: Critical Analysis (Series 791)",
-      "category": "PAKISTAN_POLITICS",
-      "englishText": "Global military expenditures reached $2.7 trillion in 2024, while 765 million people face acute food insecurity across developing nations. The wealthiest states spend 29% of their federal budgets on advanced arms while rural schools lack clean drinking water.\n\nGovernments prioritize foreign weapon deals while public welfare systems collapse.\n\nWhat is the real worth of national power when ordinary citizens are left to starve?",
-      "romanUrduText": "Aalmi foji budget 2024 mein 2.7 trillion dollar pohanch gaya jabke 765 million log bhook se lar rahay hain. Baray mulk budget ka 29% hathyar par lagatay hain jabke schools mein saaf paani nahi.\n\nHukoomatein hathyar khareedti hain jabke awam ghurbat se mar rahi hai.\n\nAisi taqat ka kya faida jab aam shehri bhooka so jaye?",
-      "plainUrduText": "عالمی عسکری بجٹ 2.7 کھرب ڈالر تک پہنچ گیا ہے جبکہ 765 ملین انسان شدید غذائی قلت کا شکار ہیں۔ امیر ترین ریاستیں اپنے بجٹ کا 29 فیصد اسلحے پر جھونکتی ہیں جبکہ اسکولوں میں پینے کا پانی نہیں۔\n\nحکومتیں غیر ملکی ہتھیاروں کو ترجیح دیتی ہیں جبکہ فلاحی نظام تباہ ہو چکا ہے۔\n\nایسی قومی طاقت کی کیا وقعت ہے اگر عام شہری بنیادی روٹی کو ترس رہے ہوں؟",
-      "numbers": [
-        "2.7",
-        "2024",
-        "765",
-        "29"
-      ],
-      "provider": "Curated Geopolitical Engine",
-      "status": "DISCARDED",
-      "timestamp": "2026-11-15T08:54:47.293Z"
-    },
-    {
-      "hash": "0e0e6200a36f358705fa5f1b280472bf589881f4195537cda4e0cf2db1815ad7",
-      "topic": "Global Power & Warfare: Critical Analysis (Series 216)",
-      "category": "SOCIAL_ETHNIC_ISSUES",
-      "englishText": "Global military expenditures reached $2.3 trillion in 2024, while 753 million people face acute food insecurity across developing nations. The wealthiest states spend 22% of their federal budgets on advanced arms while rural schools lack clean drinking water.\n\nGovernments prioritize foreign weapon deals while public welfare systems collapse.\n\nWhat is the real worth of national power when ordinary citizens are left to starve?",
-      "romanUrduText": "Aalmi foji budget 2024 mein 2.3 trillion dollar pohanch gaya jabke 753 million log bhook se lar rahay hain. Baray mulk budget ka 22% hathyar par lagatay hain jabke schools mein saaf paani nahi.\n\nHukoomatein hathyar khareedti hain jabke awam ghurbat se mar rahi hai.\n\nAisi taqat ka kya faida jab aam shehri bhooka so jaye?",
-      "plainUrduText": "عالمی عسکری بجٹ 2.3 کھرب ڈالر تک پہنچ گیا ہے جبکہ 753 ملین انسان شدید غذائی قلت کا شکار ہیں۔ امیر ترین ریاستیں اپنے بجٹ کا 22 فیصد اسلحے پر جھونکتی ہیں جبکہ اسکولوں میں پینے کا پانی نہیں۔\n\nحکومتیں غیر ملکی ہتھیاروں کو ترجیح دیتی ہیں جبکہ فلاحی نظام تباہ ہو چکا ہے۔\n\nایسی قومی طاقت کی کیا وقعت ہے اگر عام شہری بنیادی روٹی کو ترس رہے ہوں؟",
-      "numbers": [
-        "2.3",
-        "2024",
-        "753",
-        "22"
-      ],
-      "provider": "Curated Geopolitical Engine",
-      "status": "DISCARDED",
-      "timestamp": "2026-11-15T08:54:51.966Z"
-    },
-    {
-      "hash": "8f9f3c9f86bd1a6ec230ac4536df70d5b0783653326c134d686a493747fd958a",
-      "topic": "Global Power & Warfare: Critical Analysis (Series 619)",
-      "category": "AI_HUMAN_SOCIETY",
-      "englishText": "Global military expenditures reached $2.5 trillion in 2024, while 778 million people face acute food insecurity across developing nations. The wealthiest states spend 21% of their federal budgets on advanced arms while rural schools lack clean drinking water.\n\nGovernments prioritize foreign weapon deals while public welfare systems collapse.\n\nWhat is the real worth of national power when ordinary citizens are left to starve?",
-      "romanUrduText": "Aalmi foji budget 2024 mein 2.5 trillion dollar pohanch gaya jabke 778 million log bhook se lar rahay hain. Baray mulk budget ka 21% hathyar par lagatay hain jabke schools mein saaf paani nahi.\n\nHukoomatein hathyar khareedti hain jabke awam ghurbat se mar rahi hai.\n\nAisi taqat ka kya faida jab aam shehri bhooka so jaye?",
-      "plainUrduText": "عالمی عسکری بجٹ 2.5 کھرب ڈالر تک پہنچ گیا ہے جبکہ 778 ملین انسان شدید غذائی قلت کا شکار ہیں۔ امیر ترین ریاستیں اپنے بجٹ کا 21 فیصد اسلحے پر جھونکتی ہیں جبکہ اسکولوں میں پینے کا پانی نہیں۔\n\nحکومتیں غیر ملکی ہتھیاروں کو ترجیح دیتی ہیں جبکہ فلاحی نظام تباہ ہو چکا ہے۔\n\nایسی قومی طاقت کی کیا وقعت ہے اگر عام شہری بنیادی روٹی کو ترس رہے ہوں؟",
-      "numbers": [
-        "2.5",
-        "2024",
-        "778",
-        "21"
-      ],
-      "provider": "Curated Geopolitical Engine",
-      "status": "PENDING",
-      "timestamp": "2026-11-15T08:55:01.666Z"
+      "timestamp": "2026-11-16T07:11:34.652Z"
     }
   ]
 }

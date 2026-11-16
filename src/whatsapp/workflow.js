@@ -13,7 +13,7 @@ import { whatsappClient } from './client.js';
 import { config } from '../config.js';
 import { ansi } from '../utils/ansi.js';
 import { keepAliveService } from '../utils/keepAlive.js';
-import { markPostApproved, markPostDiscarded, markPostPublished } from '../db/postModel.js';
+import { markPostApproved, markPostDiscarded, markPostPublished, markPostUsed } from '../db/postModel.js';
 import { historyStore } from '../db/historyStore.js';
 import { xService } from '../x/xService.js';
 import { genreManager } from '../generator/genreManager.js';
@@ -31,8 +31,9 @@ class WhatsAppWorkflowManager extends EventEmitter {
    * Generates 1 good English post and dispatches it to owner's WhatsApp with 5 options
    * @param {string} [customTopic]
    * @param {string} [excludedTopic]
+   * @param {object} [excludedContext]
    */
-  async generateAndSend(customTopic = '', excludedTopic = '') {
+  async generateAndSend(customTopic = '', excludedTopic = '', excludedContext = null) {
     const primary = genreManager.getPrimaryGenre();
     if (primary) {
       console.log(ansi.emeraldText(`⚡ [Primary Genre Active: ${primary.name}] Generating post exclusively for this genre...`));
@@ -40,10 +41,18 @@ class WhatsAppWorkflowManager extends EventEmitter {
       console.log(ansi.emeraldText('⚡ Generating 1 high-quality English post for WhatsApp review...'));
     }
 
-    const gen = await generateEnglishPost(customTopic, excludedTopic);
+    const gen = await generateEnglishPost(customTopic, excludedTopic, excludedContext);
     this.currentPendingPost = {
       topic: gen.topic,
+      subtopic: gen.subtopic || gen.topic,
       category: gen.category,
+      genreId: gen.genreId || gen.category,
+      mainSubject: gen.mainSubject,
+      specificEventOrIssue: gen.specificEventOrIssue,
+      centralArgument: gen.centralArgument,
+      analyticalAngle: gen.analyticalAngle,
+      importantStatistics: gen.importantStatistics,
+      keywords: gen.keywords,
       english: gen.english,
       romanUrdu: null,
       plainUrdu: null,
@@ -650,6 +659,11 @@ class WhatsAppWorkflowManager extends EventEmitter {
       if (input === '5' || input.includes('retry') || input.includes('regen') || input.includes('new') || input.includes('fresh')) {
         console.log(ansi.yellowText('\n⟳ [WhatsApp Action] Owner requested a completely NEW fresh post...'));
         const oldTopic = post.topic;
+        const oldContext = {
+          subject: post.mainSubject || oldTopic,
+          argument: post.centralArgument || '',
+          statistics: post.importantStatistics || post.numbers || []
+        };
         markPostDiscarded(oldTopic).catch(() => {});
         historyStore.markDiscarded(oldTopic);
         this.currentPendingPost = null;
@@ -660,7 +674,7 @@ class WhatsAppWorkflowManager extends EventEmitter {
             console.warn('[WhatsApp Send Warning]', e.message);
           }
         }
-        return await this.generateAndSend('', oldTopic);
+        return await this.generateAndSend('', oldTopic, oldContext);
       }
 
       // Option 6: Customize the bot
@@ -683,6 +697,50 @@ class WhatsAppWorkflowManager extends EventEmitter {
           }
         }
         return { action: 'CUSTOMIZE_MENU_OPENED', status: this.status, message: menuText };
+      }
+
+      // Option 7: Mark post as used (never reuse)
+      if (input === '7' || input.includes('mark') || input.includes('used') || input.includes('never')) {
+        console.log(ansi.emeraldText('\n🔒 [WhatsApp Action] Owner MARKED POST AS USED (permanently indexed and avoided)...'));
+        const usedPost = { ...post };
+        this.status = 'MARKED_USED';
+        this.currentPendingPost = null;
+        keepAliveService.setWaitingForResponse(false);
+
+        historyStore.markUsed(usedPost.topic, {
+          genreId: usedPost.genreId || usedPost.category,
+          subtopic: usedPost.subtopic || usedPost.topic,
+          mainSubject: usedPost.mainSubject,
+          specificEventOrIssue: usedPost.specificEventOrIssue,
+          centralArgument: usedPost.centralArgument,
+          analyticalAngle: usedPost.analyticalAngle,
+          importantStatistics: usedPost.importantStatistics,
+          keywords: usedPost.keywords,
+          english: usedPost.english
+        });
+        markPostUsed(usedPost.topic, {
+          genreId: usedPost.genreId || usedPost.category,
+          subtopic: usedPost.subtopic || usedPost.topic,
+          mainSubject: usedPost.mainSubject,
+          specificEventOrIssue: usedPost.specificEventOrIssue,
+          centralArgument: usedPost.centralArgument,
+          analyticalAngle: usedPost.analyticalAngle,
+          importantStatistics: usedPost.importantStatistics,
+          keywords: usedPost.keywords,
+          english: usedPost.english
+        }).catch(() => {});
+
+        const confirmMsg = '🔒 Post marked as USED permanently. Its topic, argument, and content will never be reused or regenerated.\n\n• *1* ➔ Generate a new post\n• *2* ➔ Customize the bot';
+        if (whatsappClient.isConfigured() && fromNumber) {
+          try {
+            await whatsappClient.sendText(fromNumber, confirmMsg);
+          } catch (e) {
+            console.warn('[WhatsApp Send Warning]', e.message);
+          }
+        }
+        const decision = { action: 'MARKED_USED', status: 'MARKED_USED', topic: usedPost.topic, post: usedPost, message: confirmMsg };
+        this.emit('owner_decision', decision);
+        return decision;
       }
     }
 
@@ -777,6 +835,11 @@ class WhatsAppWorkflowManager extends EventEmitter {
       if (input === '5' || input.includes('retry') || input.includes('regen') || input.includes('new') || input.includes('fresh')) {
         console.log(ansi.yellowText('\n⟳ [WhatsApp Action] Owner requested a completely NEW fresh post from Roman Urdu view...'));
         const oldTopic = post.topic;
+        const oldContext = {
+          subject: post.mainSubject || oldTopic,
+          argument: post.centralArgument || '',
+          statistics: post.importantStatistics || post.numbers || []
+        };
         markPostDiscarded(oldTopic).catch(() => {});
         historyStore.markDiscarded(oldTopic);
         this.currentPendingPost = null;
@@ -787,7 +850,7 @@ class WhatsAppWorkflowManager extends EventEmitter {
             console.warn('[WhatsApp Send Warning]', e.message);
           }
         }
-        return await this.generateAndSend('', oldTopic);
+        return await this.generateAndSend('', oldTopic, oldContext);
       }
 
       // Option 6: Customize the bot
@@ -810,6 +873,50 @@ class WhatsAppWorkflowManager extends EventEmitter {
           }
         }
         return { action: 'CUSTOMIZE_MENU_OPENED', status: this.status, message: menuText };
+      }
+
+      // Option 7: Mark post as used (never reuse)
+      if (input === '7' || input.includes('mark') || input.includes('used') || input.includes('never')) {
+        console.log(ansi.emeraldText('\n🔒 [WhatsApp Action] Owner MARKED POST AS USED from Roman Urdu view (permanently indexed and avoided)...'));
+        const usedPost = { ...post };
+        this.status = 'MARKED_USED';
+        this.currentPendingPost = null;
+        keepAliveService.setWaitingForResponse(false);
+
+        historyStore.markUsed(usedPost.topic, {
+          genreId: usedPost.genreId || usedPost.category,
+          subtopic: usedPost.subtopic || usedPost.topic,
+          mainSubject: usedPost.mainSubject,
+          specificEventOrIssue: usedPost.specificEventOrIssue,
+          centralArgument: usedPost.centralArgument,
+          analyticalAngle: usedPost.analyticalAngle,
+          importantStatistics: usedPost.importantStatistics,
+          keywords: usedPost.keywords,
+          english: usedPost.english
+        });
+        markPostUsed(usedPost.topic, {
+          genreId: usedPost.genreId || usedPost.category,
+          subtopic: usedPost.subtopic || usedPost.topic,
+          mainSubject: usedPost.mainSubject,
+          specificEventOrIssue: usedPost.specificEventOrIssue,
+          centralArgument: usedPost.centralArgument,
+          analyticalAngle: usedPost.analyticalAngle,
+          importantStatistics: usedPost.importantStatistics,
+          keywords: usedPost.keywords,
+          english: usedPost.english
+        }).catch(() => {});
+
+        const confirmMsg = '🔒 Post marked as USED permanently. Its topic, argument, and content will never be reused or regenerated.\n\n• *1* ➔ Generate a new post\n• *2* ➔ Customize the bot';
+        if (whatsappClient.isConfigured() && fromNumber) {
+          try {
+            await whatsappClient.sendText(fromNumber, confirmMsg);
+          } catch (e) {
+            console.warn('[WhatsApp Send Warning]', e.message);
+          }
+        }
+        const decision = { action: 'MARKED_USED', status: 'MARKED_USED', topic: usedPost.topic, post: usedPost, message: confirmMsg };
+        this.emit('owner_decision', decision);
+        return decision;
       }
     }
 
@@ -905,6 +1012,11 @@ class WhatsAppWorkflowManager extends EventEmitter {
       if (input === '5' || input.includes('retry') || input.includes('regen') || input.includes('new') || input.includes('fresh')) {
         console.log(ansi.yellowText('\n⟳ [WhatsApp Action] Owner requested a completely NEW fresh post from Plain Urdu view...'));
         const oldTopic = post.topic;
+        const oldContext = {
+          subject: post.mainSubject || oldTopic,
+          argument: post.centralArgument || '',
+          statistics: post.importantStatistics || post.numbers || []
+        };
         markPostDiscarded(oldTopic).catch(() => {});
         historyStore.markDiscarded(oldTopic);
         this.currentPendingPost = null;
@@ -915,7 +1027,7 @@ class WhatsAppWorkflowManager extends EventEmitter {
             console.warn('[WhatsApp Send Warning]', e.message);
           }
         }
-        return await this.generateAndSend('', oldTopic);
+        return await this.generateAndSend('', oldTopic, oldContext);
       }
 
       // Option 6: Customize the bot
@@ -939,6 +1051,50 @@ class WhatsAppWorkflowManager extends EventEmitter {
         }
         return { action: 'CUSTOMIZE_MENU_OPENED', status: this.status, message: menuText };
       }
+
+      // Option 7: Mark post as used (never reuse)
+      if (input === '7' || input.includes('mark') || input.includes('used') || input.includes('never')) {
+        console.log(ansi.emeraldText('\n🔒 [WhatsApp Action] Owner MARKED POST AS USED from Plain Urdu view (permanently indexed and avoided)...'));
+        const usedPost = { ...post };
+        this.status = 'MARKED_USED';
+        this.currentPendingPost = null;
+        keepAliveService.setWaitingForResponse(false);
+
+        historyStore.markUsed(usedPost.topic, {
+          genreId: usedPost.genreId || usedPost.category,
+          subtopic: usedPost.subtopic || usedPost.topic,
+          mainSubject: usedPost.mainSubject,
+          specificEventOrIssue: usedPost.specificEventOrIssue,
+          centralArgument: usedPost.centralArgument,
+          analyticalAngle: usedPost.analyticalAngle,
+          importantStatistics: usedPost.importantStatistics,
+          keywords: usedPost.keywords,
+          english: usedPost.english
+        });
+        markPostUsed(usedPost.topic, {
+          genreId: usedPost.genreId || usedPost.category,
+          subtopic: usedPost.subtopic || usedPost.topic,
+          mainSubject: usedPost.mainSubject,
+          specificEventOrIssue: usedPost.specificEventOrIssue,
+          centralArgument: usedPost.centralArgument,
+          analyticalAngle: usedPost.analyticalAngle,
+          importantStatistics: usedPost.importantStatistics,
+          keywords: usedPost.keywords,
+          english: usedPost.english
+        }).catch(() => {});
+
+        const confirmMsg = '🔒 Post marked as USED permanently. Its topic, argument, and content will never be reused or regenerated.\n\n• *1* ➔ Generate a new post\n• *2* ➔ Customize the bot';
+        if (whatsappClient.isConfigured() && fromNumber) {
+          try {
+            await whatsappClient.sendText(fromNumber, confirmMsg);
+          } catch (e) {
+            console.warn('[WhatsApp Send Warning]', e.message);
+          }
+        }
+        const decision = { action: 'MARKED_USED', status: 'MARKED_USED', topic: usedPost.topic, post: usedPost, message: confirmMsg };
+        this.emit('owner_decision', decision);
+        return decision;
+      }
     }
 
     // Default help response
@@ -946,7 +1102,7 @@ class WhatsAppWorkflowManager extends EventEmitter {
       try {
         await whatsappClient.sendText(
           fromNumber,
-          `🤖 *X ASSISTANT — POST REVIEW*\nReply with:\n• *1* ➔ Generate in Roman Urdu\n• *2* ➔ Generate in Urdu (اردو)\n• *3* ➔ Post directly to X\n• *4* ➔ Discard post\n• *5* ➔ Generate a NEW fresh post\n• *6* ➔ ⚙️ Customize the bot`
+          `🤖 *X ASSISTANT — POST REVIEW*\nReply with:\n• *1* ➔ Generate in Roman Urdu\n• *2* ➔ Generate in Urdu (اردو)\n• *3* ➔ Post directly to X\n• *4* ➔ Discard post\n• *5* ➔ Generate a NEW fresh post\n• *6* ➔ ⚙️ Customize the bot\n• *7* ➔ 🔒 Mark post as used (never reuse)`
         );
       } catch (e) {}
     }

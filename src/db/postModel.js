@@ -1,8 +1,13 @@
 import mongoose from 'mongoose';
 import crypto from 'node:crypto';
 import { isMongoConnected } from './mongo.js';
+import {
+  historyStore,
+  computeNormalizedHash as historyComputeHash,
+  extractPostMetadata
+} from './historyStore.js';
 
-// Schema for storing generated and approved X posts
+// Enhanced Schema for storing generated and approved X posts with full analytical metadata
 const PostSchema = new mongoose.Schema(
   {
     topic: {
@@ -11,9 +16,43 @@ const PostSchema = new mongoose.Schema(
       trim: true,
       index: true
     },
+    genreId: {
+      type: String,
+      default: 'PAK_VS_IND',
+      index: true
+    },
     category: {
       type: String,
-      default: 'GEOPOLITICS_TECH_2035',
+      default: 'PAK_VS_IND',
+      index: true
+    },
+    subtopic: {
+      type: String,
+      index: true
+    },
+    mainSubject: {
+      type: String,
+      index: true
+    },
+    specificEventOrIssue: {
+      type: String
+    },
+    centralArgument: {
+      type: String
+    },
+    analyticalAngle: {
+      type: String
+    },
+    importantStatistics: {
+      type: [String],
+      default: []
+    },
+    keywords: {
+      type: [String],
+      default: []
+    },
+    normalizedText: {
+      type: String,
       index: true
     },
     englishLevel: {
@@ -51,7 +90,7 @@ const PostSchema = new mongoose.Schema(
     },
     status: {
       type: String,
-      enum: ['PENDING', 'APPROVED', 'DISCARDED', 'POSTED'],
+      enum: ['PENDING', 'DRAFT', 'APPROVED', 'DISCARDED', 'POSTED', 'REJECTED_DUPLICATE'],
       default: 'PENDING',
       index: true
     },
@@ -96,33 +135,39 @@ const inMemoryTopics = [];
  * Computes a normalized SHA-256 hash of a string for deduplication
  */
 export function computeNormalizedHash(text = '') {
-  const normalized = String(text)
-    .toLowerCase()
-    .replace(/[^\w\s]/gi, '')
-    .replace(/\s+/g, ' ')
-    .trim();
-  return crypto.createHash('sha256').update(normalized).digest('hex');
+  return historyComputeHash(text);
 }
 
 /**
- * Checks if a topic or similar text has already been used
+ * Checks if a topic, text, or argument has already been used or conflicts with history
  */
-export async function isDuplicatePost(topic = '', englishText = '') {
+export async function isDuplicatePost(topic = '', englishText = '', extraMetadata = {}) {
+  // 1. First run comprehensive 6-stage check through HistoryStore (covers JSON store + memory)
+  const storeCheck = historyStore.isDuplicateOrSimilar(englishText, topic, extraMetadata);
+  if (storeCheck.isDuplicate) {
+    return true;
+  }
+
   const hash = computeNormalizedHash(englishText || topic);
 
-  // Check in-memory store first
+  // 2. Check in-memory hash store
   if (inMemoryHashes.has(hash)) {
     return true;
   }
 
-  // Check MongoDB if connected
+  // 3. Check MongoDB across ALL historical records if connected
   if (isMongoConnected()) {
     try {
+      const cleanTopic = String(topic).trim();
+      const escapedTopic = cleanTopic.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+
       const existing = await PostModel.findOne({
         $or: [
           { textHash: hash },
-          { topic: new RegExp(`^${topic.trim().replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}$`, 'i') }
-        ]
+          { topic: new RegExp(`^${escapedTopic}$`, 'i') },
+          extraMetadata.subtopic ? { subtopic: extraMetadata.subtopic } : null,
+          extraMetadata.normalizedText ? { normalizedText: extraMetadata.normalizedText } : null
+        ].filter(Boolean)
       }).lean();
 
       if (existing) {
@@ -140,7 +185,7 @@ export async function isDuplicatePost(topic = '', englishText = '') {
 /**
  * Retrieves recently generated topics to prevent AI from repeating themes
  */
-export async function getRecentTopics(limit = 15) {
+export async function getRecentTopics(limit = 25) {
   const topics = [];
 
   if (isMongoConnected()) {
@@ -166,32 +211,86 @@ export async function getRecentTopics(limit = 15) {
 }
 
 /**
- * Saves a newly generated post to MongoDB (and in-memory cache)
+ * Saves a newly generated post to MongoDB (and historyStore + in-memory cache)
  */
 export async function saveGeneratedPost({
   topic,
-  category = 'GEOPOLITICS_TECH_2035',
+  genreId = 'PAK_VS_IND',
+  category = 'PAK_VS_IND',
+  subtopic = '',
+  mainSubject = '',
+  specificEventOrIssue = '',
+  centralArgument = '',
+  analyticalAngle = '',
+  importantStatistics = [],
+  keywords = [],
   english,
   romanUrdu = null,
   plainUrdu = null,
-  provider = 'AI'
+  provider = 'AI',
+  status = 'PENDING'
 }) {
-  const hash = computeNormalizedHash(english?.text || topic);
+  const englishText = english?.text || '';
+  const hash = computeNormalizedHash(englishText || topic);
+
+  const meta = extractPostMetadata({
+    topic,
+    subtopic,
+    genreId: genreId || category,
+    category,
+    text: englishText,
+    mainSubject,
+    specificEventOrIssue,
+    centralArgument,
+    analyticalAngle,
+    importantStatistics,
+    keywords
+  });
+
+  // Record in HistoryStore
+  historyStore.recordPost({
+    topic,
+    subtopic: meta.subtopic,
+    genreId: meta.genreId,
+    category: meta.genreId,
+    englishText,
+    romanUrduText: romanUrdu?.text || '',
+    plainUrduText: plainUrdu?.text || '',
+    mainSubject: meta.mainSubject,
+    specificEventOrIssue: meta.specificEventOrIssue,
+    centralArgument: meta.centralArgument,
+    analyticalAngle: meta.analyticalAngle,
+    importantStatistics: meta.importantStatistics,
+    keywords: meta.keywords,
+    provider,
+    status
+  });
 
   // Cache in-memory
   inMemoryHashes.add(hash);
-  inMemoryTopics.push(topic);
+  if (!inMemoryTopics.includes(topic)) inMemoryTopics.push(topic);
+
   const memoryDoc = {
     topic,
-    category,
-    englishText: english?.text || '',
+    genreId: meta.genreId,
+    category: meta.genreId,
+    subtopic: meta.subtopic,
+    mainSubject: meta.mainSubject,
+    specificEventOrIssue: meta.specificEventOrIssue,
+    centralArgument: meta.centralArgument,
+    analyticalAngle: meta.analyticalAngle,
+    importantStatistics: meta.importantStatistics,
+    keywords: meta.keywords,
+    normalizedText: meta.normalizedText,
+    englishLevel: 'A2',
+    englishText,
     englishHashtags: english?.hashtags || '',
     romanUrduText: romanUrdu?.text || '',
     romanUrduHashtags: romanUrdu?.hashtags || '',
     plainUrduText: plainUrdu?.text || '',
     plainUrduHashtags: plainUrdu?.hashtags || '',
     textHash: hash,
-    status: 'PENDING',
+    status,
     provider,
     createdAt: new Date()
   };
@@ -205,16 +304,25 @@ export async function saveGeneratedPost({
         {
           $setOnInsert: {
             topic,
-            category,
+            genreId: meta.genreId,
+            category: meta.genreId,
+            subtopic: meta.subtopic,
+            mainSubject: meta.mainSubject,
+            specificEventOrIssue: meta.specificEventOrIssue,
+            centralArgument: meta.centralArgument,
+            analyticalAngle: meta.analyticalAngle,
+            importantStatistics: meta.importantStatistics,
+            keywords: meta.keywords,
+            normalizedText: meta.normalizedText,
             englishLevel: 'A2',
-            englishText: english?.text || '',
+            englishText,
             englishHashtags: english?.hashtags || '',
             romanUrduText: romanUrdu?.text || '',
             romanUrduHashtags: romanUrdu?.hashtags || '',
             plainUrduText: plainUrdu?.text || '',
             plainUrduHashtags: plainUrdu?.hashtags || '',
             textHash: hash,
-            status: 'PENDING',
+            status,
             provider
           }
         },
@@ -230,10 +338,49 @@ export async function saveGeneratedPost({
 }
 
 /**
+ * Updates post translation in MongoDB and memory in-place (never registers a new duplicate)
+ */
+export async function updatePostTranslation(topicOrText, language, translationText, hashtags = '') {
+  const hash = computeNormalizedHash(topicOrText);
+  const cleanLang = String(language).toLowerCase();
+
+  const updateFields = {};
+  if (cleanLang.includes('roman')) {
+    updateFields.romanUrduText = translationText;
+    updateFields.romanUrduHashtags = hashtags;
+    historyStore.updatePostTranslation(hash, { romanUrduText: translationText });
+  } else if (cleanLang.includes('urdu')) {
+    updateFields.plainUrduText = translationText;
+    updateFields.plainUrduHashtags = hashtags;
+    historyStore.updatePostTranslation(hash, { plainUrduText: translationText });
+  }
+
+  if (inMemoryPosts.has(hash)) {
+    const p = inMemoryPosts.get(hash);
+    Object.assign(p, updateFields);
+  }
+
+  if (isMongoConnected()) {
+    try {
+      await PostModel.updateMany(
+        {
+          $or: [{ textHash: hash }, { topic: topicOrText }]
+        },
+        { $set: updateFields }
+      );
+    } catch (err) {
+      console.warn('[PostModel] Failed to update post translation in MongoDB:', err.message);
+    }
+  }
+}
+
+/**
  * Updates post status to APPROVED
  */
 export async function markPostApproved(topicOrText, language = 'English') {
   const hash = computeNormalizedHash(topicOrText);
+  historyStore.updateStatus(hash, 'APPROVED');
+
   if (inMemoryPosts.has(hash)) {
     const p = inMemoryPosts.get(hash);
     p.status = 'APPROVED';
@@ -269,6 +416,8 @@ export async function markPostApproved(topicOrText, language = 'English') {
  */
 export async function markPostDiscarded(topicOrText) {
   const hash = computeNormalizedHash(topicOrText);
+  historyStore.updateStatus(hash, 'DISCARDED');
+
   if (inMemoryPosts.has(hash)) {
     const p = inMemoryPosts.get(hash);
     p.status = 'DISCARDED';
@@ -292,10 +441,68 @@ export async function markPostDiscarded(topicOrText) {
 }
 
 /**
+ * Permanently marks a post as USED in MongoDB and HistoryStore so it will NEVER be reused.
+ */
+export async function markPostUsed(topicOrText, extraData = {}) {
+  const hash = computeNormalizedHash(extraData.text || topicOrText);
+  historyStore.markUsed(topicOrText, {
+    ...extraData,
+    englishText: extraData.text || ''
+  });
+
+  if (inMemoryPosts.has(hash)) {
+    const p = inMemoryPosts.get(hash);
+    p.status = 'USED';
+    p.usedPermanently = true;
+    p.markedUsedAt = new Date();
+  }
+
+  if (isMongoConnected()) {
+    try {
+      const query = {
+        $or: [
+          { textHash: hash },
+          { topic: String(topicOrText).trim() }
+        ]
+      };
+
+      const result = await PostModel.updateMany(
+        query,
+        {
+          $set: {
+            status: 'USED',
+            usedPermanently: true,
+            markedUsedAt: new Date(),
+            ...(extraData.centralArgument ? { centralArgument: extraData.centralArgument } : {}),
+            ...(extraData.subtopic ? { subtopic: extraData.subtopic } : {})
+          }
+        }
+      );
+
+      // If document not yet saved to Mongo, persist it permanently as USED
+      if (result.matchedCount === 0 && extraData.text) {
+        await saveGeneratedPost({
+          topic: String(topicOrText).trim(),
+          subtopic: extraData.subtopic || topicOrText,
+          centralArgument: extraData.centralArgument || '',
+          english: { text: extraData.text, fullPost: extraData.text },
+          status: 'USED',
+          usedPermanently: true
+        });
+      }
+    } catch (err) {
+      console.warn('[PostModel] Failed to mark post as used in MongoDB:', err.message);
+    }
+  }
+}
+
+/**
  * Updates post status to POSTED with live tweet details and permanently marks it as published
  */
 export async function markPostPublished(topicOrText, language = 'English', tweetId = null, tweetUrl = null) {
   const hash = computeNormalizedHash(topicOrText);
+  historyStore.updateStatus(hash, 'POSTED');
+
   if (inMemoryPosts.has(hash)) {
     const p = inMemoryPosts.get(hash);
     p.status = 'POSTED';
@@ -338,20 +545,43 @@ export async function markPostPublished(topicOrText, language = 'English', tweet
 }
 
 /**
- * Retrieves ALL topics that have been posted or approved or generated,
- * to ensure 100% brand new fresh content is generated every single time.
+ * Synchronizes ALL historical records from MongoDB into memory and HistoryStore
  */
-export async function getAllUsedTopics(limit = 100) {
+export async function syncMongoHistory() {
+  if (!isMongoConnected()) return 0;
+  try {
+    const allPosts = await PostModel.find({}).lean();
+    allPosts.forEach(p => {
+      const hash = p.textHash || computeNormalizedHash(p.englishText || p.topic);
+      inMemoryHashes.add(hash);
+      if (p.topic && !inMemoryTopics.includes(p.topic)) inMemoryTopics.push(p.topic);
+    });
+
+    const synced = historyStore.syncFromMongo(allPosts);
+    if (synced > 0) {
+      console.log(`[MongoDB Sync] Synchronized ${synced} historical posts into HistoryStore.`);
+    }
+    return synced;
+  } catch (err) {
+    console.warn('[PostModel] Failed to sync Mongo history:', err.message);
+    return 0;
+  }
+}
+
+/**
+ * Retrieves ALL topics that have been posted or approved or generated across all time
+ */
+export async function getAllUsedTopics(limit = 0) {
   const topics = [];
 
   if (isMongoConnected()) {
     try {
-      const records = await PostModel.find({}, { topic: 1, status: 1 })
-        .sort({ createdAt: -1 })
-        .limit(limit)
-        .lean();
+      const query = PostModel.find({}, { topic: 1, subtopic: 1, status: 1 }).sort({ createdAt: -1 });
+      if (limit > 0) query.limit(limit);
+      const records = await query.lean();
       records.forEach(r => {
         if (r.topic && !topics.includes(r.topic)) topics.push(r.topic);
+        if (r.subtopic && !topics.includes(r.subtopic)) topics.push(r.subtopic);
       });
     } catch (err) {
       console.warn('[PostModel] Error fetching used topics from MongoDB:', err.message);

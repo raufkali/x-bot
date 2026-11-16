@@ -346,6 +346,26 @@ async function runTests() {
     }
     console.log('✓ TEST 22 PASSED: Option 5 never regenerates discarded post, generating 100% unique posts!\n');
 
+    // TEST 23: Option 7 (Mark post as used - Never to be reused)
+    console.log('TEST 23: Testing Option 7 (Mark post as used - Never to be reused)...');
+    const postToMark = whatsappWorkflow.currentPendingPost;
+    assert.ok(postToMark, 'Must have a pending post to mark as used');
+    const markedTopic = postToMark.topic;
+    const markedText = postToMark.english.text;
+
+    const markResult = await whatsappWorkflow.handleOwnerReply('7', config.ownerPhoneNumber);
+    assert.strictEqual(markResult.action, 'MARKED_USED');
+    assert.strictEqual(markResult.status, 'MARKED_USED');
+    assert.strictEqual(whatsappWorkflow.currentPendingPost, null, 'Pending post should be cleared after marking as used');
+    assert.strictEqual(whatsappWorkflow.status, 'MARKED_USED');
+
+    // Verify it is permanently indexed and flagged as duplicate in historyStore
+    assert.strictEqual(historyStore.hasSeenTopic(markedTopic), true, 'Marked topic must be indexed in historyStore');
+    const duplicateCheck = historyStore.isDuplicateOrSimilar(markedText, markedTopic);
+    assert.strictEqual(duplicateCheck.isDuplicate, true, 'Marked post must be recognized as duplicate');
+    console.log(`   ✓ Marked post "${markedTopic}" is permanently recorded as USED (reason: ${duplicateCheck.reason})`);
+    console.log('✓ TEST 23 PASSED: Option 7 successfully marks post as used and guarantees it is never reused!\n');
+
     // Restore persistent primary genre lock to PAK_VS_IND
     genreManager.setPrimaryGenre('PAK_VS_IND');
     console.log('✓ Verified: Primary Genre permanently locked to "Pak vs Ind"!\n');
