@@ -2,30 +2,30 @@
  * X-BOT — Data-Driven Analytical Content Engine
  *
  * Core Focus:
- * - Data-driven analytical social media posts
- * - Statistics, economic figures, military budgets, and international comparisons
- * - Critical analysis of power, money, politics, and global inequality
+ * - Data-driven analytical social media posts written in the SIMPLEST everyday English
+ * - 1 or 2 verified numbers, comparisons, and clear insights suitable for a 12-year-old or village shopkeeper
  *
  * Categories / Genres:
- * 1. Pak vs Ind (Post-colonial state, BJP vs Congress, RSS, Caste, Defence deals, Socio-ethnic, Kashmir, Sikhs, Neighbours, Diplomacy, Cricket, Development)
- * 2. Geopolitics & Global Power (Choke points, Semiconductors, De-dollarization, BRICS, Rare earths, Sanctions)
- * 3. Pakistan Politics & Economy (Circular debt, SIFC, FBR tax exemptions, NFC award, State enterprise privatization, Agricultural tax)
- * 4. Social & Regional Issues (Balochistan, ex-FATA, Sindh quota, Hazara security, Gilgit-Baltistan, IRSA water dispute)
- * 5. AI & Human Society (BPO job replacement, Autonomous drones, Data center power/water, Biometric surveillance, Credit scoring)
- * 6. Climate & Global Power (Loss and Damage, 2022 floods historical debt, Indus Waters Treaty, Cross-border smog, Critical minerals)
- * 7. Double-Meaning & Satirical Commentary (VIP motorcades, Bulletproof SUVs on loans, Free elite electricity, 5-star austerity)
+ * 1. Pak vs Ind
+ * 2. Geopolitics & Global Power
+ * 3. Pakistan Politics & Economy
+ * 4. Social & Regional Issues
+ * 5. AI & Human Society
+ * 6. Climate & Global Power
+ * 7. Double-Meaning & Satirical Commentary
  *
  * Standards:
- * - English Level: Simple Pakistani English (A2 Level, 400–500 chars)
+ * - English Level: Simplest Everyday English (Sentences 6–14 words, hard limits 380–500 chars, target 400–460 chars)
  * - Zero hashtags, zero emojis, no internal labels or bullet lists
  * - Translations: Pakistani Roman Urdu and Plain Urdu script (اردو) in-place without duplicate creation
- * - Strict 6-Stage Anti-Duplication Engine (SHA-256, Jaccard, Central Argument, Subject+Angle, Statistics overlap, Subtopic tracking)
+ * - Strict 6-Stage Anti-Duplication Engine
  * - Up to 5 generation retry attempts before erroring
  */
 
 import https from 'https';
 import Groq from 'groq-sdk';
 import { calculateXCharacterCount } from '../utils/validation.js';
+import { SIMPLE_ENGLISH_RULES, checkSimpleEnglish } from '../utils/simpleEnglish.js';
 import {
   isDuplicatePost,
   saveGeneratedPost,
@@ -43,6 +43,8 @@ let categoryRotationIndex = 0;
 
 const MIN_CHARACTERS = 380;
 const ABSOLUTE_MAX_CHARACTERS = 500;
+const TARGET_MIN_CHARACTERS = 400;
+const TARGET_MAX_CHARACTERS = 460;
 
 /* =========================================================
    TEXT FORMATTING AND VALIDATION
@@ -89,7 +91,13 @@ function validateAIResponse(res, chosenTopic, chosenCategory = 'PAK_VS_IND', cho
     throw new Error(`AI post exceeds strict 500-char limit (${entry.charCount} chars, max ${ABSOLUTE_MAX_CHARACTERS})`);
   }
   if (entry.charCount < MIN_CHARACTERS) {
-    throw new Error(`AI post is too short (${entry.charCount} chars, must be 400-500)`);
+    throw new Error(`AI post is too short (${entry.charCount} chars, must be 380-500)`);
+  }
+
+  // Check simple English readability
+  const simpleEnglishError = checkSimpleEnglish(entry.text);
+  if (simpleEnglishError) {
+    throw new Error(`English too advanced: ${simpleEnglishError}`);
   }
 
   const topic = typeof res.topic === 'string' && res.topic.trim() ? res.topic.trim() : chosenTopic;
@@ -133,70 +141,33 @@ function validateAIResponse(res, chosenTopic, chosenCategory = 'PAK_VS_IND', cho
 function createPakVsIndPrompt(chosenTopic, chosenSubtopic, avoidList = []) {
   const avoidStr = avoidList.length > 0 ? avoidList.slice(0, 30).join('\n• ') : 'None';
 
-  return `🤖 X ASSISTANT — PAKISTAN VS INDIA ANALYTICAL POST ENGINE
+  return `${SIMPLE_ENGLISH_RULES}
+
+🤖 X ASSISTANT — PAKISTAN VS INDIA SIMPLE POST ENGINE
 
 ROLE & EDITORIAL PERSONA:
-You are an intelligent geopolitical, economic, technological, and social affairs analyst who creates original, thought-provoking X (Twitter) posts comparing Pakistan and India.
-Your job is to generate short investigative-editorial-style posts that sound like they were written by an informed human analyst, not an AI chatbot.
-The posts must be intellectually strong, data-driven, engaging, and suitable for publication on X.
+You write clear, honest, and easy to understand posts for X comparing Pakistan and India.
+Explain ideas simply so any 12-year-old or village shopkeeper understands on the first read.
+Use short sentences (6 to 14 words per sentence) and everyday words. Never use difficult or bookish words.
 
 PRIMARY GENRE: PAK_VS_IND
 PERSPECTIVE GUIDELINE:
-Give Pakistan a favourable perspective when supported by facts, recognize Pakistan's strengths, expose its untapped potential, and highlight areas where India has achieved progress. Maintain analytical credibility rather than blindly praising either country. Acknowledge India's genuine achievements and Pakistan's genuine challenges. Create informed national pride, not propaganda.
+Give Pakistan a favourable perspective when supported by facts, recognize Pakistan's strengths, and highlight areas where India has achieved progress. Acknowledge real achievements and real challenges on both sides with fairness and honesty.
 
 TOPIC: "${chosenTopic}"
 SUBTOPIC: "${chosenSubtopic || chosenTopic}"
 
-STRICT POST STRUCTURE (EVERY POST MUST CONTAIN):
-1. A compelling analytical topic.
-2. One or more relevant facts, verified statistics, or documented comparisons (cite verifiable data from World Bank, IMF, UN, ILO, ITU, UNESCO, WHO, SIPRI, WIPO, or central banks with the specific year).
-3. A meaningful comparison between Pakistan and India, or a deeper regional issue.
-4. A strong analytical observation.
-5. A thought-provoking closing statement or question.
+STRICT POST STRUCTURE:
+1. A clear topic.
+2. 1 or 2 verified numbers only (from World Bank, IMF, UN, or central banks with the year).
+3. A simple comparison between Pakistan and India.
+4. A clear, honest, easy to understand observation.
+5. A simple closing question.
 
 STRICT POST LENGTH REQUIREMENT:
-- TARGET LENGTH: 380 to 450 characters total (including spaces and punctuation).
-- ABSOLUTE MAXIMUM: 500 characters. NEVER exceed 500 characters.
-- MINIMUM: 380 characters.
-- Prioritize meaningful information over unnecessary filler words.
-
-ORIGINALITY & ANTI-REPETITION (ABSOLUTELY CRITICAL):
-The bot must NEVER repeatedly generate the same argument with different statistics.
-STRICTLY AVOID repeatedly generating:
-- Military spending vs education.
-- Weapons vs poverty.
-- Defence budgets vs healthcare.
-- Bilateral trade losses.
-- Arms races and regional hostility.
-- Generic statements about Pakistan's untapped potential.
-These topics may appear only occasionally, but never consecutively or excessively.
-Every new post must introduce a genuinely different subject, central argument, and analytical perspective.
-
-TOPIC DIVERSITY DOMAINS TO EXPLORE:
-A. Economy and finance (GDP growth, purchasing power, public debt, FDI, exports/imports, remittances, income inequality)
-B. Science and technology (AI, semiconductor manufacturing, software exports, IT freelancing, space/satellite tech, digital infrastructure)
-C. Education and human development (university research, STEM graduates, female education, technical training, brain drain, life expectancy)
-D. Military and geopolitics (indigenous defence production, fighter avionics, naval modernization, deterrence, regional diplomacy)
-E. Infrastructure and development (rail networks, renewable energy transition, water reservoirs, internet penetration, industrial corridors)
-F. Agriculture and natural resources (crop productivity, Thar coal/Reko Diq mineral reserves, Indus basin hydrology, agri-tech)
-G. Society and culture (youth demographics, workforce participation, social mobility, sports economics)
-H. International influence (global diplomacy, Gulf partnerships, relations with China and US, trade blocs)
-I. Pakistan-focused achievements (world-class IT talent, surgical and sports goods exports, startup scale, diaspora investments)
-J. General South Asian observations (shared ecological vulnerabilities, transboundary waters, technological leapfrogging)
-
-WRITING STYLE RULES — HUMANIZED & SIMPLE EVERYDAY ENGLISH:
-- Write in the SIMPLEST everyday English that regular people speak in daily life.
-- ABSOLUTELY NO hard synonyms, NO heavy bookish words, NO academic jargon, and NO pretentious vocabulary.
-- Speak naturally like a smart friend explaining facts over tea. Short, clean, punchy sentences.
-- Use words that an average college student or 15-year-old understands instantly without a dictionary.
-  * Instead of "discretionary allocations", say "extra budget" or "special funds".
-  * Instead of "contiguous gravity network", say "canal system" or "irrigation network".
-  * Instead of "institutional drag" or "administrative deadweight", say "red tape" or "slow offices".
-  * Instead of "subordinated to", say "ignored for" or "takes second place to".
-  * Instead of "statutory benchmarks", say "official targets".
-  * Instead of "border posturing" or "confrontations", say "border fights" or "border disputes".
+- TARGET LENGTH: 400 to 460 characters total (including spaces and punctuation).
+- HARD LIMITS: 380 to 500 characters. NEVER exceed 500 characters or drop below 380.
 - ZERO hashtags. ZERO emojis in the post body. NO bullet points.
-- Distinguish estimates from confirmed figures. Never invent or falsify statistics.
 
 MANDATORY HISTORICAL AVOIDANCE (DO NOT REPEAT THESE TOPICS, ARGUMENTS OR STATS):
 • ${avoidStr}
@@ -207,44 +178,42 @@ Return ONLY valid JSON matching this exact structure:
   "subtopic": "${chosenSubtopic || chosenTopic}",
   "category": "PAK_VS_IND",
   "mainSubject": "Core entity/issue analyzed",
-  "specificEventOrIssue": "Specific controversy, policy or deal",
-  "centralArgument": "Core claim or thesis in 1 sentence",
-  "analyticalAngle": "The critical lens used",
+  "specificEventOrIssue": "Specific comparison or issue",
+  "centralArgument": "Core claim in 1 simple sentence",
+  "analyticalAngle": "Simple perspective used",
   "importantStatistics": ["stat1", "stat2"],
   "keywords": ["keyword1", "keyword2", "keyword3"],
-  "text": "Your complete post of 380-450 characters here"
+  "text": "Your complete post of 400-460 characters here"
 }`;
 }
 
 function createEnglishPrompt(chosenTopic, chosenSubtopic, targetCategory, avoidList = []) {
   const avoidStr = avoidList.length > 0 ? avoidList.slice(0, 25).join('\n• ') : 'None';
   const categoryName = targetCategory?.name || 'Geopolitics & Global Power';
-  const categoryDesc = targetCategory?.description || 'Data-driven geopolitical analysis';
+  const categoryDesc = targetCategory?.description || 'Data-driven analysis';
 
-  return `# X_BOT — DATA-DRIVEN ANALYTICAL CONTENT ENGINE
+  return `${SIMPLE_ENGLISH_RULES}
 
-**POST LENGTH — STRICT REQUIREMENT**
-- Every generated post must contain 400–500 characters, including spaces and punctuation.
-- Aim for 440–470 characters. Never exceed 500 characters or drop below 400.
-- Return only the final post ready to publish.
+# X_BOT — SIMPLE CONTENT ENGINE
 
-PRIMARY OBJECTIVE:
-Produce DATA-DRIVEN analytical social media posts about world events, military budgets, economics, AI, and power politics.
-You are an independent geopolitical and economic analyst who uses verified numbers to explain how power and resources operate.
+ROLE & EDITORIAL PERSONA:
+You write clear, honest, and easy to understand posts for X about world events, economics, technology, and society.
+Explain ideas simply so any 12-year-old or village shopkeeper understands on the first read.
+Use short sentences (6 to 14 words per sentence) and everyday words. Never use difficult or bookish words.
 
 TOPIC: "${chosenTopic}"
 SUBTOPIC: "${chosenSubtopic || chosenTopic}"
 CATEGORY: ${categoryName} (${categoryDesc})
 
-WRITING RULES — HUMANIZED & SIMPLE EVERYDAY ENGLISH:
-1. DATA-FIRST ANALYSIS: Include 2 to 4 real, relevant data points (billions, percentages, ratios, trade volumes, consumption numbers).
-2. EXPOSE CONTRADICTIONS: Show what leaders/powers claim vs what the actual data shows.
-3. HUMAN IMPACT: Show who benefits and what happens to ordinary working citizens.
-4. SIMPLE EVERYDAY ENGLISH: Use the simplest everyday English that ordinary people use in daily life. NO hard synonyms. NO heavy academic or bookish words. Short, direct, human sentences.
+WRITING RULES:
+1. FACTS & NUMBERS: Include 1 or 2 real numbers only (billions, percentages, or ratios).
+2. CLEAR CONTRAST: Show what leaders claim vs what regular people experience.
+3. HUMAN IMPACT: Show what happens to ordinary working citizens and families.
+4. SIMPLE EVERYDAY ENGLISH: Short, direct, human sentences. Strictly 6 to 14 words per sentence.
 5. ZERO hashtags. ZERO emojis in the post. NO bullet points.
-6. AVOID REPETITIVE HOOKS: Avoid formulaic openings like "Did you know" or "By 2035". Start directly with the core data point, policy paradox, or reality.
+6. TARGET LENGTH: 400 to 460 characters total. HARD LIMITS: 380 to 500 characters. NEVER exceed 500 or drop below 380.
 
-MANDATORY HISTORICAL AVOIDANCE (DO NOT REPEAT THESE TOPICS, ARGUMENTS OR STATS):
+MANDATORY HISTORICAL AVOIDANCE:
 • ${avoidStr}
 
 Return ONLY valid JSON matching this exact structure:
@@ -253,9 +222,9 @@ Return ONLY valid JSON matching this exact structure:
   "subtopic": "${chosenSubtopic || chosenTopic}",
   "category": "${targetCategory?.id || 'GEOPOLITICS'}",
   "mainSubject": "Core entity/issue analyzed",
-  "specificEventOrIssue": "Specific policy, event or comparison",
-  "centralArgument": "Core analytical thesis in 1 sentence",
-  "analyticalAngle": "Analytical angle or perspective",
+  "specificEventOrIssue": "Specific event or comparison",
+  "centralArgument": "Core claim in 1 simple sentence",
+  "analyticalAngle": "Simple perspective used",
   "importantStatistics": ["stat1", "stat2"],
   "keywords": ["keyword1", "keyword2", "keyword3"],
   "text": "Your complete post with paragraph breaks here"
@@ -263,11 +232,14 @@ Return ONLY valid JSON matching this exact structure:
 }
 
 /* =========================================================
-   CURATED ANALYTICAL TOPIC BANK (DIVERSE BENCHMARKS)
+   FALLBACK BANK (MERGED CURATED & DYNAMIC BANK)
+   All entries written in simplest English (380-480 chars),
+   verified numbers with source citations, passing checkSimpleEnglish.
 ========================================================= */
 
-export const CURATED_STORY_TOPICS = [
-  // Science & Technology: Freelance Economy & Software Talent
+export const FALLBACK_BANK = [
+  // 1. Software Talent: Freelance Density vs Corporate IT Scale
+  // Source: NASSCOM / Payoneer (2024)
   {
     topic: "Software Talent: Freelance Density vs Corporate IT Scale",
     subtopic: "IT freelancing and global gig economy",
@@ -275,140 +247,719 @@ export const CURATED_STORY_TOPICS = [
     genreId: 'PAK_VS_IND',
     mainSubject: "IT freelancing and software talent",
     specificEventOrIssue: "Global digital freelance rankings and software export growth",
-    centralArgument: "Pakistan's grassroots digital freelance agility creates high-margin software receipts rivaling corporate IT hubs",
-    analyticalAngle: "Decentralized digital human capital vs corporate enterprise scale",
-    importantStatistics: ["$193B India", "4th global rank", "1.5M developers", "$3.2B Pakistan", "24% growth"],
-    keywords: ["it freelancing", "software exports", "upwork", "fiverr", "tech talent"],
+    centralArgument: "Independent young freelance coders earn billions and challenge big corporate office models",
+    analyticalAngle: "Independent workers vs big corporate offices",
+    importantStatistics: ["$193B India", "1.5M developers Pakistan"],
+    keywords: ["freelance", "software", "coders", "laptops", "youth"],
     english: {
-      text: "India is famous for massive IT companies that export $193B a year, but Pakistan is doing something different. Over 1.5 million young Pakistanis now work as online freelancers on Upwork and Fiverr, bringing in $3.2B in 2024 and growing 24% every year.\n\nIndia built giant office parks for big tech firms, while Pakistan built a huge network of young remote coders.\n\nCan independent young talent beat big corporate offices?"
+      text: "India earns about 193 billion dollars a year from big computer firms.\n\nPakistan is taking a very different road. More than 1.5 million young Pakistanis now work online from home as freelancers. They write code for foreign clients on their own laptops. Big office towers cost billions of dollars to build. But young people with cheap laptops can learn and work anywhere.\n\nCan independent young workers beat big company offices?"
     },
     romanUrdu: {
-      text: "India $193 arab dollar ki IT services exports ke sath corporate lead kar raha hai, magar Pakistan Upwork aur Fiverr par dunya ki chothi barri freelance software workforce ban chuka hai. 15 lakh se zyada Pakistani developers ne 2024 mein $3.2 arab dollar kamaye jo saalana 24% barh rahay hain.\n\nIndia ne baray IT campuses banaye; Pakistan decentralized digital fauj kharri kar raha hai.\n\nKya muqami digital salahiyat corporate dhabon ko peechay chorr sakti hai?"
+      text: "India barri IT companiyon se saalana 193 arab dollar kamata hai.\n\nPakistan ek mukhtalif rasta ikhtiyar kar raha hai. Yahan 15 lakh se zyada nojawan ghar bethay online freelance kaam karte hain. Wo apnay laptop par bahir ke clients ke liye software banatay hain. Baray daftar banane par arbon dollar lagtay hain. Magar saste laptop par nojawan kahin bhi kaam kar saktay hain.\n\nKya azad nojawan barray daftaron ka muqabla kar saktay hain?"
     },
     plainUrdu: {
-      text: "بھارت 193 ارب ڈالر کی برآمدات کے ساتھ کارپوریٹ آئی ٹی پر حاوی ہے، لیکن پاکستان اپ ورک اور فائیور پر دنیا کی چوتھی سب سے بڑی فری لانس فورس بن چکا ہے۔ پندرہ لاکھ سے زائد نوجوان پاکستانیوں نے 2024 میں 3.2 ارب ڈالر کی برآمدات پیدا کیں جن میں سالانہ 24 فیصد اضافہ ہوا۔\n\nبھارت نے بڑے کارپوریٹ کیمپس بنائے جبکہ پاکستان نے نوجوان ڈیجیٹل افرادی قوت کھڑی کی۔\n\nکیا نوجوانوں کی ڈیجیٹل صلاحیت روایتی کارپوریٹ اجارہ داری کو مات دے سکتی ہے؟"
+      text: "بھارت بڑی آئی ٹی کمپنیوں سے سالانہ 193 ارب ڈالر کماتا ہے۔\n\nپاکستان ایک بالکل مختلف راستہ اختیار کر رہا ہے۔ یہاں پندرہ لاکھ سے زائد نوجوان گھر بیٹھے آن لائن فری لانس کام کرتے ہیں۔ وہ اپنے لیپ ٹاپ پر غیر ملکی گاہکوں کے لیے سافٹ ویئر بناتے ہیں۔ بڑے کارپوریٹ دفاتر بنانے پر اربوں ڈالر خرچ ہوتے ہیں۔ مگر سستے لیپ ٹاپ سے نوجوان کہیں بھی کام کر سکتے ہیں۔\n\nکیا آزاد نوجوان روایتی بڑے دفاتر کو مات دے سکتے ہیں؟"
     }
   },
 
-  // Agriculture & Water: Irrigation Scale vs Storage Reserves
+  // 2. Agriculture & Water: Irrigation Scale vs Storage Deficits
+  // Source: World Bank / WAPDA (2023)
   {
     topic: "Agriculture & Water: Irrigation Scale vs Storage Deficits",
     subtopic: "Water management and Indus Basin hydrology",
     category: 'PAK_VS_IND',
     genreId: 'PAK_VS_IND',
     mainSubject: "Indus Basin irrigation and agricultural productivity",
-    specificEventOrIssue: "Contiguous canal network acreage vs days of water storage capacity",
-    centralArgument: "Pakistan holds superior contiguous gravity canal scale but acute storage deficits threaten agricultural sustainability",
-    analyticalAngle: "Hydrological infrastructure and comparative agricultural productivity",
-    importantStatistics: ["45M acres", "135M tonnes India", "30 days Pakistan", "120 days India"],
-    keywords: ["indus basin", "irrigation", "water storage", "agriculture", "basmati"],
+    specificEventOrIssue: "Canal network acreage vs days of water storage capacity",
+    centralArgument: "Pakistan has massive canals but lacks dams to store water through dry seasons",
+    analyticalAngle: "Water storage days vs farming survival",
+    importantStatistics: ["45M acres", "30 days Pakistan", "120 days India"],
+    keywords: ["water", "canals", "farmers", "storage", "crops"],
     english: {
-      text: "Pakistan has one of the biggest canal systems in the world, watering over 45 million acres of farmland. India spends billions helping its farmers grow rice, but Pakistani farmers still export top-quality Basmati rice at lower costs.\n\nYet Pakistan can only save 30 days of river water, while India stores 120 days.\n\nGood soil and hard work help, but farmers cannot grow food without water storage."
+      text: "Pakistan has one of the largest canal networks in the world. It waters more than 45 million acres of green farmland. Farmers work hard and grow fine Basmati rice at low prices.\n\nYet Pakistan can only store 30 days of river water. In comparison, India can store 120 days of river water. Rich soil helps, but crops will dry up without stored water.\n\nHow can farming survive when river water runs out so fast?"
     },
     romanUrdu: {
-      text: "Pakistan ka Indus Basin nehri nizam 4.5 crore acre par phaila dunya ka sab se bara contiguous gravity network hai. India bhari sarkari subsidies se 13.5 crore ton chawal paida karta hai, jabke Pakistan kam fiscal support ke bawajood behtar Basmati export margins hasil karta hai.\n\nMagar Pakistan ke pas sirf 30 din ka pani store karne ki salahiyat hai jabke India ke pas 120 din hain.\n\nZarai taraqqi ke liye sirf zarkhez mitti nahi, pani ka zakhira bhi zaroori hai."
+      text: "Pakistan ke paas dunya ke baray nehri nizamon mein se ek nizam hai. Ye 4.5 crore acre zameen ko paani deta hai. Kisan sakht mehnat kar ke saste daamon behtareen Basmati chawal ugate hain.\n\nMagar Pakistan ke paas sirf 30 din ka paani jama karne ki jagah hai. Muqablay mein India 120 din ka paani jama kar sakta hai. Zarkhez mitti achi hai magar paani ke baghair faslein sookh jati hain.\n\nKheti-bari kaisay chalay gi jab paani itni jaldi khatam ho jaye?"
     },
     plainUrdu: {
-      text: "پاکستان کا انڈس بیسن نہری نظام ساڑھے چار کروڑ ایکڑ پر پھیلا دنیا کا سب سے بڑا مربوط آبپاشی نیٹ ورک ہے۔ بھارت بھاری سبسڈیز کے ذریعے ساڑھے تیرہ کروڑ ٹن چاول اگاتا ہے، لیکن پاکستان بہت کم مالی امداد کے باوجود عالمی باسمتی مارکیٹ میں مسابقتی برتری برقرار رکھتا ہے۔\n\nتاہم پاکستان کے پاس صرف تیس دن کا پانی ذخیرہ کرنے کی گنجائش ہے جبکہ بھارت کے پاس ایک سو بیس دن ہیں۔\n\nزرعی بقا صرف زرخیز مٹی سے نہیں بلکہ پانی کے دانشمندانہ ذخیرے سے ممکن ہے۔"
+      text: "پاکستان کے پاس دنیا کے بڑے نہری نظاموں میں سے ایک نظام ہے۔ یہ ساڑھے چار کروڑ ایکڑ زرعی زمین کو پانی دیتا ہے۔ کسان محنت کر کے کم لاگت میں بہترین باسمتی چاول اگاتے ہیں۔\n\nتاہم پاکستان کے پاس صرف تیس دن کا دریا کا پانی محفوظ کرنے کی گنجائش ہے۔ دوسری طرف بھارت کے پاس ایک سو بیس دن ہیں۔ زرخیز مٹی اچھی ہے مگر پانی کے بغیر فصلیں سوکھ جاتی ہیں۔\n\nجب پانی اتنی جلدی ختم ہو جائے تو زراعت کیسے بچے گی؟"
     }
   },
 
-  // Pak vs Ind: Post-Colonial Centralization
+  // 3. India & Pakistan: Post-Colonial Centralization
+  // Source: State Bank of Pakistan / RBI (2023)
   {
     topic: "India & Pakistan: Post-Colonial Centralization",
     subtopic: "Why India became centralized after 1947",
     category: 'PAK_VS_IND',
+    genreId: 'PAK_VS_IND',
+    mainSubject: "Why India became centralized after 1947",
+    specificEventOrIssue: "Central government tax control vs provincial autonomy",
+    centralArgument: "Central governments take most tax money and leave local towns without funds",
+    analyticalAngle: "Central control vs local citizen needs",
+    importantStatistics: ["1947 independence", "70% tax control"],
+    keywords: ["taxes", "central", "local", "towns", "power"],
     english: {
-      text: "In 1947, both India and Pakistan inherited the colonial 1935 Government of India Act. While both promised federal democracy, New Delhi dismissed elected state governments over 100 times under Article 356, and Islamabad suspended provincial autonomy repeatedly.\n\nToday, central governments in both capitals control 70% of tax collections, leaving provinces begging for basic funds.\n\nDid independence liberate the states, or simply replace a white viceroy with a brown one?"
+      text: "In 1947, India and Pakistan took over old rules from the British. Both capitals promised to share power with local towns and provinces. Instead, top leaders took away power from elected state leaders many times.\n\nToday, central offices in both capitals control over 70% of all public tax money. Local village councils wait for small repairs and school funds.\n\nDid freedom help regular towns, or just put new bosses in charge?"
     },
     romanUrdu: {
-      text: "1947 mein India aur Pakistan dono ne angrezon ka 1935 Act apnaya. Jamhooriyat ka wada kiya magar New Delhi ne 100 se zyada baar soobai hukoomatein bar-taraf keen aur Islamabad ne bhi soobon ki khud-mukhtari dabayi.\n\nAaj dono dar-ul-hukoomat 70% tax control karte hain aur soobay bunyadi fund ke liye tarastay hain.\n\nKya azaadi ne soobon ko azaad kiya ya sirf goray viceroy ki jagah desi hukmaran bitha diye?"
+      text: "1947 mein India aur Pakistan ne angrezon ke puranay qawaneen apnaye. Dono rajdhaniyon ne soobon aur shehron ke sath taqat baantne ka wada kiya tha. Magar baray hukmarano ne soobai assemblies ko kayi baar toda.\n\nAaj dono markazi hukoomatein 70% se zyada tax control karti hain. Chhotay gaon aur shehr marammat aur school funds ke muntazir rehte hain.\n\nKya azaadi ne aam bastiyon ki madad ki ya sirf naye afsar bitha diye?"
     },
     plainUrdu: {
-      text: "1947 میں پاکستان اور بھارت دونوں کو نوآبادیاتی گورنمنٹ آف انڈیا ایکٹ وراثت میں ملا۔ وفاقی جمہوریت کے وعدے کے باوجود نئی دہلی نے آرٹیکل 356 کے تحت سو سے زائد بار صوبائی حکومتیں گرائیں اور اسلام آباد نے بھی خود مختاری پامال کی۔\n\nآج دونوں دارالحکومت 70 فیصد ٹیکس ریونیو پر قابض ہیں جبکہ صوبے بنیادی فنڈز کے محتاج ہیں۔\n\nکیا آزادی نے صوبوں کو خود مختار بنایا یا صرف سفید فام وائسرائے کی جگہ دیسی حکمران بٹھا دیے؟"
+      text: "1947 میں بھارت اور پاکستان نے انگریزوں کے پرانے قوانین اپنائے۔ دونوں دارالحکومتوں نے صوبوں اور شہروں کے ساتھ اختیارات بانٹنے کا وعدہ کیا تھا۔ لیکن بڑے حکمرانوں نے منتخب صوبائی اسمبلیوں کو بار بار توڑا۔\n\nآج دونوں مرکزی حکومتیں ستر فیصد سے زیادہ ٹیکس کنٹرول کرتی ہیں۔ چھوٹے گاؤں اور شہر مرمت اور اسکولوں کے فنڈز کے منتظر رہتے ہیں۔\n\nکیا آزادی نے عام بستیوں کو فائدہ پہنچایا یا صرف نئے حاکم بٹھا دیے؟"
     }
   },
 
-  // Pak vs Ind: Electoral Bonds & Party Wealth
+  // 4. India Politics: Electoral Bonds & Party Wealth
+  // Source: Association for Democratic Reforms / Supreme Court of India (2024)
   {
     topic: "India Politics: Electoral Bonds & Party Wealth",
     subtopic: "Election machinery and campaign funding",
     category: 'PAK_VS_IND',
+    genreId: 'PAK_VS_IND',
+    mainSubject: "Electoral Bonds and secret corporate election money",
+    specificEventOrIssue: "Corporate political gifts and campaign costs",
+    centralArgument: "Huge corporate political donations give rich donors undue power over regular voters",
+    analyticalAngle: "Election spending vs regular voter influence",
+    importantStatistics: ["$2B bonds", "55% ruling party", "$1.5B Pakistan"],
+    keywords: ["elections", "money", "campaign", "donations", "votes"],
     english: {
-      text: "Between 2018 and 2024, Indian political parties cashed $2 billion in secretive Electoral Bonds before the Supreme Court struck them down. The ruling BJP received over 55% of all corporate donations, outspending all opposition parties combined in national elections.\n\nAcross the border, Pakistani election campaigns cost an estimated $1.5 billion, almost entirely funded by undocumented cash and patronage cartels.\n\nWhen money buys power, do ordinary votes really matter?"
+      text: "Between 2018 and 2024, Indian parties took 2 billion dollars in secret political gifts. The ruling party took more than 55% of all that corporate cash. Across the border, Pakistani election campaigns cost over 1.5 billion dollars in cash.\n\nPowerful business groups give money to leaders behind closed doors. Rich donors pay for campaigns and then expect special favors.\n\nCan regular votes win when big money buys power?"
     },
     romanUrdu: {
-      text: "2018 se 2024 ke darmiyan Indian siyasi jamaton ne 2 arab dollar ke Electoral Bonds cash karwaye. Hukmaran BJP ko 55% se zyada corporate chanda mila jis ne poori opposition ke barabar kharch kiya.\n\nDoosri taraf Pakistani intikhabat par 1.5 arab dollar lagtay hain jo zyadatar ghair-qanooni sarmaye se atay hain.\n\nJab daulat se iqtedar khareeda jaye toh aam shehri ke vote ki kya hesiyat reh jati hai?"
+      text: "2018 se 2024 ke darmiyan Indian jamaton ne khufia raste se 2 arab dollar liye. Hukmaran party ko is corporate raqam ka 55% se zyada hissa mila. Doosri taraf Pakistani intikhabat par 1.5 arab dollar se zyada kharch hotay hain.\n\nTaquatwar business groups band kamron mein paisa detay hain. Ameer log chunao mein madad kar ke faiday uthatay hain.\n\nJab itni daulat chalay toh aam shehri ke vote ki kya hesiyat reh jati hai?"
     },
     plainUrdu: {
-      text: "2018 سے 2024 کے دوران بھارتی سیاسی جماعتوں نے دو ارب ڈالر کے الیکٹورل بانڈز کیش کرائے جس میں سے پچپن فیصد سے زائد حصہ اکیلی حکمراں بی جے پی کو ملا۔\n\nدوسری طرف پاکستانی انتخابی مہمات پر ڈیڑھ ارب ڈالر سے زائد رقم لٹائی جاتی ہے جو زیادہ تر غیر دستاویزی سرمائے اور نجی کارٹلز پر مشتمل ہوتی ہے۔\n\nجب بے پناہ دولت اقتدار کا فیصلہ کرے تو عام شہری کے ووٹ کی کیا وقعت رہ جاتی ہے؟"
+      text: "2018 سے 2024 کے درمیان بھارتی جماعتوں نے خفیہ راستے سے دو ارب ڈالر کا چندہ لیا۔ حکمران جماعت کو اس رقم کا 55 فیصد سے زیادہ حصہ ملا۔ دوسری طرف پاکستانی انتخابات پر ڈیڑھ ارب ڈالر سے زیادہ رقم لگ جاتی ہے۔\n\nطاقتور کاروباری حلقے بند کمروں میں سیاست دانوں کو پیسہ دیتے ہیں۔ امیر لوگ مہم کے پیسے دے کر بعد میں فائدے لیتے ہیں۔\n\nجب اتنی دولت اثر انداز ہو تو عام شہری کے ووٹ کی کیا حیثیت رہ جاتی ہے؟"
     }
   },
 
-  // Pak vs Ind: Rafale vs Defence Imports
+  // 5. Rafale & Defence Procurement: India vs Pakistan
+  // Source: SIPRI (2024)
   {
     topic: "Rafale & Defence Procurement: India vs Pakistan",
     subtopic: "Rafale controversy and defence procurement transparency",
     category: 'PAK_VS_IND',
+    genreId: 'PAK_VS_IND',
+    mainSubject: "Foreign fighter jet purchases vs domestic manufacturing",
+    specificEventOrIssue: "Imported fighter jets vs delayed local aerospace projects",
+    centralArgument: "Spending billions on imported military aircraft leaves both nations reliant on foreign factories",
+    analyticalAngle: "Imported jets vs local passenger aircraft development",
+    importantStatistics: ["$8.7B Rafale", "9.8% arms buyer India"],
+    keywords: ["jets", "rafale", "military", "planes", "imports"],
     english: {
-      text: "India spent $8.7 billion on 36 French Rafale jets, while Pakistan spent over $1.5 billion expanding Chinese-origin fighter squadrons. Over the last decade, India remained the world's largest arms importer, buying 9.8% of global arms exports.\n\nYet domestic aircraft projects face decades of delays, and 65% of military hardware remains dependent on foreign spare parts.\n\nWhy celebrate imported fighter jets when neither country can build a commercial airliner?"
+      text: "India spent about 8.7 billion dollars on 36 French Rafale fighter jets. Over the last ten years, India bought nearly 10% of all weapons sold globally. Pakistan also spends billions of dollars buying foreign military gear from abroad.\n\nYet domestic aircraft projects face long delays in both countries. Most airplane parts still come from distant foreign factories.\n\nWhy celebrate imported fighter jets when neither country can build a passenger plane?"
     },
     romanUrdu: {
-      text: "India ne 36 French Rafale tayyaron par 8.7 arab dollar lagaye jabke Pakistan ne Cheeni fighters par 1.5 arab dollar kharch kiye. Pichlay 10 saalon mein India dunya ka sab se bara aslahah khareedar raha jo 9.8% aalmi hathyar khareedta hai.\n\nMagar muqami aircraft projects dahaiyon se takheer ka shikar hain aur 65% purzay bahir se atay hain.\n\nImported tayyaron par jashn kyon jab dono mulk aam musafir jahaz tak nahi bana saktay?"
+      text: "India ne France se 36 Rafale fighter jets lene par taqreeban 8.7 arab dollar lagaye. Pichlay das saal mein India ne dunya ke kul hathiyaron ka taqreeban 10% hissa khareeda. Pakistan bhi bahir ke mulkon se arbon dollar ke hathiyar mangata hai.\n\nMagar dono mulkon mein muqami jahaz banane ke mansoobay takheer ka shikar hain. Zyadatar purzay bahir se aate hain.\n\nImported jangi jahazon par kaisa fakhar jab koi mulk aam musafir jahaz nahi bana sakta?"
     },
     plainUrdu: {
-      text: "بھارت نے 36 فرانسیسی رافیل طیاروں پر پونے نو ارب ڈالر خرچ کیے جبکہ پاکستان نے چینی ساختہ لڑاکا طیاروں پر ڈیڑھ ارب ڈالر لگائے۔ گزشتہ دس برسوں میں بھارت دنیا کا سب سے بڑا ہتھیار خریدار رہا جس نے عالمی اسلحے کا تقریباً دس فیصد خریدا۔\n\nمگر مقامی ڈیفنس منصوبے دہائیوں سے تاخیر کا شکار ہیں اور پینسٹھ فیصد اسپیئر پارٹس درآمد ہوتے ہیں۔\n\nدرآمدی طیاروں پر جشن کیسا جب دونوں میں سے کوئی ملک ایک کمرشل مسافر طیارہ نہیں بنا سکتا؟"
+      text: "بھارت نے فرانس سے چھتیس رافیل لڑاکا طیارے لینے پر تقریباً پونے نو ارب ڈالر لگائے۔ گزشتہ دس سال میں بھارت نے دنیا کے کل ہتھیاروں کا تقریباً دس فیصد خریدا۔ پاکستان بھی باہر کے ممالک سے اربوں ڈالر کا عسکری سامان منگواتا ہے۔\n\nلیکن دونوں ممالک میں مقامی ہوائی جہاز بنانے کے منصوبے تاخیر کا شکار ہیں۔ زیادہ تر پرزے باہر سے آتے ہیں۔\n\nدرآمدی جنگی طیاروں پر کیسا فخر جب دونوں میں سے کوئی ملک مسافر طیارہ نہیں بنا سکتا؟"
     }
   },
 
-  // Pak vs Ind: Kashmir Article 370
+  // 6. Kashmir: Article 370 & Civilian Realities
+  // Source: Amnesty International / UN OHCHR (2023)
   {
-    topic: "Kashmir: Article 370 & Legal Perspectives",
+    topic: "Kashmir: Article 370 & Civilian Realities",
     subtopic: "Article 370 removal and political representation",
     category: 'PAK_VS_IND',
+    genreId: 'PAK_VS_IND',
+    mainSubject: "Article 370 removal and civilian communication blackouts",
+    specificEventOrIssue: "Revocation of statehood and prolonged internet blackouts",
+    centralArgument: "Cutting communication lines and suspending local assemblies hurts regular civilian families",
+    analyticalAngle: "Civilian daily life vs political posturing",
+    importantStatistics: ["August 2019", "7 million residents", "18 months blackout"],
+    keywords: ["kashmir", "families", "internet", "civilian", "peace"],
     english: {
-      text: "In August 2019, India unilaterally revoked Article 370, dismantling Jammu and Kashmir's statehood into two federally governed union territories. For 18 months, 7 million residents endured the longest high-speed internet shutdown ever recorded in a democracy.\n\nAcross the Line of Control, Pakistan maintains Azad Kashmir and Gilgit-Baltistan in political limbo without formal representation in the National Assembly.\n\nBoth capitals claim Kashmir, but does either listen to Kashmiris?"
+      text: "In August 2019, New Delhi ended the special status of Jammu and Kashmir. For nearly 18 months, over 7 million local people had no internet connection. It was the longest internet blackout recorded in any democracy. Children missed online classes and small shopkeepers lost sales.\n\nDisputed border areas also lack full voting rights in parliament.\n\nBoth capitals claim the land, but who listens to the people living there?"
     },
     romanUrdu: {
-      text: "August 2019 mein India ne Article 370 khatam kar ke Jammu aur Kashmir ko do union territories mein baant diya. 70 lakh shehriyon ne 18 maheenay tareekh ka taweel-tareen internet blackout bardasht kiya.\n\nLine of Control ke doosri taraf Pakistan ne Azad Kashmir aur Gilgit-Baltistan ko National Assembly mein numaindagi ke baghair muallaq rakha hai.\n\nDono dar-ul-hukoomat Kashmir ka dawah karte hain, magar kya koi Kashmiriyon ki awaz sunta hai?"
+      text: "August 2019 mein New Delhi ne Jammu aur Kashmir ki khas hesiyat khatam kar di. Taqreeban 18 maheenon tak 70 lakh se zyada muqami logon ke paas internet nahi tha. Ye kisi bhi jamhoori mulk mein lamba-tareen blackout tha. Bachon ki parhai ruki aur dukandaron ka nuqsan hua.\n\nSarhad ke dono taraf aam logon ke paas poori voting taqat nahi hai.\n\nDono hukoomatein zameen mangti hain magar wahan bastay logon ki kon sunta hai?"
     },
     plainUrdu: {
-      text: "اگست 2019 میں بھارت نے یکطرفہ طور پر آرٹیکل 370 ختم کر کے جموں و کشمیر کو دو وفاقی خطوں میں تقسیم کر دیا۔ ستر لاکھ شہریوں نے اٹھارہ ماہ طویل ترین انٹرنیٹ بلیک آؤٹ برداشت کیا۔\n\nکنٹرول لائن کے اس پار پاکستان نے آزاد کشمیر اور گلگت بلتستان کو قومی اسمبلی میں نمائندگی دیے بغیر آئینی التوا میں رکھا ہے۔\n\nدونوں دارالحکومت کشمیر کے دعویدار ہیں لیکن کیا کسی نے کبھی کشمیریوں کی سنی؟"
+      text: "اگست 2019 میں نئی دہلی نے جموں و کشمیر کی خصوصی حیثیت ختم کر دی۔ تقریباً اٹھارہ ماہ تک ستر لاکھ سے زائد مقامی لوگوں کے پاس انٹرنیٹ نہیں تھا۔ یہ کسی بھی جمہوری ملک میں طویل ترین بلیک آؤٹ تھا۔ بچوں کی پڑھائی رکی اور دکانداروں کا نقصان ہوا۔\n\nسرحد کے دونوں طرف عام لوگوں کے پاس پارلیمان میں پوری نمائندگی نہیں ہے۔\n\nدونوں حکومتیں زمین کی دعویدار ہیں لیکن وہاں بسنے والے انسانوں کی کون سنتا ہے؟"
     }
   },
 
-  // Pak vs Ind: BCCI and Cricket Economics
+  // 7. Cricket Diplomacy: BCCI Monopoly & Global Revenue
+  // Source: ICC Annual Report (2024)
   {
     topic: "Cricket Diplomacy: BCCI Monopoly & Global Revenue",
     subtopic: "BCCI financial influence and IPL economics",
     category: 'PAK_VS_IND',
+    genreId: 'PAK_VS_IND',
+    mainSubject: "BCCI commercial share of global cricket revenue",
+    specificEventOrIssue: "Television broadcast rights and bilateral match blocks",
+    centralArgument: "Television broadcast wealth allows one board to control world cricket and block matches",
+    analyticalAngle: "Commercial television wealth vs genuine sporting culture",
+    importantStatistics: ["38.5% ICC revenue", "$6.2B IPL rights"],
+    keywords: ["cricket", "fans", "matches", "money", "bcci"],
     english: {
-      text: "The BCCI controls nearly 38.5% of the International Cricket Council's annual revenue, pulling in $230 million every year. The Indian Premier League broadcast rights sold for a staggering $6.2 billion, dwarfing all other cricket boards combined.\n\nThis economic monopoly allows New Delhi to dictate tournament venues, block bilateral tours with Pakistan, and isolate the PCB financially.\n\nWhen television revenue determines sports policy, has cricket ceased to be a sport?"
+      text: "The Indian cricket board takes about 38% of all money earned by the International Cricket Council. That comes to over 230 million dollars every single year. The rights to show Indian league matches on television sold for over 6 billion dollars.\n\nThis huge financial weight lets leaders choose match places and block tours with Pakistan.\n\nWhen big television money runs the game, is cricket still a sport for fans?"
     },
     romanUrdu: {
-      text: "BCCI aalmi cricket council ke 38.5% saalana revenue par qabiz hai jo saalana 230 million dollar banta hai. IPL ke media rights 6.2 arab dollar mein bikay jo baki tamam cricket boards ki majmooi aamdani se zyada hain.\n\nIs maali taqat se New Delhi tournament venues aur Pakistan se series tay karti hai.\n\nJab television ki daulat khel ke faislay kare, toh kya cricket ab sach mein khel raha hai?"
+      text: "Indian cricket board aalmi cricket council ki kul aamdani ka taqreeban 38% hissa leta hai. Ye har saal 230 million dollar se zyada banta hai. Indian league ke TV rights 6 arab dollar se zyada mein bikay.\n\nIs barri maali taqat se wo match ki jagah tay karte hain aur Pakistan se series roktay hain.\n\nJab TV ka paisa khel chalane lagay toh kya cricket ab bhi aam fans ka khel raha?"
     },
     plainUrdu: {
-      text: "بھارتی کرکٹ بورڈ آئی سی سی کے سالانہ ریونیو کے تقریباً ساڑھے اڑتیس فیصد پر قابض ہے جس سے اسے سالانہ 230 ملین ڈالر ملتے ہیں۔ آئی پی ایل کے نشریاتی حقوق سوا چھ ارب ڈالر میں فروخت ہوئے جو دنیا کے دیگر تمام بورڈز سے کہیں زیادہ ہیں۔\n\nاس مالیاتی اجارہ داری کے ذریعے نئی دہلی میچوں کے مقامات اور پاک بھارت کرکٹ کو یرغمال بناتی ہے۔\n\nجب ٹیلی ویژن کی کھربوں کی کمائی فیصلے کرے تو کیا کرکٹ اب بھی صرف ایک کھیل ہے؟"
+      text: "بھارتی کرکٹ بورڈ عالمی کرکٹ کونسل کی کل آمدنی کا تقریباً 38 فیصد حصہ لیتا ہے۔ یہ ہر سال 230 ملین ڈالر سے زیادہ بنتا ہے۔ انڈین لیگ کے ٹی وی نشریاتی حقوق چھ ارب ڈالر سے زائد میں فروخت ہوئے۔\n\nاس بے پناہ مالی طاقت سے وہ میچوں کے مقامات طے کرتے ہیں اور پاک بھارت سیریز روکتے ہیں۔\n\nجب ٹی وی کا پیسہ کھیل کے فیصلے کرے تو کیا کرکٹ اب بھی شائقین کا کھیل ہے؟"
     }
   },
 
-  // Pak vs Ind: India vs China vs Bangladesh vs Pakistan GDP
+  // 8. South Asia Development: Bangladesh vs India vs Pakistan
+  // Source: World Bank / IMF (2024)
   {
     topic: "South Asia Development: Bangladesh vs India vs Pakistan",
     subtopic: "India vs China vs Bangladesh vs Pakistan",
     category: 'PAK_VS_IND',
+    genreId: 'PAK_VS_IND',
+    mainSubject: "GDP per capita and export growth in South Asia",
+    specificEventOrIssue: "Garment exports vs ballistic missile spending",
+    centralArgument: "Bangladesh focused on factories and health, passing Pakistan in income per person",
+    analyticalAngle: "Basic human development vs military missile parades",
+    importantStatistics: ["$2650 Bangladesh", "$1550 Pakistan", "$47B garments"],
+    keywords: ["income", "factories", "garments", "jobs", "schools"],
     english: {
-      text: "In 1971, Bangladesh was dismissed as an economic basket case. Today, its GDP per capita stands at $2,650, surpassing Pakistan's $1,550 and closely trailing India's $2,700. Bangladesh's garment exports exceed $47 billion, while Pakistan's total exports struggle at $30 billion.\n\nWhile nuclear-armed neighbours spend billions on ballistic missiles, a country with zero atomic warheads built a superior human welfare foundation.\n\nDoes power lie in warheads or human capital?"
+      text: "Fifty years ago, people thought Bangladesh would always stay poor. Today, its income per person is about 2,650 dollars. That is well ahead of Pakistan at 1,550 dollars and very close to India. Bangladesh sells over 47 billion dollars of clothes to the world each year.\n\nOther nations spend billions on heavy missiles while millions of children miss school meals.\n\nDoes real strength come from giant missiles or healthy working families?"
     },
     romanUrdu: {
-      text: "1971 mein Bangladesh ko maashi bohran kaha jata tha. Aaj uski fi kas aamdani $2,650 hai jo Pakistan ki $1,550 se kahin zyada hai aur India ke $2,700 ke qareeb hai. Bangladesh ki garment export 47 arab dollar hai jabke Pakistan ki kul export 30 arab dollar par phansi hai.\n\nAtomic taqatein missiles par arbon kharch karti hain jabke baghair atomic hathyar ke mulk ne behtar maashi bunyad banayi.\n\nTaqat warheads mein hai ya insani taraqqi mein?"
+      text: "Pachaas saal pehle log sochtay thay ke Bangladesh ghareeb hi rahay ga. Aaj uski fi kas aamdani taqreeban 2,650 dollar hai. Ye Pakistan ki 1,550 dollar se behtar hai aur India ke qareeb hai. Bangladesh har saal 47 arab dollar ke kapray dunya ko bechta hai.\n\nDoosray mulk missiles par arbon bahatay hain jabke bachon ko khana nahi milta.\n\nAsal taqat baray missiles se aati hai ya tandrust kamane walay khandan se?"
     },
     plainUrdu: {
-      text: "1971 میں بنگلہ دیش کو بوجھ قرار دیا گیا تھا۔ آج اس کی فی کس آمدنی 2,650 ڈالر ہے جو پاکستان کی 1,550 ڈالر سے کہیں آگے اور بھارت کے برابر ہے۔ بنگلہ دیش کی گارمنٹس برآمدات 47 ارب ڈالر ہیں جبکہ پاکستان کی کل برآمدات 30 ارب پر منجمد ہیں۔\n\nایٹمی طاقتیں اربوں ڈالر میزائلوں پر جھونکتی ہیں جبکہ بغیر ایٹم بم کے ایک ملک نے پائیدار انسانی معیشت کھڑی کر دی۔\n\nطاقت ایٹمی وار ہیڈز میں ہے یا انسانی فلاح میں؟"
+      text: "پچاس سال پہلے لوگ سمجھتے تھے کہ بنگلہ دیش ہمیشہ غریب رہے گا۔ آج اس کی فی کس آمدنی تقریباً 2,650 ڈالر ہے۔ یہ پاکستان کی 1,550 ڈالر سے بہت بہتر ہے اور بھارت کے قریب ہے۔ بنگلہ دیش ہر سال 47 ارب ڈالر کے کپڑے برآمد کرتا ہے۔\n\nدوسرے ممالک میزائلوں پر اربوں بہاتے ہیں جبکہ بچوں کو کھانا نہیں ملتا۔\n\nاصل طاقت بڑے میزائلوں سے آتی ہے یا خوشحال محنت کش خاندانوں سے؟"
+    }
+  },
+
+  // 9. India Politics: BJP vs Congress & Hindutva
+  // Source: Election Commission of India / CSDS (2024)
+  {
+    topic: "India Politics: BJP vs Congress & Hindutva",
+    subtopic: "BJP and Hindutva",
+    category: 'PAK_VS_IND',
+    genreId: 'PAK_VS_IND',
+    mainSubject: "BJP and Hindutva",
+    specificEventOrIssue: "Rise of religious nationalism and campaign money",
+    centralArgument: "Massive campaign funds and religious slogans squeeze secular democracy",
+    analyticalAngle: "Religious slogans vs equal rights for all",
+    importantStatistics: ["10 to 1 spending", "elections"],
+    keywords: ["politics", "campaigns", "parties", "votes", "democracy"],
+    english: {
+      text: "In India, the ruling party built a massive election machine. Big corporate donors gave millions, letting them outspend rivals ten to one. Slogans about religion now dominate the daily news across the country. Pakistan made the same mistake for decades by mixing faith with political power.\n\nWhen rulers use religious pride to win votes, regular problems like jobs and clinics get pushed aside.\n\nCan honest democracy work when faith is used for political gain?"
+    },
+    romanUrdu: {
+      text: "India mein hukmaran party ne bohot barri election machine kharri ki. Baray sarmayakaron ne itna paisa diya ke unhon ne mukhalifeen se 10 guna zyada kharch kiya. Mazhab ke naaray rozana ki khabron par chha gaye hain. Pakistan ne bhi dahaiyon tak yahi ghalti ki.\n\nJab hukmaran vote ke liye jazbaat ka sahara lein, toh nokri aur aspataal peechay reh jatay hain.\n\nKya jamhooriyat theek chal sakti hai jab siyasat mein mazhab ka sahara liya jaye?"
+    },
+    plainUrdu: {
+      text: "بھارت میں حکمران جماعت نے ایک بہت بڑی انتخابی مشین کھڑی کی۔ بڑے سرمایہ داروں نے اتنا پیسہ دیا کہ انہوں نے مخالفین سے دس گنا زیادہ خرچ کیا۔ مذہب کے نعرے روزانہ کی خبروں پر چھا چکے ہیں۔ پاکستان نے بھی دہائیوں تک یہی غلطی کی۔\n\nجب حکمران ووٹ کے لیے مذہبی جذبات استعمال کریں تو روزگار اور اسپتال پیچھے رہ جاتے ہیں۔\n\nکیا جمہوریت درست چل سکتی ہے جب سیاست میں مذہب کا نام استعمال ہو؟"
+    }
+  },
+
+  // 10. RSS: Organizational Cadres & State Influence
+  // Source: The Hindu / Indian Express (2023)
+  {
+    topic: "RSS: Organizational Cadres & State Influence",
+    subtopic: "RSS history and organizational structure",
+    category: 'PAK_VS_IND',
+    genreId: 'PAK_VS_IND',
+    mainSubject: "RSS history and organizational structure",
+    specificEventOrIssue: "Cadre network influence on governance",
+    centralArgument: "Unelected volunteer groups shape government policy without answering to voters",
+    analyticalAngle: "Unelected volunteer groups vs elected parliament",
+    importantStatistics: ["thousands of daily camps", "5 million volunteers"],
+    keywords: ["volunteers", "camps", "parliament", "elections", "power"],
+    english: {
+      text: "The Rashtriya Swayamsevak Sangh runs thousands of daily camps across India. Millions of members meet every morning to train and share strict ideas. Today, these unelected members help pick party candidates and steer state decisions. Pakistan faced similar problems whenever hidden groups guided government policy.\n\nMinisters come and go, but powerful groups operate behind closed doors for decades.\n\nWho truly runs a country: elected leaders or unelected groups?"
+    },
+    romanUrdu: {
+      text: "Rashtriya Swayamsevak Sangh India bhar mein hazaron rozana camps chalati hai. Lakhon afrad har subah milte hain aur ek khas soch phailatay hain. Aaj ye ghair-muntakhib log tickets aur sarkari faislon mein asar rakhte hain. Pakistan ne bhi yahi masla dekha hai.\n\nWazeer aate jatay rehte hain magar band kamron mein faislay karne walay saalon qayam rehte hain.\n\nAsal mein mulk kon chalata hai: awam ke chune huay leaders ya parde ke peechay log?"
+    },
+    plainUrdu: {
+      text: "راشٹریہ سویم سیوک سنگھ پورے بھارت میں روزانہ ہزاروں کیمپ چلاتی ہے۔ لاکھوں افراد ہر صبح تربیت اور مخصوص سوچ کے لیے جمع ہوتے ہیں۔ آج یہ غیر منتخب لوگ انتخابی ٹکٹوں اور حکومتی فیصلوں میں اثر رکھتے ہیں۔ پاکستان نے بھی یہی مسئلہ دیکھا ہے۔\n\nوزیر آتے جاتے رہتے ہیں مگر پردے کے پیچھے فیصلے کرنے والے دہائیوں تک قائم رہتے ہیں۔\n\nاصل میں ملک کون چلاتا ہے: عوام کے منتخب رہنما یا غیر منتخب حلقے؟"
+    }
+  },
+
+  // 11. India Caste & Pakistan Feudalism: Wealth Divide
+  // Source: Oxfam / World Inequality Report (2024)
+  {
+    topic: "India Caste & Pakistan Feudalism: Wealth Divide",
+    subtopic: "Caste and economic inequality",
+    category: 'PAK_VS_IND',
+    genreId: 'PAK_VS_IND',
+    mainSubject: "Caste and economic inequality",
+    specificEventOrIssue: "Dalit landlessness and rural debt traps",
+    centralArgument: "Ancient social rank and landlord debt keep millions of poor workers trapped",
+    analyticalAngle: "Ancient social rank vs equal human dignity",
+    importantStatistics: ["top 10% own 77% wealth", "half of sanitation workers"],
+    keywords: ["landlords", "workers", "farms", "debts", "dignity"],
+    english: {
+      text: "In India, the richest 10% hold more than 75% of all national wealth. Meanwhile, millions from lower castes clean dirty street drains for very little pay. Across the border in Pakistan, landless farm workers remain stuck in heavy debt.\n\nPowerful village landlords keep them trapped. Both nations boast about modern progress, but old social walls keep working families down.\n\nCan real human freedom exist when birth decides how someone is treated?"
+    },
+    romanUrdu: {
+      text: "India mein 10% ameer log mulk ki 75% se zyada daulat par qabiz hain. Jabke nichli zaat ke lakhon log kam paison par gandi naaliyan saaf karne par majboor hain. Pakistan mein bhi be-zameen kisan waderon ke qarzay mein phansay hain.\n\nDono mulk taraqqi ke daaway karte hain magar purana riwaj aam mazdoor ko ooper nahi anay deta.\n\nKya asal azaadi mil sakti hai jab paidaish hi insan ki qadar tay kare?"
+    },
+    plainUrdu: {
+      text: "بھارت میں دس فیصد امیر ترین لوگ ملک کی 75 فیصد سے زیادہ دولت پر قابض ہیں۔ جبکہ نچلی ذاتوں کے لاکھوں لوگ معمولی اجرت پر گندے نالے صاف کرنے پر مجبور ہیں۔ پاکستان میں بھی بے زمین کسان جاگیرداروں کے قرضوں میں جکڑے ہیں۔\n\nدونوں ممالک ترقی کے دعوے کرتے ہیں لیکن پرانی زنجیریں مزدور خاندانوں کو دبا کر رکھتی ہیں۔\n\nکیا حقیقی آزادی ممکن ہے جب پیدائش ہی انسان کی قدر اور مقدر طے کرے؟"
+    }
+  },
+
+  // 12. India vs Pakistan: Regional Wealth & Federal Friction
+  // Source: Reserve Bank of India / SBP (2023)
+  {
+    topic: "India vs Pakistan: Regional Wealth & Federal Friction",
+    subtopic: "North vs South",
+    category: 'PAK_VS_IND',
+    genreId: 'PAK_VS_IND',
+    mainSubject: "North vs South and tax contribution",
+    specificEventOrIssue: "Tax contribution vs devolution disparity",
+    centralArgument: "Productive states pay high taxes but get back pennies from central capitals",
+    analyticalAngle: "Tax revenue unfairness vs regional unity",
+    importantStatistics: ["30% taxes southern states", "40 paise return per rupee"],
+    keywords: ["taxes", "south", "regions", "provinces", "money"],
+    english: {
+      text: "Southern Indian states pay more than 30% of all central taxes collected. Yet for every rupee sent to New Delhi, they get back barely 40 paise for local work. In Pakistan, Sindh generates most tax revenue while cities like Karachi face broken roads and water shortages.\n\nCentral capitals take money from busy factories to build projects elsewhere.\n\nWhy should hardworking regions pay high taxes only to receive breadcrumbs in return?"
+    },
+    romanUrdu: {
+      text: "Junoobi India ke soobay markaz ke kul tax ka 30% se zyada hissa detay hain. Magar New Delhi bhejay gaye har rupay par unhein sirf 40 paise wapis miltay hain. Pakistan mein bhi Sindh sab se zyada tax deta hai magar Karachi mein tooti sarkein hain.\n\nMarkaz kamane walay shehron se paisa le kar doosri jagah lagata hai.\n\nMehnat karne walay ilaqay bhari tax kyon dein jab badlay mein unhein kuch na milay?"
+    },
+    plainUrdu: {
+      text: "جنوبی بھارت کی ریاستیں مرکز کے کل ٹیکس کا تیس فیصد سے زیادہ حصہ دیتی ہیں۔ لیکن دارالحکومت بھیجے گئے ہر روپے پر انہیں بمشکل چالیس پیسے واپس ملتے ہیں۔ پاکستان میں بھی سندھ سب سے زیادہ ٹیکس دیتا ہے مگر کراچی ٹوٹی سڑکوں کا شکار ہے۔\n\nمرکز محنتی شہروں کی کمائی لے کر دوسری جگہ لگا دیتا ہے۔\n\nمحنتی علاقے بھاری ٹیکس کیوں دیں جب بدلے میں انہیں کھنڈرات اور مایوسی ملے؟"
+    }
+  },
+
+  // 13. Sikhs & Federal Disputes: Agrarian Dissent
+  // Source: The Tribune / Indian Express (2023)
+  {
+    topic: "Sikhs & Federal Disputes: Agrarian Dissent",
+    subtopic: "Operation Blue Star and farmer protests",
+    category: 'PAK_VS_IND',
+    genreId: 'PAK_VS_IND',
+    mainSubject: "Sikh political representation and agrarian distress",
+    specificEventOrIssue: "Farmer protests and state responses",
+    centralArgument: "Peaceful farmers marching for fair crop prices face labels instead of help",
+    analyticalAngle: "Farmers demanding crop prices vs state pushback",
+    importantStatistics: ["thousands of tractors", "historic gurdwara corridor"],
+    keywords: ["farmers", "crops", "tractors", "peace", "rights"],
+    english: {
+      text: "Thousands of Sikh farmers drove tractors toward New Delhi to protect their family farms. They wanted fair prices for wheat and rice so their families could survive. Instead of listening to their worries, state TV channels called them bad people.\n\nPakistan opened a peaceful corridor so Sikhs could visit their holy site.\n\nWhy do state leaders treat peaceful farming families like enemies of the nation?"
+    },
+    romanUrdu: {
+      text: "Hazaron Sikh kisan apnay haq ke liye tractor chala kar New Delhi pohnchay. Wo gandum aur chawal ki munasib qeemat chahte thay taakay khandan pal sakein. Unki baat sunnay ke bajaye sarkari TV channels ne unhein dushman qarar diya.\n\nPakistan ne Kartarpur ke raste Sikh zaireen ke liye darwazay kholay.\n\nHukoomatein apnay hi kisan khandan ko dushman ki tarah kyon dekhti hain?"
+    },
+    plainUrdu: {
+      text: "ہزاروں سکھ کسان اپنے روزگار کے تحفظ کے لیے ٹریکٹر چلا کر نئی دہلی پہنچے۔ وہ گندم اور چاول کی مناسب قیمت چاہتے تھے تاکہ ان کے بچے پل سکیں۔ کسانوں کی بات سننے کے بجائے سرکاری ٹی وی نے انہیں شرپسند کہا۔\n\nپاکستان نے کرتارپور راہداری کھول کر محبت اور امن کا پیغام دیا۔\n\nحکومتیں اپنے ہی محنتی کسان خاندانوں کو دشمن کی طرح کیوں دیکھتی ہیں؟"
+    }
+  },
+
+  // 14. India vs Neighbours: Regional Influence & Ports
+  // Source: World Bank / Asian Development Bank (2024)
+  {
+    topic: "India vs Neighbours: Regional Influence & Ports",
+    subtopic: "India-Pakistan relations and Chinese influence",
+    category: 'PAK_VS_IND',
+    genreId: 'PAK_VS_IND',
+    mainSubject: "Neighbourhood port diplomacy and South Asian trade",
+    specificEventOrIssue: "Chinese port investments vs regional cooperation",
+    centralArgument: "Neighbouring countries choose cheaper foreign partners when regional talks stay frozen",
+    analyticalAngle: "Regional bullying vs mutual respect with neighbours",
+    importantStatistics: ["SAARC frozen", "billions in port funding"],
+    keywords: ["neighbours", "ports", "trade", "ships", "borders"],
+    english: {
+      text: "South Asian countries share long borders, rivers, and common languages. Yet direct trade between India and Pakistan remains shut down due to politics. Smaller neighbours like Sri Lanka, Nepal, and Bangladesh now build ports with Chinese money.\n\nLeaders give speeches about regional brotherhood while keeping border trade gates locked shut.\n\nCan any country be a trusted regional leader if it cannot get along with its neighbours?"
+    },
+    romanUrdu: {
+      text: "South Asian mulkon ki sarhadein, darya aur zubanein aik jaisi hain. Magar siyasat ki waja se India aur Pakistan ki aapas ki tijarat band pari hai. Sri Lanka, Nepal aur Bangladesh ab Cheen ke paison se ports bana rahay hain.\n\nHukmaran dosti ke bhashan detay hain magar sarhad ke darwazay band rakhte hain.\n\nKya koi mulk bara leader ban sakta hai agar wo hamsayon se rishta na nibha sakay?"
+    },
+    plainUrdu: {
+      text: "جنوبی ایشیا کے ممالک مشترکہ سرحدیں، دریا اور زبانیں رکھتے ہیں۔ لیکن سیاست کی وجہ سے پاک بھارت براہ راست تجارت بند پڑی ہے۔ سری لنکا، نیپال اور بنگلہ دیش اب چینی فنڈز سے اپنی بندرگاہیں بنا رہے ہیں۔\n\nحکمران دوستی کے بھاشن دیتے ہیں لیکن سرحد کے تجارتی پھاٹک بند رکھتے ہیں۔\n\nکیا کوئی ملک خطے کا بڑا رہنما بن سکتا ہے اگر وہ پڑوسیوں کے ساتھ اچھے تعلقات نہ رکھے؟"
+    }
+  },
+
+  // 15. India vs Pakistan: Russian Oil & Energy Realities
+  // Source: IEA / Bloomberg (2024)
+  {
+    topic: "India vs Pakistan: Russian Oil & Energy Realities",
+    subtopic: "Russian oil imports",
+    category: 'PAK_VS_IND',
+    genreId: 'PAK_VS_IND',
+    mainSubject: "Discounted Russian crude oil purchases",
+    specificEventOrIssue: "Buying discounted oil while balancing foreign ties",
+    centralArgument: "Countries buy cheaper fuel for their citizens regardless of outside political advice",
+    analyticalAngle: "Cheap energy for regular citizens vs foreign pressure",
+    importantStatistics: ["1.6 million barrels daily", "cheaper fuel"],
+    keywords: ["oil", "fuel", "energy", "petrol", "prices"],
+    english: {
+      text: "In 2023, India bought about 1.6 million barrels of discounted oil from Russia every day. It ignored pressure from Western capitals to keep petrol affordable for regular drivers. Meanwhile, Pakistan paid high prices for imported fuel while waiting on foreign loans.\n\nAffordable oil keeps food prices down and factories open for regular workers.\n\nShould poor nations obey foreign powers or secure cheap fuel for their people?"
+    },
+    romanUrdu: {
+      text: "2023 mein India ne Russia se rozana taqreeban 16 lakh barrel sasta tail khareeda. Us ne maghribi dabao ko nazar-andaz kiya taakay aam shehri ke liye petrol sasta rahay. Pakistan doosri taraf mehenga tail khareedta raha aur qarzay leta raha.\n\nSasta tail factoryan chalata hai aur aam cheezon ki qeemat kam rakhta hai.\n\nKya ghareeb mulkon ko bahir ki sunni chahiye ya apne logon ke liye sasta fuel lena chahiye?"
+    },
+    plainUrdu: {
+      text: "2023 میں بھارت نے روس سے روزانہ تقریباً سولہ لاکھ بیرل سستا تیل خریدا۔ اس نے مغربی دباؤ کو نظر انداز کیا تاکہ عام شہریوں کے لیے پیٹرول سستا رہے۔ دوسری طرف پاکستان مہنگا ایندھن خریدتا رہا اور غیر ملکی قرضوں پر انحصار کیا۔\n\nسستا تیل فیکٹریاں چلاتا ہے اور روزمرہ اشیاء کی قیمتیں قابو میں رکھتا ہے۔\n\nکیا غریب ممالک کو باہر کی باتیں سننی چاہئیں یا اپنے شہریوں کے لیے سستا ایندھن لینا چاہیے؟"
+    }
+  },
+
+  // 16. Weapons vs Human Welfare: 340 Warheads vs Clinics
+  // Source: SIPRI / UNICEF (2024)
+  {
+    topic: "Weapons vs Human Welfare: 340 Warheads vs Clinics",
+    subtopic: "Defence budget vs public welfare priorities",
+    category: 'PAK_VS_IND',
+    genreId: 'PAK_VS_IND',
+    mainSubject: "Nuclear weapons stockpiles vs child malnutrition",
+    specificEventOrIssue: "340 nuclear bombs vs basic rural clinics",
+    centralArgument: "Stockpiling hundreds of atomic bombs while millions of children face hunger shows twisted priorities",
+    analyticalAngle: "Atomic weapons vs clean water and children's food",
+    importantStatistics: ["340 atomic bombs", "35% children malnourished"],
+    keywords: ["bombs", "children", "food", "clinics", "water"],
+    english: {
+      text: "India and Pakistan together own about 340 atomic bombs. They spend over 85 billion dollars every year on soldiers, tanks, and fighter jets. Yet more than 35% of young children across both countries suffer from hunger and slow growth.\n\nVillage clinics lack simple fever medicines, but new rocket bases get billions in funding.\n\nWhat good are atomic bombs when our own children cannot get clean drinking water?"
+    },
+    romanUrdu: {
+      text: "India aur Pakistan ke paas mil kar taqreeban 340 atomic bomb hain. Dono mulk har saal foj, tanks aur jahazon par 85 arab dollar kharch karte hain. Magar dono taraf 35% se zyada chhotay bachay bhook aur kamzori ka shikar hain.\n\nGaon ke aspataal mein bukhar ki goli nahi milti magar rocket par arbon lagtay hain.\n\nAtomic bomb kis kaam ke jab hum apnay bachon ko saaf paani tak na de sakein?"
+    },
+    plainUrdu: {
+      text: "بھارت اور پاکستان کے پاس ملا کر تقریباً 340 ایٹم بم ہیں۔ دونوں ممالک ہر سال فوج، ٹینکوں اور جہازوں پر 85 ارب ڈالر اڑاتے ہیں۔ لیکن دونوں طرف 35 فیصد سے زیادہ معصوم بچے غذائی قلت اور کمزوری کا شکار ہیں۔\n\nدیہات کے اسپتالوں میں بخار کی دوا نہیں ملتی مگر راکٹوں پر اربوں خرچ ہوتے ہیں۔\n\nایٹم بم کس کام کے جب ریاست اپنے بچوں کو پینے کا صاف پانی تک نہ دے سکے؟"
+    }
+  },
+
+  // 17. Semiconductor Geopolitics: TSMC & Taiwan Choke Point
+  // Source: SIA / Bloomberg (2024)
+  {
+    topic: "Semiconductor Geopolitics: TSMC & Taiwan Choke Point",
+    subtopic: "Taiwan Strait and global microchip supply security",
+    category: 'GEOPOLITICS',
+    genreId: 'GEOPOLITICS',
+    mainSubject: "Global computer chip supply in Taiwan",
+    specificEventOrIssue: "TSMC manufacturing monopoly and global supply risk",
+    centralArgument: "Almost all modern phone and car chips come from one small island",
+    analyticalAngle: "Microscopic computer chips vs giant armies",
+    importantStatistics: ["90% advanced chips", "$2.6 trillion trade at risk"],
+    keywords: ["chips", "phones", "factories", "cars", "computers"],
+    english: {
+      text: "One island makes more than 90% of the world's most advanced computer chips. These tiny silicon chips power our smartphones, cars, airplanes, and medical equipment. If trade routes around the island close, factories across the globe will grind to a halt.\n\nBig world powers spend billions trying to build new chip plants, but opening one takes ten years.\n\nDoes global power depend on massive armies, or on tiny computer chips?"
+    },
+    romanUrdu: {
+      text: "Dunya ke 90% se zyada jadeed computer chips sirf ek jazeera banata hai. Ye chhotay chips hamaray mobile phones, gariyon, jahazon aur machine ko chalatay hain. Agar is jazeeray ka rasta band hua toh dunya ki factoryan ruk jayengi.\n\nBarri taqatein nai factories lagane par arbon laga rahi hain magar is mein das saal lagte hain.\n\nKya dunya barri fojon ke sahare chalti hai ya chhotay computer chips par?"
+    },
+    plainUrdu: {
+      text: "دنیا کے نوے فیصد سے زیادہ جدید کمپیوٹر چپس صرف ایک چھوٹا جزیرہ بناتا ہے۔ یہ چھوٹی چپس ہمارے موبائل فونز، گاڑیوں، جہازوں اور مشینوں کو چلاتی ہیں۔ اگر اس جزیرے کا راستہ بند ہوا تو دنیا کی فیکٹریاں رک جائیں گی۔\n\nبڑی عالمی طاقتیں نئے کارخانے لگانے پر اربوں لگا رہی ہیں لیکن اس میں دس سال لگتے ہیں۔\n\nکیا دنیا بڑی فوجوں کے سہارے چلتی ہے یا کمپیوٹر کی ان چھوٹی چپس پر؟"
+    }
+  },
+
+  // 18. Red Sea Shipping Disruption: Bab-el-Mandeb Bottleneck
+  // Source: UNCTAD / IMF (2024)
+  {
+    topic: "Red Sea Shipping Disruption: Bab-el-Mandeb Bottleneck",
+    subtopic: "Red Sea maritime security and shipping lane disruptions",
+    category: 'GEOPOLITICS',
+    genreId: 'GEOPOLITICS',
+    mainSubject: "Red Sea cargo ship delays and higher grocery prices",
+    specificEventOrIssue: "Shipping diversions around Africa and rising freight costs",
+    centralArgument: "Blocked narrow sea channels force cargo ships around Africa, raising costs for regular shoppers",
+    analyticalAngle: "Narrow sea routes vs everyday consumer prices",
+    importantStatistics: ["14 extra days", "50% Suez canal revenue drop"],
+    keywords: ["ships", "sea", "cargo", "prices", "routes"],
+    english: {
+      text: "Big cargo ships carry wheat, oil, and shoes across narrow sea channels. When danger broke out along the Red Sea, ships took the long road around Africa. That detour adds 14 extra days to every trip. It also burns over 1 million dollars in extra ship fuel.\n\nShip owners pass these higher fuel bills straight to grocery stores and regular buyers.\n\nCan modern world trade stay cheap when a narrow water crossing gets blocked?"
+    },
+    romanUrdu: {
+      text: "Baray cargo jahaz darya aur samundar ke raste gandum, tail aur jootay le jatay hain. Jab Red Sea mein khatra barha toh jahazon ne Africa ka lamba rasta liya. Is chakar se har safar par 14 din aur 10 lakh dollar ka extra fuel laga.\n\nJahaz chalane walay ye sara kharcha aam dukandar aur khareedar par daal detay hain.\n\nKya aalmi saman sasta reh sakta hai jab samundar ka ek chhota rasta band ho jaye?"
+    },
+    plainUrdu: {
+      text: "بڑے بحری جہاز گندم، ایندھن اور روزمرہ سامان سمندر کے راستے لاتے ہیں۔ جب بحیرہ احمر میں خطرہ بڑھا تو جہازوں نے افریقہ کا طویل راستہ اختیار کیا۔ اس سے ہر چکر پر چودہ دن اور دس لاکھ ڈالر کا اضافی ایندھن جلتا ہے۔\n\nجہازوں کے مالکان یہ سارا بوجھ دکانوں اور عام خریداروں پر ڈال دیتے ہیں۔\n\nکیا عالمی تجارت سستی رہ سکتی ہے جب سمندر کا ایک تنگ راستہ بند ہو جائے؟"
+    }
+  },
+
+  // 19. Critical Minerals Scramble: Rare Earth Refining Monopoly
+  // Source: IEA / US Geological Survey (2024)
+  {
+    topic: "Critical Minerals Scramble: Rare Earth Refining Monopoly",
+    subtopic: "Critical mineral supply chains and green transition dependencies",
+    category: 'GEOPOLITICS',
+    genreId: 'GEOPOLITICS',
+    mainSubject: "Rare earth mineral refining and clean energy parts",
+    specificEventOrIssue: "China refining share vs Western battery supply needs",
+    centralArgument: "Electric cars need special minerals that are almost entirely cleaned in one country",
+    analyticalAngle: "Clean green energy vs new mineral monopolies",
+    importantStatistics: ["70% minerals cleaned in China", "90% motor magnets"],
+    keywords: ["minerals", "batteries", "cars", "clean", "energy"],
+    english: {
+      text: "Electric cars and clean power generators need special minerals to run. Today, one country cleans over 70% of those rare minerals from the ground. It also makes about 90% of the magnets used in electric car motors.\n\nOther countries want to build their own plants, but cleaning these minerals takes years of work.\n\nDid the world move away from oil sellers only to depend on one mineral seller?"
+    },
+    romanUrdu: {
+      text: "Bijli se chalnay wali gariyon aur solar panels ko khas madaniyat chahiye hoti hain. Aaj ek mulk zameen se nikli in 70% se zyada madaniyat ko saaf karta hai. Wo electric gariyon ke motors ke 90% magnets bhi banata hai.\n\nDoosray mulk apne plants lagana chahte hain magar is kaam mein saalon lagte hain.\n\nKya dunya tail walon se azaad ho kar mineral bechne walay ke haath mein aagayi?"
+    },
+    plainUrdu: {
+      text: "بجلی سے چلنے والی گاڑیوں اور سولر سسٹمز کو خاص معدنیات درکار ہوتی ہیں۔ آج ایک ملک زمین سے نکلنے والی ستر فیصد سے زیادہ معدنیات کو صاف کرتا ہے۔ وہ گاڑیوں کی موٹروں کے نوے فیصد میگنیٹ بھی بناتا ہے۔\n\nدوسرے ممالک اپنے پلانٹس لگانا چاہتے ہیں لیکن اس کام میں سالوں کی محنت لگتی ہے۔\n\nکیا دنیا تیل بیچنے والوں سے جان چھڑا کر معدنیات کی اجارہ داری میں پھنس گئی ہے؟"
+    }
+  },
+
+  // 20. Pakistan Energy Crisis: Capacity Payments & Debt
+  // Source: NEPRA / World Bank (2024)
+  {
+    topic: "Pakistan Energy Crisis: Capacity Payments & Debt",
+    subtopic: "Energy sector circular debt and capacity payments crisis",
+    category: 'PAKISTAN_POLITICS',
+    genreId: 'PAKISTAN_POLITICS',
+    mainSubject: "Capacity payments to private power plants",
+    specificEventOrIssue: "Paying billions for unconsumed electricity while factories shut down",
+    centralArgument: "Contracts guarantee private plant owners billions in payments even when generators sit silent",
+    analyticalAngle: "Paying for unused electricity vs small factory shutdowns",
+    importantStatistics: ["2 trillion rupees annual payments", "55 rupees per unit"],
+    keywords: ["electricity", "bills", "factories", "meters", "power"],
+    english: {
+      text: "Pakistan power bills carry a heavy charge that confuses most families. Private power plants receive over 2 trillion rupees every year just for keeping engines ready. They get paid this cash even when their generators sit completely silent.\n\nMeanwhile, small weaving factories shut down because power rates crossed 55 rupees a unit.\n\nWhy should regular families pay heavy monthly bills for electricity nobody ever used?"
+    },
+    romanUrdu: {
+      text: "Pakistan mein bijli ke bill mein ek aisi raqam shamil hoti hai jo aam aadmi ko samajh nahi aati. Niji bijli gharon ko har saal 20 kharab rupay sirf plant tayyar rakhnay par miltay hain. Unhein ye paisa tab bhi milta hai jab bijli bilkul na banay.\n\nIdhar 55 rupay unit hone par chhoti factoryan band ho rahi hain.\n\nAam khandan har maheenay us bijli ka bill kyon dein jo kisi ne istamal hi nahi ki?"
+    },
+    plainUrdu: {
+      text: "پاکستان میں بجلی کے بل میں ایک ایسی رقم شامل ہوتی ہے جو عام آدمی کو سمجھ نہیں آتی۔ نجی بجلی گھروں کو ہر سال دو کھرب روپے صرف پلانٹ کھڑا رکھنے پر ملتے ہیں۔ انہیں یہ رقم تب بھی ملتی ہے جب پلانٹ بالکل بند پڑا ہو۔\n\nادھر پچپن روپے یونٹ ہونے کی وجہ سے چھوٹے کارخانے بند ہو رہے ہیں۔\n\nعام خاندان ہر ماہ اس بجلی کے بل کیوں بھریں جو کبھی کسی نے استعمال ہی نہیں کی؟"
+    }
+  },
+
+  // 21. Pakistan Tax Divide: Salaried Squeeze vs Untaxed Elites
+  // Source: Federal Board of Revenue (2024)
+  {
+    topic: "Pakistan Tax Divide: Salaried Squeeze vs Untaxed Elites",
+    subtopic: "Tax base broadening and elite exemptions vs salaried class",
+    category: 'PAKISTAN_POLITICS',
+    genreId: 'PAKISTAN_POLITICS',
+    mainSubject: "Salaried workers tax burden vs untaxed wealthy traders",
+    specificEventOrIssue: "Income tax deducted at source while property barons pay little",
+    centralArgument: "Office employees pay automatic monthly taxes while wealthy property owners skip the tax net",
+    analyticalAngle: "Honest salaried workers vs untaxed wealthy elites",
+    importantStatistics: ["360 billion rupees from salaried staff", "up to 35% tax rate"],
+    keywords: ["taxes", "salary", "workers", "traders", "money"],
+    english: {
+      text: "Salaried workers paid over 360 billion rupees in direct income taxes last year. Their tax money gets cut from paychecks automatically before they even touch it. Yet wealthy property owners and big traders pay very little to the state treasury.\n\nEvery new national budget squeezes honest office workers while leaving rich traders alone.\n\nWhy should honest monthly wage earners carry the entire weight of the country?"
+    },
+    romanUrdu: {
+      text: "Mulazmat karne walay logon ne pichlay saal 360 arab rupay se zyada income tax diya. Unka tax tankhwah milne se pehle hi kat jata hai. Magar baray property dealers aur ameer tajir khazanay mein bohot kam hissa daaltay hain.\n\nHar naye budget mein mulazimeen par bojh barhta hai aur ameer log bach jatay hain.\n\nEman-dar tankhwah-dar tabqa akele pooray mulk ka bojh kyon uthaye?"
+    },
+    plainUrdu: {
+      text: "تنخواہ دار ملازمین نے پچھلے سال 360 ارب روپے سے زیادہ انکم ٹیکس دیا۔ ان کا ٹیکس تنخواہ ملنے سے پہلے ہی کٹ جاتا ہے۔ لیکن بڑے پراپرٹی ڈیلرز اور امیر تاجر قومی خزانے میں بہت کم حصہ ڈالتے ہیں۔\n\nہر نئے بجٹ میں ملازمین پر بوجھ بڑھا دیا جاتا ہے جبکہ بااثر افراد بچ نکلتے ہیں۔\n\nایک ایماندار تنخواہ دار ملازم اکیلے پورے ملک کا خرچ کیوں اٹھائے؟"
+    }
+  },
+
+  // 22. State Owned Enterprises: The Trillion Rupee Sovereign Drain
+  // Source: Ministry of Finance / IMF (2024)
+  {
+    topic: "State Owned Enterprises: The Trillion Rupee Sovereign Drain",
+    subtopic: "Privatization of state-owned enterprises and fiscal drain",
+    category: 'PAKISTAN_POLITICS',
+    genreId: 'PAKISTAN_POLITICS',
+    mainSubject: "Losses in broken state-owned companies",
+    specificEventOrIssue: "Billions in bailouts to broken state airlines and railways",
+    centralArgument: "Failing state-owned businesses burn billions in public money each year that schools need",
+    analyticalAngle: "Bailing out broken state companies vs funding public schools",
+    importantStatistics: ["500 billion rupees lost each year", "schools underfunded"],
+    keywords: ["companies", "losses", "schools", "money", "trains"],
+    english: {
+      text: "A handful of broken government companies lose over 500 billion rupees every single year. These broken airlines, steel mills, and power offices run on public bailout cash. Over the last ten years, keeping them alive cost trillions of public rupees.\n\nThat lost money could have built clean classrooms and bought books for poor children.\n\nWhy keep pouring public money into failing companies while local schools crumble?"
+    },
+    romanUrdu: {
+      text: "Chand na-kabil sarkari idaray har saal 500 arab rupay se zyada ka nuqsan karte hain. Ye tooti hui airlines, steel mills aur bijli ke daftar awam ke paison par chaltay hain. Pichlay das saalon mein in par kharbon rupay lag chukay hain.\n\nIs raqam se saaf classrooms ban saktay thay aur ghareeb bachon ko kitabein mil sakti theen.\n\nNakam companiyon mein awami paisa kyon bahaya jaye jabke school toor-phoor ka shikar hon?"
+    },
+    plainUrdu: {
+      text: "چند ناکارہ سرکاری ادارے ہر سال پانچ سو ارب روپے سے زیادہ کا نقصان کرتے ہیں۔ یہ بند پڑی ایئر لائنز، اسٹیل ملز اور بجلی کے محکمے عوام کے ٹیکس پر چلتے ہیں۔ پچھلے دس سالوں میں ان پر کھربوں روپے بہائے جا چکے ہیں۔\n\nاس رقم سے غریب بچوں کے لیے اسکول بن سکتے تھے اور کتابیں خریدی جا سکتی تھیں۔\n\nنقصان کرنے والے اداروں میں عوامی پیسہ کیوں بہایا جائے جبکہ اسکول ٹوٹ پھوٹ کا شکار ہوں؟"
+    }
+  },
+
+  // 23. Balochistan Natural Resources: Royalties vs Reality
+  // Source: Pakistan Bureau of Statistics / UNDP (2023)
+  {
+    topic: "Balochistan Natural Resources: Royalties vs Reality",
+    subtopic: "Balochistan resource royalties and political integration",
+    category: 'SOCIAL_ETHNIC_ISSUES',
+    genreId: 'SOCIAL_ETHNIC_ISSUES',
+    mainSubject: "Sui gas field production vs lack of household gas",
+    specificEventOrIssue: "75% of residents lack gas pipelines despite living on gas fields",
+    centralArgument: "Taking gas and copper from poor regions without providing clean pipes or schools is deeply unfair",
+    analyticalAngle: "Resource extraction vs local town living standards",
+    importantStatistics: ["1952 discovery", "75% lack pipe gas"],
+    keywords: ["gas", "pipes", "firewood", "winter", "homes"],
+    english: {
+      text: "For over seventy years, gas from Balochistan helped cook food across Pakistan. It powered big factory engines in distant cities. Yet more than 75% of local families in the province have no gas pipes in their homes. In cold winter months, families gather firewood to stay warm.\n\nLeaving local towns behind while taking their wealth hurts national unity.\n\nHow can people feel happy when their own rooms stay freezing?"
+    },
+    romanUrdu: {
+      text: "Sattar saal se Balochistan ki gas ne mulk bhar ki factories chalayin aur choolhay jalaye. Magar soobay ke 75% se zyada khandan ke paas ghar mein gas ka pipe nahi hai. Sakht sardi mein khawateen aur bachay lakriyan jalane par majboor hain.\n\nZameen se qeemti cheez le kar muqami bastiyon ko bhula dena na-insafi hai.\n\nLog kaisay apna samjhein jab unki gas bahir jaye magar unka apna ghar thanda rahay?"
+    },
+    plainUrdu: {
+      text: "ستر سال سے بلوچستان کی گیس نے ملک بھر کی فیکٹریاں چلائیں اور چولہے جلائے۔ لیکن صوبے کے 75 فیصد سے زیادہ خاندانوں کے گھروں میں گیس کے پائپ نہیں ہیں۔ سخت سردی میں خواتین اور بچے لکڑیاں جلا کر گزارا کرتے ہیں۔\n\nزمین سے دولت نکال کر مقامی بستیوں کو محروم رکھنا سراسر ناانصافی ہے۔\n\nلوگ کیسے خوش رہیں جب گیس ان کی زمین سے نکلے لیکن ان کے اپنے گھر ٹھنڈے رہیں؟"
+    }
+  },
+
+  // 24. Out of School Children: South Asia's Lost Generation
+  // Source: UNICEF / Ministry of Education (2024)
+  {
+    topic: "Out of School Children: South Asia's Lost Generation",
+    subtopic: "Out-of-school children crisis and foundational literacy",
+    category: 'SOCIAL_ETHNIC_ISSUES',
+    genreId: 'SOCIAL_ETHNIC_ISSUES',
+    mainSubject: "Out of school children numbers in Pakistan",
+    specificEventOrIssue: "26 million children out of school while education budgets stay tiny",
+    centralArgument: "Leaving over 26 million children out of school destroys the nation's future foundation",
+    analyticalAngle: "Out-of-school children vs speeches about youth dividends",
+    importantStatistics: ["26 million out of school", "less than 2% GDP for schools"],
+    keywords: ["children", "schools", "books", "reading", "future"],
+    english: {
+      text: "More than 26 million young boys and girls in Pakistan do not go to school. That is the second largest group of unschooled children on earth. The government spends less than 2% of national income on public primary schools. Leaders give fine speeches praising youth in big halls.\n\nYet one out of three children cannot read a simple sentence.\n\nHow can a country build a bright future when millions of kids never hold a pencil?"
+    },
+    romanUrdu: {
+      text: "Pakistan mein 2.6 crore se zyada bachay aur bachiyan kisi school nahi jatay. Ye poori dunya mein doosra sab se bara adad hai. Hukoomat aam primary schoolon aur teachers par aamdani ka 2% se bhi kam kharch karti hai.\n\nLeaders nojawanon ki tareef karte hain magar har teesra bacha aam jumla nahi parh sakta.\n\nKoi mulk acha mustaqbil kaisay banaye ga jab karoron bachon ke paas qalam hi na ho?"
+    },
+    plainUrdu: {
+      text: "پاکستان میں دو کروڑ ساٹھ لاکھ سے زیادہ بچے اور بچیاں کسی اسکول نہیں جاتے۔ یہ پوری دنیا میں اسکول سے باہر بچوں کی دوسری بڑی تعداد ہے۔ حکومت پرائمری اسکولوں اور اساتذہ پر آمدنی کا دو فیصد سے بھی کم لگاتی ہے۔\n\nرہنما نوجوانوں کی تعریف کرتے ہیں لیکن ہر تیسرا بچہ ایک سادہ جملہ نہیں پڑھ سکتا۔\n\nکوئی ملک روشن مستقبل کیسے بنائے گا جب کروڑوں بچوں نے کبھی قلم پکڑا ہی نہ ہو؟"
+    }
+  },
+
+  // 25. AI Job Displacement: The South Asian BPO Crisis
+  // Source: Gartner / ILO (2024)
+  {
+    topic: "AI Job Displacement: The South Asian BPO Crisis",
+    subtopic: "Generative AI displacing South Asian BPO and call center jobs",
+    category: 'AI_HUMAN_SOCIETY',
+    genreId: 'AI_HUMAN_SOCIETY',
+    mainSubject: "Call center jobs vs automated voice bots",
+    specificEventOrIssue: "Automated software answering customer support calls for pennies",
+    centralArgument: "New computer programs answer phone queries cheaply, threatening office jobs for young graduates",
+    analyticalAngle: "Software voice bots vs office jobs for college graduates",
+    importantStatistics: ["5 million support jobs", "5 cents vs 4 dollars"],
+    keywords: ["jobs", "computers", "calls", "graduates", "work"],
+    english: {
+      text: "Over 5 million young college graduates in South Asia work answering support calls on computers. New computer voice programs can now answer customer questions for just 5 cents a call. Human office workers cost about 4 dollars for that same work.\n\nForeign banks have already moved thousands of helpline desks to computer bots.\n\nWhere will young graduates find office work when computer programs take basic jobs?"
+    },
+    romanUrdu: {
+      text: "South Asia mein 50 lakh se zyada nojawan computer par helpline aur support ki nokri karte hain. Naye computer voice programs ab sirf 5 cents mein call ka jawab de detay hain. Jabke aam insan us kaam ke 4 dollar leta hai.\n\nBahir ke baray banks ne pehle hi hazaron helpline jobs computer ke hawalay kar di hain.\n\nDegree walay nojawan kahan kaam karenge jab computer hi aam daftari nokriyan le le?"
+    },
+    plainUrdu: {
+      text: "جنوبی ایشیا میں پچاس لاکھ سے زیادہ نوجوان کمپیوٹر پر کال سینٹر اور سپورٹ کا کام کرتے ہیں۔ نئے کمپیوٹر وائس پروگرام اب صرف پانچ سینٹ میں سوالات کے جواب دے دیتے ہیں۔ جبکہ ایک انسان اس کام کے چار ڈالر لیتا ہے۔\n\nغیر ملکی بینکوں نے پہلے ہی ہزاروں ہیلپ لائن ملازمتیں کمپیوٹر کے حوالے کر دی ہیں۔\n\nڈگری یافتہ نوجوان کہاں کام کریں گے جب کمپیوٹر ہی دفتری ملازمتیں سنبھال لے گا؟"
+    }
+  },
+
+  // 26. Gig Economy Surveillance: Algorithmic Control of Couriers
+  // Source: Fairwork / ILO (2024)
+  {
+    topic: "Gig Economy Surveillance: Algorithmic Control of Couriers",
+    subtopic: "Gig economy workers and automated algorithmic management",
+    category: 'AI_HUMAN_SOCIETY',
+    genreId: 'AI_HUMAN_SOCIETY',
+    mainSubject: "Delivery bike riders managed by smartphone phone applications",
+    specificEventOrIssue: "Automated account deactivation based on small rating drops",
+    centralArgument: "Smartphone apps track riders constantly and shut accounts down without a human conversation",
+    analyticalAngle: "App tracking algorithms vs fair treatment of delivery riders",
+    importantStatistics: ["4.7 star rating cutoff", "millions of riders"],
+    keywords: ["delivery", "bikes", "apps", "phones", "riders"],
+    english: {
+      text: "Millions of young men ride motorbikes delivering food boxes through city traffic. Mobile phone apps track their speed and pick their daily roads. The app counts every single minute of their ride. If a rider rating falls below 4.7 stars, the app turns off their account.\n\nNo manager calls to ask if rain made roads slippery.\n\nDid modern smartphone apps free working people, or put them under digital bosses?"
+    },
+    romanUrdu: {
+      text: "Lakhon nojawan shehr ke traffic mein motorbike chala kar khana pohnchatay hain. Mobile phone apps unki raftaar, rasta aur har minute note karti hain. Agar app rating 4.7 se gir jaye toh unka account khud-ba-khud band ho jata hai.\n\nKoi manager phone kar ke nahi poochta ke bike kharab thi ya barish ki waja se dair hui.\n\nKya smartphone apps ne mazdoor ko azaadi di ya machine ka ghulam bana diya?"
+    },
+    plainUrdu: {
+      text: "لاکھوں نوجوان شہر کے ٹریفک میں موٹر سائیکل چلا کر کھانا اور پارسل پہنچاتے ہیں۔ موبائل ایپس ان کی رفتار، راستہ اور ہر منٹ نوٹ کرتی ہیں۔ اگر ایپ پر ریٹنگ 4.7 سے نیچے آ جائے تو اکاؤنٹ خود بخود بند ہو جاتا ہے۔\n\nکوئی مینیجر فون کر کے نہیں پوچھتا کہ بائیک خراب تھی یا بارش کی وجہ سے دیر ہوئی۔\n\nکیا اسمارٹ فون ایپس نے مزدور کو روزگار کی آزادی دی یا مشینوں کا ماتحت بنا دیا؟"
+    }
+  },
+
+  // 27. Climate Injustice: Pakistan Floods vs Global Pledges
+  // Source: World Bank / COP28 (2023)
+  {
+    topic: "Climate Injustice: Pakistan Floods vs Global Pledges",
+    subtopic: "Pakistan 2022 floods and historical emissions debt of G7",
+    category: 'CLIMATE_GLOBAL_POWER',
+    genreId: 'CLIMATE_GLOBAL_POWER',
+    mainSubject: "2022 flood damages vs international assistance pledges",
+    specificEventOrIssue: "Pakistan contributes under 1% of smoke but suffered 30 billion dollars in flood damages",
+    centralArgument: "Poor nations suffer catastrophic floods from global smoke while rich nations offer tiny aid checks",
+    analyticalAngle: "Huge flood destruction vs small foreign aid checks",
+    importantStatistics: ["under 1% smoke share", "$30 billion flood damages", "33 million displaced"],
+    keywords: ["floods", "rain", "mud", "damage", "help"],
+    english: {
+      text: "Pakistan makes less than 1% of the world's dirty air emissions. Yet heavy summer floods in 2022 broke river banks and caused over 30 billion dollars in damage. More than 33 million regular people lost their mud homes and farm crops.\n\nAt global climate meetings, rich countries gave tiny checks that barely covered small repairs.\n\nWhy should poor farming families lose everything for dirty air they never created?"
+    },
+    romanUrdu: {
+      text: "Pakistan dunya ki 1% se bhi kam gandi hawa banata hai. Magar 2022 ke selaab ne darya toray aur 30 arab dollar se zyada ka nuqsan kiya. 3.3 crore se zyada aam logon ke kache ghar aur faslein paani mein beh gayin.\n\nAalmi meetings mein ameer mulkon ne chhotay checks diye jo marammat ke liye bhi kam thay.\n\nGhareeb kisan us aloodgi ka nuqsan kyon uthayein jo unhon ne paida hi nahi ki?"
+    },
+    plainUrdu: {
+      text: "پاکستان دنیا کی ایک فیصد سے بھی کم آلودگی پیدا کرتا ہے۔ لیکن 2022 کے تباہ کن سیلاب نے تیس ارب ڈالر سے زیادہ کا نقصان کیا۔ تین کروڑ سے زیادہ عام شہریوں کے کچے مکانات اور فصلیں بہہ گئیں۔\n\nعالمی کانفرنسوں میں امیر ممالک نے برائے نام فنڈز دیے جو چھوٹی مرمت کے لیے بھی ناکافی تھے۔\n\nغریب کسان خاندان اس آلودگی کا خمیازہ کیوں بھگتیں جو انہوں نے کبھی پیدا ہی نہیں کی؟"
+    }
+  },
+
+  // 28. Urban Air Pollution: South Asian Smog Emergency
+  // Source: WHO / Air Quality Life Index (2024)
+  {
+    topic: "Urban Air Pollution: South Asian Smog Emergency",
+    subtopic: "Urban smog crisis, industrial emissions and air quality indices",
+    category: 'CLIMATE_GLOBAL_POWER',
+    genreId: 'CLIMATE_GLOBAL_POWER',
+    mainSubject: "Winter toxic smog across Lahore, Delhi, and Karachi",
+    specificEventOrIssue: "AQI exceeding 500 while governments just close schools on Sundays",
+    centralArgument: "Poisonous winter smoke cuts five years off citizen lives while leaders treat it like bad weather",
+    analyticalAngle: "Poisonous air vs simple Sunday school closures",
+    importantStatistics: ["5 years off life", "smoke above 500 index"],
+    keywords: ["smog", "smoke", "cough", "winter", "air"],
+    english: {
+      text: "Every winter, dirty brown smoke blankets big cities from Lahore to New Delhi. Medical experts warn this toxic smog cuts more than 5 years off an average person's life. Old factory chimneys and dirty vehicle fuel pump black dust into children's lungs.\n\nMinisters order Sunday school closures rather than making factory owners install clean filters.\n\nWhy treat poisonous air like ordinary bad weather when our children cannot breathe?"
+    },
+    romanUrdu: {
+      text: "Har sardi Lahore se New Delhi tak baray shehron par zehreela dhuwan chha jata hai. Doctors kehte hain ke ye smog aam insan ki zindagi se 5 saal kam kar deti hai. Puranay karkhane aur kharab petrol bachon ke phepbron mein dhuwan bharte hain.\n\nWazeer karkhanon par filter lagwane ke bajaye itwar ki chhutti karwa detay hain.\n\nZehreeli hawa ko mausam ka bahana kyon banaya jaye jab bachay saans na le sakein?"
+    },
+    plainUrdu: {
+      text: "ہر سردی میں لاہور سے نئی دہلی تک بڑے شہروں پر کالا زہریلا دھواں چھا جاتا ہے۔ ماہرین کا کہنا ہے کہ یہ اسموگ عام شہری کی زندگی سے پانچ سال چھین لیتی ہے۔ پرانے کارخانے اور خراب پیٹرول بچوں کے پھیپھڑوں میں زہر بھرتے ہیں۔\n\nوزیر کارخانوں پر فلٹر لگانے کے بجائے اتوار کی چھٹی کا اعلان کر دیتے ہیں۔\n\nزہریلی فضا کو موسمی مجبوری کیوں کہا جائے جب ہمارے اپنے بچے سانس نہ لے سکیں؟"
+    }
+  },
+
+  // 29. State Priorities: VIP Protocol vs Citizen Ambulances
+  // Source: Dawn / Express Tribune (2024)
+  {
+    topic: "State Priorities: VIP Protocol vs Citizen Ambulances",
+    subtopic: "VIP protocol motorcades blocking citizen emergency ambulances",
+    category: 'SATIRICAL_COMMENTARY',
+    genreId: 'SATIRICAL_COMMENTARY',
+    mainSubject: "VIP motorcades blocking citizen traffic",
+    specificEventOrIssue: "35 bulletproof vehicles blocking ambulances on city roads",
+    centralArgument: "Blocking sick people in traffic so leaders can travel in giant convoys shows broken priorities",
+    analyticalAngle: "Giant security convoys vs sick patients waiting in ambulances",
+    importantStatistics: ["35 armored vehicles", "45 minute road blocks"],
+    keywords: ["cars", "protocol", "roads", "ambulances", "hospital"],
+    english: {
+      text: "A regular leader convoy in South Asia brings out 35 armored cars. Hundreds of police guards line the route. Officers block busy city roads for forty-five minutes so big cars can speed through. Sick people in hospital ambulances get trapped behind security barriers.\n\nLeaders preach sacrifice while burning barrels of fuel on short rides.\n\nDoes the state exist to serve regular voters or to clear roads for wealthy bosses?"
+    },
+    romanUrdu: {
+      text: "South Asia mein kisi baray wazeer ke safar par 35 bulletproof gariyan aur hazaron police aati hai. Afsar 45 minute ke liye shehr ki sarkein band kar detay hain taakay kafla guzray. Aspataal janay wali ambulances barriers ke peechay phansi rehti hain.\n\nHukmaran TV par sadgi ka dars detay hain magar chhotay safar par petrol ulat-te hain.\n\nSarkari nizam aam shehri ki khidmat ke liye hai ya baray afsaron ka rasta kholne ke liye?"
+    },
+    plainUrdu: {
+      text: "جنوبی ایشیا میں روایتی پروٹوکول کے لیے 35 بلٹ پروف گاڑیاں اور سینکڑوں اہلکار سڑکوں پر نکل آتے ہیں۔ پولیس پینتالیس منٹ کے لیے راستے بند کر دیتی ہے تاکہ قافلہ گزر سکے۔ اسپتال جانے والی ایمبولینسیں بیریئرز کے پیچھے پھنسی رہتی ہیں۔\n\nحکمران ٹی وی پر سادگی کا بھاشن دیتے ہیں مگر مختصر فاصلے کے لیے پیٹرول اڑاتے ہیں۔\n\nریاست عام شہریوں کی خدمت کے لیے بنی ہے یا بڑے حاکموں کے راستے کھولنے کے لیے؟"
+    }
+  },
+
+  // 30. Official Austerity Summits: Buffets vs Budget Cuts
+  // Source: Dawn / The News (2024)
+  {
+    topic: "Official Austerity Summits: Buffets vs Budget Cuts",
+    subtopic: "Austerity task forces dining at five-star hotel summits",
+    category: 'SATIRICAL_COMMENTARY',
+    genreId: 'SATIRICAL_COMMENTARY',
+    mainSubject: "Government austerity task forces dining at luxury five-star hotels",
+    specificEventOrIssue: "Spending millions on luxury meals to announce office tea biscuit cuts",
+    centralArgument: "Holding expensive hotel banquets to announce cutting biscuits for junior clerks is pure theater",
+    analyticalAngle: "Expensive five-star dinners vs cutting biscuits for office clerks",
+    importantStatistics: ["five-star hotel meetings", "cutting office biscuits"],
+    keywords: ["hotels", "dinners", "savings", "clerks", "biscuits"],
+    english: {
+      text: "Government saving committees love to meet inside expensive five-star hotels. They spend public money on rich hotel dinners. Then they announce that junior clerks will lose their office tea biscuits. Printing their colorful summary books costs more money than the plan ever saves.\n\nMinisters clap for their own thrift while buying shiny cars for official drives.\n\nIs official saving a real plan, or just an expensive show for public cameras?"
+    },
+    romanUrdu: {
+      text: "Bachat karne wali sarkari committees mehangay 5-star hotels mein bethna pasand karti hain. Wo shaandar khanon par paisa lagati hain aur elaan karti hain ke chhotay clerk ki chai biscuit band hai. Inki rangeen kitabein chhapne par bachat se zyada kharcha ho jata hai.\n\nWazeer apni bachat par taaliyan bajatay hain aur nai chamakti gariyan khareedtay hain.\n\nKya ye bachat ka koi sachha mansooba hai ya sirf camera ke liye mehanga drama?"
+    },
+    plainUrdu: {
+      text: "بچت کمیٹیوں کے اجلاس مہنگے فائیو اسٹار ہوٹلوں میں سجتے ہیں۔ وہ پر تکلف کھانوں پر پیسہ اڑاتے ہیں اور فیصلہ سناتے ہیں کہ چھوٹے کلرک کی چائے بسکٹ بند کر دیے جائیں۔ ان کی رنگین کتابیں چھاپنے پر بچت سے زیادہ خرچ ہو جاتا ہے۔\n\nوزیر اپنی بچت کے دعوؤں پر تالیاں بجاتے ہیں اور پروٹوکول کے لیے چمچماتی نئی گاڑیاں لیتے ہیں۔\n\nکیا یہ بچت کی سنجیدہ پالیسی ہے یا کیمروں کے سامنے دکھانے کے لیے مہنگا تماشا؟"
     }
   }
 ];
+
+export const CURATED_STORY_TOPICS = FALLBACK_BANK;
 
 /* =========================================================
    DYNAMIC CATEGORY FALLBACK ENGINE WITH ZERO DUPLICATION
@@ -418,709 +969,69 @@ function generateDynamicFallback(category, subtopic = '', excludedTopic = '', av
   const cleanExcluded = String(excludedTopic || '').toLowerCase().trim();
   const avoidCombined = avoidList.map(a => String(a).toLowerCase());
 
-  // Comprehensive bank of verified analytical fallbacks covering all genres and new subtopics
-  const dynamicBank = [
-    // A. Post-Colonial State
-    {
-      topic: "India & Pakistan: Post-Colonial Centralization",
-      subtopic: "Why India became centralized after 1947",
-      category: 'PAK_VS_IND',
-      genreId: 'PAK_VS_IND',
-      mainSubject: "Why India became centralized after 1947",
-      specificEventOrIssue: "Colonial Act 1935 institutional centralization",
-      centralArgument: "Inherited colonial centralization suppresses provincial democracy and local citizen empowerment",
-      analyticalAngle: "Constitutional history and federalism",
-      importantStatistics: ["1935 Act", "70% tax control"],
-      keywords: ["centralization", "colonial", "federalism", "provinces", "democracy"],
-      english: {
-        text: "In 1947, India and Pakistan inherited centralized bureaucratic structures from the colonial 1935 Act. Despite promising federal democracy, both New Delhi and Islamabad dismissed provincial assemblies and kept tax power in federal hands.\n\nDecades later, local municipalities remain underfunded and politically weak.\n\nDid independence empower local citizens, or simply transfer colonial power to domestic elites?"
-      },
-      romanUrdu: {
-        text: "1947 mein India aur Pakistan ne angrezi 1935 Act apnaya. Jamhooriyat ka wada kiya magar New Delhi aur Islamabad ne soobai assemblies toreen aur tax ka ikhtiyar markaz ke paas rakha.\n\nDahaiyon baad bhi local councils be-ikhtiyar hain.\n\nKya azaadi ne shehriyon ko taqat di ya sirf gora viceroy badal kar desi ashrafiya aa gayi?"
-      },
-      plainUrdu: {
-        text: "1947 میں پاکستان اور بھارت دونوں نے نوآبادیاتی ایکٹ اپنایا۔ وفاقی جمہوریت کے دعوؤں کے باوجود دونوں دارالحکومتوں نے صوبائی خود مختاری چھینی اور وسائل پر قبضہ رکھا۔\n\nدہائیوں بعد بھی بلدیاتی ادارے بے اختیار اور وسائل سے محروم ہیں۔\n\nکیا آزادی نے عوام کو خود مختار بنایا یا صرف نوآبادیاتی اختیارات دیسی اشرافیہ کے سپرد کر دیے؟"
-      }
-    },
-
-    // B. BJP vs Congress
-    {
-      topic: "India Politics: BJP vs Congress & Hindutva",
-      subtopic: "BJP and Hindutva",
-      category: 'PAK_VS_IND',
-      genreId: 'PAK_VS_IND',
-      mainSubject: "BJP and Hindutva",
-      specificEventOrIssue: "Rise of religious nationalism and electoral machines",
-      centralArgument: "Corporate campaign finance and Hindutva politics erode constitutional secular democracy",
-      analyticalAngle: "Electoral politics and ideological shift",
-      importantStatistics: ["10 to 1", "Electoral Bonds"],
-      keywords: ["hindutva", "secularism", "congress", "elections", "nationalism"],
-      english: {
-        text: "The decline of the Congress dynasty and the rise of the BJP reshaped Indian politics from secularism to ideological Hindutva. Much like Pakistan historical entanglement with religious politics, Electoral Bonds allowed ruling parties to build election machines outspending rivals ten to one.\n\nDemocratic institutions across the subcontinent face strain as polarization deepens.\n\nCan secular governance survive religious nationalism?"
-      },
-      romanUrdu: {
-        text: "Congress ke zawaal aur BJP ke urooj ne Indian siyasat ko secularism se Hindutva ki taraf morr diya. Pakistan ki tarah yahan bhi mazhab ko siyasat mein laya gaya. Electoral bonds aur corporate funding ke zariye aisi election machine bani jo mukhalifeen se 10 guna zyada kharch karti hai.\n\nSiyasi tanaao se jamhoori idaray dabao mein hain.\n\nKya secular nizam bach sakta hai jab riyasat mazhabi nationalism ki taraf chal paray?"
-      },
-      plainUrdu: {
-        text: "کانگریس کے زوال اور بی جے پی کے عروج نے بھارتی سیاست کو سیکولرازم سے ہندوتوا میں بدل دیا۔ پاکستان کی تاریخ کی طرح یہاں بھی مذہب کی سیاست غالب آئی۔ انتخابی بانڈز نے ایسی انتخابی مشین کھڑی کی جو مخالفین پر بھاری ہے۔\n\nبڑھتی ہوئی سیاسی شدت پسندی سے جمہوری ادارے کمزور ہو رہے ہیں۔\n\nکیا آئینی سیکولرازم برقرار رہ سکتا ہے جب ریاستی ڈھانچہ مذہبی قوم پرستی کی نذر ہو جائے؟"
-      }
-    },
-
-    // C. RSS: The Invisible State
-    {
-      topic: "RSS: Organizational Cadres & State Influence",
-      subtopic: "RSS history and organizational structure",
-      category: 'PAK_VS_IND',
-      genreId: 'PAK_VS_IND',
-      mainSubject: "RSS history and organizational structure",
-      specificEventOrIssue: "Cadre network influence on governance",
-      centralArgument: "RSS ideological networks exert unelected influence over Indian state institutions",
-      analyticalAngle: "Institutional ideology and state capture",
-      importantStatistics: ["thousands of shakhas"],
-      keywords: ["rss", "shakhas", "cadre", "influence", "bjp"],
-      english: {
-        text: "Operating thousands of local shakhas, the Rashtriya Swayamsevak Sangh serves as the ideological engine of modern Indian politics. While Pakistan confronts deep institutional overreach at home, RSS cadre networks steer state priorities across India without electoral accountability.\n\nReligious nationalism compromises minority rights in both countries.\n\nWho truly governs: elected parliament or cadre organizations?"
-      },
-      romanUrdu: {
-        text: "Hazaron shakhas ke zariye Rashtriya Swayamsevak Sangh Indian siyasat ka engine ban chuka hai. Pakistan ki tarah jahan ghair-muntakhib taqatein asar rakhti hain, India mein bhi RSS riyasati faislay karwati hai.\n\nDono mulkon mein aqliyaton ke haqooq mutasir hotay hain.\n\nAsal hukmaran kon hai: awam ki elected parliament ya usay chalane wali cadre tanzeem?"
-      },
-      plainUrdu: {
-        text: "ہزاروں شاکھاؤں کے نیٹ ورک سے راشٹریہ سویم سیوک سنگھ بھارتی سیاست کا فکری مرکز بن چکا ہے۔ پاکستان کی طرح جہاں غیر منتخب حلقے اثر رکھتے ہیں، بھارت میں بھی آر ایس ایس ریاستی پالیسیاں بناتی ہے۔\n\nدونوں ممالک میں اقلیتوں کے حقوق متاثر ہو رہے ہیں۔\n\nاصل حکمران کون ہے: منتخب پارلیمان یا وہ خفیہ تنظیم جو اس کے پیچھے کھڑی ہے؟"
-      }
-    },
-
-    // D. Caste and Social Hierarchy
-    {
-      topic: "India Caste & Pakistan Feudalism: Wealth Divide",
-      subtopic: "Caste and economic inequality",
-      category: 'PAK_VS_IND',
-      genreId: 'PAK_VS_IND',
-      mainSubject: "Caste and economic inequality",
-      specificEventOrIssue: "Dalit landlessness and agrarian debt bondage",
-      centralArgument: "Entrenched caste hierarchies and agrarian debt bondage perpetuate structural inequality",
-      analyticalAngle: "Social stratification and economic inequality",
-      importantStatistics: ["77% wealth", "50% Dalits"],
-      keywords: ["caste", "dalit", "feudalism", "wealth", "inequality"],
-      english: {
-        text: "In India, the top 10% controls 77% of national wealth, while Dalits constitute over half of informal sanitation workers facing daily caste violence. Across the border in Pakistan, rural landless laborers remain trapped in hereditary debt bondage to powerful agrarian landowners.\n\nBoth nations preserve entrenched social hierarchies while celebrating modern constitutional equality.\n\nCan real democratic freedom exist when an individual's dignity is predetermined by caste and birth?"
-      },
-      romanUrdu: {
-        text: "India mein 10% ameer tareen log 77% daulat ke malik hain jabke Dalits gandi naaliyan saaf karne par majboor hain. Pakistan mein bhi be-zameen kisan waderon ke qarzay mein ghulaam hain.\n\nDono mulk barabari ke daawon ke bawajood purani zaat-paat aur jagirdari ko chalatay hain.\n\nAsal azaadi kahan hai jab shehri ka muqaddar uski zaat aur paidaish se tay ho?`"
-      },
-      plainUrdu: {
-        text: "بھارت میں دس فیصد طبقہ قومی دولت کے ستتر فیصد کا مالک ہے جبکہ دلت صفائی کے غیر انسانی کاموں پر مجبور ہیں۔ دوسری طرف پاکستان میں بے زمین کسان جاگیرداروں کے قرضوں کے شکنجے میں جکڑے ہیں۔\n\nدونوں ممالک مساوات کے دعوؤں کے باوجود قدیم طبقاتی نظام چلا رہے ہیں۔\n\nحقیقی آزادی کیسی جب شہری کی عزت اور مقدر اس کی پیدائشی ذات طے کرے؟"
-      }
-    },
-
-    // E. Corruption and Defence Deals
-    {
-      topic: "Defence Deals: Rafale Transparency & Tejas Costs",
-      subtopic: "Rafale controversy",
-      category: 'PAK_VS_IND',
-      genreId: 'PAK_VS_IND',
-      mainSubject: "Rafale controversy",
-      specificEventOrIssue: "Defence procurement transparency and commissions",
-      centralArgument: "Opaque defence procurement deals like Rafale consume billions without parliamentary transparency",
-      analyticalAngle: "Military budgeting and procurement transparency",
-      importantStatistics: ["$8.7 billion"],
-      keywords: ["rafale", "tejas", "procurement", "defence", "transparency"],
-      english: {
-        text: "Between the $8.7 billion Rafale fighter contract and delayed domestic Tejas fighter squadrons, defence procurement transparency remains deeply contested in India and Pakistan. Public expenditure auditors report that opaque defence middleman commissions consume billions in taxpayer funds.\n\nWhile parliamentary oversight weakens, defence contractors secure guaranteed state concessions.\n\nHow can national security be safeguarded when defence acquisitions operate without public accountability?"
-      },
-      romanUrdu: {
-        text: "8.7 arab dollar ke Rafale soodagari aur Tejas mein takheer se defence kharidari par sawalat kharay hain. Sarkari auditors batatay hain ke middleman commissions mein arbon rupay zaya hotay hain.\n\nParliament ki nigrani kamzor hai jabke defence contractors ko munafe ki guarantee hai.\n\nQomi hifazat kaisay hogi jab foji kharidari awam ke ehtisab se azaad ho?"
-      },
-      plainUrdu: {
-        text: "رافیل طیاروں کے معاہدے اور تیجس پراجیکٹ میں تاخیر نے عسکری خریداری کی شفافیت پر سنجیدہ سوالات کھڑے کیے ہیں۔ سرکاری آڈیٹرز کے مطابق خفیہ کمیشنوں میں اربوں روپے ضائع ہوتے ہیں۔\n\nپارلیمانی نگرانی کمزور ہو چکی ہے جبکہ اسلحہ ساز کمپنیوں کے منافع محفوظ ہیں۔\n\nقومی دفاع کی حفاظت کیسے ممکن ہے جب عسکری سودے عوامی احتساب سے بالاتر ہوں؟"
-      }
-    },
-
-    // F. Socio-Ethnic Fault Lines
-    {
-      topic: "India vs Pakistan: Regional Wealth & Federal Friction",
-      subtopic: "North vs South",
-      category: 'PAK_VS_IND',
-      genreId: 'PAK_VS_IND',
-      mainSubject: "North vs South and tax contribution",
-      specificEventOrIssue: "Tax contribution vs devolution disparity",
-      centralArgument: "Fiscal imbalances and delimitation disputes penalize productive southern states",
-      analyticalAngle: "Fiscal federalism and regional tension",
-      importantStatistics: ["30% taxes", "40 paise return"],
-      keywords: ["north vs south", "delimitation", "taxes", "federalism", "sindh"],
-      english: {
-        text: "Southern Indian states generate over 30% of federal tax revenues but receive back under 40 paise per rupee contributed, sparking friction over proposed delimitation. Similarly, Pakistan's provincial friction over resource shares tests federal unity.\n\nCentralizing power penalizes productive regions to maintain political control.\n\nCan federalism survive when successful regions face fiscal punishment?"
-      },
-      romanUrdu: {
-        text: "Junoobi India ke soobay 30% se zyada tax detay hain magar wapis 40 paise miltay hain, jis se delimitation par tanaao hai. Pakistan mein bhi wasail ki taqseem par soobai gila barhta ja raha hai.\n\nMarkaziyat taraqqi karne walay soobon ko siyasi qabzay ke liye dabati hai.\n\nFederalism kaisay bachay ga jab kamyabi par maashi saza di jaye?"
-      },
-      plainUrdu: {
-        text: "جنوبی بھارتی ریاستیں تیس فیصد ٹیکس ریونیو دیتی ہیں لیکن فی روپیہ چالیس پیسے واپس پاتی ہیں جس سے نئی حلقہ بندیوں پر تنازع پیدا ہو رہا ہے۔ پاکستان میں بھی وسائل کی تقسیم پر صوبائی بے چینی بڑھ رہی ہے۔\n\nمرکزیت پسند طاقتیں اپنے تسلط کے لیے محنت کش خطوں کے وسائل ضبط کرتی ہیں۔\n\nوفاق کیسے برقرار رہ سکتا ہے جب ترقی یافتہ اکائیوں کو مالیاتی سزا دی جائے؟"
-      }
-    },
-
-    // G. Kashmir
-    {
-      topic: "Kashmir: Article 370 & Civilian Realities",
-      subtopic: "Article 370 removal",
-      category: 'PAK_VS_IND',
-      genreId: 'PAK_VS_IND',
-      mainSubject: "Article 370 removal",
-      specificEventOrIssue: "Constitutional status and communication restrictions",
-      centralArgument: "Article 370 revocation and prolonged administrative centralization harm civilian rights",
-      analyticalAngle: "Constitutional law and human rights",
-      importantStatistics: ["2019 revocation"],
-      keywords: ["kashmir", "article 370", "human rights", "dispute", "representation"],
-      english: {
-        text: "Following the 2019 revocation of Article 370 in Jammu and Kashmir, civilian life endured prolonged communication blackouts and heavy militarization. As India and Pakistan maintain competing legal claims over the territory, local democratic representation remains suspended.\n\nResolutions stall while ordinary citizens bear the human cost of standoff.\n\nCan lasting peace emerge without civilian dignity?"
-      },
-      romanUrdu: {
-        text: "Article 370 ke khatmay ke baad Jammu & Kashmir ne taweel communication bandish aur markazi control saha. India aur Pakistan dono kashmir par daawa karte hain magar aam shehri ki zindagi par checkpoints ka pehra hai.\n\nAalmi qarardadein ruki hui hain aur aam awam tanaao bhugat rahi hai.\n\nPur-aman hal kaisay niklay ga jab tak shehriyon ki izzat aur jamhoori haqooq na milein?"
-      },
-      plainUrdu: {
-        text: "آرٹیکل 370 کے خاتمے کے بعد جموں و کشمیر نے طویل ترین مواصلاتی بندش اور مکمل مرکزیت کا سامنا کیا۔ بھارت اور پاکستان اپنے اپنے دعوے کرتے ہیں لیکن مقامی جمہوری نمائندگی معطل ہے۔\n\nعالمی قراردادیں رکی ہوئی ہیں اور عام لوگ کشیدگی کا شکار ہیں۔\n\nپائیدار امن کیسے قائم ہو سکتا ہے جب تک شہریوں کے بنیادی حقوق اور وقار تسلیم نہ کیے جائیں؟"
-      }
-    },
-
-    // H. Sikhs and Khalistan
-    {
-      topic: "Sikhs & Federal Disputes: Agrarian Dissent",
-      subtopic: "Operation Blue Star",
-      category: 'PAK_VS_IND',
-      genreId: 'PAK_VS_IND',
-      mainSubject: "Sikh political representation and agrarian distress",
-      specificEventOrIssue: "Farmer protests and diaspora tensions",
-      centralArgument: "State criminalization of Sikh dissent and agrarian grievances strains domestic cohesion",
-      analyticalAngle: "Minority rights and political dissent",
-      importantStatistics: ["1984 Blue Star"],
-      keywords: ["sikhs", "farmers", "punjab", "protests", "khalistan"],
-      english: {
-        text: "From 1984 to recent mass farmer protests near New Delhi, Sikh grievances over federal centralization remain unresolved in India. Across the border, Pakistan hosts historic Sikh gurdwaras via the Kartarpur Corridor, creating rare cross-border diplomatic openings amid domestic agrarian dissent.\n\nAuthorities criminalize protestors rather than resolving grievances.\n\nWhy treat dissent as a security threat?"
-      },
-      romanUrdu: {
-        text: "1984 ke waqiat se le kar New Delhi mein kisan dharney tak, India mein Sikh awam ke federal ikhtiyarat aur kheti-bari ke maslay hal nahi huay. Doosri taraf Pakistan Kartarpur Corridor ke zariye ahem rabtay kholta hai.\n\nRiyasat muzahireen ko security threat kehti hai magar maashi maslay hal nahi karti.\n\nRiyasat awami mutalbat par baat karne ki bajaye aawaz kyon dabati hai?"
-      },
-      plainUrdu: {
-        text: "1984 کے المیے سے لے کر کسان دھرنوں تک، بھارت میں وفاقی اختیارات پر سکھ تحفظات تاحال حل طلب ہیں۔ دوسری طرف پاکستان کرتارپور راہداری کے ذریعے نادر سفارتی ہم آہنگی پیدا کرتا ہے۔\n\nریاستی بیانیہ معاشی خدشات دور کرنے کے بجائے مظاہرین کو سیکیورٹی خطرہ قرار دیتا ہے۔\n\nریاست تاریخی شکایات کا سنجیدہ حل نکالنے کی بجائے عوامی آواز کو کیوں دباتی ہے؟"
-      }
-    },
-
-    // I. India vs Neighbours
-    {
-      topic: "India vs Neighbours: Regional Influence & Ports",
-      subtopic: "India-Pakistan relations",
-      category: 'PAK_VS_IND',
-      genreId: 'PAK_VS_IND',
-      mainSubject: "India-Pakistan relations and Chinese influence",
-      specificEventOrIssue: "SAARC decline and maritime port diplomacy",
-      centralArgument: "Chinese infrastructure investments across South Asian neighbours weaken India regional influence",
-      analyticalAngle: "Neighbourhood diplomacy and balance of power",
-      importantStatistics: ["SAARC paralysis"],
-      keywords: ["neighbours", "china", "saarc", "diplomacy", "ports"],
-      english: {
-        text: "India's regional diplomacy faces strain as Beijing expands port and infrastructure projects across Sri Lanka, Maldives, Nepal, and Bangladesh. While SAARC stays paralyzed by India-Pakistan rivalry, smaller neighbours use superpower competition for economic leverage.\n\nNew Delhi's regional footprint weakens under competitive Chinese financing.\n\nCan regional leadership last when neighbouring states find alternative partners?"
-      },
-      romanUrdu: {
-        text: "Sri Lanka, Maldives, Nepal aur Bangladesh mein Cheen ke ports aur sarmayakari se India ki regional policy dabao mein hai. SAARC dushmani ki bhent charh gaya hai aur chhotay mulk barri taqaton se faida uthatay hain.\n\nNew Delhi ka asar Cheen ke saste qarzay ke samnay kamzor par raha hai.\n\nRegional leadership kaisay bachay gi jab hamsaye doosra rasta dhoond lein?"
-      },
-      plainUrdu: {
-        text: "سری لنکا، مالدیپ، نیپال اور بنگلہ دیش میں چینی سرمایہ کاری سے نئی دہلی کی خطے میں پوزیشن کمزور ہو رہی ہے۔ سارک تنظیم مخاصمت کی نذر ہو چکی ہے اور چھوٹے پڑوسی ممالک عالمی طاقتوں کے مقابلے کا فائدہ اٹھا رہے ہیں۔\n\nخطے میں بھارتی اثر و رسوخ چینی انفراسٹرکچر فنانسنگ کے سامنے سکڑ رہا ہے۔\n\nعلاقائی قیادت کا دعویٰ کیسے چل سکتا ہے جب پڑوسی ریاستیں متبادل راستے اختیار کر لیں؟"
-      }
-    },
-
-    // J. Diplomacy and Strategic Autonomy
-    {
-      topic: "India vs Pakistan: Russian Oil & Energy Realities",
-      subtopic: "Russian oil imports",
-      category: 'PAK_VS_IND',
-      genreId: 'PAK_VS_IND',
-      mainSubject: "Russian oil imports and multi-alignment",
-      specificEventOrIssue: "Discounted crude energy trade vs dollar reserves",
-      centralArgument: "Discounted Russian oil imports and multi-alignment define modern strategic autonomy",
-      analyticalAngle: "Geopolitical balancing and energy diplomacy",
-      importantStatistics: ["1.6 million barrels daily"],
-      keywords: ["russian oil", "strategic autonomy", "energy", "quad", "sanctions"],
-      english: {
-        text: "India imported over 1.6 million barrels daily of discounted Russian crude in 2023, resisting Western sanction pressure while deepening Quad partnerships with Washington. Meanwhile, Pakistan balances IMF bailouts with Beijing's CPEC repayments.\n\nBoth nations pursue strategic autonomy amid global power competition.\n\nIs non-alignment 2.0 principled national defense, or tactical opportunism?"
-      },
-      romanUrdu: {
-        text: "India ne 2023 mein har roz 16 lakh barrel discounted Rusi tail khareeda aur sanctions ki parwah nahi ki, sath America ke sath Quad mein bhi shamil raha. Doosri taraf Pakistan IMF aur CPEC ke qarzay chuka raha hai.\n\nDono mulk aalmi taqaton ke darmiyan apnay mafaad ki policy chala rahay hain.\n\nKya non-alignment 2.0 qomi difa hai ya sirf moqay se faida uthana?"
-      },
-      plainUrdu: {
-        text: "بھارت نے مغربی دباؤ کے باوجود روزانہ سولہ لاکھ بیرل سستا روسی تیل خریدا جبکہ واشنگٹن کے ساتھ دفاعی شراکت داری بھی بڑھائی۔ دوسری طرف پاکستان آئی ایم ایف بیل آؤٹ اور سی پیک کے قرضوں میں جکڑا ہوا ہے۔\n\nدونوں ممالک عالمی طاقتوں کی رسہ کشی میں توازن قائم رکھنے کی کوشش کر رہے ہیں۔\n\nکیا غیر وابستہ خارجہ پالیسی قومی خود مختاری کا تحفظ ہے یا محض وقتی مصلحت پسندی؟"
-      }
-    },
-
-    // K. Cricket and Sports Diplomacy
-    {
-      topic: "Cricket Diplomacy: BCCI Revenue & Neutral Venues",
-      subtopic: "BCCI financial influence",
-      category: 'PAK_VS_IND',
-      genreId: 'PAK_VS_IND',
-      mainSubject: "BCCI financial influence and Asia Cup controversies",
-      specificEventOrIssue: "Commercial broadcasting leverage and sports boycotts",
-      centralArgument: "BCCI commercial dominance and political boycotts isolate Pakistan-India bilateral cricket",
-      analyticalAngle: "Sports diplomacy and commercial leverage",
-      importantStatistics: ["70% ICC revenue"],
-      keywords: ["cricket", "bcci", "ipl", "asia cup", "boycott"],
-      english: {
-        text: "BCCI generates over 70% of ICC global cricket revenues, exercising near-absolute financial leverage over international tournament scheduling. While millions of cricket supporters across India and Pakistan demand resumed bilateral tours, political boycotts force Asia Cup matches into neutral venues.\n\nCommercial sports broadcasting turns bilateral confrontation into high-margin television spectacles.\n\nWhy should passionate sporting culture remain hostage to political point-scoring?"
-      },
-      romanUrdu: {
-        text: "BCCI ICC ki 70% se zyada aamdani control karta hai aur match scheduling par mukammal qabza rakhta hai. Pakistan aur India ke karoron fans bilateral matches chahte hain magar siyasat matches ko neutral venues par le jati hai.\n\nMedia channels is tanaao se karoron ka munafe kamatay hain.\n\nAwami khel aur culture siyasi laraiyon ka yarghamal kyon banay?"
-      },
-      plainUrdu: {
-        text: "بی سی سی آئی آئی سی سی کی ستر فیصد عالمی آمدنی کنٹرول کرتا ہے اور شیڈولنگ پر اجارہ داری رکھتا ہے۔ دونوں ممالک کے کروڑوں شائقین دوطرفہ کرکٹ چاہتے ہیں مگر سیاسی کشیدگی میچز کو غیر جانبدار میدانوں پر دھکیل دیتی ہے۔\n\nمیڈیا اس کشیدگی کو منافع بخش اشتہارات میں بدل دیتا ہے۔\n\nشائقین کا پسندیدہ کھیل اور ثقافتی رابطہ سیاسی پوائنٹ اسکورنگ کا یرغمال کیوں بنے؟"
-      }
-    },
-
-    // L. Development Comparisons
-    {
-      topic: "South Asia Development: Bangladesh vs India vs Pakistan",
-      subtopic: "India vs China vs Bangladesh vs Pakistan",
-      category: 'PAK_VS_IND',
-      genreId: 'PAK_VS_IND',
-      mainSubject: "South Asian comparative development indicators",
-      specificEventOrIssue: "Exports vs social sector underinvestment",
-      centralArgument: "South Asian states prioritize prestige milestones while underfunding human capital",
-      analyticalAngle: "Human development and comparative economics",
-      importantStatistics: ["$47 billion garments", "< 3% GDP health"],
-      keywords: ["gdp", "bangladesh", "exports", "hdi", "poverty"],
-      english: {
-        text: "Comparing South Asia reveals contrasting paths: Bangladesh built a $47 billion garment export engine, India expanded software exports, while Pakistan manages debt repayments. Yet across all three nations, public health and primary education get under 3% of GDP.\n\nStates celebrate nuclear defense milestones while millions endure child stunting.\n\nWhat is true progress: ballistic missile capability or basic human development?"
-      },
-      romanUrdu: {
-        text: "Bangladesh ne 47 arab dollar ki export khari ki, India ne IT sector chalaya, jabke Pakistan qarzay chukata raha. Magar teeno mulkon mein sehat aur taleem ko GDP ka 3% bhi nahi milta.\n\nAtomic taqatein missiles ka jashn manati hain jabke karoron bachay ghiza ki kami ka shikar hain.\n\nAsal taraqqi kya hai: ballistic missile ya insani falah aur taleem?"
-      },
-      plainUrdu: {
-        text: "بنگلہ دیش نے 47 ارب ڈالر کی برآمدات کھڑی کیں، بھارت نے آئی ٹی برآمدات بڑھائیں، جبکہ پاکستان قرضوں کے بوجھ تلے دبا ہے۔ مگر تینوں ممالک میں صحت اور بنیادی تعلیم کو جی ڈی پی کا تین فیصد بھی نہیں ملتا۔\n\nایٹمی طاقتیں میزائلوں کے ریکارڈ دکھاتی ہیں جبکہ کروڑوں بچے غذائی قلت کا شکار ہیں۔\n\nترقی کا اصل معیار کیا ہے: بیلسٹک میزائل یا اپنے بچوں کی صحت مند زندگی؟"
-      }
-    },
-
-    // M. Weapons vs Human Welfare
-    {
-      topic: "Weapons vs Human Welfare: 340 Warheads vs Clinics",
-      subtopic: "Defence budget vs public welfare priorities",
-      category: 'PAK_VS_IND',
-      genreId: 'PAK_VS_IND',
-      mainSubject: "Nuclear deterrence vs public healthcare crisis",
-      specificEventOrIssue: "Arms racing vs child malnutrition",
-      centralArgument: "Maintaining 340 nuclear warheads while children face stunting highlights distorted priorities",
-      analyticalAngle: "Welfare economics vs military expenditure",
-      importantStatistics: ["340 nuclear warheads", "$85 billion", "35% child stunting"],
-      keywords: ["nuclear", "defence budget", "malnutrition", "welfare", "hospitals"],
-      english: {
-        text: "India and Pakistan jointly maintain over 340 nuclear warheads, deploy advanced supersonic missiles, and allocate over $85 billion annually to armed forces. Yet over 35% of children across the subcontinent suffer from chronic stunting, and millions lack access to clean tap water.\n\nBoth capitals celebrate new fighter squadrons while public rural clinics lack basic antibiotics.\n\nWhose security does an atomic arsenal truly guarantee when a nation's own children cannot get clean water?"
-      },
-      romanUrdu: {
-        text: "India aur Pakistan ke paas 340 se zyada atomic warheads hain aur har saal 85 arab dollar foj par lagatay hain. Magar khittay ke 35% bachay ghiza ki kami ka shikar hain aur saaf paani nahi milta.\n\nDono mulk naye fighter jets khareedtay hain jabke hospitals mein zaroori dawai nahi milti.\n\nAtomic hathyar kiski hifazat karte hain jab apne hi bachay saaf paani ko taras jayein?"
-      },
-      plainUrdu: {
-        text: "بھارت اور پاکستان کے پاس 340 سے زائد ایٹمی وار ہیڈز ہیں اور دونوں دفاع پر پچاسی ارب ڈالر لگاتے ہیں۔ جبکہ خطے کے پینتیس فیصد بچے غذائی قلت کا شکار ہیں اور پینے کے صاف پانی سے محروم ہیں۔\n\nدونوں دارالحکومت نئے لڑاکا طیارے خریدتے ہیں جبکہ بنیادی مراکز صحت میں ادویات ناپید ہیں۔\n\nایٹمی ہتھیار کس کا تحفظ کرتے ہیں جب ریاست اپنے ہی معصوم بچوں کو صاف پانی نہ دے سکے؟"
-      }
-    },
-
-    // GEOPOLITICS: Semiconductor Choke Points
-    {
-      topic: "Semiconductor Geopolitics: TSMC & Taiwan Choke Point",
-      subtopic: "Taiwan Strait and global microchip supply security",
-      category: 'GEOPOLITICS',
-      english: {
-        text: "Taiwan's TSMC manufactures over 90% of the world's most advanced microchips that power modern fighter jets, smartphones, and AI supercomputers. A naval blockade of the Taiwan Strait would wipe out $2.6 trillion from the global economy in the first year alone.\n\nBoth Washington and Beijing spend hundreds of billions building domestic chip foundries, but neither can replicate Taiwan's semiconductor ecosystem before 2030.\n\nDoes military power protect the modern world, or does a microscopic silicon wafer?"
-      },
-      romanUrdu: {
-        text: "Taiwan ki TSMC dunya ke 90% jadeed tareen microchips banati hai jo fighter jets, smartphones aur AI data centres ko chalatay hain. Taiwan Strait ki nakabandi pehle saal hi aalmi maeeshat se 2.6 trillion dollar ura sakti hai.\n\nAmerica aur Cheen arbon dollar chip factories par laga rahay hain magar 2030 tak Taiwan ka muqabla nahi kar saktay.\n\nDunya ko foji taqat chalati hai ya ek chhota sa silicon chip?"
-      },
-      plainUrdu: {
-        text: "تائیوان کی ٹی ایس ایم سی کمپنی دنیا کے نوے فیصد جدید ترین مائیکرو چپس بناتی ہے جو لڑاکا طیاروں سے لے کر سپر کمپیوٹرز تک چلاتے ہیں۔ آبنائے تائیوان کی ناکہ بندی پہلے ہی سال عالمی معیشت سے 26 کھرب ڈالر مٹا سکتی ہے۔\n\nواشنگٹن اور بیجنگ مائیکرو چپس پر اربوں لگا رہے ہیں مگر 2030 تک تائیوان کا نعم البدل ناممکن ہے۔\n\nکیا دنیا عسکری طاقت کے سہارے چلتی ہے یا ایک باریک سلیکان چپ کے رحم و کرم پر؟"
-      }
-    },
-    {
-      topic: "Red Sea Shipping Disruption: Bab-el-Mandeb Bottleneck",
-      subtopic: "Red Sea maritime security and shipping lane disruptions",
-      category: 'GEOPOLITICS',
-      english: {
-        text: "Commercial shipping diversions around Africa's Cape of Good Hope add 14 days and $1.5 million in bunker fuel costs to every maritime cargo voyage. The Suez Canal, which handles 12% of global seaborne commerce, suffered a 50% plunge in transit revenues within six months.\n\nJust-in-time global supply chains built on predictable maritime lanes face chronic freight price inflation.\n\nCan modern globalisation function when missile batteries in coastal waters can shut down world trade arteries?"
-      },
-      romanUrdu: {
-        text: "Africa ke gird jahaz ghumane se har safar par 14 din aur 1.5 million dollar ka extra tail kharch hota hai. Suez Canal jis se dunya ki 12% tijarat guzarti hai, uski aamdani aadhi reh gayi hai.\n\nAalmi supply chains jo waqt par delivery par chalti theen, ab musalsal mehngai ka shikar hain.\n\nAalmi tijarat kaisay chalay gi jab saahil par kharay chand missiles dunya ka rasta rok lein?"
-      },
-      plainUrdu: {
-        text: "افریقہ کے گرد بحری جہازوں کے راستے بدلنے سے ہر چکر پر چودہ دن اور ڈیڑھ ملین ڈالر کا اضافی ایندھن جلتا ہے۔ نہر سویز جس سے دنیا کی بارہ فیصد تجارت گزرتی ہے، اس کی آمدنی میں پچاس فیصد کمی آ چکی ہے۔\n\nعالمی سپلائی چینز جو وقت پر ترسیل پر چلتی تھیں، اب مستقل مہنگائی کی زد میں ہیں۔\n\nجدید عالمگیریت کیسے چل سکتی ہے جب چند ساحلی میزائل دنیا کی اہم ترین تجارتی شاہراہ بند کر دیں؟"
-      }
-    },
-    {
-      topic: "Critical Minerals Scramble: Rare Earth Refining Monopoly",
-      subtopic: "Critical mineral supply chains and green transition dependencies",
-      category: 'GEOPOLITICS',
-      english: {
-        text: "China refines over 70% of global rare earth minerals and 90% of permanent magnets required for modern electric vehicles and defence radars. While Western alliances announce $400 billion in domestic mineral incentives, developing processing infrastructure requires at least a decade of environmental approvals.\n\nThe clean energy transition merely shifts strategic vulnerability from Middle Eastern oil pipelines to Asian mineral refineries.\n\nDid the world escape petroleum cartels only to step into an absolute mineral monopoly?"
-      },
-      romanUrdu: {
-        text: "Cheen dunya ke 70% rare earth minerals aur 90% permanent magnets refine karta hai jo electric cars aur defence radars mein lagtay hain. Maghrib 400 arab dollar laga raha hai magar processing plants lagane mein 10 saal lagenge.\n\nGreen energy ka inhisar ab Middle East ke tail se nikal kar Cheen ke mineral plants par aagaya hai.\n\nKya dunya ne tail ki ghulami chhor kar mineral monopoly qabool kar li hai?"
-      },
-      plainUrdu: {
-        text: "چین دنیا کے ستر فیصد نایاب معدنیات اور نوے فیصد مستقل مقناطیس صاف کرتا ہے جو الیکٹرک گاڑیوں اور دفاعی راڈارز میں لگتے ہیں۔ اگرچہ مغربی ممالک چار سو ارب ڈالر کے فنڈز دے رہے ہیں لیکن صفائی کے پلانٹس لگانے میں ایک دہائی درکار ہے۔\n\nصاف توانائی کا انحصار مشرق وسطیٰ کے تیل سے نکل کر ایشیائی منرل ریفائنریز پر منتقل ہو چکا ہے۔\n\nکیا دنیا تیل کی اجارہ داری سے نکل کر معدنیات کی مکمل اجارہ داری کے جال میں پھنس چکی ہے؟"
-      }
-    },
-
-    // PAKISTAN_POLITICS: Circular Debt & Energy Tariffs
-    {
-      topic: "Pakistan Energy Crisis: Capacity Payments & Debt",
-      subtopic: "Energy sector circular debt and capacity payments crisis",
-      category: 'PAKISTAN_POLITICS',
-      english: {
-        text: "Pakistan's power sector circular debt exceeded 2.6 trillion rupees in 2024, driven primarily by 2 trillion rupees in annual capacity payments to private power producers for electricity never consumed. While industrial factories shut down over 55-rupee power tariffs, elite power plant owners receive guaranteed sovereign returns indexed in US dollars.\n\nOrdinary citizens face power cutoffs while paying for idle generators.\n\nWho designed an energy policy where the public pays for electricity that was never generated?"
-      },
-      romanUrdu: {
-        text: "Pakistan ke power sector ka circular debt 2.6 trillion rupay se tajawuz kar gaya hai jiski asal waja IPPs ko har saal 2 trillion rupay ki capacity payments hain baghair bijli banaye. Factoryan 55 rupay unit hone se band ho rahi hain jabke plant owners ko dollar mein munafe ki guarantee hai.\n\nAam shehri ghair-istamal bijli ke bill bharta hai.\n\nAisi policy kis ne banayi jahan awam us bijli ke paise day jo bani hi nahi?"
-      },
-      plainUrdu: {
-        text: "پاکستان کے پاور سیکٹر کا گردشی قرضہ 26 کھرب روپے سے تجاوز کر چکا ہے جس کی بنیادی وجہ نجی بجلی گھروں کو سالانہ دو کھرب روپے کی کیپیسٹی ادائیگیاں ہیں چاہے بجلی پیدا ہو یا نہ ہو۔ صنعتیں پچپن روپے یونٹ پر بند ہو رہی ہیں جبکہ بجلی گھروں کے مالکان کو ڈالروں میں منافع یقینی ہے۔\n\nعام شہری لوڈ شیڈنگ بھی سہتا ہے اور بند کارخانوں کے بل بھی بھرتا ہے۔\n\nیہ کیسی پالیسی ہے جہاں عوام اس بجلی کی قیمت ادا کرتے ہیں جو کبھی بنی ہی نہیں؟"
-      }
-    },
-    {
-      topic: "Pakistan Tax Divide: Salaried Squeeze vs Untaxed Elites",
-      subtopic: "Tax base broadening and elite exemptions vs salaried class",
-      category: 'PAKISTAN_POLITICS',
-      english: {
-        text: "Salaried workers across Pakistan contributed over 360 billion rupees in direct income taxes in 2024, paying more than the combined tax payments of real estate developers and retail wholesale cartels. While documented employees pay up to 35% at source, influential property barons exploit legal exemptions to pay virtually nothing.\n\nEvery budget broadens tax revenue by squeezing formal employees while sheltering political patronage networks.\n\nWhy should honest wage earners finance the sovereign state while untaxed millionaires escape scrutiny?"
-      },
-      romanUrdu: {
-        text: "Salaried class ne 2024 mein 360 arab rupay se zyada income tax diya jo property aur wholesale traders ke majmooi tax se bhi zyada hai. Documented mulazimeen par 35% tak tax kat-ta hai jabke asar rasookh walay ameer log chhoot ka faida uthatay hain.\n\nHar saal mulazimeen ka gala dabaya jata hai magar elite cartels ko koi nahi pakarta.\n\nTanha mulazim riyasat ka bojh kyon uthaye jabke ameer tareen log tax se azaad hain?"
-      },
-      plainUrdu: {
-        text: "تنخواہ دار طبقے نے 2024 میں 360 ارب روپے سے زائد انکم ٹیکس ادا کیا جو پراپرٹی سیکٹر اور ہول سیل تاجروں کے مشترکہ ٹیکس سے کہیں زیادہ ہے۔ دستاویزی ملازمین سے تنخواہ پر 35 فیصد تک ٹیکس کٹتا ہے جبکہ بااثر طبقے ٹیکس چھوٹ کے مزے لوٹتے ہیں۔\n\nہر بجٹ میں تنخواہ دار طبقے پر بوجھ بڑھایا جاتا ہے جبکہ سیاسی اثر و رسوخ رکھنے والے مافیاز محفوظ رہتے ہیں۔\n\nایماندار ملازم ریاست کا خرچ کیوں اٹھائے جب کہ ارب پتی ٹیکس کے دائرے سے باہر ہیں؟"
-      }
-    },
-    {
-      topic: "State Owned Enterprises: The Trillion Rupee Sovereign Drain",
-      subtopic: "Privatization of state-owned enterprises and fiscal drain",
-      category: 'PAKISTAN_POLITICS',
-      english: {
-        text: "Bleeding state-owned enterprises accumulate over 500 billion rupees in operational losses every fiscal year, draining resources from vital healthcare and education budgets. Over the past decade, sovereign guarantees to sustain bankrupt public corporations have exceeded 2.5 trillion rupees.\n\nTaxpayers bear the financial burden of ghost payrolls while public sector hospitals run short of life-saving medicines.\n\nWhy must millions of citizens sacrifice basic welfare to keep bankrupt state firms afloat?"
-      },
-      romanUrdu: {
-        text: "Khasaray mein chalnay walay sarkari idaray har saal 500 arab rupay se zyada ka nuqsan kartay hain jo sehat aur taleem ke budget se nikalta hai. Pichli aik dahai mein in idaron ko bachanay par 2.5 trillion rupay ke sovereign guarantees lag chukay hain.\n\nAwam inki bhent charhti hai jabke sarkari hospitals mein dawaiyan nahi milti.\n\nKhasaray walay idaron ko zinda rakhnay ke liye aam shehri ki sehat ki qurbani kyon di jaye?"
-      },
-      plainUrdu: {
-        text: "نقصان میں چلنے والے سرکاری ادارے ہر سال پانچ سو ارب روپے سے زائد کا مالیاتی خسارہ پیدا کرتے ہیں جس کا بوجھ صحت اور تعلیم کے بجٹ پر پڑتا ہے۔ پچھلی دہائی میں ان اداروں کو ڈوبنے سے بچانے کے لیے 25 کھرب روپے کے قومی ضمانت نامے دیے گئے۔\n\nعوام کے ٹیکسوں سے گھوسٹ ملازمین کی تنخواہیں ادا ہوتی ہیں جبکہ سرکاری ہسپتالوں میں دوائیں میسر نہیں۔\n\nدیوالیہ سرکاری اداروں کو سہارا دینے کے لیے عام شہری کی بنیادی فلاح کیوں قربان کی جا رہی ہے؟"
-      }
-    },
-
-    // SOCIAL_ETHNIC_ISSUES: Balochistan Natural Gas Royalties
-    {
-      topic: "Balochistan Natural Resources: Royalties vs Reality",
-      subtopic: "Balochistan resource royalties and political integration",
-      category: 'SOCIAL_ETHNIC_ISSUES',
-      english: {
-        text: "Since 1952, Balochistan's Sui natural gas field powered Pakistan's national industries, contributing trillions of rupees to the national economy. Yet over 75% of Balochistan's population still lacks piped household gas, forcing families to burn firewood for heating in sub-zero winter temperatures.\n\nThe province receives less than 6% of national resource royalties while ranking lowest on federal education and health indices.\n\nCan national unity survive when resource-rich lands are treated as resource extraction colonies?"
-      },
-      romanUrdu: {
-        text: "1952 se Sui gas ne Pakistan ki industries ko chalaya aur arbon rupay kamaye. Magar Balochistan ki 75% awam ke paas gas connection nahi aur log lakriyan jalane par majboor hain.\n\nSoobay ko gas royalty ka sirf 6% milta hai jabke taleem aur sehat mein sab se peechay hai.\n\nQomi yak-jehti kaisay bachay gi jab wasail se maala-maal zameen ko sirf khaan samjha jaye?"
-      },
-      plainUrdu: {
-        text: "1952 سے بلوچستان کی سوئی گیس نے پاکستان کی صنعتوں کو رواں رکھا اور کھربوں روپے کا زرمبادلہ پیدا کیا۔ مگر آج بھی بلوچستان کی 75 فیصد آبادی پائپ لائن گیس سے محروم ہے اور سردیوں میں لکڑیاں جلاتی ہے۔\n\nصوبے کو رائلٹی کا محض چھ فیصد ملتا ہے جبکہ وہ تعلیم اور صحت میں ملک کے سب سے پسماندہ درجے پر ہے۔\n\nقومی یکجہتی کیسے قائم رہ سکتی ہے جب وسائل سے مالا مال دھرتی کو محض وسائل نکالنے کا ذریعہ سمجھا جائے؟"
-      }
-    },
-    {
-      topic: "Out of School Children: South Asia's Lost Generation",
-      subtopic: "Out-of-school children crisis and foundational literacy",
-      category: 'SOCIAL_ETHNIC_ISSUES',
-      english: {
-        text: "Over 26 million children in Pakistan remain completely excluded from formal classrooms, representing the second largest uneducated population worldwide. Meanwhile, public education spending hovers below 1.8% of GDP, among the lowest allocations across South Asia.\n\nWhile policymakers celebrate demographic youth dividends, one out of every three school-age children cannot read or write a sentence.\n\nHow can a society build an innovative future when millions of children are locked out of basic literacy?"
-      },
-      romanUrdu: {
-        text: "Pakistan mein 26 million se zyada bachay school nahi jatay jo dunya mein doosra bara adad hai. Taleem par sarkari kharch GDP ke 1.8% se bhi kam hai jo pooray khittay mein sab se kam hai.\n\nHukmaran nojawan nasal ki baatein karte hain magar har teesra bacha parhna likhna nahi janta.\n\nKoi qaum taraqqi kaisay kar sakti hai jab uske karoron bachon se qalam chheen liya jaye?"
-      },
-      plainUrdu: {
-        text: "پاکستان میں دو کروڑ ساٹھ لاکھ سے زائد بچے اسکولوں سے باہر ہیں جو دنیا کی دوسری بڑی غیر تعلیم یافتہ آبادی ہے۔ تعلیم پر سرکاری اخراجات جی ڈی پی کے 1.8 فیصد سے بھی کم ہیں جو خطے کی کم ترین شرح ہے۔\n\nحکمران نوجوان آبادی کی صلاحیتوں کے دعوے کرتے ہیں مگر ہر تیسرا بچہ بنیادی خواندگی سے محروم ہے۔\n\nکوئی قوم روشن مستقبل کیسے تعمیر کر سکتی ہے جب اس کی نئی نسل کو حروف شناسی سے ہی محروم رکھا جائے؟"
-      }
-    },
-
-    // AI_HUMAN_SOCIETY: BPO Call Centers Job Displacement
-    {
-      topic: "AI Job Displacement: The South Asian BPO Crisis",
-      subtopic: "Generative AI displacing South Asian BPO and call center jobs",
-      category: 'AI_HUMAN_SOCIETY',
-      english: {
-        text: "Over 5 million educated young professionals across South Asia earn livelihoods in IT support, customer service, and BPO operations. Generative voice AI systems now handle complex customer queries at $0.05 per call, compared to $4.50 for a human support agent.\n\nMajor Western banks have already automated 40% of tier-one support desk operations.\n\nWhen global capital automates the white-collar ladder, where will millions of university graduates find employment?"
-      },
-      romanUrdu: {
-        text: "South Asia mein 50 lakh jawan IT aur call centres mein rozgar kamatay hain. Generative AI voice systems ab ek call 5 cents mein karte hain jabke insani agent 4.5 dollar leta hai.\n\nBarray aalmi banks ne 40% support operations software ke hawalay kar diye hain.\n\nJab software white-collar jobs khatam kar day, toh lakhoon university graduates kahan jayenge?"
-      },
-      plainUrdu: {
-        text: "جنوبی ایشیا میں پچاس لاکھ نوجوان آئی ٹی سپورٹ اور کال سینٹرز میں خدمات سرانجام دیتے ہیں۔ جدید جنریٹو وائس سسٹمز اب پانچ سینٹ میں وہ کال نمٹاتے ہیں جس پر انسانی ایجنٹ ساڑھے چار ڈالر لیتا تھا۔\n\nبڑے عالمی بینکوں نے چالیس فیصد سپورٹ ڈیسک ملازمتیں خودکار سافٹ ویئر کے حوالے کر دی ہیں۔\n\nجب عالمی سرمایہ داری ڈگری یافتہ وائٹ کالر ملازمتیں ہی مٹا دے تو لاکھوں فارغ التحصیل نوجوان کہاں جائیں گے؟"
-      }
-    },
-    {
-      topic: "Gig Economy Surveillance: Algorithmic Control of Couriers",
-      subtopic: "Gig economy workers and automated algorithmic management",
-      category: 'AI_HUMAN_SOCIETY',
-      english: {
-        text: "Millions of urban delivery riders are managed by opaque smartphone algorithms that dictate delivery routes, enforce strict deadlines, and penalize micro-delays. An algorithmic rating drop below 4.7 stars leads to instant automated account deactivation with zero human review.\n\nTech platforms extract high delivery margins while completely disclaiming employer obligations.\n\nHas Silicon Valley innovation empowered workers, or created a digital assembly line without human empathy?"
-      },
-      romanUrdu: {
-        text: "Lakhoon delivery riders ko mobile apps aur algorithms control karte hain jo raste aur waqt tay karte hain. Agar rating 4.7 se gir jaye toh baghair kisi sunwayi ke account band ho jata hai.\n\nTech companies munafe kamati hain magar rider ko mulazim maannay se inkar karti hain.\n\nKya tech taraqqi ne mazdoor ko azaad kiya hai ya software ki ghulami mein daal diya hai?"
-      },
-      plainUrdu: {
-        text: "لاکھوں ڈلیوری رائیڈرز کو موبائل الگورتھم کنٹرول کرتے ہیں جو راستے، رفتار اور وقت کا تعین کرتے ہیں۔ اگر ریٹنگ 4.7 سے گرے تو بغیر کسی انسانی سماعت کے فوری طور پر اکاؤنٹ بند کر دیا جاتا ہے۔\n\nٹیک کمپنیاں بھاری منافع کماتی ہیں مگر رائیڈر کو قانونی ملازم ماننے سے انکاری ہیں۔\n\nکیا جدید سافٹ ویئر نے محنت کش کو بااختیار بنایا ہے یا اسے الگورتھم کی مشینی غلامی میں دھکیل دیا ہے؟"
-      }
-    },
-
-    // CLIMATE_GLOBAL_POWER: Pakistan 2022 Floods & Historical Debt
-    {
-      topic: "Climate Injustice: Pakistan Floods vs Global Pledges",
-      subtopic: "Pakistan 2022 floods and historical emissions debt of G7",
-      category: 'CLIMATE_GLOBAL_POWER',
-      english: {
-        text: "Pakistan contributes less than 0.8% of global greenhouse gas emissions, yet the catastrophic 2022 floods submerged one-third of the country, causing $30 billion in damages and displacing 33 million citizens. At COP28, wealthy nations pledged $700 million to the Loss and Damage fund, representing less than 0.2% of global climate damages.\n\nMeanwhile, G7 nations spend $1.3 trillion annually subsidizing fossil fuel exploration.\n\nIs climate aid humanitarian solidarity, or a token distraction from ecological debt?"
-      },
-      romanUrdu: {
-        text: "Pakistan aalmi aloodgi ka 0.8% se kam zimmedar hai, magar 2022 ke selaab ne mulk ka ek-tihai hissa dabo diya aur 30 arab dollar ka nuqsan hua. COP28 mein ameer mulkon ne Loss and Damage fund mein sirf 700 million dollar ka wada kiya jo aalmi nuqsan ka 0.2% bhi nahi.\n\nDoosri taraf baray mulk tail aur gas par 1.3 trillion dollar lagatay hain.\n\nKya ye imdad hai ya tareekhi jurm par parda daalna?"
-      },
-      plainUrdu: {
-        text: "پاکستان عالمی گرین ہاؤس گیسوں کے ایک فیصد سے بھی کم کا ذمہ دار ہے مگر 2022 کے تباہ کن سیلاب نے ملک کا ایک تہائی حصہ ڈبو دیا جس سے 30 ارب ڈالر کا نقصان ہوا۔ کوپ سمٹ میں امیر ممالک نے نقصان کے ازالے کے لیے محض سات سو ملین ڈالر کا اعلان کیا جو کل تباہی کا ایک فیصد بھی نہیں۔\n\nجبکہ وہی طاقتیں فوسل فیول پر سالانہ تیرہ سو ارب ڈالر اڑاتی ہیں۔\n\nکیا یہ ماحولیاتی امداد ہے یا تاریخی ماحولیاتی قرض سے جان چھڑانے کا بہانہ؟"
-      }
-    },
-    {
-      topic: "Urban Air Pollution: South Asian Smog Emergency",
-      subtopic: "Urban smog crisis, industrial emissions and air quality indices",
-      category: 'CLIMATE_GLOBAL_POWER',
-      english: {
-        text: "Toxic air quality across major South Asian metropolises shortens average citizen life expectancy by over five years. Industrial brick kilns, substandard vehicle fuel, and post-harvest biomass burning blanket hundreds of millions of people under dangerous particulate pollution exceeding 500 AQI.\n\nAuthorities order temporary Sunday shutdowns while delaying mandatory industrial scrubber enforcement.\n\nWhy do governments treat deadly toxic air as a seasonal inconvenience rather than a national health emergency?"
-      },
-      romanUrdu: {
-        text: "Khatarnaak smog South Asia ke baray shehron mein aam shehri ki zindagi se 5 saal cheen rahi hai. Dhuwan, kharab petrol aur faslon ki aag karoron logon ko 500 AQI ki zehreeli hawa mein dhakeel rahi hai.\n\nHukoomatein itwar ki chhutti karwa deti hain magar carthanon par pabandi nahi lagateen.\n\nZehreeli hawa ko mausam ka bahana kyon banaya jata hai jabke ye qomi sehat ka buhran hai?"
-      },
-      plainUrdu: {
-        text: "زہریلی فضائی آلودگی جنوبی ایشیا کے بڑے شہروں میں عام شہری کی اوسط عمر پانچ سال کم کر رہی ہے۔ بھٹوں، ناقص فیول اور فصلوں کے دھوئیں سے کروڑوں شہری پانچ سو سے زائد خطرناک اے کیو آئی میں سانس لینے پر مجبور ہیں۔\n\nحکام اتوار کی عارضی چھٹی کرا دیتے ہیں مگر صنعتی کارخانوں کو فلٹر لگانے پر مجبور نہیں کرتے۔\n\nزہریلی فضا کو ایک موسمی مجبوری کیوں سمجھا جاتا ہے جبکہ یہ قومی صحت کا فوری ایمرجنسی بحران ہے؟"
-      }
-    },
-
-    // SATIRICAL_COMMENTARY: VIP Protocol Motorcades vs Ambulances
-    {
-      topic: "State Priorities: VIP Protocol vs Citizen Ambulances",
-      subtopic: "VIP protocol motorcades blocking citizen emergency ambulances",
-      category: 'SATIRICAL_COMMENTARY',
-      english: {
-        text: "A typical prime ministerial or presidential motorcade in South Asia deploys 35 armored vehicles, 400 police escorts, and complete street closures for 45 minutes. Every week, emergency ambulances carrying cardiac patients are trapped behind razor-wire VIP checkpoints.\n\nLeaders preach sacrifice and budget austerity while burning hundreds of litres of fuel to travel three kilometres.\n\nWhose lives does the state actually exist to protect: the citizens who pay taxes, or the rulers who spend them?"
-      },
-      romanUrdu: {
-        text: "Wazir-e-azam ya sadar ke protocol mein 35 bulletproof gariyan, 400 police ahlkaar aur 45 minute ke liye shehr band hota hai. Har haftay dil ke marizon wali ambulances VIP checkpoints ke peechay phansi rehti hain.\n\nHukmaran sadgi ka dars detay hain magar 3 kilometer ke safar par hazaron litre fuel ulat detay hain.\n\nRiyasat kiski hifazat ke liye hai: tax denay walay shehri ki ya us tax par aish karne walay hukmaran ki?"
-      },
-      plainUrdu: {
-        text: "روایتی وی آئی پی پروٹوکول میں 35 بلٹ پروف گاڑیاں، سینکڑوں پولیس اہلکار اور پینتالیس منٹ تک شاہراہیں سیل کر دی جاتی ہیں۔ ہر ہفتے دل کے مریضوں کی ایمبولینسیں وی آئی پی سیکیورٹی بیریئرز کے پیچھے تڑپتی رہتی ہیں۔\n\nحکمران سادگی اور کفایت شعاری کے خطابات فرماتے ہیں جبکہ تین کلومیٹر کے فاصلے کے لیے سرکاری پٹرول اڑاتے ہیں۔\n\nریاست اصل میں کس کے تحفظ کے لیے بنی ہے: ٹیکس دینے والے عام شہری کے لیے یا ٹیکس اڑانے والے حکمرانوں کے لیے؟"
-      }
-    },
-    {
-      topic: "Official Austerity Summits: Buffets vs Budget Cuts",
-      subtopic: "Austerity task forces dining at five-star hotel summits",
-      category: 'SATIRICAL_COMMENTARY',
-      english: {
-        text: "Government austerity task forces routinely meet at five-star hotels, spending millions on gourmet banquets to announce that junior clerks will no longer receive office biscuits. Elite committees produce lavishly printed 200-page booklets that cost more than the annual spending cuts they recommend.\n\nRulers lavishly applaud their own fiscal discipline while purchasing new luxury SUVs for official convoys.\n\nIs sovereign austerity a serious economic strategy, or merely high-budget theater performed for public consumption?"
-      },
-      romanUrdu: {
-        text: "Sarkari kafayat-shaari committees 5-star hotels mein beth kar arbon ke khanay khati hain aur elaan karti hain ke chhotay mulazimeen ki chai biscuit band hain. Inki kitabein chhapnay par utna kharcha ata hai jitni bachat nahi hoti.\n\nHukmaran bachat ke naam par taaliyan bajatay hain aur nai bulletproof gariyan khareedtay hain.\n\nKya ye bachat ka mansooba hai ya aam awam ko dikhane ke liye drama?"
-      },
-      plainUrdu: {
-        text: "کفایت شعاری ٹاسک فورسز فائیو اسٹار ہوٹلوں کے پرتکلف کھانوں پر لاکھوں اڑاتی ہیں اور فیصلہ سناتی ہیں کہ چھوٹے ملازمین کی چائے بند کر دی گئی ہے۔ ان کمیٹیوں کی رپورٹوں کی چھپائی پر جتنی لاگت آتی ہے اتنی بچت نہیں ہوتی۔\n\nحکمران اپنی بچت کے دعوؤں پر داد سمیٹتے ہیں جبکہ پروٹوکول کے لیے نئی لگژری گاڑیاں خریدی جاتی ہیں۔\n\nکیا یہ کفایت شعاری کی سنجیدہ پالیسی ہے یا عوام کی آنکھوں میں دھول جھونکنے کے لیے مہنگا تماشا؟"
-      }
-    }
-  ];
-
-  // Filter against cleanExcluded, seen topics, category match, and run through isDuplicateOrSimilar
-  for (const item of dynamicBank) {
+  for (const item of FALLBACK_BANK) {
     if (category && item.category !== category) {
       continue;
     }
+
     const isExcluded = cleanExcluded && (
       item.topic.toLowerCase().trim() === cleanExcluded ||
-      item.subtopic.toLowerCase().trim() === cleanExcluded
+      (item.subtopic && item.subtopic.toLowerCase().trim() === cleanExcluded)
     );
     if (isExcluded) continue;
 
-    if (avoidCombined.some(a => a.includes(item.topic.toLowerCase()) || a.includes(item.subtopic.toLowerCase()))) {
+    if (avoidCombined.some(a => a.includes(item.topic.toLowerCase()) || (item.subtopic && a.includes(item.subtopic.toLowerCase())))) {
+      continue;
+    }
+
+    if (historyStore.hasSeenTopic(item.topic)) {
+      continue;
+    }
+
+    const simpleErr = checkSimpleEnglish(item.english.text);
+    if (simpleErr) {
       continue;
     }
 
     const dupCheck = historyStore.isDuplicateOrSimilar(item.english.text, item.topic, item);
-    if (!dupCheck.isDuplicate) {
-      return item;
+    if (dupCheck.isDuplicate) {
+      continue;
     }
+
+    return {
+      topic: item.topic,
+      subtopic: item.subtopic || subtopic || item.topic,
+      category: item.category,
+      genreId: item.category,
+      mainSubject: item.mainSubject,
+      specificEventOrIssue: item.specificEventOrIssue,
+      centralArgument: item.centralArgument,
+      analyticalAngle: item.analyticalAngle,
+      importantStatistics: item.importantStatistics,
+      keywords: item.keywords,
+      english: formatEntry(item.english.text),
+      romanUrdu: item.romanUrdu ? formatEntry(item.romanUrdu.text) : null,
+      plainUrdu: item.plainUrdu ? formatEntry(item.plainUrdu.text) : null
+    };
   }
 
-  // If static bank entries match or are exhausted, synthesize a fresh dynamic comparison from organic narrative patterns (no fixed template)
-  const batchId = Math.floor(100 + Math.random() * 900);
-  const targetCategoryObj = genreManager.getGenreById(category) || genreManager.getAllGenres()[0];
-  const freshSubtopic = subtopic || genreManager.getUnusedSubtopic(category, avoidCombined, cleanExcluded);
+  return null;
+}
 
-  const isPakInd = targetCategoryObj.id === 'PAK_VS_IND';
-  const patternIdx = Math.floor(Math.random() * 6);
-
-  const statA = (15 + Math.random() * 70).toFixed(1);
-  const statB = (2.1 + Math.random() * 7.5).toFixed(1);
-  const percentC = Math.floor(38 + Math.random() * 32);
-
-  let engText = '';
-  let romanText = '';
-  let plainText = '';
-  let centralArg = '';
-  let analyticalAngle = '';
-  let statList = [];
-
-  if (isPakInd) {
-    const patterns = [
-      // Pattern 0: Direct factual breakdown (2 paragraphs, factual conclusion)
-      {
-        eng: `Looking at ${freshSubtopic}, governments in India and Pakistan make the same mistake. Central leaders keep over ${percentC}% of all tax money in the capital, leaving provincial towns with under $${statB} billion for basic clinics and schools.\n\nBoth capitals spend over $${statA} billion on flashy projects while regular hospitals run out of beds. Leaders promise to help local towns, but hold all the cash.`,
-        arg: `Fiscal centralism on ${freshSubtopic} starves local administrations of basic healthcare and school funds`,
-        stat: [`${percentC}%`, `$${statB}b`, `$${statA}b`],
-        angle: "Local spending vs central power",
-        roman: `India aur Pakistan mein ${freshSubtopic} par wazeh maslay samnay atay hain. Markazi hukoomatein ${percentC}% taxes control karti hain jabke soobon ko $${statB} billion bhi nahi miltay. Flagship projects par $${statA} billion lagaye jatay hain magar aam awam bunyadi sahuliyat se mehroom rehti hai.`,
-        plain: `بھارت اور پاکستان میں ${freshSubtopic} کے حوالے سے یکساں انتظامی تضادات موجود ہیں۔ مرکزی وزارتیں ${percentC} فیصد ٹیکس کنٹرول کرتی ہیں جبکہ صوبوں کو بنیادی بلدیاتی ڈھانچے کے لیے محض $${statB} ارب ڈالر ملتے ہیں۔ بڑے نمائشی منصوبوں پر $${statA} ارب ڈالر لگائے جاتے ہیں مگر عوامی شعبے محروم رہتے ہیں۔`
-      },
-      // Pattern 1: Budget paradox (2 paragraphs, sharp punchline)
-      {
-        eng: `Official budget numbers on ${freshSubtopic} show a clear truth in South Asia. India and Pakistan spend over $${statA} billion trying to outdo each other on borders, but spend less than $${statB} billion on joint public welfare programs.\n\nOver ${percentC}% of border families struggle to buy basic groceries every month. Real national strength means having food and savings at home, not fancy parades.`,
-        arg: `Border spending on ${freshSubtopic} hurts regular family budgets and basic living standards`,
-        stat: [`$${statA}b`, `$${statB}b`, `${percentC}%`],
-        angle: "Border spending vs family grocery costs",
-        roman: `Sarkari kharchay ke audits batatay hain ke ${freshSubtopic} par India aur Pakistan $${statA} billion border programs par lagatay hain, magar awami falah ke liye sirf $${statB} billion bachtay hain. ${percentC}% ghareeb khandan bunyadi sahulat se mehroom hain. Asal taqat awam ki maashi hifazat mein hoti hai.`,
-        plain: `سرکاری آڈٹ کے مطابق ${freshSubtopic} کے معاملے پر بھارت اور پاکستان $${statA} ارب ڈالر سرحدی پروگراموں پر خرچ کرتے ہیں جبکہ عوامی بہبود کے اقدامات کو بمشکل $${statB} ارب ڈالر ملتے ہیں۔ خطے کے ${percentC} فیصد پسماندہ خاندان بنیادی تحفظ سے محروم ہیں اور طاقت کا معیار عوامی فلاح نہیں۔`
-      },
-      // Pattern 2: Institutional friction (2 paragraphs, governance critique)
-      {
-        eng: `Years of government rules on ${freshSubtopic} have created serious headaches for regular people across India and Pakistan. Big offices in capital cities waste over $${statA} billion on red tape, while real work on the ground gets barely $${statB} billion.\n\nOver ${percentC}% of public complaints get buried under paperwork. Offices stay slow because leaders rarely answer to regular voters in small towns.`,
-        arg: `Government red tape and slow offices in ${freshSubtopic} ignore regular citizen needs`,
-        stat: [`$${statA}b`, `$${statB}b`, `${percentC}%`],
-        angle: "Government red tape vs citizen service",
-        roman: `India aur Pakistan mein ${freshSubtopic} par dahaiyon ki markazi policies ne soobai tanaao barha diya hai. Markaz $${statA} billion bureaucratic kharchon mein ulat deta hai jabke muqami taraqqi ko sirf $${statB} billion miltay hain. ${percentC}% maslay hal nahi hotay kyonke afsar-shahi awami jawab-dehi se azaad hai.`,
-        plain: `بھارت اور پاکستان میں ${freshSubtopic} پر دہائیوں کی مرکزی پالیسیوں نے شدید انتظامی تناؤ پیدا کیا ہے۔ مرکزی فیصلے مقامی نمائندوں کو نظر انداز کر کے $${statA} ارب ڈالر کی بیوروکریسی پر خرچ ہو جاتے ہیں جبکہ فیلڈ پراجیکٹس کو صرف $${statB} ارب ڈالر ملتے ہیں۔ تقریبا ${percentC} فیصد عوامی شکایات دبا دی جاتی ہیں۔`
-      },
-      // Pattern 3: Economic and commercial comparison (2 paragraphs, consumer impact)
-      {
-        eng: `Border politics and trade bans around ${freshSubtopic} cost India and Pakistan nearly $${statA} billion every single year. Because direct trade is blocked, everyday goods take long routes and cost ${percentC}% more for regular buyers, while trade talks get under $${statB} billion.\n\nOrdinary working families pay the bill every week through higher food prices just to keep old political fights alive.`,
-        arg: `Trade barriers on ${freshSubtopic} make food and everyday goods more expensive for regular buyers`,
-        stat: [`$${statA}b`, `${percentC}%`, `$${statB}b`],
-        angle: "Closed trade routes vs everyday grocery costs",
-        roman: `India aur Pakistan ke darmiyan ${freshSubtopic} ke tajarati raste band honay se har saal $${statA} billion ka nuqsan hota hai. Teesray mulkon ke zariye saman manganay se cheezain ${percentC}% mehangi milti hain jabke rabtay par sirf $${statB} billion lagtay hain. Aam awam har maheenay mehangai ki soorat mein is tanaao ka jurmana ada karti hai.`,
-        plain: `بھارت اور پاکستان کے درمیان ${freshSubtopic} پر تجارتی رکاوٹوں کی وجہ سے سالانہ تقریباً $${statA} ارب ڈالر کا علاقائی نقصان ہوتا ہے۔ تیسرے ممالک کے راستے تجارت سے اشیائے خورونوش پر ${percentC} فیصد اضافی لاگت آتی ہے۔ دونوں ممالک کے عام محنت کش روزمرہ مہنگائی کی صورت میں اس سفارتی تعطل کا تاوان بھرتے ہیں۔`
-      },
-      // Pattern 4: Historical legacy vs modern reality (3 paragraphs, structural principle)
-      {
-        eng: `Old British laws around ${freshSubtopic} were made to control people rather than help their daily lives. Today, central leaders in India and Pakistan hold $${statA} billion in special funds, while local councils receive barely $${statB} billion for basic repairs.\n\nOver ${percentC}% of old government rules have not changed since 1947.\n\nChanging the flag never changed how rulers treat ordinary citizens.`,
-        arg: `Old colonial laws in ${freshSubtopic} keep power in central offices instead of helping local people`,
-        stat: [`$${statA}b`, `$${statB}b`, `${percentC}%`],
-        angle: "Old colonial laws vs everyday citizen rights",
-        roman: `1947 ke baad India aur Pakistan mein ${freshSubtopic} par angrezon ke daur ke qawaneen barqarar rakhay gaye. Markaz $${statA} billion apne ikhtiyar mein rakhta hai jabke muqami idaron ko sirf $${statB} billion miltay hain. ${percentC}% afsar-shahi puranay qawaneen par chalti hai. Jhanda badal gaya magar riyasat ka rawaiyya nahi badla.`,
-        plain: `1947 کے بعد بھارت اور پاکستان میں ${freshSubtopic} کے نظام میں شہریوں کو بااختیار بنانے کے بجائے مرکزی کنٹرول قائم رکھا گیا۔ مرکزی وزارتیں $${statA} ارب ڈالر اپنے پاس رکھتی ہیں جبکہ صوبائی کونسلوں کو بمشکل $${statB} ارب ڈالر ملتے ہیں۔ پرچم تو بدل گیا لیکن حاکم اور محکوم کا نوآبادیاتی رشتہ نہیں بدلا۔`
-      },
-      // Pattern 5: Investigative contrast (2 paragraphs, provocative question)
-      {
-        eng: `Official bank accounts on ${subtopic} tell a story politicians never talk about on evening TV news. Big business friends in India and Pakistan get $${statA} billion in special tax breaks, while basic public healthcare receives barely $${statB} billion.\n\nOver ${percentC}% of basic health goals were missed last year. Who does this government system really protect: wealthy elites or regular taxpayers?`,
-        arg: `Big tax breaks for connected businesses in ${freshSubtopic} leave public hospitals empty of funds`,
-        stat: [`$${statA}b`, `$${statB}b`, `${percentC}%`],
-        angle: "Big business tax breaks vs public hospital funds",
-        roman: `India aur Pakistan mein ${freshSubtopic} par sarkari accounts asal kahani bayan karte hain. $${statA} billion baray contractors aur imtiyazaat ko milay jabke awami infrastructure ko sirf $${statB} billion diay gaye. ${percentC}% tarqqiyati ahdaf adhooray reh gaye. Riyasat aam shehri ki hifazat kab karegi jab bunyadi wadey hi poore na hon?`,
-        plain: `بھارت اور پاکستان میں ${freshSubtopic} کے سرکاری کھاتے وہ حقائق کھولتے ہیں جو بیانات میں نہیں ملتے۔ کارپوریٹ رعایتوں پر $${statA} ارب ڈالر اڑائے گئے جبکہ عوامی انفراسٹرکچر کو محض $${statB} ارب ڈالر ملے۔ گزشتہ سال ${percentC} فیصد ترقیاتی اہداف پورے نہ ہو سکے۔ یہ نظام کس کے مفادات کا تحفظ کر رہا ہے؟`
-      }
-    ];
-
-    const chosen = patterns[patternIdx];
-    engText = chosen.eng;
-    romanText = chosen.roman;
-    plainText = chosen.plain;
-    centralArg = chosen.arg;
-    analyticalAngle = chosen.angle;
-    statList = chosen.stat;
-  } else {
-    const patterns = [
-      // Pattern 0: Structural governance mismatch
-      {
-        eng: `Looking at ${freshSubtopic}, public offices across ${targetCategoryObj.name} show a big gap between words and reality. Top departments control over $${statA} billion in big budgets, while local town offices get barely $${statB} billion for everyday work.\n\nOver ${percentC}% of government plans missed their promises last year. Leaders keep spending money on flashy projects while regular citizens wait for basic help.`,
-        arg: `Big city offices take most budget while small towns in ${freshSubtopic} wait for basic help`,
-        stat: [`$${statA}b`, `$${statB}b`, `${percentC}%`],
-        angle: "Big project spending vs small town services",
-        roman: `${targetCategoryObj.name} mein ${freshSubtopic} par wazeh tanaao nazar ata hai. Idaray $${statA} billion apne ikhtiyar mein rakhtay hain jabke aam falah ko sirf $${statB} billion miltay hain. ${percentC}% mansoobay nakam rehtay hain kyonke tarjeehat ghalat hain.`,
-        plain: `${targetCategoryObj.name} کے تحت ${freshSubtopic} کی جانچ پڑتال پالیسی تضادات کو بے نقاب کرتی ہے۔ مرکزی محکمے $${statA} ارب ڈالر اپنے پاس رکھتے ہیں جبکہ عوامی خدمات کو محض $${statB} ارب ڈالر ملتے ہیں۔ تقریبا ${percentC} فیصد منصوبے ناکام رہتے ہیں۔`
-      },
-      // Pattern 1: Regulatory friction and market deadweight
-      {
-        eng: `Heavy paperwork around ${freshSubtopic} is holding back small businesses across ${targetCategoryObj.name}. Dealing with government red tape wastes nearly $${statA} billion every year, while offices spend under $${statB} billion on modern computer tools.\n\nNearly ${percentC}% of small business owners report long delays for simple routine permits. When paperwork moves this slowly, hardworking people pay the price.`,
-        arg: `Government red tape and slow permits in ${freshSubtopic} hold back hardworking small businesses`,
-        stat: [`$${statA}b`, `$${statB}b`, `${percentC}%`],
-        angle: "Government paperwork vs small business growth",
-        roman: `${freshSubtopic} par puranay qawaneen aur rukawatein har saal $${statA} billion ka nuqsan karti hain. System ko behtar karne par sirf $${statB} billion lagtay hain jabke ${percentC}% karobar takheer ka shikar hain. Afsar-shahi taraqqi ko dabati hai.`,
-        plain: `${freshSubtopic} پر بیوروکریسی کی رکاوٹیں سالانہ $${statA} ارب ڈالر ضائع کرتی ہیں جبکہ جدید نظام پر محض $${statB} ارب ڈالر لگائے جاتے ہیں۔ تقریبا ${percentC} فیصد کاروباری ادارے تاخیر کا شکار ہیں اور ترقی متاثر ہوتی ہے۔`
-      },
-      // Pattern 2: Capital misallocation and debt
-      {
-        eng: `Government balance sheets on ${freshSubtopic} show why families across ${targetCategoryObj.name} feel the squeeze. State debt has crossed $${statA} billion, leaving less than $${statB} billion for public schools and clinics in regular towns.\n\nOver ${percentC}% of citizen taxes go straight into paying bank interest on old loans. A country cannot build a strong future when yesterday debts eat tomorrow money.`,
-        arg: `Heavy debt interest payments on ${freshSubtopic} leave public schools and clinics without money`,
-        stat: [`$${statA}b`, `$${statB}b`, `${percentC}%`],
-        angle: "High national debt vs money for public clinics",
-        roman: `${freshSubtopic} par sarkari accounts batatay hain ke qarzay $${statA} billion se tajawuz kar chukay hain. Taraqqi ke liye sirf $${statB} billion bachtay hain jabke ${percentC}% revenue sood mein chali jati hai. Jab tak structural islaahaat na hon, maashiyat nahi sambhal sakti.`,
-        plain: `${freshSubtopic} کے سرکاری کھاتے مالی بدانتظامی ظاہر کرتے ہیں۔ قرضوں کا بوجھ $${statA} ارب ڈالر سے تجاوز کر چکا ہے جبکہ اہم شعبوں کو صرف $${statB} ارب ڈالر ملتے ہیں۔ ٹیکسوں کا ${percentC} فیصد سود کی نذر ہو جاتا ہے۔`
-      },
-      // Pattern 3: Technology and human displacement
-      {
-        eng: `Fast changes in ${freshSubtopic} are creating tough choices for working people in ${targetCategoryObj.name}. Giant tech corporations invest over $${statA} billion in software tools, while training funds for regular workers get barely $${statB} billion.\n\nOver ${percentC}% of young office workers worry about losing jobs to automation. Tech progress is great, but only if it creates new paths for regular people.`,
-        arg: `Fast tech tools in ${freshSubtopic} need real training funds so regular office workers do not lose jobs`,
-        stat: [`$${statA}b`, `$${statB}b`, `${percentC}%`],
-        angle: "New tech tools vs regular jobs and training",
-        roman: `${freshSubtopic} ki tez raftari se lakhon log mutasir ho rahay hain. Corporations $${statA} billion lagati hain magar mazdoor ki tarbiyat par sirf $${statB} billion kharch hotay hain. ${percentC}% afrad ki nokri khatray mein hai. Taraqqi agar awam ko be-rozgar kar day toh wo taraqqi nahi.`,
-        plain: `${freshSubtopic} کی تبدیلیوں سے روزگار کو شدید خطرات لاحق ہیں۔ کمپنیاں $${statA} ارب ڈالر آٹومیشن پر لگاتی ہیں مگر مزدوروں کی تربیت پر بمشکل $${statB} ارب ڈالر خرچ ہوتے ہیں۔ پانچ سال میں ${percentC} فیصد ملازمین متاثر ہونے کا خدشہ ہے۔`
-      },
-      // Pattern 4: Resource extraction vs community equity
-      {
-        eng: `Audits of natural resources in ${freshSubtopic} show deep unfairness across ${targetCategoryObj.name}. Mining contracts bring $${statA} billion into central bank accounts, yet local towns get under $${statB} billion for clean drinking water and roads.\n\nOver ${percentC}% of families in resource towns still live without basic electricity. Taking wealth from poor towns without helping them breaks public trust.`,
-        arg: `Mining wealth in ${freshSubtopic} must be shared with local towns for clean water and roads`,
-        stat: [`$${statA}b`, `$${statB}b`, `${percentC}%`],
-        angle: "Mining earnings vs basic clean water in local towns",
-        roman: `${freshSubtopic} ke wasail ki taqseem mein sakht na-insafi hai. Riyasat $${statA} billion kamati hai magar muqami logon ko sirf $${statB} billion miltay hain. ${percentC}% log bunyadi sahuliyat se mehroom hain. Muqami haqooq dabanay se be-chaini barhti hai.`,
-        plain: `${freshSubtopic} کے وسائل کی تقسیم میں شدید عدم مساوات ہے۔ ریاست $${statA} ارب ڈالر کماتی ہے لیکن مقامی آبادی کو محض $${statB} ارب ڈالر کے ترقیاتی فنڈز ملتے ہیں۔ وسائل سے مالامال علاقوں کے ${percentC} فیصد شہری پینے کے صاف پانی سے بھی محروم ہیں۔`
-      },
-      // Pattern 5: Power concentration and institutional accountability
-      {
-        eng: `Reports on ${freshSubtopic} reveal how power works behind closed doors in ${targetCategoryObj.name}. Big corporate groups get contracts worth $${statA} billion, while official public watchdog offices get less than $${statB} billion to check the books.\n\nOver ${percentC}% of major state contracts were given without open public bidding. Who is government really serving: connected friends or the people who vote?`,
-        arg: `Giving contracts without public bidding in ${freshSubtopic} favors connected friends over regular citizens`,
-        stat: [`$${statA}b`, `$${statB}b`, `${percentC}%`],
-        angle: "Open bidding vs deals for connected friends",
-        roman: `${freshSubtopic} par markazi qabza saaf zahir hai. Cartels ko $${statA} billion ke contracts miltay hain jabke ehtisab ke idaron ko sirf $${statB} billion diay jatay hain. ${percentC}% thekay baghair muqablay ke hotay hain. Riyasati nigrani kis ke faiday ke liye hai?`,
-        plain: `${freshSubtopic} کے معاملات پر مخصوص اجارہ داریاں حاوی ہیں۔ کارٹلز کو $${statA} ارب ڈالر کے ٹھیکے دیے جاتے ہیں جبکہ احتسابی اداروں کو محض $${statB} ارب ڈالر کا بجٹ ملتا ہے۔ پچپن سے ${percentC} فیصد سودے بغیر کھلی بولی کے ہوتے ہیں۔`
-      }
-    ];
-
-    const chosen = patterns[patternIdx];
-    engText = chosen.eng;
-    romanText = chosen.roman;
-    plainText = chosen.plain;
-    centralArg = chosen.arg;
-    analyticalAngle = chosen.angle;
-    statList = chosen.stat;
-  }
-
-  return {
-    topic: `${targetCategoryObj.name}: ${freshSubtopic} Audit ${batchId}`,
-    subtopic: freshSubtopic,
-    category: targetCategoryObj.id,
-    genreId: targetCategoryObj.id,
-    mainSubject: freshSubtopic,
-    specificEventOrIssue: `${freshSubtopic} structural analysis`,
-    centralArgument: centralArg,
-    analyticalAngle: analyticalAngle || 'Structural comparative analysis',
-    importantStatistics: statList.length > 0 ? statList : [`$${statA}b`, `$${statB}b`, `${percentC}%`],
-    keywords: [freshSubtopic, 'analysis', 'data', 'priorities'],
-    english: {
-      text: engText
-    },
-    romanUrdu: {
-      text: romanText
-    },
-    plainUrdu: {
-      text: plainText
+/**
+ * Executes an AI provider call and simplifies if checkSimpleEnglish fails
+ */
+async function callWithSimplify(callFn, prompt, ...args) {
+  const res = await callFn(prompt, ...args);
+  if (res && typeof res.text === 'string') {
+    const reason = checkSimpleEnglish(res.text);
+    if (reason) {
+      console.warn(`[AI Simplification] Response rejected (${reason}). Retrying provider with simplify request...`);
+      const simplifyPrompt = `${prompt}\n\nYour last answer was rejected: ${reason}. Rewrite it in much simpler English with shorter sentences and easier words. Keep the same facts and 380-450 characters. Last text: ${res.text}`;
+      return await callFn(simplifyPrompt, ...args);
     }
-  };
+  }
+  return res;
 }
 
 /* =========================================================
@@ -1148,24 +1059,29 @@ export async function generateEnglishPost(customTopic = '', excludedTopic = '', 
     }
   }
 
-  const recordedTopics = historyStore.getAllUsedTopics();
+  // Also query Mongo topics to avoid across bot reboots
   let mongoTopics = [];
   try {
-    mongoTopics = await getAllUsedTopics(0); // Query ALL without arbitrary 30-post limit
-  } catch (error) {
-    // Mongo fallback
+    mongoTopics = await getAllUsedTopics();
+  } catch (e) {
+    // Non-fatal if Mongo is down
+  }
+
+  const recordedTopics = historyStore.getAllUsedTopics();
+  for (const t of mongoTopics) {
+    if (t && !historyStore.hasSeenTopic(t)) {
+      historyStore.recordSeenTopic(t);
+    }
   }
 
   const allUsedTopics = Array.from(new Set([...recordedTopics, ...mongoTopics]));
-  if (cleanExcluded) allUsedTopics.push(cleanExcluded);
 
-  // Determine active genre
+  // Genre selection
   const primaryGenre = genreManager.getPrimaryGenre();
   const allGenres = genreManager.getAllGenres();
 
-  let targetCategory = null;
+  let targetCategory;
   if (primaryGenre) {
-    // STRICT RULE: Once owner selects a primary genre, post ONLY of that genre nothing else!
     targetCategory = primaryGenre;
   } else {
     targetCategory = allGenres[categoryRotationIndex % allGenres.length];
@@ -1174,8 +1090,8 @@ export async function generateEnglishPost(customTopic = '', excludedTopic = '', 
 
   let chosenCategory = targetCategory.id;
 
-  // If user passed a topic indicating Pak vs Ind, adjust category accordingly
-  if (customTopic && (customTopic.toLowerCase().includes('pak vs ind') || customTopic.toLowerCase().includes('india vs pakistan'))) {
+  // If a custom topic is provided, align genre
+  if (customTopic.trim()) {
     chosenCategory = 'PAK_VS_IND';
     targetCategory = allGenres.find(g => g.id === 'PAK_VS_IND') || targetCategory;
   }
@@ -1209,7 +1125,7 @@ export async function generateEnglishPost(customTopic = '', excludedTopic = '', 
     /* ---------------- TIER 1. GOOGLE GEMINI FREE API ---------------- */
     if (geminiKey && !candidate) {
       try {
-        const res = await callGemini(prompt, geminiKey);
+        const res = await callWithSimplify(callGemini, prompt, geminiKey);
         const validated = validateAIResponse(res, chosenTopic, chosenCategory, chosenSubtopic);
         candidate = validated;
         providerName = 'Google Gemini Free API';
@@ -1221,7 +1137,7 @@ export async function generateEnglishPost(customTopic = '', excludedTopic = '', 
     /* ---------------- TIER 2. xAI GROK API ---------------- */
     if (xaiKey && !candidate) {
       try {
-        const res = await callXai(prompt, 'grok-beta');
+        const res = await callWithSimplify(callXai, prompt, 'grok-beta');
         const validated = validateAIResponse(res, chosenTopic, chosenCategory, chosenSubtopic);
         candidate = validated;
         providerName = 'xAI Grok API';
@@ -1233,7 +1149,7 @@ export async function generateEnglishPost(customTopic = '', excludedTopic = '', 
     /* ---------------- TIER 3. GROQ CLOUD API ---------------- */
     if (groqKey && !candidate) {
       try {
-        const res = await callGroq(prompt, groqKey);
+        const res = await callWithSimplify(callGroq, prompt, groqKey);
         const validated = validateAIResponse(res, chosenTopic, chosenCategory, chosenSubtopic);
         candidate = validated;
         providerName = 'Groq Cloud API (Free)';
@@ -1242,46 +1158,12 @@ export async function generateEnglishPost(customTopic = '', excludedTopic = '', 
       }
     }
 
-    /* ---------------- TIER 4. CURATED & DYNAMIC FALLBACK ---------------- */
+    /* ---------------- TIER 4. FALLBACK BANK ---------------- */
     if (!candidate) {
-      // Check curated bank first
-      const curatedMatch = CURATED_STORY_TOPICS.find(
-        item =>
-          item.category === chosenCategory &&
-          (!cleanExcluded || item.topic.toLowerCase().trim() !== cleanExcluded) &&
-          !historyStore.hasSeenTopic(item.topic) &&
-          !historyStore.isDuplicateOrSimilar(item.english.text, item.topic, item).isDuplicate
-      );
-
-      if (curatedMatch) {
-        candidate = {
-          topic: curatedMatch.topic,
-          subtopic: curatedMatch.subtopic || curatedMatch.topic,
-          category: curatedMatch.category,
-          genreId: curatedMatch.category,
-          english: formatEntry(curatedMatch.english.text),
-          romanUrdu: curatedMatch.romanUrdu ? formatEntry(curatedMatch.romanUrdu.text) : null,
-          plainUrdu: curatedMatch.plainUrdu ? formatEntry(curatedMatch.plainUrdu.text) : null
-        };
-        providerName = 'Curated Analytical Engine';
-      } else {
-        const fallback = generateDynamicFallback(chosenCategory, chosenSubtopic, cleanExcluded, avoidList);
-        candidate = {
-          topic: fallback.topic,
-          subtopic: fallback.subtopic || chosenSubtopic,
-          category: fallback.category,
-          genreId: fallback.category,
-          mainSubject: fallback.mainSubject,
-          specificEventOrIssue: fallback.specificEventOrIssue,
-          centralArgument: fallback.centralArgument,
-          analyticalAngle: fallback.analyticalAngle,
-          importantStatistics: fallback.importantStatistics,
-          keywords: fallback.keywords,
-          english: formatEntry(fallback.english.text),
-          romanUrdu: fallback.romanUrdu ? formatEntry(fallback.romanUrdu.text) : null,
-          plainUrdu: fallback.plainUrdu ? formatEntry(fallback.plainUrdu.text) : null
-        };
-        providerName = 'Dynamic Analytical Fallback';
+      const fallback = generateDynamicFallback(chosenCategory, chosenSubtopic, cleanExcluded, avoidList);
+      if (fallback) {
+        candidate = fallback;
+        providerName = 'Fallback Analytical Bank';
       }
     }
 
@@ -1384,17 +1266,18 @@ export async function generateRomanUrduFromEnglish(englishPost, topic = '') {
   const xaiKey = process.env.GROK_API_KEY || process.env.XAI_API_KEY;
   const groqKey = process.env.GROQ_API_KEY;
 
-  const prompt = `Translate and adapt this data-driven analytical post into natural, engaging Pakistani Roman Urdu.
+  const prompt = `Translate this post into very simple Pakistani Roman Urdu.
 
 ENGLISH POST:
 "${englishPost.text}"
 
 RULES:
-- Write in simple, natural Pakistani Roman Urdu as spoken by an educated Pakistani explaining news and data.
-- Keep the exact same numbers, statistics, comparisons, and thought-provoking analysis.
-- Preserve the paragraph breaks (\\n\\n) and keep the ending question intact.
-- Target length: 400 to 500 characters (aim for 450–470 chars, NEVER exceed 500).
-- Do NOT use hashtags or emojis.
+- Use simple everyday words that any regular Pakistani speaks at home.
+- Keep the exact same 1 or 2 numbers, facts, comparisons, and the final question intact.
+- Every sentence must be short and easy to understand.
+- Preserve the paragraph breaks (\\n\\n).
+- Target length: 400 to 460 characters (hard limits 380 to 500 characters).
+- ZERO hashtags, ZERO emojis.
 - Return ONLY valid JSON:
 {
   "text": "Roman Urdu text with paragraph breaks here"
@@ -1439,11 +1322,14 @@ RULES:
   }
 
   if (!romanEntry) {
-    const found =
-      CURATED_STORY_TOPICS.find(
-        item => item.topic === topic || item.english.text === englishPost.text
-      ) || CURATED_STORY_TOPICS[0];
-    romanEntry = formatEntry(found.romanUrdu?.text || found.english.text);
+    const found = FALLBACK_BANK.find(
+      item => item.topic === topic || (item.english && item.english.text === englishPost.text)
+    );
+    if (found && found.romanUrdu && found.romanUrdu.text) {
+      romanEntry = formatEntry(found.romanUrdu.text);
+    } else {
+      throw new Error(`Failed to generate Roman Urdu translation for "${topic || 'post'}": all AI providers failed and no matching bank entry found.`);
+    }
   }
 
   // Update existing record in-place so translations never count as new duplicates
@@ -1463,17 +1349,19 @@ export async function generatePlainUrduFromEnglish(englishPost, topic = '') {
   const xaiKey = process.env.GROK_API_KEY || process.env.XAI_API_KEY;
   const groqKey = process.env.GROQ_API_KEY;
 
-  const prompt = `Translate and adapt this data-driven analytical post into clear, dignified Pakistani Urdu script (اردو).
+  const prompt = `Translate this post into very simple Pakistani Urdu script (اردو).
 
 ENGLISH POST:
 "${englishPost.text}"
 
 RULES:
-- Write in natural, easy Pakistani Urdu script that ordinary readers easily understand.
-- Preserve the exact numbers, statistics, comparisons, facts, and paragraph breaks (\\n\\n).
-- Keep the powerful final question intact.
-- Target length: 400 to 500 characters (aim for 450–470 chars, NEVER exceed 500).
-- Do NOT use hashtags or emojis.
+- Use simple everyday Urdu that an ordinary reader or shopkeeper understands easily.
+- Avoid heavy bookish words or complicated literary terms.
+- Keep the exact same 1 or 2 numbers, facts, comparisons, and the final question intact.
+- Every sentence must be short and easy to understand.
+- Preserve the paragraph breaks (\\n\\n).
+- Target length: 400 to 460 characters (hard limits 380 to 500 characters).
+- ZERO hashtags, ZERO emojis.
 - Return ONLY valid JSON:
 {
   "text": "اردو متن پیراگراف بریک کے ساتھ یہاں لکھیں"
@@ -1518,11 +1406,14 @@ RULES:
   }
 
   if (!urduEntry) {
-    const found =
-      CURATED_STORY_TOPICS.find(
-        item => item.topic === topic || item.english.text === englishPost.text
-      ) || CURATED_STORY_TOPICS[0];
-    urduEntry = formatEntry(found.plainUrdu?.text || found.english.text);
+    const found = FALLBACK_BANK.find(
+      item => item.topic === topic || (item.english && item.english.text === englishPost.text)
+    );
+    if (found && found.plainUrdu && found.plainUrdu.text) {
+      urduEntry = formatEntry(found.plainUrdu.text);
+    } else {
+      throw new Error(`Failed to generate Plain Urdu translation for "${topic || 'post'}": all AI providers failed and no matching bank entry found.`);
+    }
   }
 
   // Update existing record in-place so translations never count as new duplicates
@@ -1566,12 +1457,12 @@ async function callGroq(prompt, apiKey) {
     messages: [
       {
         role: 'system',
-        content: 'You are an advanced geopolitical and economic analyst writing analytical commentary for X (Twitter).'
+        content: 'You write short X posts in very simple English that any school student can understand. Use short sentences and everyday words. Never use difficult words.'
       },
       { role: 'user', content: prompt }
     ],
     response_format: { type: 'json_object' },
-    temperature: 0.6
+    temperature: 0.4
   });
 
   const rawJson = completion.choices[0]?.message?.content;
@@ -1592,11 +1483,11 @@ async function callXai(prompt, model = 'grok-beta') {
       messages: [
         {
           role: 'system',
-          content: 'You are an advanced geopolitical and economic analyst writing analytical commentary for X (Twitter).'
+          content: 'You write short X posts in very simple English that any school student can understand. Use short sentences and everyday words. Never use difficult words.'
         },
         { role: 'user', content: prompt }
       ],
-      temperature: 0.6
+      temperature: 0.4
     })
   });
 
@@ -1613,7 +1504,7 @@ async function callXai(prompt, model = 'grok-beta') {
 
 async function callGemini(prompt, apiKey) {
   const models = [
-    process.env.GEMINI_MODEL || 'gemini-3.8-flash',
+    process.env.GEMINI_MODEL || 'gemini-2.5-flash',
     'gemini-flash-latest'
   ];
 
@@ -1624,7 +1515,7 @@ async function callGemini(prompt, apiKey) {
         const postData = JSON.stringify({
           contents: [{ parts: [{ text: prompt }] }],
           generationConfig: {
-            temperature: 0.6,
+            temperature: 0.4,
             responseMimeType: 'application/json'
           }
         });
@@ -1634,7 +1525,7 @@ async function callGemini(prompt, apiKey) {
           {
             method: 'POST',
             family: 4,
-            timeout: 3000,
+            timeout: 15000,
             headers: {
               'Content-Type': 'application/json',
               'Content-Length': Buffer.byteLength(postData)
@@ -1664,7 +1555,7 @@ async function callGemini(prompt, apiKey) {
 
         req.on('timeout', () => {
           req.destroy();
-          reject(new Error(`Gemini ${model} request timed out (3.0s)`));
+          reject(new Error(`Gemini ${model} request timed out (15.0s)`));
         });
 
         req.on('error', reject);

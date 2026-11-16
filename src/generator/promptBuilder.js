@@ -3,6 +3,8 @@
  * Generates tailored system and user prompts adhering to X_BOT multilingual specifications.
  */
 
+import { SIMPLE_ENGLISH_RULES } from '../utils/simpleEnglish.js';
+
 /**
  * Builds the primary multilingual post generation prompt.
  *
@@ -24,21 +26,23 @@ export function buildGenerationPrompt({
   const count = Number(numberOfPosts) || 1;
   const postWord = count === 1 ? '1 DISTINCT post idea' : `${count} DISTINCT post ideas`;
 
-  let prompt = `You are an expert multilingual social media content strategist, multilingual writer, and content editor.
+  let prompt = `${SIMPLE_ENGLISH_RULES}
 
-Your task is to convert the provided topic into engaging, informative, and natural posts suitable for X (formerly Twitter).
+You are an expert multilingual social media content writer and editor for X (formerly Twitter).
+
+Your task is to convert the provided topic into engaging, informative, and natural posts written in the simplest everyday English.
 
 Generate exactly ${postWord}. Each idea must communicate a distinct angle or point rather than repeating the same content with slightly different words.
 
 For EVERY post idea, generate exactly three language versions communicating the same core message:
 
 LANGUAGE 1 — ENGLISH
-- Prioritize natural storytelling, simple A2 English, readability, and logical flow.
-- Use simple, everyday, direct human words (never use complex vocabulary or academic jargon).
-- Prefer short, powerful sentences that connect naturally (max 10-15 words per sentence).
-- Present one central idea and develop it clearly so anyone understands on the first read.
-- Avoid forced technical terms (e.g. avoid "3-nanometer silicon", "mathematically obsolete", "semiconductor shield").
-- Readability > Natural Flow > Clear Meaning > Strong Insight > Vocabulary Complexity.
+- Prioritize natural storytelling, simplest everyday English, readability, and logical flow.
+- Every sentence must be strictly 6 to 14 words long, with one clear idea per sentence.
+- Use simple, everyday, direct words (never use complex vocabulary, academic jargon, or difficult words).
+- Present one central idea and develop it clearly so a 12-year-old or village shopkeeper understands on the first read.
+- Include only 1 or 2 well-known, verified numbers per post.
+- Readability > Natural Flow > Clear Meaning > Simple Words.
 
 LANGUAGE 2 — ROMAN URDU
 - Write Urdu using English alphabets.
@@ -55,16 +59,16 @@ LANGUAGE 3 — PLAIN URDU
 
 CONTENT RULES:
 1. All three versions of an idea must communicate the same central idea.
-2. Make each opening interesting and captivating.
-3. Keep sentences short and readable.
+2. Make each opening interesting and clear.
+3. Keep sentences short and readable (strictly 6 to 14 words per sentence).
 4. Avoid robotic or repetitive expressions.
 5. Avoid generic AI-style introductions (e.g. "In this fast-paced world...", "Buckle up...", "Dive in...").
-6. Do not invent facts, statistics, sources, or quotations.
+6. Do not invent facts, statistics, sources, or quotations. Use only well-known, verified numbers.
 7. Never present speculation as established fact.
 8. Do not force a political or controversial angle.
-9. Avoid unnecessary emojis (use sparingly or none).
-10. Include 2–4 relevant hashtags for each version.
-11. Keep the writing concise and suitable for X (within 280 characters).
+9. ZERO emojis. Do not use any emojis.
+10. ZERO hashtags. Do not use any hashtags. Always output "Hashtags: NONE".
+11. STRICT LENGTH REQUIREMENT: 380 to 480 characters, never above 500.
 12. Preserve the original topic and intention.
 
 INPUT DETAILS:
@@ -85,16 +89,16 @@ Return the results in the following strict, clearly separated structure without 
 POST ${padded}
 
 ENGLISH:
-Post text: [Insert English post text here]
-Hashtags: [Insert 2-4 hashtags here, e.g. #AI #Future]
+Post text: [Insert English post text here: 380-480 characters, sentences of 6-14 words, everyday words]
+Hashtags: NONE
 
 ROMAN URDU:
-Post text: [Insert Roman Urdu post text here]
-Hashtags: [Insert 2-4 hashtags here]
+Post text: [Insert Roman Urdu post text here: 380-480 characters]
+Hashtags: NONE
 
 PLAIN URDU:
-Post text: [Insert Plain Urdu script post text here]
-Hashtags: [Insert 2-4 hashtags here]
+Post text: [Insert Plain Urdu script post text here: 380-480 characters]
+Hashtags: NONE
 `;
   }
 
@@ -127,7 +131,9 @@ export function buildSingleLanguageRegenPrompt({
 }) {
   const padded = String(postNumber).padStart(2, '0');
 
-  let prompt = `You are an expert multilingual social media content strategist for X (Twitter).
+  let prompt = `${SIMPLE_ENGLISH_RULES}
+
+You are an expert multilingual social media content strategist for X (Twitter).
 
 We have an existing post idea derived from this topic:
 "${originalTopic}"
@@ -153,17 +159,18 @@ ${
     ? `- Write Urdu using English alphabets in natural Pakistani conversational phrasing.\n- Do not translate word-by-word.\n- Keep vocabulary easy, engaging, and readable.`
     : language.toLowerCase().includes('plain') || language.toLowerCase().includes('urdu')
     ? `- Write proper Urdu script (اردو).\n- Use grammatically correct, natural Pakistani Urdu.\n- Maintain high readability and avoid unnecessary English words.`
-    : `- Use simple, natural English.\n- Strong hook, short sentences, human voice, no AI clichés.`
+    : `- Use the simplest possible everyday English.\n- Sentences strictly 6 to 14 words, everyday vocabulary, no difficult words.\n- 1 or 2 numbers only.`
 }
-- Include 2–4 relevant hashtags.
-- Keep within 280 characters.
+- ZERO hashtags. Always output "Hashtags: NONE".
+- ZERO emojis.
+- STRICT LENGTH REQUIREMENT: 380 to 480 characters, never above 500.
 
 OUTPUT FORMAT:
 Return strictly the following format:
 
 ${language.toUpperCase()}:
-Post text: [New regenerated post text]
-Hashtags: [2-4 hashtags]
+Post text: [New regenerated post text: 380-480 characters]
+Hashtags: NONE
 `;
 
   return prompt;
@@ -191,7 +198,9 @@ export function buildAllLanguagesRegenPrompt({
 }) {
   const padded = String(postNumber).padStart(2, '0');
 
-  let prompt = `You are an expert multilingual social media content strategist for X (Twitter).
+  let prompt = `${SIMPLE_ENGLISH_RULES}
+
+You are an expert multilingual social media content strategist for X (Twitter).
 
 Regenerate all three language versions for POST ${padded} based on the topic:
 "${originalTopic}"
@@ -201,28 +210,29 @@ Audience: ${audience}
 ${feedback.trim() ? `USER FEEDBACK / IMPROVEMENT REQUEST:\n"${feedback.trim()}"\n` : ''}
 
 Generate fresh versions in:
-1. ENGLISH (Simple, natural, engaging hook)
+1. ENGLISH (Simplest everyday English, sentences 6 to 14 words, 1 or 2 numbers only)
 2. ROMAN URDU (Conversational Pakistani Urdu in English alphabets)
 3. PLAIN URDU (Proper Urdu script, natural Pakistani phrasing)
 
 All three versions must communicate the same central idea.
-Include 2-4 hashtags for each.
-Keep under 280 characters per post.
+ZERO hashtags. Always output "Hashtags: NONE".
+ZERO emojis.
+STRICT LENGTH REQUIREMENT: 380 to 480 characters, never above 500.
 
 OUTPUT FORMAT:
 POST ${padded}
 
 ENGLISH:
-Post text: [New English post]
-Hashtags: [2-4 hashtags]
+Post text: [New English post: 380-480 characters]
+Hashtags: NONE
 
 ROMAN URDU:
-Post text: [New Roman Urdu post]
-Hashtags: [2-4 hashtags]
+Post text: [New Roman Urdu post: 380-480 characters]
+Hashtags: NONE
 
 PLAIN URDU:
-Post text: [New Plain Urdu post]
-Hashtags: [2-4 hashtags]
+Post text: [New Plain Urdu post: 380-480 characters]
+Hashtags: NONE
 `;
 
   return prompt;

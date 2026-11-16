@@ -32,6 +32,10 @@ function extractHashtagsAndBody(text = '', explicitHashtagsLine = '') {
   if (hashtags) {
     // If body still ends with hashtags line, remove it
     body = body.replace(/Hashtags:\s*.*$/is, '').trim();
+    // If explicit hashtags indicate none
+    if (/^(none|no hashtags|n\/a|nil)$/i.test(hashtags)) {
+      hashtags = '';
+    }
   } else {
     // Check if the body ends with hashtags (#tag1 #tag2)
     const hashtagMatch = body.match(/((?:#[\p{L}\p{N}_]+\s*)+)$/u);
