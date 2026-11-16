@@ -182,6 +182,80 @@ export const DEFAULT_GENRES = [
           'Border radars vs farmer crises',
           'Military pensions vs rural healthcare'
         ]
+      },
+      {
+        code: 'N',
+        title: 'Economy and Finance',
+        subtopics: [
+          'GDP growth and purchasing power',
+          'Inflation and currency dynamics',
+          'Public debt and taxation reform',
+          'Foreign direct investment flows',
+          'Export diversification and industrial policy',
+          'Remittance stability and foreign reserves',
+          'Poverty and income distribution'
+        ]
+      },
+      {
+        code: 'O',
+        title: 'Science and Technology',
+        subtopics: [
+          'Software exports and IT services',
+          'IT freelancing and global gig economy',
+          'Artificial intelligence adoption and research',
+          'Semiconductor manufacturing ambitions',
+          'Space exploration and satellite capabilities',
+          'Biotechnology and agricultural science',
+          'Startup ecosystem and venture funding',
+          'Digital public infrastructure and fintech'
+        ]
+      },
+      {
+        code: 'P',
+        title: 'Education and Human Development',
+        subtopics: [
+          'STEM graduate output and female literacy',
+          'University research and global rankings',
+          'Technical education and vocational training',
+          'Healthcare infrastructure and life expectancy',
+          'Child malnutrition and human capital index',
+          'Brain drain and skilled talent mobility'
+        ]
+      },
+      {
+        code: 'Q',
+        title: 'Infrastructure and Natural Resources',
+        subtopics: [
+          'Renewable energy and solar transition',
+          'Water management and Indus Basin hydrology',
+          'Reko Diq copper-gold and Thar coal mining',
+          'Highway corridors and regional connectivity',
+          'Port infrastructure: Gwadar vs Chabahar vs Nhava Sheva',
+          'High-speed rail and urban mass transit'
+        ]
+      },
+      {
+        code: 'R',
+        title: 'Pakistan Achievements and Untapped Potential',
+        subtopics: [
+          'Global freelance software ranking and IT talent',
+          'Sialkot surgical instruments and FIFA football manufacturing',
+          'Strategic transit geography connecting Central to South Asia',
+          'Young demographic dividend and entrepreneurial resilience',
+          'Diaspora remittances and global economic footprint',
+          'Local defense hardware engineering and JF-17 export success'
+        ]
+      },
+      {
+        code: 'S',
+        title: 'General South Asian Realities',
+        subtopics: [
+          'Shared climate vulnerability and glacial melting',
+          'Transboundary smog and winter air quality crises',
+          'Intra-regional trade potential vs political barriers',
+          'Cross-border water security under Indus Waters Treaty',
+          'Youth unemployment and digital skill transition'
+        ]
       }
     ],
     subtopics: [
@@ -267,7 +341,45 @@ export const DEFAULT_GENRES = [
       'Nuclear deterrence vs poverty',
       'Fighter jets vs public hospitals',
       'Submarines vs clean drinking water',
-      'Missiles vs child malnutrition'
+      'Missiles vs child malnutrition',
+      'GDP growth and purchasing power',
+      'Inflation and currency dynamics',
+      'Public debt and taxation reform',
+      'Foreign direct investment flows',
+      'Export diversification and industrial policy',
+      'Remittance stability and foreign reserves',
+      'Poverty and income distribution',
+      'Software exports and IT services',
+      'IT freelancing and global gig economy',
+      'Artificial intelligence adoption and research',
+      'Semiconductor manufacturing ambitions',
+      'Space exploration and satellite capabilities',
+      'Biotechnology and agricultural science',
+      'Startup ecosystem and venture funding',
+      'Digital public infrastructure and fintech',
+      'STEM graduate output and female literacy',
+      'University research and global rankings',
+      'Technical education and vocational training',
+      'Healthcare infrastructure and life expectancy',
+      'Child malnutrition and human capital index',
+      'Brain drain and skilled talent mobility',
+      'Renewable energy and solar transition',
+      'Water management and Indus Basin hydrology',
+      'Reko Diq copper-gold and Thar coal mining',
+      'Highway corridors and regional connectivity',
+      'Port infrastructure: Gwadar vs Chabahar vs Nhava Sheva',
+      'High-speed rail and urban mass transit',
+      'Global freelance software ranking and IT talent',
+      'Sialkot surgical instruments and FIFA football manufacturing',
+      'Strategic transit geography connecting Central to South Asia',
+      'Young demographic dividend and entrepreneurial resilience',
+      'Diaspora remittances and global economic footprint',
+      'Local defense hardware engineering and JF-17 export success',
+      'Shared climate vulnerability and glacial melting',
+      'Transboundary smog and winter air quality crises',
+      'Intra-regional trade potential vs political barriers',
+      'Cross-border water security under Indus Waters Treaty',
+      'Youth unemployment and digital skill transition'
     ],
     keywords: [
       'India vs Pakistan',

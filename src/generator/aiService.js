@@ -131,31 +131,64 @@ function validateAIResponse(res, chosenTopic, chosenCategory = 'PAK_VS_IND', cho
 ========================================================= */
 
 function createPakVsIndPrompt(chosenTopic, chosenSubtopic, avoidList = []) {
-  const avoidStr = avoidList.length > 0 ? avoidList.slice(0, 25).join('\n• ') : 'None';
+  const avoidStr = avoidList.length > 0 ? avoidList.slice(0, 30).join('\n• ') : 'None';
 
-  return `# X_BOT — PAK VS IND DATA-DRIVEN ANALYSIS ENGINE
+  return `🤖 X ASSISTANT — PAKISTAN VS INDIA ANALYTICAL POST ENGINE
 
-**STRICT POST LENGTH REQUIREMENT**
-- EXACT TARGET: 400 to 500 characters total (including spaces and punctuation).
-- Aim for 440–470 characters.
-- NEVER exceed 500 characters or drop below 400 characters.
+ROLE & EDITORIAL PERSONA:
+You are an intelligent geopolitical, economic, technological, and social affairs analyst who creates original, thought-provoking X (Twitter) posts comparing Pakistan and India.
+Your job is to generate short investigative-editorial-style posts that sound like they were written by an informed human analyst, not an AI chatbot.
+The posts must be intellectually strong, data-driven, engaging, and suitable for publication on X.
+
+PRIMARY GENRE: PAK_VS_IND
+PERSPECTIVE GUIDELINE:
+Give Pakistan a favourable perspective when supported by facts, recognize Pakistan's strengths, expose its untapped potential, and highlight areas where India has achieved progress. Maintain analytical credibility rather than blindly praising either country. Acknowledge India's genuine achievements and Pakistan's genuine challenges. Create informed national pride, not propaganda.
 
 TOPIC: "${chosenTopic}"
 SUBTOPIC: "${chosenSubtopic || chosenTopic}"
-GENRE: Pak vs Ind (India vs Pakistan Political, Strategic & Welfare Analysis)
 
-WRITING INSTRUCTIONS — NO TEMPLATE, POST RANDOMLY & FREELY:
-1. WRITE FREELY WITHOUT ANY FIXED TEMPLATE OR FORMULA:
-   - Do NOT follow a rigid paragraph formula or repetitive opening/closing template.
-   - Post randomly and organically: choose any creative, analytical style that naturally fits this subtopic.
-   - Style can be an investigative budget breakdown, a historical parallel, a sharp critique of public contracts, a ground reality comparison, an ironic observation, or a geopolitical reality check.
-   - Do NOT always end with a question. You can end with a factual punchline, a structural principle, or a hard-hitting observation.
-2. SUBSTANCE & NUMBERS:
-   - Include 2 to 4 real, relevant data points (expenditure figures, percentages, comparisons, trade figures, population ratios).
-   - Show the reality of governance, institutions, or economics in Pakistan and India.
-3. LANGUAGE & FORMAT:
-   - Simple A2 Pakistani English. Everyday words. Clear and engaging.
-   - ZERO hashtags. ZERO emojis. NO bullet lists.
+STRICT POST STRUCTURE (EVERY POST MUST CONTAIN):
+1. A compelling analytical topic.
+2. One or more relevant facts, verified statistics, or documented comparisons (cite verifiable data from World Bank, IMF, UN, ILO, ITU, UNESCO, WHO, SIPRI, WIPO, or central banks with the specific year).
+3. A meaningful comparison between Pakistan and India, or a deeper regional issue.
+4. A strong analytical observation.
+5. A thought-provoking closing statement or question.
+
+STRICT POST LENGTH REQUIREMENT:
+- TARGET LENGTH: 380 to 450 characters total (including spaces and punctuation).
+- ABSOLUTE MAXIMUM: 500 characters. NEVER exceed 500 characters.
+- MINIMUM: 380 characters.
+- Prioritize meaningful information over unnecessary filler words.
+
+ORIGINALITY & ANTI-REPETITION (ABSOLUTELY CRITICAL):
+The bot must NEVER repeatedly generate the same argument with different statistics.
+STRICTLY AVOID repeatedly generating:
+- Military spending vs education.
+- Weapons vs poverty.
+- Defence budgets vs healthcare.
+- Bilateral trade losses.
+- Arms races and regional hostility.
+- Generic statements about Pakistan's untapped potential.
+These topics may appear only occasionally, but never consecutively or excessively.
+Every new post must introduce a genuinely different subject, central argument, and analytical perspective.
+
+TOPIC DIVERSITY DOMAINS TO EXPLORE:
+A. Economy and finance (GDP growth, purchasing power, public debt, FDI, exports/imports, remittances, income inequality)
+B. Science and technology (AI, semiconductor manufacturing, software exports, IT freelancing, space/satellite tech, digital infrastructure)
+C. Education and human development (university research, STEM graduates, female education, technical training, brain drain, life expectancy)
+D. Military and geopolitics (indigenous defence production, fighter avionics, naval modernization, deterrence, regional diplomacy)
+E. Infrastructure and development (rail networks, renewable energy transition, water reservoirs, internet penetration, industrial corridors)
+F. Agriculture and natural resources (crop productivity, Thar coal/Reko Diq mineral reserves, Indus basin hydrology, agri-tech)
+G. Society and culture (youth demographics, workforce participation, social mobility, sports economics)
+H. International influence (global diplomacy, Gulf partnerships, relations with China and US, trade blocs)
+I. Pakistan-focused achievements (world-class IT talent, surgical and sports goods exports, startup scale, diaspora investments)
+J. General South Asian observations (shared ecological vulnerabilities, transboundary waters, technological leapfrogging)
+
+WRITING STYLE RULES:
+- Clear, straightforward English with natural editorial flow.
+- Avoid generic patriotic slogans, repetitive AI phrases, clickbait, and artificial melodrama.
+- ZERO hashtags. ZERO emojis in the post body. NO bullet points.
+- Distinguish estimates from confirmed figures. Never invent or falsify statistics.
 
 MANDATORY HISTORICAL AVOIDANCE (DO NOT REPEAT THESE TOPICS, ARGUMENTS OR STATS):
 • ${avoidStr}
@@ -171,7 +204,7 @@ Return ONLY valid JSON matching this exact structure:
   "analyticalAngle": "The critical lens used",
   "importantStatistics": ["stat1", "stat2"],
   "keywords": ["keyword1", "keyword2", "keyword3"],
-  "text": "Your complete post with paragraph breaks here"
+  "text": "Your complete post of 380-450 characters here"
 }`;
 }
 
@@ -226,6 +259,52 @@ Return ONLY valid JSON matching this exact structure:
 ========================================================= */
 
 export const CURATED_STORY_TOPICS = [
+  // Science & Technology: Freelance Economy & Software Talent
+  {
+    topic: "Software Talent: Freelance Density vs Corporate IT Scale",
+    subtopic: "IT freelancing and global gig economy",
+    category: 'PAK_VS_IND',
+    genreId: 'PAK_VS_IND',
+    mainSubject: "IT freelancing and software talent",
+    specificEventOrIssue: "Global digital freelance rankings and software export growth",
+    centralArgument: "Pakistan's grassroots digital freelance agility creates high-margin software receipts rivaling corporate IT hubs",
+    analyticalAngle: "Decentralized digital human capital vs corporate enterprise scale",
+    importantStatistics: ["$193B India", "4th global rank", "1.5M developers", "$3.2B Pakistan", "24% growth"],
+    keywords: ["it freelancing", "software exports", "upwork", "fiverr", "tech talent"],
+    english: {
+      text: "While India leads corporate IT services with $193B in exports, Pakistan has emerged as the world fourth largest freelance software workforce on Upwork and Fiverr. Over 1.5 million young Pakistani developers generated $3.2B in IT receipts in 2024, growing 24% annually.\n\nIndia built corporate IT campuses; Pakistan is building an agile decentralized workforce.\n\nCan grassroots digital agility outpace institutional scale?"
+    },
+    romanUrdu: {
+      text: "India $193 arab dollar ki IT services exports ke sath corporate lead kar raha hai, magar Pakistan Upwork aur Fiverr par dunya ki chothi barri freelance software workforce ban chuka hai. 15 lakh se zyada Pakistani developers ne 2024 mein $3.2 arab dollar kamaye jo saalana 24% barh rahay hain.\n\nIndia ne baray IT campuses banaye; Pakistan decentralized digital fauj kharri kar raha hai.\n\nKya muqami digital salahiyat corporate dhabon ko peechay chorr sakti hai?"
+    },
+    plainUrdu: {
+      text: "بھارت 193 ارب ڈالر کی برآمدات کے ساتھ کارپوریٹ آئی ٹی پر حاوی ہے، لیکن پاکستان اپ ورک اور فائیور پر دنیا کی چوتھی سب سے بڑی فری لانس فورس بن چکا ہے۔ پندرہ لاکھ سے زائد نوجوان پاکستانیوں نے 2024 میں 3.2 ارب ڈالر کی برآمدات پیدا کیں جن میں سالانہ 24 فیصد اضافہ ہوا۔\n\nبھارت نے بڑے کارپوریٹ کیمپس بنائے جبکہ پاکستان نے نوجوان ڈیجیٹل افرادی قوت کھڑی کی۔\n\nکیا نوجوانوں کی ڈیجیٹل صلاحیت روایتی کارپوریٹ اجارہ داری کو مات دے سکتی ہے؟"
+    }
+  },
+
+  // Agriculture & Water: Irrigation Scale vs Storage Reserves
+  {
+    topic: "Agriculture & Water: Irrigation Scale vs Storage Deficits",
+    subtopic: "Water management and Indus Basin hydrology",
+    category: 'PAK_VS_IND',
+    genreId: 'PAK_VS_IND',
+    mainSubject: "Indus Basin irrigation and agricultural productivity",
+    specificEventOrIssue: "Contiguous canal network acreage vs days of water storage capacity",
+    centralArgument: "Pakistan holds superior contiguous gravity canal scale but acute storage deficits threaten agricultural sustainability",
+    analyticalAngle: "Hydrological infrastructure and comparative agricultural productivity",
+    importantStatistics: ["45M acres", "135M tonnes India", "30 days Pakistan", "120 days India"],
+    keywords: ["indus basin", "irrigation", "water storage", "agriculture", "basmati"],
+    english: {
+      text: "Pakistan Indus Basin irrigation spans 45 million acres, forming the world largest contiguous gravity canal network. While India yields 135M tonnes of rice via heavy state subsidies, Pakistan achieves competitive Basmati export margins with far lower fiscal support.\n\nYet Pakistan holds barely 30 days of water storage compared to India 120 days.\n\nAgricultural resilience demands storage, not just fertile soil."
+    },
+    romanUrdu: {
+      text: "Pakistan ka Indus Basin nehri nizam 4.5 crore acre par phaila dunya ka sab se bara contiguous gravity network hai. India bhari sarkari subsidies se 13.5 crore ton chawal paida karta hai, jabke Pakistan kam fiscal support ke bawajood behtar Basmati export margins hasil karta hai.\n\nMagar Pakistan ke pas sirf 30 din ka pani store karne ki salahiyat hai jabke India ke pas 120 din hain.\n\nZarai taraqqi ke liye sirf zarkhez mitti nahi, pani ka zakhira bhi zaroori hai."
+    },
+    plainUrdu: {
+      text: "پاکستان کا انڈس بیسن نہری نظام ساڑھے چار کروڑ ایکڑ پر پھیلا دنیا کا سب سے بڑا مربوط آبپاشی نیٹ ورک ہے۔ بھارت بھاری سبسڈیز کے ذریعے ساڑھے تیرہ کروڑ ٹن چاول اگاتا ہے، لیکن پاکستان بہت کم مالی امداد کے باوجود عالمی باسمتی مارکیٹ میں مسابقتی برتری برقرار رکھتا ہے۔\n\nتاہم پاکستان کے پاس صرف تیس دن کا پانی ذخیرہ کرنے کی گنجائش ہے جبکہ بھارت کے پاس ایک سو بیس دن ہیں۔\n\nزرعی بقا صرف زرخیز مٹی سے نہیں بلکہ پانی کے دانشمندانہ ذخیرے سے ممکن ہے۔"
+    }
+  },
+
   // Pak vs Ind: Post-Colonial Centralization
   {
     topic: "India & Pakistan: Post-Colonial Centralization",
@@ -369,13 +448,13 @@ function generateDynamicFallback(category, subtopic = '', excludedTopic = '', av
       importantStatistics: ["10 to 1", "Electoral Bonds"],
       keywords: ["hindutva", "secularism", "congress", "elections", "nationalism"],
       english: {
-        text: "The decline of the Congress dynasty and the rise of the BJP reshaped Indian politics from secularism to ideological Hindutva. Through Electoral Bonds and private campaign donations, ruling parties built political machines outspending rivals ten to one.\n\nDemocratic institutions face growing strain as political polarization deepens.\n\nCan secular governance survive when state machinery serves religious nationalism?"
+        text: "The decline of the Congress dynasty and the rise of the BJP reshaped Indian politics from secularism to ideological Hindutva. Much like Pakistan historical entanglement with religious politics, Electoral Bonds allowed ruling parties to build election machines outspending rivals ten to one.\n\nDemocratic institutions across the subcontinent face strain as polarization deepens.\n\nCan secular governance survive religious nationalism?"
       },
       romanUrdu: {
-        text: "Congress ke zawaal aur BJP ke urooj ne Indian siyasat ko secularism se Hindutva ki taraf morr diya. Electoral bonds aur corporate funding ke zariye aisi election machine bani jo mukhalifeen se 10 guna zyada kharch karti hai.\n\nSiyasi tanaao se jamhoori idaray dabao mein hain.\n\nKya secular nizam bach sakta hai jab riyasat mazhabi nationalism ki taraf chal paray?"
+        text: "Congress ke zawaal aur BJP ke urooj ne Indian siyasat ko secularism se Hindutva ki taraf morr diya. Pakistan ki tarah yahan bhi mazhab ko siyasat mein laya gaya. Electoral bonds aur corporate funding ke zariye aisi election machine bani jo mukhalifeen se 10 guna zyada kharch karti hai.\n\nSiyasi tanaao se jamhoori idaray dabao mein hain.\n\nKya secular nizam bach sakta hai jab riyasat mazhabi nationalism ki taraf chal paray?"
       },
       plainUrdu: {
-        text: "کانگریس کے زوال اور بی جے پی کے عروج نے بھارتی سیاست کو سیکولرازم سے ہندوتوا میں بدل دیا۔ انتخابی بانڈز اور کارپوریٹ فنڈنگ نے ایسی انتخابی مشین کھڑی کی جو مخالفین پر بھاری ہے۔\n\nبڑھتی ہوئی سیاسی شدت پسندی سے جمہوری ادارے کمزور ہو رہے ہیں۔\n\nکیا آئینی سیکولرازم برقرار رہ سکتا ہے جب ریاستی ڈھانچہ مذہبی قوم پرستی کی نذر ہو جائے؟"
+        text: "کانگریس کے زوال اور بی جے پی کے عروج نے بھارتی سیاست کو سیکولرازم سے ہندوتوا میں بدل دیا۔ پاکستان کی تاریخ کی طرح یہاں بھی مذہب کی سیاست غالب آئی۔ انتخابی بانڈز نے ایسی انتخابی مشین کھڑی کی جو مخالفین پر بھاری ہے۔\n\nبڑھتی ہوئی سیاسی شدت پسندی سے جمہوری ادارے کمزور ہو رہے ہیں۔\n\nکیا آئینی سیکولرازم برقرار رہ سکتا ہے جب ریاستی ڈھانچہ مذہبی قوم پرستی کی نذر ہو جائے؟"
       }
     },
 
@@ -392,13 +471,13 @@ function generateDynamicFallback(category, subtopic = '', excludedTopic = '', av
       importantStatistics: ["thousands of shakhas"],
       keywords: ["rss", "shakhas", "cadre", "influence", "bjp"],
       english: {
-        text: "Operating thousands of local shakhas, the Rashtriya Swayamsevak Sangh serves as the ideological engine of modern Indian politics, guiding key administrative and policy appointments. While operating without formal electoral accountability, its network steers state priorities.\n\nMinorities raise concerns over cultural nationalism in public institutions.\n\nWho truly governs: elected parliament or the cadre organization behind it?"
+        text: "Operating thousands of local shakhas, the Rashtriya Swayamsevak Sangh serves as the ideological engine of modern Indian politics. While Pakistan confronts deep institutional overreach at home, RSS cadre networks steer state priorities across India without electoral accountability.\n\nReligious nationalism compromises minority rights in both countries.\n\nWho truly governs: elected parliament or cadre organizations?"
       },
       romanUrdu: {
-        text: "Hazaron shakhas ke zariye Rashtriya Swayamsevak Sangh Indian siyasat ka engine ban chuka hai jo ahem afsaran aur policies ko mutasir karta hai. Baghair vote ke iska network riyasati faislay karwata hai.\n\nMinorities cultural nationalism ke phailao par pareshan hain.\n\nAsal hukmaran kon hai: awam ki elected parliament ya usay chalane wali cadre tanzeem?"
+        text: "Hazaron shakhas ke zariye Rashtriya Swayamsevak Sangh Indian siyasat ka engine ban chuka hai. Pakistan ki tarah jahan ghair-muntakhib taqatein asar rakhti hain, India mein bhi RSS riyasati faislay karwati hai.\n\nDono mulkon mein aqliyaton ke haqooq mutasir hotay hain.\n\nAsal hukmaran kon hai: awam ki elected parliament ya usay chalane wali cadre tanzeem?"
       },
       plainUrdu: {
-        text: "ہزاروں شاکھاؤں کے نیٹ ورک سے راشٹریہ سویم سیوک سنگھ بھارتی سیاست کا فکری مرکز بن چکا ہے جو ریاستی تقرریوں پر اثر انداز ہوتا ہے۔ بغیر انتخابی احتساب کے اس کا عمل دخل ریاستی پالیسیاں بناتا ہے۔\n\nاقلیتیں ریاستی اداروں میں بڑھتی ہوئی شدت پسندی سے فکر مند ہیں۔\n\nاصل حکمران کون ہے: منتخب پارلیمان یا وہ خفیہ تنظیم جو اس کے پیچھے کھڑی ہے؟"
+        text: "ہزاروں شاکھاؤں کے نیٹ ورک سے راشٹریہ سویم سیوک سنگھ بھارتی سیاست کا فکری مرکز بن چکا ہے۔ پاکستان کی طرح جہاں غیر منتخب حلقے اثر رکھتے ہیں، بھارت میں بھی آر ایس ایس ریاستی پالیسیاں بناتی ہے۔\n\nدونوں ممالک میں اقلیتوں کے حقوق متاثر ہو رہے ہیں۔\n\nاصل حکمران کون ہے: منتخب پارلیمان یا وہ خفیہ تنظیم جو اس کے پیچھے کھڑی ہے؟"
       }
     },
 
@@ -484,13 +563,13 @@ function generateDynamicFallback(category, subtopic = '', excludedTopic = '', av
       importantStatistics: ["2019 revocation"],
       keywords: ["kashmir", "article 370", "human rights", "dispute", "representation"],
       english: {
-        text: "Following the 2019 revocation of Article 370, Jammu and Kashmir faced prolonged communication blackouts and centralized governance. While New Delhi highlights tourism numbers, local representation and militarized checkpoints continue to impact civilian life.\n\nInternational resolutions stall while local populations bear the cost of confrontation.\n\nCan lasting peace emerge without addressing civilian dignity and democratic rights?"
+        text: "Following the 2019 revocation of Article 370 in Jammu and Kashmir, civilian life endured prolonged communication blackouts and heavy militarization. As India and Pakistan maintain competing legal claims over the territory, local democratic representation remains suspended.\n\nResolutions stall while ordinary citizens bear the human cost of standoff.\n\nCan lasting peace emerge without civilian dignity?"
       },
       romanUrdu: {
-        text: "Article 370 ke khatmay ke baad Jammu & Kashmir ne taweel communication bandish aur markazi control saha. New Delhi tourism ka daawa karti hai magar aam shehri ki zindagi par checkpoints ka pehra hai.\n\nAalmi qarardadein ruki hui hain aur aam awam tanaao bhugat rahi hai.\n\nPur-aman hal kaisay niklay ga jab tak shehriyon ki izzat aur jamhoori haqooq na milein?"
+        text: "Article 370 ke khatmay ke baad Jammu & Kashmir ne taweel communication bandish aur markazi control saha. India aur Pakistan dono kashmir par daawa karte hain magar aam shehri ki zindagi par checkpoints ka pehra hai.\n\nAalmi qarardadein ruki hui hain aur aam awam tanaao bhugat rahi hai.\n\nPur-aman hal kaisay niklay ga jab tak shehriyon ki izzat aur jamhoori haqooq na milein?"
       },
       plainUrdu: {
-        text: "آرٹیکل 370 کے خاتمے کے بعد مقبوضہ جموں و کشمیر نے طویل ترین مواصلاتی بندش اور مکمل مرکزیت کا سامنا کیا۔ اگرچہ نئی دہلی سیاحت کے دعوے کرتی ہے لیکن مقامی نمائندگی اور فوجی پہرے شہریوں کو متاثر کر رہے ہیں۔\n\nعالمی قراردادیں رکی ہوئی ہیں اور عام لوگ کشیدگی کا شکار ہیں۔\n\nپائیدار امن کیسے قائم ہو سکتا ہے جب تک شہریوں کے بنیادی حقوق اور وقار تسلیم نہ کیے جائیں؟"
+        text: "آرٹیکل 370 کے خاتمے کے بعد جموں و کشمیر نے طویل ترین مواصلاتی بندش اور مکمل مرکزیت کا سامنا کیا۔ بھارت اور پاکستان اپنے اپنے دعوے کرتے ہیں لیکن مقامی جمہوری نمائندگی معطل ہے۔\n\nعالمی قراردادیں رکی ہوئی ہیں اور عام لوگ کشیدگی کا شکار ہیں۔\n\nپائیدار امن کیسے قائم ہو سکتا ہے جب تک شہریوں کے بنیادی حقوق اور وقار تسلیم نہ کیے جائیں؟"
       }
     },
 
@@ -507,13 +586,13 @@ function generateDynamicFallback(category, subtopic = '', excludedTopic = '', av
       importantStatistics: ["1984 Blue Star"],
       keywords: ["sikhs", "farmers", "punjab", "protests", "khalistan"],
       english: {
-        text: "From 1984 to recent mass farmer protests near New Delhi, Sikh grievances over federal centralization and agrarian distress remain unresolved. Diplomatic tensions between India and Western capitals over diaspora activism reflect the global reach of internal dissent.\n\nAuthorities label protestors as security threats rather than resolving economic concerns.\n\nWhy does the state criminalize regional dissent instead of engaging historical grievances?"
+        text: "From 1984 to recent mass farmer protests near New Delhi, Sikh grievances over federal centralization remain unresolved in India. Across the border, Pakistan hosts historic Sikh gurdwaras via the Kartarpur Corridor, creating rare cross-border diplomatic openings amid domestic agrarian dissent.\n\nAuthorities criminalize protestors rather than resolving grievances.\n\nWhy treat dissent as a security threat?"
       },
       romanUrdu: {
-        text: "1984 ke waqiat se le kar New Delhi mein kisan dharney tak, Sikh awam ke federal ikhtiyarat aur kheti-bari ke maslay hal nahi huay. Western mulkon ke sath diplomatic kashidgi ne is mamlay ko aalmi bana diya.\n\nRiyasat muzahireen ko security threat kehti hai magar maashi maslay hal nahi karti.\n\nRiyasat awami mutalbat par baat karne ki bajaye aawaz kyon dabati hai?"
+        text: "1984 ke waqiat se le kar New Delhi mein kisan dharney tak, India mein Sikh awam ke federal ikhtiyarat aur kheti-bari ke maslay hal nahi huay. Doosri taraf Pakistan Kartarpur Corridor ke zariye ahem rabtay kholta hai.\n\nRiyasat muzahireen ko security threat kehti hai magar maashi maslay hal nahi karti.\n\nRiyasat awami mutalbat par baat karne ki bajaye aawaz kyon dabati hai?"
       },
       plainUrdu: {
-        text: "1984 کے المیے سے لے کر کسان دھرنوں تک، وفاقی اختیارات اور زرعی بقا پر سکھ تحفظات تاحال حل طلب ہیں۔ مغربی دارالحکومتوں کے ساتھ سفارتی کشیدگی نے اس بحران کو عالمی سطح پر اجاگر کیا ہے۔\n\nریاستی بیانیہ معاشی خدشات دور کرنے کے بجائے مظاہرین کو سیکیورٹی خطرہ قرار دیتا ہے۔\n\nریاست تاریخی شکایات کا سنجیدہ حل نکالنے کی بجائے عوامی آواز کو کیوں دباتی ہے؟"
+        text: "1984 کے المیے سے لے کر کسان دھرنوں تک، بھارت میں وفاقی اختیارات پر سکھ تحفظات تاحال حل طلب ہیں۔ دوسری طرف پاکستان کرتارپور راہداری کے ذریعے نادر سفارتی ہم آہنگی پیدا کرتا ہے۔\n\nریاستی بیانیہ معاشی خدشات دور کرنے کے بجائے مظاہرین کو سیکیورٹی خطرہ قرار دیتا ہے۔\n\nریاست تاریخی شکایات کا سنجیدہ حل نکالنے کی بجائے عوامی آواز کو کیوں دباتی ہے؟"
       }
     },
 

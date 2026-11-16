@@ -1,6 +1,6 @@
 {
   "totalPosts": 7,
-  "updatedAt": "2026-11-16T07:11:34.652Z",
+  "updatedAt": "2026-11-16T07:42:51.512Z",
   "posts": [
     {
       "hash": "cf010403450d07a18e28b67f83c481c3d59480679f03f1f8e7f1fb347387e853",
@@ -59,7 +59,7 @@
       ],
       "provider": "AI",
       "status": "PENDING",
-      "timestamp": "2026-11-16T07:11:21.370Z"
+      "timestamp": "2026-11-16T07:42:26.264Z"
     },
     {
       "hash": "308806e41de3e36a23ca28fe57b503c795d3525630f75f9d8382378189c74c04",
@@ -114,7 +114,123 @@
       ],
       "provider": "AI",
       "status": "PENDING",
-      "timestamp": "2026-11-16T07:11:21.382Z"
+      "timestamp": "2026-11-16T07:42:26.277Z"
+    },
+    {
+      "hash": "ce7003dec02e56f9526d366cae14f832f22899bcb0270ad98128012403bd2d94",
+      "topic": "Software Talent: Freelance Density vs Corporate IT Scale",
+      "subtopic": "IT freelancing and global gig economy",
+      "genreId": "PAK_VS_IND",
+      "category": "PAK_VS_IND",
+      "mainSubject": "IT freelancing and global gig economy",
+      "specificEventOrIssue": "IT freelancing and global gig economy",
+      "centralArgument": "While India leads corporate IT services with $193B in exports, Pakistan has emerged as the world fourth largest freelance software workforce on Upwork and Fiverr.",
+      "analyticalAngle": "Freelance Density vs Corporate IT Scale",
+      "importantStatistics": [
+        "193b",
+        "1.5m",
+        "3.2b",
+        "2024",
+        "24"
+      ],
+      "keywords": [
+        "india",
+        "corporate",
+        "pakistan",
+        "workforce",
+        "lead",
+        "servic",
+        "193b",
+        "export",
+        "emerg",
+        "world",
+        "fourth",
+        "largest",
+        "freelance",
+        "software",
+        "upwork",
+        "fiverr",
+        "million",
+        "young",
+        "pakistani",
+        "developer",
+        "generat",
+        "receipt",
+        "2024",
+        "grow",
+        "annually"
+      ],
+      "normalizedText": "while india leads corporate it services with 193b in exports pakistan has emerged as the world fourth largest freelance software workforce on upwork and fiverr over 1 5 million young pakistani developers generated 3 2b in it receipts in 2024 growing 24 annually india built corporate it campuses pakistan is building an agile decentralized workforce can grassroots digital agility outpace institutional scale",
+      "englishText": "While India leads corporate IT services with $193B in exports, Pakistan has emerged as the world fourth largest freelance software workforce on Upwork and Fiverr. Over 1.5 million young Pakistani developers generated $3.2B in IT receipts in 2024, growing 24% annually.\n\nIndia built corporate IT campuses; Pakistan is building an agile decentralized workforce.\n\nCan grassroots digital agility outpace institutional scale?",
+      "romanUrduText": "India $193 arab dollar ki IT services exports ke sath corporate lead kar raha hai, magar Pakistan Upwork aur Fiverr par dunya ki chothi barri freelance software workforce ban chuka hai. 15 lakh se zyada Pakistani developers ne 2024 mein $3.2 arab dollar kamaye jo saalana 24% barh rahay hain.\n\nIndia ne baray IT campuses banaye; Pakistan decentralized digital fauj kharri kar raha hai.\n\nKya muqami digital salahiyat corporate dhabon ko peechay chorr sakti hai?",
+      "plainUrduText": "بھارت 193 ارب ڈالر کی برآمدات کے ساتھ کارپوریٹ آئی ٹی پر حاوی ہے، لیکن پاکستان اپ ورک اور فائیور پر دنیا کی چوتھی سب سے بڑی فری لانس فورس بن چکا ہے۔ پندرہ لاکھ سے زائد نوجوان پاکستانیوں نے 2024 میں 3.2 ارب ڈالر کی برآمدات پیدا کیں جن میں سالانہ 24 فیصد اضافہ ہوا۔\n\nبھارت نے بڑے کارپوریٹ کیمپس بنائے جبکہ پاکستان نے نوجوان ڈیجیٹل افرادی قوت کھڑی کی۔\n\nکیا نوجوانوں کی ڈیجیٹل صلاحیت روایتی کارپوریٹ اجارہ داری کو مات دے سکتی ہے؟",
+      "numbers": [
+        "193b",
+        "1.5m",
+        "3.2b",
+        "2024",
+        "24"
+      ],
+      "provider": "Curated Analytical Engine",
+      "status": "DISCARDED",
+      "timestamp": "2026-11-16T07:42:29.584Z"
+    },
+    {
+      "hash": "7f686e9efdeecae9de3e193cca459bf1c6d5fbcbd3fb77b9e55b09d6bc1a7cee",
+      "topic": "Agriculture & Water: Irrigation Scale vs Storage Deficits",
+      "subtopic": "Water management and Indus Basin hydrology",
+      "genreId": "PAK_VS_IND",
+      "category": "PAK_VS_IND",
+      "mainSubject": "Water management and Indus Basin hydrology",
+      "specificEventOrIssue": "Water management and Indus Basin hydrology",
+      "centralArgument": "Pakistan Indus Basin irrigation spans 45 million acres, forming the world largest contiguous gravity canal network.",
+      "analyticalAngle": "Irrigation Scale vs Storage Deficits",
+      "importantStatistics": [
+        "45m",
+        "135m",
+        "30",
+        "120"
+      ],
+      "keywords": [
+        "pakistan",
+        "india",
+        "day",
+        "storage",
+        "indu",
+        "basin",
+        "irriga",
+        "span",
+        "million",
+        "acr",
+        "form",
+        "world",
+        "largest",
+        "contiguou",
+        "gravity",
+        "canal",
+        "network",
+        "yield",
+        "135m",
+        "tonn",
+        "rice",
+        "via",
+        "heavy",
+        "state",
+        "subsidi"
+      ],
+      "normalizedText": "pakistan indus basin irrigation spans 45 million acres forming the world largest contiguous gravity canal network while india yields 135m tonnes of rice via heavy state subsidies pakistan achieves competitive basmati export margins with far lower fiscal support yet pakistan holds barely 30 days of water storage compared to india 120 days agricultural resilience demands storage not just fertile soil",
+      "englishText": "Pakistan Indus Basin irrigation spans 45 million acres, forming the world largest contiguous gravity canal network. While India yields 135M tonnes of rice via heavy state subsidies, Pakistan achieves competitive Basmati export margins with far lower fiscal support.\n\nYet Pakistan holds barely 30 days of water storage compared to India 120 days.\n\nAgricultural resilience demands storage, not just fertile soil.",
+      "romanUrduText": "Pakistan ka Indus Basin nehri nizam 4.5 crore acre par phaila dunya ka sab se bara contiguous gravity network hai. India bhari sarkari subsidies se 13.5 crore ton chawal paida karta hai, jabke Pakistan kam fiscal support ke bawajood behtar Basmati export margins hasil karta hai.\n\nMagar Pakistan ke pas sirf 30 din ka pani store karne ki salahiyat hai jabke India ke pas 120 din hain.\n\nZarai taraqqi ke liye sirf zarkhez mitti nahi, pani ka zakhira bhi zaroori hai.",
+      "plainUrduText": "پاکستان کا انڈس بیسن نہری نظام ساڑھے چار کروڑ ایکڑ پر پھیلا دنیا کا سب سے بڑا مربوط آبپاشی نیٹ ورک ہے۔ بھارت بھاری سبسڈیز کے ذریعے ساڑھے تیرہ کروڑ ٹن چاول اگاتا ہے، لیکن پاکستان بہت کم مالی امداد کے باوجود عالمی باسمتی مارکیٹ میں مسابقتی برتری برقرار رکھتا ہے۔\n\nتاہم پاکستان کے پاس صرف تیس دن کا پانی ذخیرہ کرنے کی گنجائش ہے جبکہ بھارت کے پاس ایک سو بیس دن ہیں۔\n\nزرعی بقا صرف زرخیز مٹی سے نہیں بلکہ پانی کے دانشمندانہ ذخیرے سے ممکن ہے۔",
+      "numbers": [
+        "45m",
+        "135m",
+        "30",
+        "120"
+      ],
+      "provider": "Curated Analytical Engine",
+      "status": "PENDING",
+      "timestamp": "2026-11-16T07:42:33.659Z"
     },
     {
       "hash": "404ec004505b4e63e241f8dc2e9da895a86829f5ab1bed26f5bf0adc51971b1e",
@@ -172,8 +288,8 @@
         "70"
       ],
       "provider": "Curated Analytical Engine",
-      "status": "DISCARDED",
-      "timestamp": "2026-11-16T07:11:23.489Z"
+      "status": "PENDING",
+      "timestamp": "2026-11-16T07:42:36.366Z"
     },
     {
       "hash": "e1b3361ab4d91ae56fd36743492f2bbcbcd8f01d4e80279f02a622e3d9207f04",
@@ -232,7 +348,7 @@
       ],
       "provider": "Curated Analytical Engine",
       "status": "PENDING",
-      "timestamp": "2026-11-16T07:11:27.281Z"
+      "timestamp": "2026-11-16T07:42:47.657Z"
     },
     {
       "hash": "e8d9d09776c807dc08f5f0599133325b58b5f2d9bd025529f042ab000e2cc1b3",
@@ -291,119 +407,7 @@
       ],
       "provider": "Curated Analytical Engine",
       "status": "PENDING",
-      "timestamp": "2026-11-16T07:11:29.045Z"
-    },
-    {
-      "hash": "e0bddf6cf1e2ea1906332e896c7532563554b30aad236a43a7b0767058897f33",
-      "topic": "Kashmir: Article 370 & Legal Perspectives",
-      "subtopic": "Article 370 removal and political representation",
-      "genreId": "PAK_VS_IND",
-      "category": "PAK_VS_IND",
-      "mainSubject": "Article 370 removal and political representation",
-      "specificEventOrIssue": "Article 370 removal and political representation",
-      "centralArgument": "For 18 months, 7 million residents endured the longest high-speed internet shutdown ever recorded in a democracy.",
-      "analyticalAngle": "Article 370 & Legal Perspectives",
-      "importantStatistics": [
-        "2019",
-        "370",
-        "18",
-        "7m"
-      ],
-      "keywords": [
-        "kashmir",
-        "august",
-        "2019",
-        "india",
-        "unilaterally",
-        "revok",
-        "article",
-        "370",
-        "dismantl",
-        "jammu",
-        "statehood",
-        "two",
-        "federally",
-        "govern",
-        "union",
-        "territori",
-        "month",
-        "million",
-        "resident",
-        "endur",
-        "longest",
-        "high",
-        "spe",
-        "internet",
-        "shutdown"
-      ],
-      "normalizedText": "in august 2019 india unilaterally revoked article 370 dismantling jammu and kashmir s statehood into two federally governed union territories for 18 months 7 million residents endured the longest high speed internet shutdown ever recorded in a democracy across the line of control pakistan maintains azad kashmir and gilgit baltistan in political limbo without formal representation in the national assembly both capitals claim kashmir but does either listen to kashmiris",
-      "englishText": "In August 2019, India unilaterally revoked Article 370, dismantling Jammu and Kashmir's statehood into two federally governed union territories. For 18 months, 7 million residents endured the longest high-speed internet shutdown ever recorded in a democracy.\n\nAcross the Line of Control, Pakistan maintains Azad Kashmir and Gilgit-Baltistan in political limbo without formal representation in the National Assembly.\n\nBoth capitals claim Kashmir, but does either listen to Kashmiris?",
-      "romanUrduText": "August 2019 mein India ne Article 370 khatam kar ke Jammu aur Kashmir ko do union territories mein baant diya. 70 lakh shehriyon ne 18 maheenay tareekh ka taweel-tareen internet blackout bardasht kiya.\n\nLine of Control ke doosri taraf Pakistan ne Azad Kashmir aur Gilgit-Baltistan ko National Assembly mein numaindagi ke baghair muallaq rakha hai.\n\nDono dar-ul-hukoomat Kashmir ka dawah karte hain, magar kya koi Kashmiriyon ki awaz sunta hai?",
-      "plainUrduText": "اگست 2019 میں بھارت نے یکطرفہ طور پر آرٹیکل 370 ختم کر کے جموں و کشمیر کو دو وفاقی خطوں میں تقسیم کر دیا۔ ستر لاکھ شہریوں نے اٹھارہ ماہ طویل ترین انٹرنیٹ بلیک آؤٹ برداشت کیا۔\n\nکنٹرول لائن کے اس پار پاکستان نے آزاد کشمیر اور گلگت بلتستان کو قومی اسمبلی میں نمائندگی دیے بغیر آئینی التوا میں رکھا ہے۔\n\nدونوں دارالحکومت کشمیر کے دعویدار ہیں لیکن کیا کسی نے کبھی کشمیریوں کی سنی؟",
-      "numbers": [
-        "2019",
-        "370",
-        "18",
-        "7m"
-      ],
-      "provider": "Curated Analytical Engine",
-      "status": "PENDING",
-      "timestamp": "2026-11-16T07:11:32.365Z"
-    },
-    {
-      "hash": "f1772c640b8c018d907f1e8695f8534b7e498a941e0e944ca1af9c6437051adb",
-      "topic": "Cricket Diplomacy: BCCI Monopoly & Global Revenue",
-      "subtopic": "BCCI financial influence and IPL economics",
-      "genreId": "PAK_VS_IND",
-      "category": "PAK_VS_IND",
-      "mainSubject": "BCCI financial influence and IPL economics",
-      "specificEventOrIssue": "BCCI financial influence and IPL economics",
-      "centralArgument": "The BCCI controls nearly 38.5% of the International Cricket Council's annual revenue, pulling in $230 million every year.",
-      "analyticalAngle": "BCCI Monopoly & Global Revenue",
-      "importantStatistics": [
-        "38.5",
-        "230m",
-        "6.2b"
-      ],
-      "keywords": [
-        "cricket",
-        "revenue",
-        "sport",
-        "bcci",
-        "control",
-        "nearly",
-        "international",
-        "council",
-        "annual",
-        "pull",
-        "230",
-        "million",
-        "every",
-        "year",
-        "indian",
-        "premier",
-        "league",
-        "broadcast",
-        "right",
-        "sold",
-        "stagger",
-        "billion",
-        "dwarf",
-        "board",
-        "combin"
-      ],
-      "normalizedText": "the bcci controls nearly 38 5 of the international cricket council s annual revenue pulling in 230 million every year the indian premier league broadcast rights sold for a staggering 6 2 billion dwarfing all other cricket boards combined this economic monopoly allows new delhi to dictate tournament venues block bilateral tours with pakistan and isolate the pcb financially when television revenue determines sports policy has cricket ceased to be a sport",
-      "englishText": "The BCCI controls nearly 38.5% of the International Cricket Council's annual revenue, pulling in $230 million every year. The Indian Premier League broadcast rights sold for a staggering $6.2 billion, dwarfing all other cricket boards combined.\n\nThis economic monopoly allows New Delhi to dictate tournament venues, block bilateral tours with Pakistan, and isolate the PCB financially.\n\nWhen television revenue determines sports policy, has cricket ceased to be a sport?",
-      "romanUrduText": "BCCI aalmi cricket council ke 38.5% saalana revenue par qabiz hai jo saalana 230 million dollar banta hai. IPL ke media rights 6.2 arab dollar mein bikay jo baki tamam cricket boards ki majmooi aamdani se zyada hain.\n\nIs maali taqat se New Delhi tournament venues aur Pakistan se series tay karti hai.\n\nJab television ki daulat khel ke faislay kare, toh kya cricket ab sach mein khel raha hai?",
-      "plainUrduText": "بھارتی کرکٹ بورڈ آئی سی سی کے سالانہ ریونیو کے تقریباً ساڑھے اڑتیس فیصد پر قابض ہے جس سے اسے سالانہ 230 ملین ڈالر ملتے ہیں۔ آئی پی ایل کے نشریاتی حقوق سوا چھ ارب ڈالر میں فروخت ہوئے جو دنیا کے دیگر تمام بورڈز سے کہیں زیادہ ہیں۔\n\nاس مالیاتی اجارہ داری کے ذریعے نئی دہلی میچوں کے مقامات اور پاک بھارت کرکٹ کو یرغمال بناتی ہے۔\n\nجب ٹیلی ویژن کی کھربوں کی کمائی فیصلے کرے تو کیا کرکٹ اب بھی صرف ایک کھیل ہے؟",
-      "numbers": [
-        "38.5",
-        "230m",
-        "6.2b"
-      ],
-      "provider": "Curated Analytical Engine",
-      "status": "PENDING",
-      "timestamp": "2026-11-16T07:11:34.652Z"
+      "timestamp": "2026-11-16T07:42:51.512Z"
     }
   ]
 }
