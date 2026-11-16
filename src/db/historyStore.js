@@ -652,6 +652,11 @@ class HistoryStore {
     return this.topics.has(normalizeText(topic));
   }
 
+  recordSeenTopic(topic = '') {
+    if (!topic) return;
+    this.topics.add(normalizeText(topic));
+  }
+
   markDiscarded(topic = '') {
     if (!topic) return;
     const cleanTopic = normalizeText(topic);

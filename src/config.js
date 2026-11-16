@@ -19,6 +19,9 @@ export const config = {
   // AI Engine API Keys & Settings
   geminiApiKey: process.env.GEMINI_API_KEY || '',
   geminiModel: process.env.GEMINI_MODEL || 'gemini-3.5-flash',
+  cloudflareAccountId: process.env.CLOUDFLARE_ACCOUNT_ID || '',
+  cloudflareApiToken: process.env.CLOUDFLARE_API_TOKEN || '',
+  cloudflareAiModel: process.env.CLOUDFLARE_AI_MODEL || '@cf/meta/llama-3.1-8b-instruct',
   grokMode: process.env.GROK_MODE || 'auto',
   grokUrl: process.env.GROK_URL || 'https://grok.com',
   chromeCdpUrl: process.env.CHROME_CDP_URL || '',
@@ -32,11 +35,11 @@ export const config = {
   appVersion: '1.0.0',
 
   // Meta WhatsApp Cloud API Settings
-  whatsappAppId: process.env.WHATSAPP_APP_ID || '1538340228340646',
+  whatsappAppId: process.env.WHATSAPP_APP_ID || '',
   whatsappToken: process.env.WHATSAPP_TOKEN || '',
-  whatsappPhoneNumberId: (process.env.WHATSAPP_PHONE_NUMBER_ID === '1395242077013903' ? '1412689751934980' : process.env.WHATSAPP_PHONE_NUMBER_ID) || '1412689751934980',
+  whatsappPhoneNumberId: process.env.WHATSAPP_PHONE_NUMBER_ID || '',
   whatsappBusinessAccountId: process.env.WHATSAPP_BUSINESS_ACCOUNT_ID || '',
-  ownerPhoneNumber: (process.env.OWNER_PHONE_NUMBER === '923290958704' ? '923435022880' : process.env.OWNER_PHONE_NUMBER) || '923435022880', // E.164 without + (Owner: 923435022880 | Bot: 923290958704)
+  ownerPhoneNumber: process.env.OWNER_PHONE_NUMBER ? String(process.env.OWNER_PHONE_NUMBER).replace(/[^0-9]/g, '') : '',
   webhookVerifyToken: process.env.WEBHOOK_VERIFY_TOKEN || 'xbot_verify_token_2026',
   serverPort: Number(process.env.PORT || 3000),
   graphApiVersion: process.env.GRAPH_API_VERSION || 'v25.0',

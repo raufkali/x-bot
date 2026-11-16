@@ -204,7 +204,7 @@ class WhatsAppWorkflowManager extends EventEmitter {
   }
 
   /**
-   * Returns normalized list of authorized owner phone numbers
+   * Returns normalized list of authorized owner phone numbers from environment
    */
   getAllowedOwnerNumbers() {
     const rawList = [
@@ -216,15 +216,10 @@ class WhatsAppWorkflowManager extends EventEmitter {
     const set = new Set();
     rawList.split(/[,\s;]+/).forEach(num => {
       const clean = String(num).replace(/[^0-9]/g, '');
-      // Never allow the bot's own number to act as owner
-      if (clean && clean !== '923290958704') {
+      if (clean) {
         set.add(clean);
       }
     });
-
-    // Known verified owner numbers
-    set.add('923435022880');
-    set.add('923469258704');
 
     return Array.from(set);
   }
@@ -244,11 +239,6 @@ class WhatsAppWorkflowManager extends EventEmitter {
 
     const cleanSender = String(fromNumber).replace(/[^0-9]/g, '');
     if (!cleanSender) return false;
-
-    // Never allow the bot's own number to act as owner
-    if (cleanSender === '923290958704') {
-      return false;
-    }
 
     const allowedOwners = this.getAllowedOwnerNumbers();
     return allowedOwners.some(owner => {

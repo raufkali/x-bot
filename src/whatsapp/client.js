@@ -95,16 +95,12 @@ export class WhatsAppClient {
   }
 
   /**
-   * Cleans recipient phone number and protects against self-messaging
+   * Cleans recipient phone number using provided destination or OWNER_PHONE_NUMBER from env/config.
+   * Strictly avoids any hardcoded static phone numbers.
    */
   formatRecipient(to) {
-    let clean = String(to || config.ownerPhoneNumber || '923435022880').replace(/[^0-9]/g, '');
-    // A bot cannot send WhatsApp messages to its own registered phone number
-    if (clean === '923290958704') {
-      console.warn('[WhatsApp Route] Recipient is the bot\'s own number (+92 329 0958704). Auto-rerouting to owner (+92 343 5022880).');
-      clean = '923435022880';
-    }
-    return clean;
+    const raw = to || config.ownerPhoneNumber || process.env.OWNER_PHONE_NUMBER || '';
+    return String(raw).replace(/[^0-9]/g, '');
   }
 
   /**

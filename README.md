@@ -240,7 +240,7 @@ WHATSAPP_APP_ID=1538340228340646
 WHATSAPP_TOKEN=your_system_user_access_token
 WHATSAPP_PHONE_NUMBER_ID=1412689751934980
 WHATSAPP_BUSINESS_ACCOUNT_ID=3192689014264130
-OWNER_PHONE_NUMBER=923435022880 # Your WhatsApp number with country code (E.164 without +)
+OWNER_PHONE_NUMBER=923001234567 # Your WhatsApp number with country code (E.164 without +)
 GRAPH_API_VERSION=v25.0
 WHATSAPP_TEMPLATE_NAME=3p_direct_integration_test_template
 WHATSAPP_TEMPLATE_LANG=en_US
@@ -266,7 +266,7 @@ Or via HTTP POST request:
 ```bash
 curl -X POST http://localhost:3000/send-template \
   -H "Content-Type: application/json" \
-  -d '{"to": "923435022880", "template": "3p_direct_integration_test_template", "language": "en_US"}'
+  -d '{"to": "923001234567", "template": "3p_direct_integration_test_template", "language": "en_US"}'
 ```
 
 ### 4. Interactive WhatsApp Bot Flow

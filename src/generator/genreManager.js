@@ -16,175 +16,11 @@ const GENRES_FILE = path.join(DATA_DIR, 'genres.json');
 export const DEFAULT_GENRES = [
   {
     id: 'PAK_VS_IND',
-    name: 'Pak vs Ind',
-    description: 'India vs Pakistan: Military spending, governance, socio-politics, defence deals, Kashmir, diplomacy, cricket & human welfare',
+    name: 'Pak & Ind Analytics',
+    description: 'Pakistan & India: Economic analytics, IT exports, tech industry, demographic dividend, agriculture, trade & infrastructure',
     categories: [
       {
         code: 'A',
-        title: 'Post-Colonial State',
-        subtopics: [
-          'Why India became centralized after 1947',
-          'Nehruvian secularism vs Hindu nationalism',
-          'Partition trauma and foreign policy',
-          'India\'s constitutional development',
-          'Federalism and state autonomy',
-          'Pakistan and India\'s competing national identities'
-        ]
-      },
-      {
-        code: 'B',
-        title: 'BJP vs Congress',
-        subtopics: [
-          'Congress dynasty and political decline',
-          'BJP and Hindutva',
-          'Secularism vs religious nationalism',
-          'Election machinery and campaign funding',
-          'Welfare politics and economic policies',
-          'Political leadership and democratic institutions'
-        ]
-      },
-      {
-        code: 'C',
-        title: 'RSS: The Invisible State',
-        subtopics: [
-          'RSS history and organizational structure',
-          'Shakhas and ideological training',
-          'RSS influence on BJP',
-          'Minority perspectives',
-          'Relationship with Muslims, Christians and Sikhs',
-          'Influence on government and institutions'
-        ]
-      },
-      {
-        code: 'D',
-        title: 'Caste and Social Hierarchy',
-        subtopics: [
-          'Brahminical hierarchy',
-          'Dalit representation',
-          'Ambedkar vs Gandhi',
-          'Caste-based violence',
-          'Reservation policies',
-          'Caste and economic inequality'
-        ]
-      },
-      {
-        code: 'E',
-        title: 'Corruption and Defence Deals',
-        subtopics: [
-          'Rafale controversy',
-          'Tejas development',
-          'Adani and political connections',
-          'Electoral Bonds',
-          'Defence procurement transparency',
-          'Public expenditure and accountability'
-        ]
-      },
-      {
-        code: 'F',
-        title: 'Socio-Ethnic Fault Lines',
-        subtopics: [
-          'North vs South',
-          'Hindi imposition',
-          'Tax contribution and resource distribution',
-          'Delimitation',
-          'Manipur and Nagaland',
-          'Regional identity and language politics'
-        ]
-      },
-      {
-        code: 'G',
-        title: 'Kashmir',
-        subtopics: [
-          'Article 370 removal',
-          'Constitutional and international legal perspectives',
-          'Human rights',
-          'Communication restrictions',
-          'Political representation',
-          'India-Pakistan Kashmir dispute'
-        ]
-      },
-      {
-        code: 'H',
-        title: 'Sikhs and Khalistan',
-        subtopics: [
-          'Operation Blue Star',
-          '1984 anti-Sikh violence',
-          'Sikh political representation',
-          'Farmers\' protests',
-          'Khalistan movement',
-          'Canada, UK and US diplomatic tensions'
-        ]
-      },
-      {
-        code: 'I',
-        title: 'India vs Neighbours',
-        subtopics: [
-          'India-Pakistan relations',
-          'India-China border disputes',
-          'India-Bangladesh relations',
-          'India-Nepal relations',
-          'Sri Lanka and Maldives',
-          'SAARC decline',
-          'BIMSTEC and QUAD',
-          'China\'s regional influence'
-        ]
-      },
-      {
-        code: 'J',
-        title: 'Diplomacy and Strategic Autonomy',
-        subtopics: [
-          'Russian oil imports',
-          'US defence partnerships',
-          'Non-Alignment 2.0',
-          'BRICS and SCO',
-          'India\'s global power ambitions',
-          'Strategic autonomy vs opportunism'
-        ]
-      },
-      {
-        code: 'K',
-        title: 'Cricket and Sports Diplomacy',
-        subtopics: [
-          'BCCI financial influence',
-          'IPL economics',
-          'Asia Cup controversies',
-          'India-Pakistan cricket relations',
-          'Cricket and nationalism',
-          'Sports boycotts',
-          'International cricket revenue'
-        ]
-      },
-      {
-        code: 'L',
-        title: 'Development Comparisons',
-        subtopics: [
-          'India vs China vs Bangladesh vs Pakistan',
-          'GDP and GDP per capita',
-          'Poverty and inequality',
-          'Public debt',
-          'Hunger and nutrition',
-          'Employment',
-          'HDI',
-          'Healthcare and education',
-          'Infrastructure and manufacturing'
-        ]
-      },
-      {
-        code: 'M',
-        title: 'Weapons vs Human Welfare',
-        subtopics: [
-          'Defence budget vs public welfare priorities',
-          'Nuclear deterrence vs poverty',
-          'Fighter jets vs public hospitals',
-          'Submarines vs clean drinking water',
-          'Missiles vs child malnutrition',
-          '340 nuclear warheads vs classrooms',
-          'Border radars vs farmer crises',
-          'Military pensions vs rural healthcare'
-        ]
-      },
-      {
-        code: 'N',
         title: 'Economy and Finance',
         subtopics: [
           'GDP growth and purchasing power',
@@ -197,7 +33,7 @@ export const DEFAULT_GENRES = [
         ]
       },
       {
-        code: 'O',
+        code: 'B',
         title: 'Science and Technology',
         subtopics: [
           'Software exports and IT services',
@@ -211,7 +47,7 @@ export const DEFAULT_GENRES = [
         ]
       },
       {
-        code: 'P',
+        code: 'C',
         title: 'Education and Human Development',
         subtopics: [
           'STEM graduate output and female literacy',
@@ -223,19 +59,19 @@ export const DEFAULT_GENRES = [
         ]
       },
       {
-        code: 'Q',
+        code: 'D',
         title: 'Infrastructure and Natural Resources',
         subtopics: [
           'Renewable energy and solar transition',
           'Water management and Indus Basin hydrology',
           'Reko Diq copper-gold and Thar coal mining',
           'Highway corridors and regional connectivity',
-          'Port infrastructure: Gwadar vs Chabahar vs Nhava Sheva',
+          'Port infrastructure: Gwadar, Karachi and regional trade',
           'High-speed rail and urban mass transit'
         ]
       },
       {
-        code: 'R',
+        code: 'E',
         title: 'Pakistan Achievements and Untapped Potential',
         subtopics: [
           'Global freelance software ranking and IT talent',
@@ -243,105 +79,44 @@ export const DEFAULT_GENRES = [
           'Strategic transit geography connecting Central to South Asia',
           'Young demographic dividend and entrepreneurial resilience',
           'Diaspora remittances and global economic footprint',
-          'Local defense hardware engineering and JF-17 export success'
+          'Textile and cotton value-added manufacturing'
         ]
       },
       {
-        code: 'S',
+        code: 'F',
+        title: 'Manufacturing & Industrial Growth',
+        subtopics: [
+          'Automotive assembly and electric vehicle transition',
+          'Electronics manufacturing and smartphone assembly',
+          'Pharmaceutical production and generic medicine exports',
+          'Heavy engineering and domestic steel production',
+          'Special economic zones and industrial parks'
+        ]
+      },
+      {
+        code: 'G',
+        title: 'Agriculture & Food Security',
+        subtopics: [
+          'Canal irrigation networks and modern agri-tech',
+          'Solar-powered tube wells and farmer economics',
+          'Basmati rice and agricultural export yields',
+          'Cold storage infrastructure and post-harvest losses',
+          'Livestock, dairy farming and meat exports'
+        ]
+      },
+      {
+        code: 'H',
         title: 'General South Asian Realities',
         subtopics: [
           'Shared climate vulnerability and glacial melting',
-          'Transboundary smog and winter air quality crises',
-          'Intra-regional trade potential vs political barriers',
+          'Transboundary smog and winter air quality solutions',
+          'Intra-regional trade potential and logistic corridors',
           'Cross-border water security under Indus Waters Treaty',
           'Youth unemployment and digital skill transition'
         ]
       }
     ],
     subtopics: [
-      'Why India became centralized after 1947',
-      'Nehruvian secularism vs Hindu nationalism',
-      'Partition trauma and foreign policy',
-      'India\'s constitutional development',
-      'Federalism and state autonomy',
-      'Pakistan and India\'s competing national identities',
-      'Congress dynasty and political decline',
-      'BJP and Hindutva',
-      'Secularism vs religious nationalism',
-      'Election machinery and campaign funding',
-      'Welfare politics and economic policies',
-      'Political leadership and democratic institutions',
-      'RSS history and organizational structure',
-      'Shakhas and ideological training',
-      'RSS influence on BJP',
-      'Minority perspectives',
-      'Relationship with Muslims, Christians and Sikhs',
-      'Influence on government and institutions',
-      'Brahminical hierarchy',
-      'Dalit representation',
-      'Ambedkar vs Gandhi',
-      'Caste-based violence',
-      'Reservation policies',
-      'Caste and economic inequality',
-      'Rafale controversy',
-      'Tejas development',
-      'Adani and political connections',
-      'Electoral Bonds',
-      'Defence procurement transparency',
-      'Public expenditure and accountability',
-      'North vs South',
-      'Hindi imposition',
-      'Tax contribution and resource distribution',
-      'Delimitation',
-      'Manipur and Nagaland',
-      'Regional identity and language politics',
-      'Article 370 removal',
-      'Constitutional and international legal perspectives',
-      'Human rights',
-      'Communication restrictions',
-      'Political representation',
-      'India-Pakistan Kashmir dispute',
-      'Operation Blue Star',
-      '1984 anti-Sikh violence',
-      'Sikh political representation',
-      'Farmers\' protests',
-      'Khalistan movement',
-      'Canada, UK and US diplomatic tensions',
-      'India-Pakistan relations',
-      'India-China border disputes',
-      'India-Bangladesh relations',
-      'India-Nepal relations',
-      'Sri Lanka and Maldives',
-      'SAARC decline',
-      'BIMSTEC and QUAD',
-      'China\'s regional influence',
-      'Russian oil imports',
-      'US defence partnerships',
-      'Non-Alignment 2.0',
-      'BRICS and SCO',
-      'India\'s global power ambitions',
-      'Strategic autonomy vs opportunism',
-      'BCCI financial influence',
-      'IPL economics',
-      'Asia Cup controversies',
-      'India-Pakistan cricket relations',
-      'Cricket and nationalism',
-      'Sports boycotts',
-      'International cricket revenue',
-      'India vs China vs Bangladesh vs Pakistan',
-      'GDP and GDP per capita',
-      'Poverty and inequality',
-      'Public debt',
-      'Hunger and nutrition',
-      'Employment',
-      'HDI',
-      'Healthcare and education',
-      'Infrastructure and manufacturing',
-      'Defence budget vs public welfare priorities',
-      'Nuclear deterrence vs poverty',
-      'Fighter jets vs public hospitals',
-      'Submarines vs clean drinking water',
-      'Missiles vs child malnutrition',
       'GDP growth and purchasing power',
       'Inflation and currency dynamics',
       'Public debt and taxation reform',
@@ -367,40 +142,41 @@ export const DEFAULT_GENRES = [
       'Water management and Indus Basin hydrology',
       'Reko Diq copper-gold and Thar coal mining',
       'Highway corridors and regional connectivity',
-      'Port infrastructure: Gwadar vs Chabahar vs Nhava Sheva',
+      'Port infrastructure: Gwadar, Karachi and regional trade',
       'High-speed rail and urban mass transit',
       'Global freelance software ranking and IT talent',
       'Sialkot surgical instruments and FIFA football manufacturing',
       'Strategic transit geography connecting Central to South Asia',
       'Young demographic dividend and entrepreneurial resilience',
       'Diaspora remittances and global economic footprint',
-      'Local defense hardware engineering and JF-17 export success',
+      'Textile and cotton value-added manufacturing',
+      'Automotive assembly and electric vehicle transition',
+      'Electronics manufacturing and smartphone assembly',
+      'Pharmaceutical production and generic medicine exports',
+      'Heavy engineering and domestic steel production',
+      'Special economic zones and industrial parks',
+      'Canal irrigation networks and modern agri-tech',
+      'Solar-powered tube wells and farmer economics',
+      'Basmati rice and agricultural export yields',
+      'Cold storage infrastructure and post-harvest losses',
+      'Livestock, dairy farming and meat exports',
       'Shared climate vulnerability and glacial melting',
-      'Transboundary smog and winter air quality crises',
-      'Intra-regional trade potential vs political barriers',
+      'Transboundary smog and winter air quality solutions',
+      'Intra-regional trade potential and logistic corridors',
       'Cross-border water security under Indus Waters Treaty',
       'Youth unemployment and digital skill transition'
     ],
     keywords: [
-      'India vs Pakistan',
-      'Defence budget vs public welfare',
-      'Nuclear deterrence vs poverty',
-      'Fighter jets vs public hospitals',
-      'Submarines vs clean drinking water',
-      'Missiles vs child malnutrition',
-      'Weapons vs school education',
-      'Post-colonial state centralization',
-      'BJP Hindutva vs Congress secularism',
-      'RSS shakhas and institutional influence',
-      'Caste hierarchy and Dalit representation',
-      'Rafale Tejas and Electoral Bonds',
-      'North vs South federal tax split',
-      'Article 370 and Kashmir status',
-      'Sikhs Khalistan and farmer protests',
-      'India China Nepal Bangladesh relations',
-      'Russian oil and strategic autonomy',
-      'BCCI IPL cricket diplomacy',
-      'South Asia GDP HDI development comparison'
+      'Pakistan & India Analytics',
+      'Economic analytics and GDP trends',
+      'IT software exports and freelance growth',
+      'Digital public infrastructure and fintech',
+      'Canal irrigation and agricultural yields',
+      'Solar energy transition and power grid',
+      'Sialkot surgical and sports goods exports',
+      'Demographic youth dividend and workforce',
+      'Cross-border regional trade potential',
+      'Telecommunications and mobile economy'
     ]
   },
   {

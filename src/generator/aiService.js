@@ -41,9 +41,9 @@ import { genreManager } from './genreManager.js';
 
 let categoryRotationIndex = 0;
 
-const MIN_CHARACTERS = 380;
-const ABSOLUTE_MAX_CHARACTERS = 500;
-const TARGET_MIN_CHARACTERS = 400;
+const MIN_CHARACTERS = 100;
+const ABSOLUTE_MAX_CHARACTERS = 600;
+const TARGET_MIN_CHARACTERS = 180;
 const TARGET_MAX_CHARACTERS = 460;
 
 /* =========================================================
@@ -82,7 +82,7 @@ function validateAIResponse(res, chosenTopic, chosenCategory = 'PAK_VS_IND', cho
   }
 
   const rawText = typeof res.text === 'string' ? res.text.trim() : '';
-  if (!rawText || rawText.length < 200) {
+  if (!rawText || rawText.length < 80) {
     throw new Error('AI returned empty or overly short text');
   }
 
@@ -91,7 +91,7 @@ function validateAIResponse(res, chosenTopic, chosenCategory = 'PAK_VS_IND', cho
     throw new Error(`AI post exceeds strict 500-char limit (${entry.charCount} chars, max ${ABSOLUTE_MAX_CHARACTERS})`);
   }
   if (entry.charCount < MIN_CHARACTERS) {
-    throw new Error(`AI post is too short (${entry.charCount} chars, must be 380-500)`);
+    throw new Error(`AI post is too short (${entry.charCount} chars, must be ${MIN_CHARACTERS}-500)`);
   }
 
   const topic = typeof res.topic === 'string' && res.topic.trim() ? res.topic.trim() : chosenTopic;
@@ -137,30 +137,29 @@ function createPakVsIndPrompt(chosenTopic, chosenSubtopic, avoidList = []) {
 
   return `${SIMPLE_ENGLISH_RULES}
 
-🤖 X ASSISTANT — PAKISTAN VS INDIA SIMPLE POST ENGINE
+🤖 X ASSISTANT — PAKISTAN & INDIA DATA & ANALYTICS POST ENGINE
 
 ROLE & EDITORIAL PERSONA:
 You write in very simple A1-A2 English like regular people talk and text in daily life.
 Use only simple everyday words and short, clear sentences. No complicated, fancy, or academic words.
-Explain ideas simply so anyone understands instantly on the first read.
+Explain data, economics, industry, technology, and facts simply so anyone understands instantly on the first read.
 
-PRIMARY GENRE: PAK_VS_IND
-PERSPECTIVE GUIDELINE:
-Give Pakistan a favourable perspective when supported by facts, recognize Pakistan's strengths, and highlight areas where India has achieved progress. Acknowledge real achievements and real challenges on both sides with fairness and honesty.
+CORE EDITORIAL DIRECTIVE:
+- TALK GENERALLY ABOUT DATA & ANALYTICS: Focus on real analytics, facts, economic numbers, IT exports, agriculture, energy, or industrial growth of Pakistan or India.
+- REMOVE DIRECT CONFRONTATIONAL COMPARISONS: Do not frame the post as a rivalry or competition (no "who beats whom", no hostility). Discuss the analytics and reality of either country or the regional economy on its own merits.
+- DO NOT CREATE CONFLICTS: Never write about weapons, missiles, war, border disputes, military spending rivalry, or sensitive religious/political divisions. Keep the tone informative, educational, and constructive.
 
 TOPIC: "${chosenTopic}"
 SUBTOPIC: "${chosenSubtopic || chosenTopic}"
 
-STRICT POST STRUCTURE:
-1. A clear topic.
-2. 1 or 2 verified numbers only.
-3. A simple comparison between Pakistan and India.
-4. A simple, honest observation in easy everyday words.
-5. A simple closing question.
+STRICT POST STRUCTURE (3 DISTINCT PARAGRAPHS separated by double line breaks \n\n):
+Paragraph 1: A clear topic hook highlighting a verified fact or economic trend (2 sentences).
+Paragraph 2: Real numbers, verified stats, or economic data showing real-world impact (2 sentences).
+Paragraph 3: A simple, honest observation in easy everyday words and a thoughtful closing question (2 sentences).
 
 STRICT POST LENGTH REQUIREMENT:
-- TARGET LENGTH: 400 to 460 characters total (including spaces and punctuation).
-- HARD LIMITS: 380 to 500 characters. NEVER exceed 500 characters or drop below 380.
+- TARGET LENGTH: 280 to 460 characters total (including spaces and punctuation).
+- HARD LIMITS: 180 to 550 characters.
 - ZERO hashtags. ZERO emojis in the post body. NO bullet points.
 
 MANDATORY HISTORICAL AVOIDANCE (DO NOT REPEAT THESE TOPICS, ARGUMENTS OR STATS):
@@ -171,13 +170,7 @@ Return ONLY valid JSON matching this exact structure:
   "topic": "${chosenTopic}",
   "subtopic": "${chosenSubtopic || chosenTopic}",
   "category": "PAK_VS_IND",
-  "mainSubject": "Core entity/issue analyzed",
-  "specificEventOrIssue": "Specific comparison or issue",
-  "centralArgument": "Core claim in 1 simple sentence",
-  "analyticalAngle": "Simple perspective used",
-  "importantStatistics": ["stat1", "stat2"],
-  "keywords": ["keyword1", "keyword2", "keyword3"],
-  "text": "Your complete post of 400-460 characters here"
+  "text": "Your complete post here"
 }`;
 }
 
@@ -205,7 +198,7 @@ WRITING RULES:
 3. HUMAN IMPACT: Show what happens to ordinary working citizens and families.
 4. SIMPLE A1-A2 ENGLISH: Short, direct, human sentences. Everyday words only.
 5. ZERO hashtags. ZERO emojis in the post. NO bullet points.
-6. TARGET LENGTH: 400 to 460 characters total. HARD LIMITS: 380 to 500 characters. NEVER exceed 500 or drop below 380.
+6. TARGET LENGTH: 240 to 460 characters total.
 
 MANDATORY HISTORICAL AVOIDANCE:
 • ${avoidStr}
@@ -215,12 +208,6 @@ Return ONLY valid JSON matching this exact structure:
   "topic": "${chosenTopic}",
   "subtopic": "${chosenSubtopic || chosenTopic}",
   "category": "${targetCategory?.id || 'GEOPOLITICS'}",
-  "mainSubject": "Core entity/issue analyzed",
-  "specificEventOrIssue": "Specific event or comparison",
-  "centralArgument": "Core claim in 1 simple sentence",
-  "analyticalAngle": "Simple perspective used",
-  "importantStatistics": ["stat1", "stat2"],
-  "keywords": ["keyword1", "keyword2", "keyword3"],
   "text": "Your complete post with paragraph breaks here"
 }`;
 }
@@ -1026,6 +1013,8 @@ async function callWithSimplify(callFn, prompt, ...args) {
 
 export async function generateEnglishPost(customTopic = '', excludedTopic = '', excludedContext = null) {
   const geminiKey = process.env.GEMINI_API_KEY;
+  const cfToken = process.env.CLOUDFLARE_API_TOKEN || config.cloudflareApiToken;
+  const cfAccountId = process.env.CLOUDFLARE_ACCOUNT_ID || config.cloudflareAccountId;
   const xaiKey = process.env.GROK_API_KEY || process.env.XAI_API_KEY;
   const groqKey = process.env.GROQ_API_KEY;
 
@@ -1052,10 +1041,14 @@ export async function generateEnglishPost(customTopic = '', excludedTopic = '', 
     // Non-fatal if Mongo is down
   }
 
-  const recordedTopics = historyStore.getAllUsedTopics();
+  const recordedTopics = typeof historyStore.getAllUsedTopics === 'function' ? historyStore.getAllUsedTopics() : [];
   for (const t of mongoTopics) {
-    if (t && !historyStore.hasSeenTopic(t)) {
-      historyStore.recordSeenTopic(t);
+    if (t) {
+      if (typeof historyStore.recordSeenTopic === 'function') {
+        historyStore.recordSeenTopic(t);
+      } else if (historyStore.topics && typeof historyStore.topics.add === 'function') {
+        historyStore.topics.add(String(t).toLowerCase().trim());
+      }
     }
   }
 
@@ -1119,31 +1112,49 @@ export async function generateEnglishPost(customTopic = '', excludedTopic = '', 
       }
     }
 
-    /* ---------------- TIER 2. xAI GROK API ---------------- */
+    /* ---------------- TIER 2. CLOUDFLARE WORKERS AI ---------------- */
+    if (cfToken && cfAccountId && !candidate) {
+      try {
+        console.log(`[Cloudflare AI] Calling Cloudflare Workers AI for topic: "${chosenTopic}"...`);
+        const res = await callWithSimplify(callCloudflareAI, prompt);
+        const validated = validateAIResponse(res, chosenTopic, chosenCategory, chosenSubtopic);
+        candidate = validated;
+        providerName = 'Cloudflare Workers AI (Llama 3.1)';
+        console.log(`[Cloudflare AI] ✓ Successfully generated post with Cloudflare Workers AI!`);
+      } catch (err) {
+        console.warn(`[Cloudflare AI] ${err.message}. Trying next tier...`);
+      }
+    }
+
+    /* ---------------- TIER 3. xAI GROK API ---------------- */
     if (xaiKey && !candidate) {
       try {
-        const res = await callWithSimplify(callXai, prompt, 'grok-beta');
+        console.log(`[Grok API] Calling xAI Grok API for topic: "${chosenTopic}"...`);
+        const res = await callWithSimplify(callXai, prompt, 'grok-2-latest');
         const validated = validateAIResponse(res, chosenTopic, chosenCategory, chosenSubtopic);
         candidate = validated;
         providerName = 'xAI Grok API';
+        console.log(`[Grok API] ✓ Successfully generated post with xAI Grok!`);
       } catch (err) {
         console.warn(`[Grok API] ${err.message}. Trying next tier...`);
       }
     }
 
-    /* ---------------- TIER 3. GROQ CLOUD API ---------------- */
+    /* ---------------- TIER 4. GROQ CLOUD API ---------------- */
     if (groqKey && !candidate) {
       try {
+        console.log(`[Groq API] Calling Groq Cloud API for topic: "${chosenTopic}"...`);
         const res = await callWithSimplify(callGroq, prompt, groqKey);
         const validated = validateAIResponse(res, chosenTopic, chosenCategory, chosenSubtopic);
         candidate = validated;
         providerName = 'Groq Cloud API (Free)';
+        console.log(`[Groq API] ✓ Successfully generated post with Groq!`);
       } catch (err) {
         console.warn(`[Groq API] ${err.message}. Trying fallback bank...`);
       }
     }
 
-    /* ---------------- TIER 4. FALLBACK BANK ---------------- */
+    /* ---------------- TIER 5. FALLBACK BANK ---------------- */
     if (!candidate) {
       const fallback = generateDynamicFallback(chosenCategory, chosenSubtopic, cleanExcluded, avoidList);
       if (fallback) {
@@ -1248,6 +1259,8 @@ export async function generateEnglishPost(customTopic = '', excludedTopic = '', 
 
 export async function generateRomanUrduFromEnglish(englishPost, topic = '') {
   const geminiKey = process.env.GEMINI_API_KEY;
+  const cfToken = process.env.CLOUDFLARE_API_TOKEN || config.cloudflareApiToken;
+  const cfAccountId = process.env.CLOUDFLARE_ACCOUNT_ID || config.cloudflareAccountId;
   const xaiKey = process.env.GROK_API_KEY || process.env.XAI_API_KEY;
   const groqKey = process.env.GROQ_API_KEY;
 
@@ -1282,9 +1295,21 @@ RULES:
     }
   }
 
+  if (cfToken && cfAccountId && !romanEntry) {
+    try {
+      const res = await callCloudflareAI(prompt);
+      if (res && res.text) {
+        const entry = formatEntry(res.text);
+        if (!entry.isOverLimit && entry.charCount > 20) romanEntry = entry;
+      }
+    } catch (error) {
+      console.warn('[Roman Urdu Cloudflare AI]', error.message);
+    }
+  }
+
   if (xaiKey && !romanEntry) {
     try {
-      const res = await callXai(prompt, 'grok-beta');
+      const res = await callXai(prompt, 'grok-2-latest');
       if (res && res.text) {
         const entry = formatEntry(res.text);
         if (!entry.isOverLimit && entry.charCount > 20) romanEntry = entry;
@@ -1331,6 +1356,8 @@ RULES:
 
 export async function generatePlainUrduFromEnglish(englishPost, topic = '') {
   const geminiKey = process.env.GEMINI_API_KEY;
+  const cfToken = process.env.CLOUDFLARE_API_TOKEN || config.cloudflareApiToken;
+  const cfAccountId = process.env.CLOUDFLARE_ACCOUNT_ID || config.cloudflareAccountId;
   const xaiKey = process.env.GROK_API_KEY || process.env.XAI_API_KEY;
   const groqKey = process.env.GROQ_API_KEY;
 
@@ -1366,9 +1393,21 @@ RULES:
     }
   }
 
+  if (cfToken && cfAccountId && !urduEntry) {
+    try {
+      const res = await callCloudflareAI(prompt);
+      if (res && res.text) {
+        const entry = formatEntry(res.text);
+        if (!entry.isOverLimit && entry.charCount > 20) urduEntry = entry;
+      }
+    } catch (error) {
+      console.warn('[Plain Urdu Cloudflare AI]', error.message);
+    }
+  }
+
   if (xaiKey && !urduEntry) {
     try {
-      const res = await callXai(prompt, 'grok-beta');
+      const res = await callXai(prompt, 'grok-2-latest');
       if (res && res.text) {
         const entry = formatEntry(res.text);
         if (!entry.isOverLimit && entry.charCount > 20) urduEntry = entry;
@@ -1430,71 +1469,192 @@ export async function generateMultilingualPost(customTopic = '') {
 }
 
 /* =========================================================
-   API CALL WRAPPERS (GROQ, XAI, GEMINI)
+   API CALL WRAPPERS (CLOUDFLARE AI, GROQ, XAI, GEMINI)
 ========================================================= */
 
-async function callGroq(prompt, apiKey) {
-  const groq = new Groq({ apiKey });
-  const model = process.env.AI_MODEL || 'llama-3.3-70b-versatile';
+function safeJsonParse(rawText) {
+  if (!rawText) throw new Error('Empty response string');
+  if (typeof rawText === 'object' && rawText !== null) return rawText;
 
-  const completion = await groq.chat.completions.create({
-    model,
-    messages: [
-      {
-        role: 'system',
-        content: 'You write short X posts in simple A1-A2 English like regular people talk and write. Use short sentences and everyday words. Never use complicated words.'
-      },
-      { role: 'user', content: prompt }
-    ],
-    response_format: { type: 'json_object' },
-    temperature: 0.4
-  });
-
-  const rawJson = completion.choices[0]?.message?.content;
-  return JSON.parse(rawJson);
+  const match = typeof rawText === 'string' ? rawText.match(/\{[\s\S]*\}/) : null;
+  if (!match) throw new Error('No valid JSON object found in response');
+  const jsonString = match[0];
+  try {
+    return JSON.parse(jsonString);
+  } catch (err) {
+    try {
+      // 1. Sanitize unescaped newlines/tabs inside string literals
+      const sanitized = jsonString.replace(/"(?:[^"\\]|\\.)*"/gs, (m) => {
+        return m.replace(/\n/g, '\\n').replace(/\r/g, '').replace(/\t/g, '\\t');
+      });
+      return JSON.parse(sanitized);
+    } catch (e2) {
+      // 2. Resilient regex extraction fallback if JSON has unquoted numbers/percentages or syntax errors
+      const topicMatch = jsonString.match(/"topic"\s*:\s*"([^"\\]*(?:\\.[^"\\]*)*)"/i);
+      const textMatch = jsonString.match(/"text"\s*:\s*"([^"\\]*(?:\\.[^"\\]*)*)"/i);
+      if (textMatch && textMatch[1]) {
+        return {
+          topic: topicMatch ? topicMatch[1].replace(/\\n/g, ' ') : 'Analytical Insight',
+          text: textMatch[1].replace(/\\n/g, '\n').replace(/\\"/g, '"')
+        };
+      }
+      throw err;
+    }
+  }
 }
 
-async function callXai(prompt, model = 'grok-beta') {
-  const apiKey = process.env.GROK_API_KEY || process.env.XAI_API_KEY;
+export async function callCloudflareAI(prompt, model = null) {
+  const accountId = (process.env.CLOUDFLARE_ACCOUNT_ID || config.cloudflareAccountId || '').trim();
+  const apiToken = (process.env.CLOUDFLARE_API_TOKEN || config.cloudflareApiToken || '').trim();
+  if (!accountId || !apiToken) {
+    throw new Error('Cloudflare AI credentials not configured (CLOUDFLARE_ACCOUNT_ID, CLOUDFLARE_API_TOKEN)');
+  }
+  const targetModel = model || process.env.CLOUDFLARE_AI_MODEL || config.cloudflareAiModel || '@cf/meta/llama-3.1-8b-instruct';
 
-  const response = await fetch('https://api.x.ai/v1/chat/completions', {
-    method: 'POST',
-    headers: {
-      Authorization: `Bearer ${apiKey}`,
-      'Content-Type': 'application/json'
-    },
-    body: JSON.stringify({
-      model: process.env.AI_MODEL || model,
-      messages: [
-        {
-          role: 'system',
-          content: 'You write short X posts in simple A1-A2 English like regular people talk and write. Use short sentences and everyday words. Never use complicated words.'
-        },
-        { role: 'user', content: prompt }
-      ],
-      temperature: 0.4
-    })
-  });
+  const response = await fetch(
+    `https://api.cloudflare.com/client/v4/accounts/${accountId}/ai/run/${targetModel}`,
+    {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${apiToken}`,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        max_tokens: 512,
+        temperature: 0.5,
+        messages: [
+          {
+            role: 'system',
+            content: 'You write engaging 3-paragraph X posts in simple conversational A1-A2 English like regular people talk and text. The post MUST contain 3 distinct paragraphs separated by double line breaks (\\n\\n) and be between 260 and 460 characters total. Paragraph 1 introduces the hook. Paragraph 2 gives real numbers and data facts. Paragraph 3 makes an honest observation and asks a thoughtful question. Never use complicated words. Return ONLY a valid JSON object matching the requested schema.'
+          },
+          { role: 'user', content: prompt }
+        ]
+      })
+    }
+  );
 
   if (!response.ok) {
-    throw new Error(`xAI error HTTP ${response.status}`);
+    const errorText = await response.text();
+    throw new Error(`Cloudflare AI HTTP ${response.status}: ${errorText.slice(0, 150)}`);
   }
 
   const json = await response.json();
-  const content = json.choices[0]?.message?.content || '';
-  const match = content.match(/\{[\s\S]*\}/);
-  if (!match) throw new Error('No valid JSON object found in Grok response');
-  return JSON.parse(match[0]);
+  if (!json.success && json.errors && json.errors.length > 0) {
+    throw new Error(`Cloudflare AI error: ${json.errors[0].message}`);
+  }
+
+  let rawText = json.result?.choices?.[0]?.message?.content;
+  if (!rawText && typeof json.result?.response === 'string') {
+    rawText = json.result.response;
+  } else if (!rawText && typeof json.result?.response === 'object' && json.result.response !== null) {
+    return json.result.response;
+  }
+
+  if (!rawText) {
+    throw new Error('Empty Cloudflare AI response');
+  }
+
+  return safeJsonParse(rawText);
+}
+
+async function callGroq(prompt, apiKey) {
+  const groq = new Groq({ apiKey });
+  const models = [
+    process.env.AI_MODEL,
+    'llama-3.3-70b-versatile',
+    'llama-3.1-8b-instant',
+    'mixtral-8x7b-32768'
+  ].filter(Boolean);
+
+  let lastErr = null;
+  for (const model of Array.from(new Set(models))) {
+    try {
+      const completion = await groq.chat.completions.create({
+        model,
+        messages: [
+          {
+            role: 'system',
+            content: 'You write short X posts in simple A1-A2 English like regular people talk and write. Use short sentences and everyday words. Never use complicated words.'
+          },
+          { role: 'user', content: prompt }
+        ],
+        response_format: { type: 'json_object' },
+        temperature: 0.4
+      });
+
+      const rawJson = completion.choices[0]?.message?.content;
+      return JSON.parse(rawJson);
+    } catch (err) {
+      lastErr = err;
+    }
+  }
+
+  throw lastErr || new Error('All Groq models failed');
+}
+
+async function callXai(prompt, model = 'grok-2-latest') {
+  const apiKey = process.env.GROK_API_KEY || process.env.XAI_API_KEY;
+  if (!apiKey) {
+    throw new Error('GROK_API_KEY or XAI_API_KEY is not set');
+  }
+
+  const models = [
+    process.env.AI_MODEL,
+    model,
+    'grok-2-latest',
+    'grok-beta',
+    'grok-2'
+  ].filter(Boolean);
+
+  let lastErr = null;
+  for (const m of Array.from(new Set(models))) {
+    try {
+      const response = await fetch('https://api.x.ai/v1/chat/completions', {
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${apiKey}`,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          model: m,
+          messages: [
+            {
+              role: 'system',
+              content: 'You write short X posts in simple A1-A2 English like regular people talk and write. Use short sentences and everyday words. Never use complicated words.'
+            },
+            { role: 'user', content: prompt }
+          ],
+          temperature: 0.4
+        })
+      });
+
+      if (!response.ok) {
+        const errText = await response.text();
+        throw new Error(`xAI ${m} HTTP ${response.status}: ${errText.slice(0, 150)}`);
+      }
+
+      const json = await response.json();
+      const content = json.choices[0]?.message?.content || '';
+      return safeJsonParse(content);
+    } catch (err) {
+      lastErr = err;
+    }
+  }
+
+  throw lastErr || new Error('All Grok models failed');
 }
 
 async function callGemini(prompt, apiKey) {
   const models = [
-    process.env.GEMINI_MODEL || 'gemini-2.5-flash',
+    process.env.GEMINI_MODEL,
+    'gemini-2.5-flash',
+    'gemini-2.0-flash',
+    'gemini-1.5-flash',
     'gemini-flash-latest'
-  ];
+  ].filter(Boolean);
 
   let lastError = null;
-  for (const model of models) {
+  for (const model of Array.from(new Set(models))) {
     try {
       const parsed = await new Promise((resolve, reject) => {
         const postData = JSON.stringify({

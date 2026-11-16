@@ -204,7 +204,8 @@ async function runTests() {
   const initialText = initialGen.post.english.text;
 
   // Simulate owner replying "5" (Generate NEW fresh post)
-  const freshDecision = await whatsappWorkflow.handleOwnerReply('5', '923435022880');
+  const testOwnerNumber = config.ownerPhoneNumber || process.env.OWNER_PHONE_NUMBER || '923001234567';
+  const freshDecision = await whatsappWorkflow.handleOwnerReply('5', testOwnerNumber);
   assert.ok(freshDecision.post, 'Fresh post must be generated on Option 5');
   const freshTopic = freshDecision.post.topic;
   const freshText = freshDecision.post.english.text;
