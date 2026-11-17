@@ -459,9 +459,11 @@ class GenreManager {
       return { success: true, genre: chosen, isRandom: false };
     }
 
-    // Check if matching ID or Name
+    // Check if matching ID or Name (exact or substring)
     const matched = all.find(
       g => g.id.toLowerCase() === raw || g.name.toLowerCase() === raw
+    ) || all.find(
+      g => g.name.toLowerCase().includes(raw) || (raw.length >= 4 && raw.includes(g.name.toLowerCase()))
     );
 
     if (matched) {

@@ -42,7 +42,7 @@ import { genreManager } from './genreManager.js';
 
 let categoryRotationIndex = 0;
 
-const MIN_CHARACTERS = 380;
+const MIN_CHARACTERS = 200;
 const ABSOLUTE_MAX_CHARACTERS = 600;
 const TARGET_MIN_CHARACTERS = 400;
 const TARGET_MAX_CHARACTERS = 600;
@@ -236,7 +236,7 @@ SUBTOPIC: "${chosenSubtopic || chosenTopic}"
 STRICT POST STRUCTURE (EXACTLY 3 PARTS separated by double line breaks \\n\\n):
 Line 1: A single punchy hook line that directly introduces and discusses the main point of the topic (1 clear sentence).
 \\n\\n
-Paragraph: The real analytical body that elaborates on the hook's main point with verified facts, real numbers, and clear explanation of real-world impact (2 to 4 detailed sentences).
+Paragraph: The real analytical body that elaborates on the hook's main point with verified facts, real numbers, and clear explanation of real-world impact (4 to 5 detailed sentences so the total post reaches 400 to 600 characters).
 \\n\\n
 Line 3: A short, punchy conclusion or thoughtful closing question that wraps up the takeaway.
 
@@ -255,7 +255,8 @@ Return ONLY valid JSON matching this exact structure:
   "subtopic": "${chosenSubtopic || chosenTopic}",
   "category": "PAK_VS_IND",
   "text": "Line 1 hook\\n\\nReal body paragraph with facts and numbers\\n\\nOne-line conclusion"
-}`;
+}
+`;
 }
 
 function createEnglishPrompt(chosenTopic, chosenSubtopic, targetCategory, avoidList = []) {
@@ -274,12 +275,16 @@ Explain ideas simply so anyone understands instantly on the first read.
 
 TOPIC: "${chosenTopic}"
 SUBTOPIC: "${chosenSubtopic || chosenTopic}"
-CATEGORY: ${categoryName} (${categoryDesc})
+CATEGORY / GENRE: "${categoryName}" (${categoryDesc})
+
+MANDATORY GENRE & TOPIC INSTRUCTIONS:
+- STRICT ALIGNMENT: The post MUST be 100% about the specified category and topic: "${categoryName}" / "${chosenTopic}".
+- DO NOT switch to other countries or topics. If the genre is "${categoryName}", discuss ONLY facts, realities, and issues directly concerning "${categoryName}".
 
 STRICT POST STRUCTURE (EXACTLY 3 PARTS separated by double line breaks \\n\\n):
 Line 1: A single punchy hook line that directly introduces and discusses the main point of the topic (1 clear sentence).
 \\n\\n
-Paragraph: The real analytical body that elaborates on the hook's main point with 1 or 2 real numbers, verified facts, and clear explanation of real-world human impact (2 to 4 detailed sentences).
+Paragraph: The real analytical body that elaborates on the hook's main point with 1 or 2 real numbers, verified facts, and clear explanation of real-world human impact (write 5 to 6 full sentences, around 65-80 words, so the total post reaches 400 to 600 characters).
 \\n\\n
 Line 3: A short, punchy conclusion or thoughtful closing question that wraps up the takeaway.
 
@@ -287,7 +292,7 @@ WRITING RULES:
 1. FACTS & NUMBERS: Include 1 or 2 real numbers only.
 2. SIMPLE A1-A2 ENGLISH: Short, direct, human sentences. Everyday words only.
 3. ZERO hashtags. ZERO emojis in the post. NO bullet points. NO labels like "Hook:" or "Body:".
-4. TARGET LENGTH: 400 to 600 characters total (hard limits 380 to 600).
+4. TARGET LENGTH: 400 to 600 characters total. It is essential that the body paragraph has 5 to 6 full sentences so the total character count is between 400 and 600 characters.
 
 MANDATORY HISTORICAL AVOIDANCE:
 • ${avoidStr}
@@ -1038,9 +1043,29 @@ export const CURATED_STORY_TOPICS = FALLBACK_BANK;
 function generateDynamicFallback(category, subtopic = '', excludedTopic = '', avoidList = []) {
   const cleanExcluded = String(excludedTopic || '').toLowerCase().trim();
   const avoidCombined = avoidList.map(a => String(a).toLowerCase());
+  const genreObj = genreManager.getGenreById(category);
+  const genreName = (genreObj?.name || category || '').toLowerCase();
 
+  // Helper to construct validated candidate
+  const formatCandidate = (item, assignedCat) => ({
+    topic: item.topic,
+    subtopic: item.subtopic || subtopic || item.topic,
+    category: assignedCat || item.category,
+    genreId: assignedCat || item.category,
+    mainSubject: item.mainSubject,
+    specificEventOrIssue: item.specificEventOrIssue,
+    centralArgument: item.centralArgument,
+    analyticalAngle: item.analyticalAngle,
+    importantStatistics: item.importantStatistics,
+    keywords: item.keywords,
+    english: formatEntry(item.english.text),
+    romanUrdu: item.romanUrdu ? formatEntry(item.romanUrdu.text) : null,
+    plainUrdu: item.plainUrdu ? formatEntry(item.plainUrdu.text) : null
+  });
+
+  // 1. Exact category match
   for (const item of FALLBACK_BANK) {
-    if (category && item.category !== category) {
+    if (category && item.category !== category && item.genreId !== category) {
       continue;
     }
 
@@ -1068,64 +1093,81 @@ function generateDynamicFallback(category, subtopic = '', excludedTopic = '', av
       continue;
     }
 
-    return {
-      topic: item.topic,
-      subtopic: item.subtopic || subtopic || item.topic,
-      category: item.category,
-      genreId: item.category,
-      mainSubject: item.mainSubject,
-      specificEventOrIssue: item.specificEventOrIssue,
-      centralArgument: item.centralArgument,
-      analyticalAngle: item.analyticalAngle,
-      importantStatistics: item.importantStatistics,
-      keywords: item.keywords,
-      english: formatEntry(item.english.text),
-      romanUrdu: item.romanUrdu ? formatEntry(item.romanUrdu.text) : null,
-      plainUrdu: item.plainUrdu ? formatEntry(item.plainUrdu.text) : null
-    };
+    return formatCandidate(item, item.category);
   }
 
-  // Second pass: if category has no entries (e.g. custom user-added genre), pick any unseen entry
-  for (const item of FALLBACK_BANK) {
-    const isExcluded = cleanExcluded && (
-      item.topic.toLowerCase().trim() === cleanExcluded ||
-      (item.subtopic && item.subtopic.toLowerCase().trim() === cleanExcluded)
-    );
-    if (isExcluded) continue;
+  // 2. Keyword relevance match if genre name contains specific words (e.g. "india", "tech", "climate")
+  if (genreName) {
+    const rawTokens = genreName.split(/[^a-z0-9]+/i).filter(w => w.length >= 4 && !['side', 'good', 'bads', 'best', 'post', 'news', 'data', 'analytics'].includes(w));
+    if (rawTokens.length > 0) {
+      for (const item of FALLBACK_BANK) {
+        const itemText = `${item.topic} ${item.subtopic} ${item.mainSubject || ''} ${item.english.text}`.toLowerCase();
+        const matchesTerm = rawTokens.some(token => itemText.includes(token));
+        if (!matchesTerm) continue;
 
-    if (avoidCombined.some(a => a.includes(item.topic.toLowerCase()) || (item.subtopic && a.includes(item.subtopic.toLowerCase())))) {
-      continue;
+        // CRITICAL: If the genre does not explicitly mention Pakistan, never return Pakistan-related items
+        if (!genreName.includes('pak') && (itemText.includes('pakistan') || itemText.includes('pak ') || item.category === 'PAK_VS_IND' || item.category === 'PAKISTAN_POLITICS')) {
+          continue;
+        }
+
+        const isExcluded = cleanExcluded && (
+          item.topic.toLowerCase().trim() === cleanExcluded ||
+          (item.subtopic && item.subtopic.toLowerCase().trim() === cleanExcluded)
+        );
+        if (isExcluded) continue;
+
+        if (avoidCombined.some(a => a.includes(item.topic.toLowerCase()) || (item.subtopic && a.includes(item.subtopic.toLowerCase())))) {
+          continue;
+        }
+
+        if (historyStore.hasSeenTopic(item.topic)) {
+          continue;
+        }
+
+        const simpleErr = checkSimpleEnglish(item.english.text);
+        if (simpleErr) {
+          continue;
+        }
+
+        const dupCheck = historyStore.isDuplicateOrSimilar(item.english.text, item.topic, item);
+        if (dupCheck.isDuplicate) {
+          continue;
+        }
+
+        return formatCandidate(item, category || item.category);
+      }
     }
+  }
 
-    if (historyStore.hasSeenTopic(item.topic)) {
-      continue;
+  // 3. Only if category is NOT a custom user genre and NOT primary, allow general rotation
+  if (!genreObj?.isCustom && !genreManager.getPrimaryGenre()) {
+    for (const item of FALLBACK_BANK) {
+      const isExcluded = cleanExcluded && (
+        item.topic.toLowerCase().trim() === cleanExcluded ||
+        (item.subtopic && item.subtopic.toLowerCase().trim() === cleanExcluded)
+      );
+      if (isExcluded) continue;
+
+      if (avoidCombined.some(a => a.includes(item.topic.toLowerCase()) || (item.subtopic && a.includes(item.subtopic.toLowerCase())))) {
+        continue;
+      }
+
+      if (historyStore.hasSeenTopic(item.topic)) {
+        continue;
+      }
+
+      const simpleErr = checkSimpleEnglish(item.english.text);
+      if (simpleErr) {
+        continue;
+      }
+
+      const dupCheck = historyStore.isDuplicateOrSimilar(item.english.text, item.topic, item);
+      if (dupCheck.isDuplicate) {
+        continue;
+      }
+
+      return formatCandidate(item, category || item.category);
     }
-
-    const simpleErr = checkSimpleEnglish(item.english.text);
-    if (simpleErr) {
-      continue;
-    }
-
-    const dupCheck = historyStore.isDuplicateOrSimilar(item.english.text, item.topic, item);
-    if (dupCheck.isDuplicate) {
-      continue;
-    }
-
-    return {
-      topic: item.topic,
-      subtopic: item.subtopic || subtopic || item.topic,
-      category: category || item.category,
-      genreId: category || item.category,
-      mainSubject: item.mainSubject,
-      specificEventOrIssue: item.specificEventOrIssue,
-      centralArgument: item.centralArgument,
-      analyticalAngle: item.analyticalAngle,
-      importantStatistics: item.importantStatistics,
-      keywords: item.keywords,
-      english: formatEntry(item.english.text),
-      romanUrdu: item.romanUrdu ? formatEntry(item.romanUrdu.text) : null,
-      plainUrdu: item.plainUrdu ? formatEntry(item.plainUrdu.text) : null
-    };
   }
 
   return null;
@@ -1202,8 +1244,24 @@ export async function generateEnglishPost(customTopic = '', excludedTopic = '', 
 
   // If a custom topic is provided, align genre
   if (customTopic.trim()) {
-    chosenCategory = 'PAK_VS_IND';
-    targetCategory = allGenres.find(g => g.id === 'PAK_VS_IND') || targetCategory;
+    const matched = allGenres.find(g =>
+      g.name.toLowerCase() === customTopic.trim().toLowerCase() ||
+      g.id.toLowerCase() === customTopic.trim().toLowerCase()
+    );
+    if (matched) {
+      targetCategory = matched;
+      chosenCategory = matched.id;
+    } else if (primaryGenre) {
+      targetCategory = primaryGenre;
+      chosenCategory = primaryGenre.id;
+    } else {
+      chosenCategory = 'CUSTOM_TOPIC';
+      targetCategory = {
+        id: 'CUSTOM_TOPIC',
+        name: customTopic.trim(),
+        description: `Topic analysis: ${customTopic.trim()}`
+      };
+    }
   }
 
   const usedSubtopics = historyStore.getAllUsedSubtopics(chosenCategory);
@@ -1676,7 +1734,7 @@ export async function callCloudflareAI(prompt, model = null) {
         messages: [
           {
             role: 'system',
-            content: 'You write engaging X posts in simple conversational A1-A2 English like regular people talk and text. Every post MUST strictly follow this exact 3-part layout separated by double line breaks (\\n\\n):\nLine 1: A single punchy hook line that directly introduces and discusses the topic\'s main point.\n\\n\\nParagraph: The real analytical body that elaborates on the main point with verified facts and real numbers.\n\\n\\nClosing Line: A short concluding takeaway or thoughtful question.\nTotal post length MUST be between 400 and 600 characters. Never use hashtags, emojis, or labels like "Hook:" or "Body:". Return ONLY a valid JSON object matching the requested schema.'
+            content: 'You write engaging X posts in simple conversational A1-A2 English like regular people talk and text. Every post MUST strictly follow this exact 3-part layout separated by double line breaks (\\n\\n):\nLine 1: A single punchy hook line that directly introduces and discusses the topic\'s main point.\n\\n\\nParagraph: The real analytical body that elaborates on the main point with verified facts and real numbers (4 to 6 sentences, around 65 to 80 words).\n\\n\\nClosing Line: A short concluding takeaway or thoughtful question.\nTotal post length MUST be between 400 and 600 characters. Never use hashtags, emojis, or labels like "Hook:" or "Body:". Return ONLY a valid JSON object matching the requested schema.'
           },
           { role: 'user', content: prompt }
         ]
@@ -1725,7 +1783,7 @@ async function callGroq(prompt, apiKey) {
         messages: [
           {
             role: 'system',
-            content: 'You write engaging X posts in simple conversational A1-A2 English like regular people talk and text. Every post MUST strictly follow this exact 3-part layout separated by double line breaks (\\n\\n):\nLine 1: A single punchy hook line that directly introduces and discusses the topic\'s main point.\n\\n\\nParagraph: The real analytical body that elaborates on the main point with verified facts and real numbers.\n\\n\\nClosing Line: A short concluding takeaway or thoughtful question.\nTotal post length MUST be between 400 and 600 characters. Never use hashtags, emojis, or labels like "Hook:" or "Body:". Return ONLY a valid JSON object matching the requested schema.'
+            content: 'You write engaging X posts in simple conversational A1-A2 English like regular people talk and text. Every post MUST strictly follow this exact 3-part layout separated by double line breaks (\\n\\n):\nLine 1: A single punchy hook line that directly introduces and discusses the topic\'s main point.\n\\n\\nParagraph: The real analytical body that elaborates on the main point with verified facts and real numbers (4 to 6 sentences, around 65 to 80 words).\n\\n\\nClosing Line: A short concluding takeaway or thoughtful question.\nTotal post length MUST be between 400 and 600 characters. Never use hashtags, emojis, or labels like "Hook:" or "Body:". Return ONLY a valid JSON object matching the requested schema.'
           },
           { role: 'user', content: prompt }
         ],

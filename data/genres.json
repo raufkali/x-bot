@@ -1,6 +1,17 @@
 {
-  "primaryGenreId": null,
-  "customGenres": [],
+  "primaryGenreId": "CUSTOM_BAD_SIDE_OF_INDIA_6572",
+  "customGenres": [
+    {
+      "id": "CUSTOM_BAD_SIDE_OF_INDIA_6572",
+      "name": "bad side of india",
+      "description": "Analysis of economic disparity, poverty, and urban infrastructure issues in India",
+      "keywords": [
+        "bad side of india"
+      ],
+      "isCustom": true,
+      "createdAt": "2026-11-17T08:02:16.573Z"
+    }
+  ],
   "removedGenreIds": [],
-  "updatedAt": "2026-11-17T07:31:09.165Z"
+  "updatedAt": "2026-11-17T08:02:16.576Z"
 }

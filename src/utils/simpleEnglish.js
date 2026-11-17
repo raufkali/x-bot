@@ -13,7 +13,7 @@ export const SIMPLE_ENGLISH_RULES = `SIMPLE ENGLISH RULES (MANDATORY):
 - If a 10-year-old child would not know a word, use a simpler word.
 
 EXAMPLE TONE:
-Pakistan and India spend billions of dollars on military jets. But many village clinics still lack basic medicine. Children need clean water, good food, and local schools. When countries spend on weapons first, regular working families suffer. Can a country truly be strong if its people are hungry?`;
+Many modern cities spend billions of dollars on luxury towers and airports. But local neighbourhood clinics still lack basic medicine. Children need clean water, good food, and well-equipped schools. When public funds go toward showy projects first, regular working families suffer. Can any place truly be strong if its people are struggling?`;
 
 /**
  * Validates simple English.

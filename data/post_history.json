@@ -1,6 +1,6 @@
 {
-  "totalPosts": 20,
-  "updatedAt": "2026-11-17T06:56:39.669Z",
+  "totalPosts": 22,
+  "updatedAt": "2026-11-17T07:58:22.395Z",
   "posts": [
     {
       "hash": "cf010403450d07a18e28b67f83c481c3d59480679f03f1f8e7f1fb347387e853",
@@ -737,6 +737,72 @@
       "timestamp": "2026-11-17T06:56:39.661Z",
       "usedPermanently": true,
       "markedUsedAt": "2026-11-17T06:56:39.669Z"
+    },
+    {
+      "hash": "c33f350928676adffd358171a0fdcae6692fef0d612a516c8ebd70d33df1b353",
+      "topic": "India vs Neighbours: Regional Influence & Ports",
+      "subtopic": "India-Pakistan relations and Chinese influence",
+      "genreId": "CUSTOM_BAD_SIDE_OF_INDIA_8900",
+      "category": "CUSTOM_BAD_SIDE_OF_INDIA_8900",
+      "mainSubject": "Neighbourhood port diplomacy and South Asian trade",
+      "specificEventOrIssue": "Chinese port investments vs regional cooperation",
+      "centralArgument": "Neighbouring countries choose cheaper foreign partners when regional talks stay frozen",
+      "analyticalAngle": "Regional bullying vs mutual respect with neighbours",
+      "importantStatistics": [
+        "SAARC frozen",
+        "billions in port funding"
+      ],
+      "keywords": [
+        "neighbours",
+        "ports",
+        "trade",
+        "ships",
+        "borders"
+      ],
+      "normalizedText": "south asian countries share long borders rivers and common languages yet direct trade between india and pakistan remains shut down due to politics smaller neighbours like sri lanka nepal and bangladesh now build ports with chinese money leaders give speeches about regional brotherhood while keeping border trade gates locked shut can any country be a trusted regional leader if it cannot get along with its neighbours",
+      "englishText": "South Asian countries share long borders, rivers, and common languages.\n\nYet direct trade between India and Pakistan remains shut down due to politics. Smaller neighbours like Sri Lanka, Nepal, and Bangladesh now build ports with Chinese money. Leaders give speeches about regional brotherhood while keeping border trade gates locked shut.\n\nCan any country be a trusted regional leader if it cannot get along with its neighbours?",
+      "romanUrduText": "South Asian mulkon ki sarhadein, darya aur zubanein aik jaisi hain.\n\nMagar siyasat ki waja se India aur Pakistan ki aapas ki tijarat band pari hai. Sri Lanka, Nepal aur Bangladesh ab Cheen ke paison se ports bana rahay hain. Hukmaran dosti ke bhashan detay hain magar sarhad ke darwazay band rakhte hain.\n\nKya koi mulk bara leader ban sakta hai agar wo hamsayon se rishta na nibha sakay?",
+      "plainUrduText": "جنوبی ایشیا کے ممالک مشترکہ سرحدیں، دریا اور زبانیں رکھتے ہیں۔\n\nلیکن سیاست کی وجہ سے پاک بھارت براہ راست تجارت بند پڑی ہے۔ سری لنکا، نیپال اور بنگلہ دیش اب چینی فنڈز سے اپنی بندرگاہیں بنا رہے ہیں۔ حکمران دوستی کے بھاشن دیتے ہیں لیکن سرحد کے تجارتی پھاٹک بند رکھتے ہیں۔\n\nکیا کوئی ملک خطے کا بڑا رہنما بن سکتا ہے اگر وہ پڑوسیوں کے ساتھ اچھے تعلقات نہ رکھے؟",
+      "numbers": [
+        "SAARC frozen",
+        "billions in port funding"
+      ],
+      "provider": "Fallback Analytical Bank",
+      "status": "PENDING",
+      "timestamp": "2026-11-17T07:40:44.721Z"
+    },
+    {
+      "hash": "e5078296adb52f599a6e53598afc514ec617847f4c1027939787e907a9d4eb75",
+      "topic": "India vs Pakistan: Russian Oil & Energy Realities",
+      "subtopic": "Russian oil imports",
+      "genreId": "CUSTOM_BAD_SIDE_OF_INDIA_7246",
+      "category": "CUSTOM_BAD_SIDE_OF_INDIA_7246",
+      "mainSubject": "Discounted Russian crude oil purchases",
+      "specificEventOrIssue": "Buying discounted oil while balancing foreign ties",
+      "centralArgument": "Countries buy cheaper fuel for their citizens regardless of outside political advice",
+      "analyticalAngle": "Cheap energy for regular citizens vs foreign pressure",
+      "importantStatistics": [
+        "1.6 million barrels daily",
+        "cheaper fuel"
+      ],
+      "keywords": [
+        "oil",
+        "fuel",
+        "energy",
+        "petrol",
+        "prices"
+      ],
+      "normalizedText": "in 2023 india bought about 1 6 million barrels of discounted oil from russia every day it ignored pressure from western capitals to keep petrol affordable for regular drivers meanwhile pakistan paid high prices for imported fuel while waiting on foreign loans affordable oil keeps food prices down and factories open for regular workers should poor nations obey foreign powers or secure cheap fuel for their people",
+      "englishText": "In 2023, India bought about 1.6 million barrels of discounted oil from Russia every day.\n\nIt ignored pressure from Western capitals to keep petrol affordable for regular drivers. Meanwhile, Pakistan paid high prices for imported fuel while waiting on foreign loans. Affordable oil keeps food prices down and factories open for regular workers.\n\nShould poor nations obey foreign powers or secure cheap fuel for their people?",
+      "romanUrduText": "2023 mein India ne Russia se rozana taqreeban 16 lakh barrel sasta tail khareeda.\n\nUs ne maghribi dabao ko nazar-andaz kiya taakay aam shehri ke liye petrol sasta rahay. Pakistan doosri taraf mehenga tail khareedta raha aur qarzay leta raha. Sasta tail factoryan chalata hai aur aam cheezon ki qeemat kam rakhta hai.\n\nKya ghareeb mulkon ko bahir ki sunni chahiye ya apne logon ke liye sasta fuel lena chahiye?",
+      "plainUrduText": "2023 میں بھارت نے روس سے روزانہ تقریباً سولہ لاکھ بیرل سستا تیل خریدا۔\n\nاس نے مغربی دباؤ کو نظر انداز کیا تاکہ عام شہریوں کے لیے پیٹرول سستا رہے۔ دوسری طرف پاکستان مہنگا ایندھن خریدتا رہا اور غیر ملکی قرضوں پر انحصار کیا۔ سستا تیل فیکٹریاں چلاتا ہے اور روزمرہ اشیاء کی قیمتیں قابو میں رکھتا ہے۔\n\nکیا غریب ممالک کو باہر کی باتیں سننی چاہئیں یا اپنے شہریوں کے لیے سستا ایندھن لینا چاہیے؟",
+      "numbers": [
+        "1.6 million barrels daily",
+        "cheaper fuel"
+      ],
+      "provider": "Fallback Analytical Bank",
+      "status": "PENDING",
+      "timestamp": "2026-11-17T07:58:22.394Z"
     }
   ]
 }

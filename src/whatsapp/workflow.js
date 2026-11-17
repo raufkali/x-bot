@@ -24,7 +24,8 @@ class WhatsAppWorkflowManager extends EventEmitter {
     this.currentPendingPost = null; // { topic, category, english, romanUrdu, plainUrdu, activeView }
     this.approvedPost = null;
     this.status = 'IDLE'; // IDLE | AWAITING_GENERATE | AWAITING_APPROVAL | APPROVED | DISCARDED
-    this.menuState = 'DEFAULT'; // DEFAULT | CUSTOMIZE_MENU | AWAITING_NEW_GENRE | AWAITING_PRIMARY_SELECTION
+    this.menuState = 'DEFAULT'; // DEFAULT | CUSTOMIZE_MENU | AWAITING_NEW_GENRE | POST_GENRE_ADD_OPTIONS | AWAITING_PRIMARY_SELECTION | AWAITING_REMOVE_SELECTION
+    this.newlyAddedGenre = null;
   }
 
   /**
@@ -351,15 +352,18 @@ class WhatsAppWorkflowManager extends EventEmitter {
       // Owner submitted their new genre
       try {
         const added = genreManager.addGenre(rawInput);
-        this.menuState = 'CUSTOMIZE_MENU';
+        this.newlyAddedGenre = added;
+        this.menuState = 'POST_GENRE_ADD_OPTIONS';
         console.log(ansi.emeraldText(`\n✓ [WhatsApp Action] New genre added: "${added.name}"`));
         const confMsg =
           `✅ *New Genre Added Successfully!*\n\n` +
           `🏷️ *Name:* *${added.name}*\n` +
           `📝 *Description:* _${added.description}_\n\n` +
-          `• Reply *3* ➔ Make it Primary\n` +
-          `• Reply *2* ➔ Show all genres\n` +
-          `• Reply *0* ➔ Back to Main Menu`;
+          `What would you like to do with *${added.name}*?\n` +
+          `• *1* ➔ Set as Primary & Generate Post Now\n` +
+          `• *2* ➔ Set as Primary (Bot will post ONLY this genre)\n` +
+          `• *3* ➔ Show all genres\n` +
+          `• *0* ➔ Back to Main Menu`;
 
         if (whatsappClient.isConfigured() && fromNumber) {
           try { await whatsappClient.sendText(fromNumber, confMsg); } catch (e) {}
@@ -372,6 +376,85 @@ class WhatsAppWorkflowManager extends EventEmitter {
         }
         return { action: 'GENRE_ADD_ERROR', error: err.message };
       }
+    }
+
+    // --- SUB-STATE: POST GENRE ADD OPTIONS ---
+    if (this.menuState === 'POST_GENRE_ADD_OPTIONS') {
+      const targetGenre = this.newlyAddedGenre;
+
+      // Option 1: Set as primary AND generate immediately
+      if (input === '1' || input.includes('generate')) {
+        if (targetGenre) {
+          genreManager.setPrimaryGenre(targetGenre.id);
+        }
+        this.menuState = 'DEFAULT';
+        this.status = 'AWAITING_GENERATE';
+        console.log(ansi.emeraldText(`\n✓ [WhatsApp Action] Primary genre set to "${targetGenre?.name}" and generating post immediately...`));
+        if (whatsappClient.isConfigured() && fromNumber) {
+          try {
+            await whatsappClient.sendText(fromNumber, `🎯 *Primary Genre Set:* *${targetGenre?.name}*\n⚡ *Generating post now... Please wait a few seconds.*`);
+          } catch (e) {}
+        }
+        return await this.generateAndSend(targetGenre?.name || '');
+      }
+
+      // Option 2: Set as primary only
+      if (input === '2' || input.includes('primary') || input.includes('make')) {
+        let confMsg = '';
+        if (targetGenre) {
+          genreManager.setPrimaryGenre(targetGenre.id);
+          console.log(ansi.emeraldText(`\n✓ [WhatsApp Action] Primary genre set to: "${targetGenre.name}"`));
+          confMsg =
+            `✅ *Primary Genre Set:* 🎯 *${targetGenre.name}*\n\n` +
+            `_From now on, the bot will post only of that genre nothing else!_\n\n` +
+            `• *1* ➔ Generate a new post now\n` +
+            `• *2* ➔ Customize the bot`;
+        }
+        this.menuState = 'DEFAULT';
+        this.status = 'AWAITING_GENERATE';
+        if (whatsappClient.isConfigured() && fromNumber) {
+          try { await whatsappClient.sendText(fromNumber, confMsg); } catch (e) {}
+        }
+        return { action: 'PRIMARY_GENRE_SET', genre: targetGenre, isRandom: false, message: confMsg };
+      }
+
+      // Option 3: Show all genres
+      if (input === '3' || input.includes('show') || input.includes('list')) {
+        this.menuState = 'CUSTOMIZE_MENU';
+        console.log(ansi.emeraldText('\n📚 [WhatsApp Action] Owner selected: Show all genres'));
+        const listMsg = genreManager.formatGenresList();
+        if (whatsappClient.isConfigured() && fromNumber) {
+          try { await whatsappClient.sendText(fromNumber, listMsg); } catch (e) {}
+        }
+        return { action: 'LIST_GENRES', message: listMsg };
+      }
+
+      // Option 0: Back to main menu
+      if (input === '0' || input === 'cancel' || input === 'back') {
+        this.menuState = 'DEFAULT';
+        this.status = 'AWAITING_GENERATE';
+        const backMsg =
+          `🏠 *Main Menu*\n\n` +
+          `• *1* ➔ Generate a new post\n` +
+          `• *2* ➔ Customize the bot`;
+        if (whatsappClient.isConfigured() && fromNumber) {
+          try { await whatsappClient.sendText(fromNumber, backMsg); } catch (e) {}
+        }
+        return { action: 'MENU_CANCELLED', message: backMsg };
+      }
+
+      // Invalid input fallback
+      const invalidMsg =
+        `⚠️ Invalid selection.\n\n` +
+        `What would you like to do with *${targetGenre?.name || 'this genre'}*?\n` +
+        `• *1* ➔ Set as Primary & Generate Post Now\n` +
+        `• *2* ➔ Set as Primary (Bot will post ONLY this genre)\n` +
+        `• *3* ➔ Show all genres\n` +
+        `• *0* ➔ Back to Main Menu`;
+      if (whatsappClient.isConfigured() && fromNumber) {
+        try { await whatsappClient.sendText(fromNumber, invalidMsg); } catch (e) {}
+      }
+      return { action: 'INVALID_POST_GENRE_ADD_SELECTION', message: invalidMsg };
     }
 
     // --- SUB-STATE: AWAITING PRIMARY GENRE SELECTION (Option 3) ---
