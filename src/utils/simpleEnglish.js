@@ -1,28 +1,26 @@
 /**
- * Simple English Rules for X_BOT
- * Enforces simple A1-A2 English: everyday conversational vocabulary,
- * short sentences, and clear concepts with zero complicated words.
+ * Viral High-Impact Commentary Guidelines for X_BOT
+ * Enforces razor-sharp, gripping, and deeply analytical social media commentary
+ * inspired by influential geopolitical commentators like Abdul Mussawer Safi (@MussawerSafi).
  */
 
-export const SIMPLE_ENGLISH_RULES = `SIMPLE ENGLISH RULES (MANDATORY):
-- Write in simple everyday A1-A2 English, just like chatting with a friend.
-- Use only common, daily words. Never use complicated, fancy, or academic words.
-- Keep sentences short, natural, and direct. One simple thought per sentence.
-- Sound human and casual, like how regular people write in daily messages.
-- Include only 1 or 2 simple numbers so it is easy to read.
-- If a 10-year-old child would not know a word, use a simpler word.
+export const VIRAL_COMMENTARY_RULES = `EDITORIAL VOICE & STYLE (HIGH-IMPACT VIRAL COMMENTARY):
+- Persona: Fearless, razor-sharp geopolitical analyst and social commentator (in the bold, viral style of top X influencers like Abdul Mussawer Safi).
+- Tone: Thrilling, bold, deeply analytical, and unapologetic. Cut straight through propaganda, slogans, and PR to expose the real mechanics, contradictions, and hypocrisies.
+- Language: Clear, punchy, human English with rhythmic cadence and memorable phrasing. Every sentence must carry weight and bite. Avoid dry academic jargon, but never dumb down the facts or ideas.
+- Hook (Opening Line): A fierce, captivating opening statement that immediately stops the scroll by exposing a paradox, hypocrisy, or startling reality.
+- Analytical Core (Body Paragraph): Ground every claim in real-world facts, specific policies, verified numbers, trade flows, or historical records (3 to 5 hard-hitting sentences).
+- Conclusion (Closing Line): A devastating punchline, sharp takeaway, or thought-provoking rhetorical question that lingers in the reader's mind.
+- ZERO emojis, ZERO hashtags, NO bullet points, NO labels like "Hook:" or "Body:".`;
 
-EXAMPLE TONE:
-Many modern cities spend billions of dollars on luxury towers and airports. But local neighbourhood clinics still lack basic medicine. Children need clean water, good food, and well-equipped schools. When public funds go toward showy projects first, regular working families suffer. Can any place truly be strong if its people are struggling?`;
+export const SIMPLE_ENGLISH_RULES = VIRAL_COMMENTARY_RULES;
 
 /**
- * Validates simple English.
- * Rejection criteria removed per user request: we do not block or reject on mechanical word counts.
- * Returns null so generation flows smoothly without rejections.
+ * Validates post text.
+ * Returns null so generation flows smoothly without mechanical rejections.
  * @param {string} text - The English post text
  * @returns {null} - Always returns null (no rejection)
  */
 export function checkSimpleEnglish(text) {
-  // Rejection criteria removed: use simple A1-A2 English via prompt guidance without hard rejection blocks.
   return null;
 }

@@ -413,13 +413,10 @@ class HistoryStore {
         };
       }
 
-      // Check 3: Similar central arguments
+      // Check 3: Similar central arguments (flag only if heavily overlapping)
       if (meta.centralArgument && post.centralArgument) {
         const argSim = calculateArgumentSimilarity(meta.centralArgument, post.centralArgument);
-        const relatedContext = (meta.mainSubject && post.mainSubject && calculateArgumentSimilarity(meta.mainSubject, post.mainSubject) > 0.35) ||
-                               (meta.subtopic && post.subtopic && calculateArgumentSimilarity(meta.subtopic, post.subtopic) > 0.35) ||
-                               textJaccard > 0.30;
-        if (argSim >= 0.65 || (argSim > 0.45 && relatedContext)) {
+        if (argSim >= 0.80 || (argSim > 0.65 && textJaccard > 0.35)) {
           return {
             isDuplicate: true,
             reason: `SIMILAR_CENTRAL_ARGUMENT (${Math.round(argSim * 100)}% argument overlap with "${post.topic}")`,
@@ -430,14 +427,14 @@ class HistoryStore {
         }
       }
 
-      // Check 4: Repeated subject and analytical angle
+      // Check 4: Repeated subject and analytical angle (flag only if subject, angle, and text heavily repeat)
       if (meta.mainSubject && post.mainSubject) {
         const subjectSim = calculateArgumentSimilarity(meta.mainSubject, post.mainSubject);
         const angleSim = (meta.analyticalAngle && post.analyticalAngle)
           ? calculateArgumentSimilarity(meta.analyticalAngle, post.analyticalAngle)
           : 0;
 
-        if (subjectSim > 0.50 && angleSim > 0.45) {
+        if (subjectSim > 0.80 && angleSim > 0.75 && textJaccard > 0.35) {
           return {
             isDuplicate: true,
             reason: `REPEATED_SUBJECT_AND_ANGLE ("${meta.mainSubject}" / "${meta.analyticalAngle}" matches "${post.topic}")`,
@@ -451,7 +448,7 @@ class HistoryStore {
       if (Array.isArray(meta.importantStatistics) && meta.importantStatistics.length >= 2 &&
           Array.isArray(post.importantStatistics) && post.importantStatistics.length >= 2) {
         const sharedStats = meta.importantStatistics.filter(s => post.importantStatistics.includes(s));
-        if (sharedStats.length >= 2 && (textJaccard > 0.30 || textCosine > 0.35)) {
+        if (sharedStats.length >= 2 && (textJaccard > 0.35 || textCosine > 0.40)) {
           return {
             isDuplicate: true,
             reason: `REUSED_STATISTICS_AND_COMPARISON (${sharedStats.join(', ')} overlapping with "${post.topic}")`,
@@ -461,15 +458,14 @@ class HistoryStore {
         }
       }
 
-      // Check 6: Repeated subtopic with overlapping claim
+      // Check 6: Repeated subtopic with overlapping claim (flag only if wording and argument overlap)
       const postSubtopicNorm = normalizeText(post.subtopic || post.topic);
       if (cleanSubtopicNorm && cleanSubtopicNorm.length > 5 && cleanSubtopicNorm === postSubtopicNorm) {
-        // If subtopic is identical, require distinct analytical angle and low argument overlap (< 0.30)
         const subtopicArgOverlap = (meta.centralArgument && post.centralArgument)
           ? calculateArgumentSimilarity(meta.centralArgument, post.centralArgument)
           : textJaccard;
 
-        if (subtopicArgOverlap > 0.30) {
+        if (subtopicArgOverlap > 0.65 && textJaccard > 0.30) {
           return {
             isDuplicate: true,
             reason: `EXHAUSTED_SUBTOPIC_OR_ARGUMENT (Subtopic "${post.subtopic}" already explored with similar claim)`,

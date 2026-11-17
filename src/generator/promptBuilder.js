@@ -37,39 +37,37 @@ Generate exactly ${postWord}. Each idea must communicate a distinct angle or poi
 For EVERY post idea, generate exactly three language versions communicating the same core message:
 
 LANGUAGE 1 — ENGLISH
-- Use very simple A1-A2 English like regular people talk and write every day.
-- Use only common, daily words. Never use complicated, fancy, or academic words.
-- Keep sentences short, natural, and direct.
-- Present one simple thought at a time so anyone understands on the first read.
-- Include only 1 or 2 numbers per post.
+- Write in high-impact, razor-sharp conversational English like a fearless geopolitical analyst on X.
+- Rhythmic, punchy, and compelling prose that cuts straight to the point.
+- Keep sentences concise, natural, and direct.
+- Ground the commentary in verifiable real-world facts, trade flows, institutions, or historical realities.
 
 LANGUAGE 2 — ROMAN URDU
 - Write Urdu using English alphabets.
-- Use natural Pakistani conversational Urdu (familiar everyday expressions).
+- Use natural Pakistani conversational Urdu with sharp bite and bold tone.
 - Do not translate English word by word.
-- Keep the language simple, natural, and readable.
+- Keep the language punchy, natural, and readable.
 - Avoid unnatural combinations of English and Urdu.
 
 LANGUAGE 3 — PLAIN URDU
 - Write proper Urdu script (اردو).
-- Use natural, grammatically correct Pakistani Urdu.
+- Use natural, grammatically correct Pakistani Urdu with strong analytical depth.
 - Avoid unnecessary English words when appropriate Urdu alternatives exist.
-- Maintain the original message and meaning.
+- Maintain the original punch, message, and meaning.
 
 CONTENT RULES:
 1. All three versions of an idea must communicate the same central idea.
-2. Make each opening interesting and clear.
-3. Keep sentences short and readable (strictly 6 to 14 words per sentence).
+2. Make each opening interesting, fierce, and clear.
+3. Keep sentences short and readable.
 4. Avoid robotic or repetitive expressions.
 5. Avoid generic AI-style introductions (e.g. "In this fast-paced world...", "Buckle up...", "Dive in...").
-6. Do not invent facts, statistics, sources, or quotations. Use only well-known, verified numbers.
-7. Never present speculation as established fact.
-8. Do not force a political or controversial angle.
-9. ZERO emojis. Do not use any emojis.
-10. ZERO hashtags. Do not use any hashtags. Always output "Hashtags: NONE".
-11. STRICT LENGTH REQUIREMENT: 400 to 600 characters, never above 600.
-12. Preserve the original topic and intention.
-13. STRUCTURE: Line 1 (Hook) directly discusses the topic's main point. Paragraph 2 (Body) elaborates with verified facts/numbers. Line 3 (Conclusion) is a short takeaway or closing question.
+6. Do not invent fake statistics; use real historical, economic, or institutional facts.
+7. Unapologetic, thought-provoking, and deeply engaging commentary.
+8. ZERO emojis. Do not use any emojis.
+9. ZERO hashtags. Do not use any hashtags. Always output "Hashtags: NONE".
+10. STRICT LENGTH REQUIREMENT: 400 to 600 characters, never above 650.
+11. Preserve the original topic and intention.
+12. STRUCTURE: Line 1 (Hook) directly discusses the topic's main point. Paragraph 2 (Body) elaborates with verified facts/numbers. Line 3 (Conclusion) is a short takeaway or closing question.
 
 INPUT DETAILS:
 - TOPIC / IDEA:

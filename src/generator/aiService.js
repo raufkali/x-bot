@@ -43,7 +43,7 @@ import { genreManager } from './genreManager.js';
 let categoryRotationIndex = 0;
 
 const MIN_CHARACTERS = 200;
-const ABSOLUTE_MAX_CHARACTERS = 600;
+const ABSOLUTE_MAX_CHARACTERS = 650;
 const TARGET_MIN_CHARACTERS = 400;
 const TARGET_MAX_CHARACTERS = 600;
 
@@ -167,7 +167,23 @@ function validateAIResponse(res, chosenTopic, chosenCategory = 'PAK_VS_IND', cho
     throw new Error('AI returned empty or overly short text');
   }
 
-  const entry = formatEntry(rawText);
+  let entry = formatEntry(rawText);
+
+  // If text is slightly over limit (> 600 chars), smartly trim excess sentences from the body paragraph
+  if (entry.charCount > 600) {
+    const blocks = entry.text.split(/\n\s*\n/);
+    if (blocks.length === 3) {
+      const hook = blocks[0];
+      const body = blocks[1];
+      const conclusion = blocks[2];
+      const bodySentences = splitSentences(body);
+      while (bodySentences.length > 2 && `${hook}\n\n${bodySentences.join(' ')}\n\n${conclusion}`.length > 600) {
+        bodySentences.pop();
+      }
+      entry = formatEntry(`${hook}\n\n${bodySentences.join(' ')}\n\n${conclusion}`);
+    }
+  }
+
   if (entry.isOverLimit || entry.charCount > ABSOLUTE_MAX_CHARACTERS) {
     throw new Error(`AI post exceeds strict 600-char limit (${entry.charCount} chars, max ${ABSOLUTE_MAX_CHARACTERS})`);
   }
@@ -211,99 +227,78 @@ function validateAIResponse(res, chosenTopic, chosenCategory = 'PAK_VS_IND', cho
 
 /* =========================================================
    PROMPT BUILDERS WITH RICH HISTORICAL AVOIDANCE CONTEXT
+   (VIRAL, HIGH-IMPACT GEOPOLITICAL & SOCIAL COMMENTARY)
 ========================================================= */
 
-function createPakVsIndPrompt(chosenTopic, chosenSubtopic, avoidList = []) {
-  const avoidStr = avoidList.length > 0 ? avoidList.slice(0, 30).join('\n• ') : 'None';
-
-  return `${SIMPLE_ENGLISH_RULES}
-
-🤖 X ASSISTANT — PAKISTAN & INDIA DATA & ANALYTICS POST ENGINE
-
-ROLE & EDITORIAL PERSONA:
-You write in very simple A1-A2 English like regular people talk and text in daily life.
-Use only simple everyday words and short, clear sentences. No complicated, fancy, or academic words.
-Explain data, economics, industry, technology, and facts simply so anyone understands instantly on the first read.
-
-CORE EDITORIAL DIRECTIVE:
-- TALK GENERALLY ABOUT DATA & ANALYTICS: Focus on real analytics, facts, economic numbers, IT exports, agriculture, energy, or industrial growth of Pakistan or India.
-- REMOVE DIRECT CONFRONTATIONAL COMPARISONS: Do not frame the post as a rivalry or competition (no "who beats whom", no hostility). Discuss the analytics and reality of either country or the regional economy on its own merits.
-- DO NOT CREATE CONFLICTS: Never write about weapons, missiles, war, border disputes, military spending rivalry, or sensitive religious/political divisions. Keep the tone informative, educational, and constructive.
-
-TOPIC: "${chosenTopic}"
-SUBTOPIC: "${chosenSubtopic || chosenTopic}"
-
-STRICT POST STRUCTURE (EXACTLY 3 PARTS separated by double line breaks \\n\\n):
-Line 1: A single punchy hook line that directly introduces and discusses the main point of the topic (1 clear sentence).
-\\n\\n
-Paragraph: The real analytical body that elaborates on the hook's main point with verified facts, real numbers, and clear explanation of real-world impact (4 to 5 detailed sentences so the total post reaches 400 to 600 characters).
-\\n\\n
-Line 3: A short, punchy conclusion or thoughtful closing question that wraps up the takeaway.
-
-STRICT POST LENGTH & FORMAT RULES:
-- TARGET LENGTH: 400 to 600 characters total (including spaces and punctuation).
-- HARD LIMITS: 380 to 600 characters.
-- ZERO hashtags. ZERO emojis in the post body. NO bullet points.
-- NEVER include labels like "Hook:", "Line 1:", "Body:", or "Conclusion:" in the post text.
-
-MANDATORY HISTORICAL AVOIDANCE (DO NOT REPEAT THESE TOPICS, ARGUMENTS OR STATS):
-• ${avoidStr}
-
-Return ONLY valid JSON matching this exact structure:
-{
-  "topic": "${chosenTopic}",
-  "subtopic": "${chosenSubtopic || chosenTopic}",
-  "category": "PAK_VS_IND",
-  "text": "Line 1 hook\\n\\nReal body paragraph with facts and numbers\\n\\nOne-line conclusion"
-}
-`;
-}
-
-function createEnglishPrompt(chosenTopic, chosenSubtopic, targetCategory, avoidList = []) {
+function createGenrePrompt(chosenTopic, chosenSubtopic, targetCategory, avoidList = []) {
   const avoidStr = avoidList.length > 0 ? avoidList.slice(0, 25).join('\n• ') : 'None';
   const categoryName = targetCategory?.name || 'Geopolitics & Global Power';
   const categoryDesc = targetCategory?.description || 'Data-driven analysis';
+  const genreId = targetCategory?.id || 'CUSTOM';
 
   return `${SIMPLE_ENGLISH_RULES}
 
-# X_BOT — SIMPLE A1-A2 CONTENT ENGINE
+# X_BOT — HIGH-IMPACT GEOPOLITICAL & SOCIAL COMMENTARY ENGINE
 
-ROLE & EDITORIAL PERSONA:
-You write in very simple A1-A2 English like regular people talk and text in daily life.
-Use only simple everyday words and short, clear sentences. No complicated, fancy, or academic words.
-Explain ideas simply so anyone understands instantly on the first read.
+YOUR ASSIGNED GENRE: "${categoryName}" (${categoryDesc})
+${chosenTopic && chosenTopic !== categoryName ? `TOPIC FOCUS: "${chosenTopic}"` : ''}
+${chosenSubtopic && chosenSubtopic !== chosenTopic && chosenSubtopic !== categoryName ? `SUBTOPIC ANGLE: "${chosenSubtopic}"` : ''}
 
-TOPIC: "${chosenTopic}"
-SUBTOPIC: "${chosenSubtopic || chosenTopic}"
-CATEGORY / GENRE: "${categoryName}" (${categoryDesc})
-
-MANDATORY GENRE & TOPIC INSTRUCTIONS:
-- STRICT ALIGNMENT: The post MUST be 100% about the specified category and topic: "${categoryName}" / "${chosenTopic}".
-- DO NOT switch to other countries or topics. If the genre is "${categoryName}", discuss ONLY facts, realities, and issues directly concerning "${categoryName}".
+MANDATORY GENRE & CONTENT DIRECTIVES:
+1. STRICT GENRE RELATION: The post MUST be 100% focused on and related to "${categoryName}". Do not switch to other countries or topics. Examine an authentic issue, controversy, paradox, state policy, or hidden reality strictly concerning "${categoryName}".
+2. DYNAMIC TOPIC & ANGLE: Select a compelling, specific angle under "${categoryName}" (e.g. foreign policy contradictions, cultural/historical disputes, economic exploitation, wealth disparity, or geopolitical maneuvers).
+3. HIGH-IMPACT THRILLING PROSE: Write with sharp cadence, bold insights, and unapologetic clarity. Cut through propaganda and PR. Make it thrilling, thought-provoking, and deeply engaging.
+4. FACTS & GROUNDING: Anchor the critique with real names, institutions, trade items, numbers, or historical records (e.g. UN resolutions, EU disputes, NCERT curriculum, Russian oil discounts, Khewra pink salt, etc.).
 
 STRICT POST STRUCTURE (EXACTLY 3 PARTS separated by double line breaks \\n\\n):
-Line 1: A single punchy hook line that directly introduces and discusses the main point of the topic (1 clear sentence).
+Line 1: A fierce, punchy hook line that directly introduces and exposes the core contradiction or paradox (1 clear sentence).
 \\n\\n
-Paragraph: The real analytical body that elaborates on the hook's main point with 1 or 2 real numbers, verified facts, and clear explanation of real-world human impact (write 5 to 6 full sentences, around 65-80 words, so the total post reaches 400 to 600 characters).
+Paragraph 2: The analytical core that unpacks the reality with real facts, verified numbers, and sharp breakdown (strictly 2 to 3 hard-hitting sentences, around 50-65 words, so total post length stays strictly between 400 and 600 characters).
 \\n\\n
-Line 3: A short, punchy conclusion or thoughtful closing question that wraps up the takeaway.
+Line 3: A devastating closing takeaway or thought-provoking question that lingers with the reader.
 
-WRITING RULES:
-1. FACTS & NUMBERS: Include 1 or 2 real numbers only.
-2. SIMPLE A1-A2 ENGLISH: Short, direct, human sentences. Everyday words only.
-3. ZERO hashtags. ZERO emojis in the post. NO bullet points. NO labels like "Hook:" or "Body:".
-4. TARGET LENGTH: 400 to 600 characters total. It is essential that the body paragraph has 5 to 6 full sentences so the total character count is between 400 and 600 characters.
+RULES:
+- TARGET LENGTH: strictly 400 to 580 characters total. It must never exceed 600 characters.
+- ZERO hashtags. ZERO emojis. NO bullet points. NO labels like "Hook:" or "Body:".
 
-MANDATORY HISTORICAL AVOIDANCE:
+STYLE REFERENCE EXAMPLES (EMULATE THIS RHYTHM AND BITE):
+• Example A:
+"India didn't just steal a name. It stole a whole civilization, then its salt, then its rice.
+
+The Indus was never India's. Harappa, Mohenjo-daro, and the Indus River itself are in Pakistan. Yet NCERT now teaches it as "Sindhu-Sarasvati" to erase Pakistan from 5,000 years of history. Khewra salt from Punjab, Pakistan is mined here, packed there, and sold to the world as "Himalayan Pink Salt" made in India. Basmati rice was claimed by India alone until Pakistan fought and won its Geographical Indication right.
+
+Take the product, erase the origin, rebrand it as Indian. This is colonial theft with a new label."
+
+• Example B:
+"India doesn't have a foreign policy. It has a business policy.
+
+It buys cheap Russian oil despite US sanctions and tariffs, then calls itself America's closest partner in Asia. It abstains on Palestine at the UN while selling arms and surveillance tech to Israel. It preaches non-violence at home and profits from war abroad. This is not neutrality or strategic autonomy. This is a tightrope walk where morality is sold to the highest bidder.
+
+A country that is ambitious for Viksit Bharat cannot be a dealer for everyone and a friend to no one."
+
+MANDATORY HISTORICAL AVOIDANCE (Do not repeat these angles or topics):
 • ${avoidStr}
 
 Return ONLY valid JSON matching this exact structure:
 {
-  "topic": "${chosenTopic}",
-  "subtopic": "${chosenSubtopic || chosenTopic}",
-  "category": "${targetCategory?.id || 'GEOPOLITICS'}",
-  "text": "Line 1 hook\\n\\nReal body paragraph with facts and numbers\\n\\nOne-line conclusion"
+  "topic": "Specific Topic Headline Under ${categoryName}",
+  "subtopic": "Specific issue or contradiction explored",
+  "category": "${genreId}",
+  "text": "Line 1 hook\\n\\nAnalytical body paragraph\\n\\nOne-line conclusion"
 }`;
+}
+
+function createPakVsIndPrompt(chosenTopic, chosenSubtopic, avoidList = []) {
+  const pakGenre = genreManager.getGenreById('PAK_VS_IND') || {
+    id: 'PAK_VS_IND',
+    name: 'Pak & Ind Analytics',
+    description: 'Pakistan & India: Economic analytics, IT exports, tech industry, demographic dividend, agriculture, trade & infrastructure'
+  };
+  return createGenrePrompt(chosenTopic, chosenSubtopic, pakGenre, avoidList);
+}
+
+function createEnglishPrompt(chosenTopic, chosenSubtopic, targetCategory, avoidList = []) {
+  return createGenrePrompt(chosenTopic, chosenSubtopic, targetCategory, avoidList);
 }
 
 /* =========================================================
@@ -313,6 +308,54 @@ Return ONLY valid JSON matching this exact structure:
 ========================================================= */
 
 export const FALLBACK_BANK = [
+  // 0A. Cultural Theft: Indus, Khewra Salt & Basmati Rice
+  // Inspired by Abdul Mussawer Safi (@MussawerSafi)
+  {
+    topic: "India's Cultural Theft: Indus, Khewra Salt & Basmati Rice",
+    subtopic: "Cultural appropriation and Geographical Indication disputes",
+    category: 'PAK_VS_IND',
+    genreId: 'PAK_VS_IND',
+    mainSubject: "Indus civilization and Pakistani cultural heritage",
+    specificEventOrIssue: "NCERT rebrand to Sindhu-Sarasvati, Khewra Himalayan salt and Basmati EU GI dispute",
+    centralArgument: "India claims and commercializes Pakistani heritage while attempting to erase Pakistan from historical origins",
+    analyticalAngle: "Cultural appropriation and trade rebranding vs historical facts",
+    importantStatistics: ["5000 years", "EU GI rights"],
+    keywords: ["indus", "harappa", "salt", "rice", "khewra", "india", "heritage", "civilization", "bad side of india"],
+    english: {
+      text: "India didn't just steal a name. It stole a whole civilization, then its salt, then its rice.\n\nThe Indus was never India's. Harappa, Mohenjo-daro, and the Indus River itself are in Pakistan. Yet NCERT now teaches it as \"Sindhu-Sarasvati\" to erase Pakistan from 5,000 years of history. Khewra salt from Punjab, Pakistan is mined here, packed there, and sold to the world as \"Himalayan Pink Salt\" made in India. Basmati rice was claimed by India alone until Pakistan fought and won its Geographical Indication right.\n\nTake the product, erase the origin, rebrand it as Indian. This is colonial theft with a new label."
+    },
+    romanUrdu: {
+      text: "India ne sirf naam nahi churaya, balkay poori tehzeeb, namak aur chawal bhi apna bana liya.\n\nWadi-e-Sindh kabhi India ka nahi tha. Harappa, Mohenjo-daro aur darya-e-Sindh khud Pakistan mein hain. Magar NCERT ab ise \"Sindhu-Sarasvati\" parha kar Pakistan ko 5,000 saala tareekh se mitane ki koshish kar raha hai. Khewra ka namak yahan se nikalta hai aur wahan pack ho kar \"Himalayan Pink Salt made in India\" ban jata hai. Basmati chawal par bhi tanhan haq jamaya jab tak Pakistan ne EU mein GI case na jeeta.\n\nCheez uthao, asal mitao aur Indian label lagao. Ye saqafat nahi balkay naye libaday mein qadeem chori hai."
+    },
+    plainUrdu: {
+      text: "بھارت نے صرف ایک نام نہیں چرایا، بلکہ پوری تہذیب، نمک اور چاول بھی ہتھیا لیے۔\n\nوادی سندھ کبھی بھارت کی نہیں تھی۔ ہڑپہ، موہنجودڑو اور دریائے سندھ پاکستان میں واقع ہیں۔ مگر بھارتی نصاب اسے سندھو سرسوتی بنا کر پیش کر رہا ہے تاکہ پاکستان کو پانچ ہزار سالہ تاریخ سے کھرچ دیا جائے۔ کھیوڑہ کا نمک یہاں سے جاتا ہے اور وہاں پیک ہو کر میڈ ان انڈیا پنک سالٹ بنتا ہے۔ باسمتی چاول پر بھی تنہا ملکیت کا دعوی کیا گیا جب تک پاکستان نے یورپی یونین میں حق نہ جیتا۔\n\nچیز چھینو، اصل مٹاؤ اور نیا لیبل لگاؤ۔ یہ ثقافت نہیں بلکہ ایک نئی نوآبادیاتی ڈکیتی ہے۔"
+    }
+  },
+
+  // 0B. Foreign Policy Hypocrisy: Russian Oil, Palestine & American Ties
+  // Inspired by Abdul Mussawer Safi (@MussawerSafi)
+  {
+    topic: "India's Foreign Policy: Russian Oil, Palestine & American Ties",
+    subtopic: "Indian strategic autonomy vs geopolitical opportunism",
+    category: 'GEOPOLITICS',
+    genreId: 'GEOPOLITICS',
+    mainSubject: "Indian foreign policy contradictions and sanctions evasion",
+    specificEventOrIssue: "Buying discounted Russian oil while claiming US alliance and abstaining on Palestine",
+    centralArgument: "India operates a transactional business policy that compromises moral standing for opportunistic profits",
+    analyticalAngle: "Strategic autonomy vs transactional opportunism",
+    importantStatistics: ["1.6M barrels", "UN abstentions"],
+    keywords: ["foreign policy", "oil", "russia", "israel", "gaza", "sanctions", "viksit bharat", "india", "bad side of india"],
+    english: {
+      text: "India doesn't have a foreign policy. It has a business policy.\n\nIt buys cheap Russian oil despite US sanctions and tariffs, then calls itself America's closest partner in Asia. It abstains on Palestine at the UN while selling arms and surveillance tech to Israel. It preaches non-violence at home and profits from war abroad. This is not neutrality or strategic autonomy. This is a tightrope walk where morality is sold to the highest bidder.\n\nWhen Russia kills, India buys oil. When Gaza burns, India looks away. A country that is ambitious for Viksit Bharat cannot be a dealer for everyone and a friend to no one."
+    },
+    romanUrdu: {
+      text: "India ki koi kharija policy nahi hai. Ye sirf ek karobari policy hai.\n\nYe pabandiyon ke bawajood sasta Russian tail khareedta hai aur phir khud ko America ka ittehadi kehta hai. UN mein Palestine par khamosh rehta hai magar Israel ko aslah aur surveillance tech bechta hai. Ghar mein ahimsa ka dars deta hai aur bahir jangon se munafa kamata hai. Ye ghair-jaanibdari nahi balkay munafaqat hai.\n\nJab Russia hamla karta hai, India tail khareedta hai. Jab Gaza jalta hai, India ankhain pher leta hai. Viksit Bharat ka khwab dekhnay wala mulk sab ka dalal aur kisi ka sacha dost nahi ban sakta."
+    },
+    plainUrdu: {
+      text: "بھارت کی کوئی خارجہ پالیسی نہیں، یہ محض ایک تجارتی پالیسی ہے۔\n\nوہ امریکی پابندیوں کے باوجود روس سے سستا تیل خریدتا ہے اور خود کو ایشیا میں امریکہ کا اتحادی کہتا ہے۔ اقوام متحدہ میں فلسطین پر ووٹنگ سے کترا جاتا ہے مگر اسرائیل کو اسلحہ اور نگرانی کی ٹیکنالوجی فروخت کرتا ہے۔ اندرون ملک امن کے بھاشن دیتا ہے اور بیرون ملک جنگوں سے منافع سمیٹتا ہے۔ یہ اسٹریٹجک خود مختاری نہیں بلکہ منافقت ہے۔\n\nجب روس مارتا ہے تو بھارت تیل لیتا ہے، جب غزہ جلتا ہے تو بھارت نظریں چرا لیتا ہے۔ وکست بھارت کا دعویدار ہر کسی کا سوداگر تو ہو سکتا ہے، کسی کا مخلص دوست نہیں۔"
+    }
+  },
+
   // 1. Software Talent: Freelance Density vs Corporate IT Scale
   // Source: NASSCOM / Payoneer (2024)
   {
@@ -1720,50 +1763,62 @@ export async function callCloudflareAI(prompt, model = null) {
   }
   const targetModel = model || process.env.CLOUDFLARE_AI_MODEL || config.cloudflareAiModel || '@cf/meta/llama-3.1-8b-instruct';
 
-  const response = await fetch(
-    `https://api.cloudflare.com/client/v4/accounts/${accountId}/ai/run/${targetModel}`,
-    {
-      method: 'POST',
-      headers: {
-        Authorization: `Bearer ${apiToken}`,
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({
-        max_tokens: 512,
-        temperature: 0.4,
-        messages: [
-          {
-            role: 'system',
-            content: 'You write engaging X posts in simple conversational A1-A2 English like regular people talk and text. Every post MUST strictly follow this exact 3-part layout separated by double line breaks (\\n\\n):\nLine 1: A single punchy hook line that directly introduces and discusses the topic\'s main point.\n\\n\\nParagraph: The real analytical body that elaborates on the main point with verified facts and real numbers (4 to 6 sentences, around 65 to 80 words).\n\\n\\nClosing Line: A short concluding takeaway or thoughtful question.\nTotal post length MUST be between 400 and 600 characters. Never use hashtags, emojis, or labels like "Hook:" or "Body:". Return ONLY a valid JSON object matching the requested schema.'
+  let lastError = null;
+  for (let attempt = 0; attempt < 3; attempt++) {
+    try {
+      const response = await fetch(
+        `https://api.cloudflare.com/client/v4/accounts/${accountId}/ai/run/${targetModel}`,
+        {
+          method: 'POST',
+          headers: {
+            Authorization: `Bearer ${apiToken}`,
+            'Content-Type': 'application/json'
           },
-          { role: 'user', content: prompt }
-        ]
-      })
+          body: JSON.stringify({
+            max_tokens: 1024,
+            temperature: 0.7,
+            messages: [
+              {
+                role: 'system',
+                content: 'You are a fearless, razor-sharp geopolitical analyst and social commentator on X (in the bold, viral style of Abdul Mussawer Safi). You write captivating, hard-hitting posts that expose contradictions, state hypocrisies, and hidden realities. Every post MUST strictly follow this exact 3-part layout separated by double line breaks (\\n\\n):\nLine 1: A fierce, punchy hook line that directly introduces and exposes the core contradiction or paradox (1 sentence).\n\\n\\nParagraph 2: The analytical core that unpacks the reality with real facts, verified numbers, and sharp breakdown (3 to 5 sentences, around 65-85 words).\n\\n\\nClosing Line: A devastating closing takeaway or thought-provoking question.\nTotal post length MUST be between 400 and 600 characters (max 650). Never use hashtags, emojis, or labels like "Hook:" or "Body:". Return ONLY a valid JSON object matching the requested schema.'
+              },
+              { role: 'user', content: prompt }
+            ]
+          })
+        }
+      );
+
+      if (!response.ok) {
+        const errorText = await response.text();
+        throw new Error(`Cloudflare AI HTTP ${response.status}: ${errorText.slice(0, 150)}`);
+      }
+
+      const json = await response.json();
+      if (!json.success && json.errors && json.errors.length > 0) {
+        throw new Error(`Cloudflare AI error: ${json.errors[0].message}`);
+      }
+
+      let rawText = json.result?.choices?.[0]?.message?.content;
+      if (!rawText && typeof json.result?.response === 'string') {
+        rawText = json.result.response;
+      } else if (!rawText && typeof json.result?.response === 'object' && json.result.response !== null) {
+        return json.result.response;
+      }
+
+      if (!rawText) {
+        throw new Error('Empty Cloudflare AI response');
+      }
+
+      return safeJsonParse(rawText);
+    } catch (err) {
+      lastError = err;
+      if (attempt < 2) {
+        await new Promise(r => setTimeout(r, 600));
+      }
     }
-  );
-
-  if (!response.ok) {
-    const errorText = await response.text();
-    throw new Error(`Cloudflare AI HTTP ${response.status}: ${errorText.slice(0, 150)}`);
   }
 
-  const json = await response.json();
-  if (!json.success && json.errors && json.errors.length > 0) {
-    throw new Error(`Cloudflare AI error: ${json.errors[0].message}`);
-  }
-
-  let rawText = json.result?.choices?.[0]?.message?.content;
-  if (!rawText && typeof json.result?.response === 'string') {
-    rawText = json.result.response;
-  } else if (!rawText && typeof json.result?.response === 'object' && json.result.response !== null) {
-    return json.result.response;
-  }
-
-  if (!rawText) {
-    throw new Error('Empty Cloudflare AI response');
-  }
-
-  return safeJsonParse(rawText);
+  throw lastError;
 }
 
 async function callGroq(prompt, apiKey) {
@@ -1783,12 +1838,12 @@ async function callGroq(prompt, apiKey) {
         messages: [
           {
             role: 'system',
-            content: 'You write engaging X posts in simple conversational A1-A2 English like regular people talk and text. Every post MUST strictly follow this exact 3-part layout separated by double line breaks (\\n\\n):\nLine 1: A single punchy hook line that directly introduces and discusses the topic\'s main point.\n\\n\\nParagraph: The real analytical body that elaborates on the main point with verified facts and real numbers (4 to 6 sentences, around 65 to 80 words).\n\\n\\nClosing Line: A short concluding takeaway or thoughtful question.\nTotal post length MUST be between 400 and 600 characters. Never use hashtags, emojis, or labels like "Hook:" or "Body:". Return ONLY a valid JSON object matching the requested schema.'
+            content: 'You are a fearless, razor-sharp geopolitical analyst and social commentator on X (in the bold, viral style of Abdul Mussawer Safi). You write captivating, hard-hitting posts that expose contradictions, state hypocrisies, and hidden realities. Every post MUST strictly follow this exact 3-part layout separated by double line breaks (\\n\\n):\nLine 1: A fierce, punchy hook line that directly introduces and exposes the core contradiction (1 sentence).\n\\n\\nParagraph 2: The analytical core that unpacks the reality with real facts, verified numbers, and sharp breakdown (3 to 5 sentences, around 65-85 words).\n\\n\\nClosing Line: A devastating closing takeaway or thought-provoking question.\nTotal post length MUST be between 400 and 600 characters (max 650). Never use hashtags, emojis, or labels like "Hook:" or "Body:". Return ONLY a valid JSON object matching the requested schema.'
           },
           { role: 'user', content: prompt }
         ],
         response_format: { type: 'json_object' },
-        temperature: 0.4
+        temperature: 0.7
       });
 
       const rawJson = completion.choices[0]?.message?.content;
@@ -1829,7 +1884,7 @@ async function callXai(prompt, model = 'grok-2-latest') {
           messages: [
             {
               role: 'system',
-              content: 'You write engaging X posts in simple conversational A1-A2 English like regular people talk and text. Every post MUST strictly follow this exact 3-part layout separated by double line breaks (\\n\\n):\nLine 1: A single punchy hook line that directly introduces and discusses the topic\'s main point.\n\\n\\nParagraph: The real analytical body that elaborates on the main point with verified facts and real numbers.\n\\n\\nClosing Line: A short concluding takeaway or thoughtful question.\nTotal post length MUST be between 400 and 600 characters. Never use hashtags, emojis, or labels like "Hook:" or "Body:". Return ONLY a valid JSON object matching the requested schema.'
+              content: 'You are a fearless, razor-sharp geopolitical analyst and social commentator on X (in the bold, viral style of Abdul Mussawer Safi). You write captivating, hard-hitting posts that expose contradictions, state hypocrisies, and hidden realities. Every post MUST strictly follow this exact 3-part layout separated by double line breaks (\\n\\n):\nLine 1: A fierce, punchy hook line that directly introduces and exposes the core contradiction (1 sentence).\n\\n\\nParagraph 2: The analytical core that unpacks the reality with real facts, verified numbers, and sharp breakdown (3 to 5 sentences, around 65-85 words).\n\\n\\nClosing Line: A devastating closing takeaway or thought-provoking question.\nTotal post length MUST be between 400 and 600 characters (max 650). Never use hashtags, emojis, or labels like "Hook:" or "Body:". Return ONLY a valid JSON object matching the requested schema.'
             },
             { role: 'user', content: prompt }
           ],
