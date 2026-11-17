@@ -69,6 +69,7 @@ CONTENT RULES:
 10. ZERO hashtags. Do not use any hashtags. Always output "Hashtags: NONE".
 11. STRICT LENGTH REQUIREMENT: 400 to 600 characters, never above 600.
 12. Preserve the original topic and intention.
+13. STRUCTURE: Line 1 (Hook) directly discusses the topic's main point. Paragraph 2 (Body) elaborates with verified facts/numbers. Line 3 (Conclusion) is a short takeaway or closing question.
 
 INPUT DETAILS:
 - TOPIC / IDEA:

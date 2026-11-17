@@ -1,26 +1,6 @@
 {
-  "primaryGenreId": "PAK_VS_IND",
-  "customGenres": [
-    {
-      "id": "CUSTOM_SPACE_CYBER_DEFENCE_0580",
-      "name": "Space & Cyber Defence",
-      "description": "Custom analysis category: Space & Cyber Defence",
-      "keywords": [
-        "Space & Cyber Defence"
-      ],
-      "isCustom": true,
-      "createdAt": "2026-11-17T06:53:30.581Z"
-    },
-    {
-      "id": "CUSTOM_SPACE_CYBER_DEFENCE_8414",
-      "name": "Space & Cyber Defence",
-      "description": "Custom analysis category: Space & Cyber Defence",
-      "keywords": [
-        "Space & Cyber Defence"
-      ],
-      "isCustom": true,
-      "createdAt": "2026-11-17T06:55:18.414Z"
-    }
-  ],
-  "updatedAt": "2026-11-17T06:56:39.671Z"
+  "primaryGenreId": null,
+  "customGenres": [],
+  "removedGenreIds": [],
+  "updatedAt": "2026-11-17T07:31:09.165Z"
 }

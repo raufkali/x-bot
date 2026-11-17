@@ -386,6 +386,7 @@ class GenreManager {
         const data = JSON.parse(raw);
         this.primaryGenreId = data.primaryGenreId || null;
         this.customGenres = Array.isArray(data.customGenres) ? data.customGenres : [];
+        this.removedGenreIds = Array.isArray(data.removedGenreIds) ? data.removedGenreIds : [];
       } else {
         this.save();
       }
@@ -406,6 +407,7 @@ class GenreManager {
       const payload = {
         primaryGenreId: this.primaryGenreId,
         customGenres: this.customGenres,
+        removedGenreIds: this.removedGenreIds || [],
         updatedAt: new Date().toISOString()
       };
 
@@ -416,10 +418,11 @@ class GenreManager {
   }
 
   /**
-   * Returns all available genres (defaults + user custom)
+   * Returns all available genres (defaults + user custom, excluding removed)
    */
   getAllGenres() {
-    return [...DEFAULT_GENRES, ...this.customGenres];
+    const removed = new Set((this.removedGenreIds || []).map(id => String(id).toLowerCase()));
+    return [...DEFAULT_GENRES, ...this.customGenres].filter(g => !removed.has(String(g.id).toLowerCase()));
   }
 
   /**
@@ -507,6 +510,71 @@ class GenreManager {
   }
 
   /**
+   * Removes a genre by 1-based index from getAllGenres(), ID, or Name
+   * @param {string|number} selection 
+   * @returns {{ success: boolean, genre?: object, error?: string }}
+   */
+  removeGenre(selection) {
+    const raw = String(selection ?? '').trim().toLowerCase();
+    if (!raw) {
+      return { success: false, error: 'Please specify a genre to remove.' };
+    }
+
+    const all = this.getAllGenres();
+    let target = null;
+
+    const num = parseInt(raw, 10);
+    if (!isNaN(num) && num >= 1 && num <= all.length) {
+      target = all[num - 1];
+    } else {
+      target = all.find(
+        g => g.id.toLowerCase() === raw || g.name.toLowerCase() === raw
+      );
+    }
+
+    if (!target) {
+      return {
+        success: false,
+        error: `Genre "${selection}" not found. Reply with 1-${all.length} or 0 to cancel.`
+      };
+    }
+
+    // If custom genre, filter out
+    this.customGenres = this.customGenres.filter(g => g.id.toLowerCase() !== target.id.toLowerCase());
+
+    // If default genre, track in removedGenreIds
+    if (!this.removedGenreIds) this.removedGenreIds = [];
+    if (!this.removedGenreIds.some(id => id.toLowerCase() === target.id.toLowerCase())) {
+      this.removedGenreIds.push(target.id);
+    }
+
+    // If removed genre was the active primary genre, reset to random
+    if (this.primaryGenreId && this.primaryGenreId.toLowerCase() === target.id.toLowerCase()) {
+      this.primaryGenreId = null;
+    }
+
+    this.save();
+    return { success: true, genre: target };
+  }
+
+  /**
+   * Formats list of genres for removal selection
+   */
+  formatGenresRemoval() {
+    const all = this.getAllGenres();
+    let output = `🗑️ *Remove a Genre:*\n`;
+    output += `_Select which genre to remove:_\n\n`;
+
+    all.forEach((g, idx) => {
+      output += `• *${idx + 1}* ➔ *${g.name}*\n`;
+    });
+
+    output += `\n• *0* ➔ Cancel\n\n`;
+    output += `_Reply with the number (1–${all.length}) of the genre to remove._`;
+    return output;
+  }
+
+  /**
    * Formats the list of all genres for WhatsApp display
    */
   formatGenresList() {
@@ -529,6 +597,7 @@ class GenreManager {
     output += `\nReply with:
 • *1* ➔ Add another genre
 • *3* ➔ Make a genre primary
+• *4* ➔ Remove a genre
 • *0* ➔ Back to Main Menu`;
 
     return output;
@@ -561,6 +630,7 @@ class GenreManager {
   reset() {
     this.primaryGenreId = null;
     this.customGenres = [];
+    this.removedGenreIds = [];
     this.save();
   }
 

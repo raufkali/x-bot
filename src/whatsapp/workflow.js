@@ -317,8 +317,9 @@ class WhatsAppWorkflowManager extends EventEmitter {
         `• *1* ➔ Add another genre\n` +
         `• *2* ➔ Show all genres\n` +
         `• *3* ➔ Make a genre primary\n` +
+        `• *4* ➔ Remove a genre\n` +
         `• *0* ➔ ${backLabel}\n\n` +
-        `_Reply with a number (0–3) to choose._`;
+        `_Reply with a number (0–4) to choose._`;
 
       if (whatsappClient.isConfigured() && fromNumber) {
         try {
@@ -339,6 +340,7 @@ class WhatsAppWorkflowManager extends EventEmitter {
           `• *1* ➔ Add another genre\n` +
           `• *2* ➔ Show all genres\n` +
           `• *3* ➔ Make a genre primary\n` +
+          `• *4* ➔ Remove a genre\n` +
           `• *0* ➔ Back to Main Menu`;
         if (whatsappClient.isConfigured() && fromNumber) {
           try { await whatsappClient.sendText(fromNumber, cancelMsg); } catch (e) {}
@@ -410,6 +412,49 @@ class WhatsAppWorkflowManager extends EventEmitter {
       }
     }
 
+    // --- SUB-STATE: AWAITING REMOVE GENRE SELECTION (Option 4) ---
+    if (this.menuState === 'AWAITING_REMOVE_SELECTION') {
+      if (input === '0' || input === 'cancel' || input === 'back') {
+        this.menuState = 'CUSTOMIZE_MENU';
+        const backLabel = this.currentPendingPost ? 'Back to Post Review' : 'Back to Main Menu';
+        const cancelMsg =
+          `⚙️ *Customize Bot:*\n\n` +
+          `• *1* ➔ Add another genre\n` +
+          `• *2* ➔ Show all genres\n` +
+          `• *3* ➔ Make a genre primary\n` +
+          `• *4* ➔ Remove a genre\n` +
+          `• *0* ➔ ${backLabel}`;
+        if (whatsappClient.isConfigured() && fromNumber) {
+          try { await whatsappClient.sendText(fromNumber, cancelMsg); } catch (e) {}
+        }
+        return { action: 'CUSTOMIZE_MENU_OPENED', message: cancelMsg };
+      }
+
+      const res = genreManager.removeGenre(input);
+      if (res.success) {
+        this.menuState = 'CUSTOMIZE_MENU';
+        console.log(ansi.emeraldText(`\n✓ [WhatsApp Action] Genre removed: "${res.genre.name}"`));
+        const confMsg =
+          `🗑️ *Genre Removed Successfully!*\n\n` +
+          `*${res.genre.name}* has been removed.\n\n` +
+          `• *2* ➔ Show all genres\n` +
+          `• *4* ➔ Remove another genre\n` +
+          `• *0* ➔ Back to Main Menu`;
+        if (whatsappClient.isConfigured() && fromNumber) {
+          try { await whatsappClient.sendText(fromNumber, confMsg); } catch (e) {}
+        }
+        return { action: 'GENRE_REMOVED', genre: res.genre, message: confMsg };
+      } else {
+        const errMsg =
+          `⚠️ ${res.error || 'Invalid selection.'}\n\n` +
+          genreManager.formatGenresRemoval();
+        if (whatsappClient.isConfigured() && fromNumber) {
+          try { await whatsappClient.sendText(fromNumber, errMsg); } catch (e) {}
+        }
+        return { action: 'INVALID_REMOVE_SELECTION', error: res.error };
+      }
+    }
+
     // --- SUB-STATE: INSIDE CUSTOMIZE MENU ---
     if (this.menuState === 'CUSTOMIZE_MENU') {
       // 1: Add another genre
@@ -446,6 +491,17 @@ class WhatsAppWorkflowManager extends EventEmitter {
           try { await whatsappClient.sendText(fromNumber, selMsg); } catch (e) {}
         }
         return { action: 'AWAITING_PRIMARY_SELECTION', message: selMsg };
+      }
+
+      // 4: Remove a genre
+      if (input === '4' || input.includes('remove') || input.includes('delete')) {
+        this.menuState = 'AWAITING_REMOVE_SELECTION';
+        console.log(ansi.emeraldText('\n🗑️ [WhatsApp Action] Owner selected: Remove a genre'));
+        const remMsg = genreManager.formatGenresRemoval();
+        if (whatsappClient.isConfigured() && fromNumber) {
+          try { await whatsappClient.sendText(fromNumber, remMsg); } catch (e) {}
+        }
+        return { action: 'AWAITING_REMOVE_SELECTION', message: remMsg };
       }
 
       // 0: Back to main menu or post review
@@ -488,6 +544,7 @@ class WhatsAppWorkflowManager extends EventEmitter {
         `• *1* ➔ Add another genre\n` +
         `• *2* ➔ Show all genres\n` +
         `• *3* ➔ Make a genre primary\n` +
+        `• *4* ➔ Remove a genre\n` +
         `• *0* ➔ ${backLabel}`;
       if (whatsappClient.isConfigured() && fromNumber) {
         try { await whatsappClient.sendText(fromNumber, helpMsg); } catch (e) {}
@@ -676,8 +733,9 @@ class WhatsAppWorkflowManager extends EventEmitter {
           `• *1* ➔ Add another genre\n` +
           `• *2* ➔ Show all genres\n` +
           `• *3* ➔ Make a genre primary\n` +
+          `• *4* ➔ Remove a genre\n` +
           `• *0* ➔ Back to Post Review\n\n` +
-          `_Reply with a number (0–3) to choose._`;
+          `_Reply with a number (0–4) to choose._`;
 
         if (whatsappClient.isConfigured() && fromNumber) {
           try {
@@ -852,8 +910,9 @@ class WhatsAppWorkflowManager extends EventEmitter {
           `• *1* ➔ Add another genre\n` +
           `• *2* ➔ Show all genres\n` +
           `• *3* ➔ Make a genre primary\n` +
+          `• *4* ➔ Remove a genre\n` +
           `• *0* ➔ Back to Post Review\n\n` +
-          `_Reply with a number (0–3) to choose._`;
+          `_Reply with a number (0–4) to choose._`;
 
         if (whatsappClient.isConfigured() && fromNumber) {
           try {
@@ -1029,8 +1088,9 @@ class WhatsAppWorkflowManager extends EventEmitter {
           `• *1* ➔ Add another genre\n` +
           `• *2* ➔ Show all genres\n` +
           `• *3* ➔ Make a genre primary\n` +
+          `• *4* ➔ Remove a genre\n` +
           `• *0* ➔ Back to Post Review\n\n` +
-          `_Reply with a number (0–3) to choose._`;
+          `_Reply with a number (0–4) to choose._`;
 
         if (whatsappClient.isConfigured() && fromNumber) {
           try {

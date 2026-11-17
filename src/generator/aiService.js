@@ -234,11 +234,11 @@ TOPIC: "${chosenTopic}"
 SUBTOPIC: "${chosenSubtopic || chosenTopic}"
 
 STRICT POST STRUCTURE (EXACTLY 3 PARTS separated by double line breaks \\n\\n):
-Line 1: A single punchy hook line that immediately grabs attention (1 clear sentence).
+Line 1: A single punchy hook line that directly introduces and discusses the main point of the topic (1 clear sentence).
 \\n\\n
-Paragraph: The real analytical body with 1 or 2 verified numbers, economic facts, or analytics showing real-world impact (2 to 3 simple sentences).
+Paragraph: The real analytical body that elaborates on the hook's main point with verified facts, real numbers, and clear explanation of real-world impact (2 to 4 detailed sentences).
 \\n\\n
-Line 3: A one-line engaging conclusion or thoughtful closing question that sparks discussion.
+Line 3: A short, punchy conclusion or thoughtful closing question that wraps up the takeaway.
 
 STRICT POST LENGTH & FORMAT RULES:
 - TARGET LENGTH: 400 to 600 characters total (including spaces and punctuation).
@@ -277,11 +277,11 @@ SUBTOPIC: "${chosenSubtopic || chosenTopic}"
 CATEGORY: ${categoryName} (${categoryDesc})
 
 STRICT POST STRUCTURE (EXACTLY 3 PARTS separated by double line breaks \\n\\n):
-Line 1: A single punchy hook line that immediately grabs attention (1 clear sentence).
+Line 1: A single punchy hook line that directly introduces and discusses the main point of the topic (1 clear sentence).
 \\n\\n
-Paragraph: The real analytical body with 1 or 2 real numbers and clear explanation of real-world human impact (2 to 3 simple sentences).
+Paragraph: The real analytical body that elaborates on the hook's main point with 1 or 2 real numbers, verified facts, and clear explanation of real-world human impact (2 to 4 detailed sentences).
 \\n\\n
-Line 3: A one-line engaging conclusion or thoughtful closing question that makes the reader think.
+Line 3: A short, punchy conclusion or thoughtful closing question that wraps up the takeaway.
 
 WRITING RULES:
 1. FACTS & NUMBERS: Include 1 or 2 real numbers only.
@@ -1232,19 +1232,7 @@ export async function generateEnglishPost(customTopic = '', excludedTopic = '', 
     let candidate = null;
     let providerName = '';
 
-    /* ---------------- TIER 1. GOOGLE GEMINI FREE API ---------------- */
-    if (geminiKey && !candidate) {
-      try {
-        const res = await callWithSimplify(callGemini, prompt, geminiKey);
-        const validated = validateAIResponse(res, chosenTopic, chosenCategory, chosenSubtopic);
-        candidate = validated;
-        providerName = 'Google Gemini Free API';
-      } catch (err) {
-        console.warn(`[Gemini API] ${err.message}. Trying next tier...`);
-      }
-    }
-
-    /* ---------------- TIER 2. CLOUDFLARE WORKERS AI ---------------- */
+    /* ---------------- TIER 1. CLOUDFLARE WORKERS AI (PRIMARY) ---------------- */
     if (cfToken && cfAccountId && !candidate) {
       try {
         console.log(`[Cloudflare AI] Calling Cloudflare Workers AI for topic: "${chosenTopic}"...`);
@@ -1255,6 +1243,18 @@ export async function generateEnglishPost(customTopic = '', excludedTopic = '', 
         console.log(`[Cloudflare AI] ✓ Successfully generated post with Cloudflare Workers AI!`);
       } catch (err) {
         console.warn(`[Cloudflare AI] ${err.message}. Trying next tier...`);
+      }
+    }
+
+    /* ---------------- TIER 2. GOOGLE GEMINI FREE API (BACKUP 1) ---------------- */
+    if (geminiKey && !candidate) {
+      try {
+        const res = await callWithSimplify(callGemini, prompt, geminiKey);
+        const validated = validateAIResponse(res, chosenTopic, chosenCategory, chosenSubtopic);
+        candidate = validated;
+        providerName = 'Google Gemini Free API';
+      } catch (err) {
+        console.warn(`[Gemini API] ${err.message}. Trying next tier...`);
       }
     }
 
@@ -1403,11 +1403,11 @@ ENGLISH POST:
 
 RULES:
 - Preserve the exact 3-part layout separated by double line breaks (\\n\\n):
-  Line 1: A single punchy hook line in Roman Urdu.
+  Line 1: A single punchy hook line in Roman Urdu discussing the main point.
   \\n\\n
-  Paragraph 2: The real body in Roman Urdu with the exact same numbers and facts.
+  Paragraph 2: The real body in Roman Urdu elaborating on the main point with the exact same numbers and facts.
   \\n\\n
-  Line 3: A one-line engaging conclusion or closing question in Roman Urdu.
+  Line 3: A short concluding takeaway or closing question in Roman Urdu.
 - Use simple everyday words that any regular Pakistani speaks at home.
 - Keep the exact same numbers, facts, and the final question intact.
 - Every sentence must be short and easy to understand.
@@ -1420,18 +1420,6 @@ RULES:
 
   let romanEntry = null;
 
-  if (geminiKey && !romanEntry) {
-    try {
-      const res = await callGemini(prompt, geminiKey);
-      if (res && res.text) {
-        const entry = formatEntry(res.text);
-        if (!entry.isOverLimit && entry.charCount > 20) romanEntry = entry;
-      }
-    } catch (error) {
-      console.warn('[Roman Urdu Gemini]', error.message);
-    }
-  }
-
   if (cfToken && cfAccountId && !romanEntry) {
     try {
       const res = await callCloudflareAI(prompt);
@@ -1441,6 +1429,18 @@ RULES:
       }
     } catch (error) {
       console.warn('[Roman Urdu Cloudflare AI]', error.message);
+    }
+  }
+
+  if (geminiKey && !romanEntry) {
+    try {
+      const res = await callGemini(prompt, geminiKey);
+      if (res && res.text) {
+        const entry = formatEntry(res.text);
+        if (!entry.isOverLimit && entry.charCount > 20) romanEntry = entry;
+      }
+    } catch (error) {
+      console.warn('[Roman Urdu Gemini]', error.message);
     }
   }
 
@@ -1505,11 +1505,11 @@ ENGLISH POST:
 
 RULES:
 - Preserve the exact 3-part layout separated by double line breaks (\\n\\n):
-  Line 1: A single punchy hook line in Urdu (اردو).
+  Line 1: A single punchy hook line in Urdu (اردو) discussing the main point.
   \\n\\n
-  Paragraph 2: The real body in Urdu with the exact same numbers and facts.
+  Paragraph 2: The real body in Urdu elaborating on the main point with the exact same numbers and facts.
   \\n\\n
-  Line 3: A one-line engaging conclusion or closing question in Urdu.
+  Line 3: A short concluding takeaway or closing question in Urdu.
 - Use simple everyday Urdu that an ordinary reader or shopkeeper understands easily.
 - Avoid heavy bookish words or complicated literary terms.
 - Keep the exact same numbers, facts, and the final question intact.
@@ -1523,18 +1523,6 @@ RULES:
 
   let urduEntry = null;
 
-  if (geminiKey && !urduEntry) {
-    try {
-      const res = await callGemini(prompt, geminiKey);
-      if (res && res.text) {
-        const entry = formatEntry(res.text);
-        if (!entry.isOverLimit && entry.charCount > 20) urduEntry = entry;
-      }
-    } catch (error) {
-      console.warn('[Plain Urdu Gemini]', error.message);
-    }
-  }
-
   if (cfToken && cfAccountId && !urduEntry) {
     try {
       const res = await callCloudflareAI(prompt);
@@ -1544,6 +1532,18 @@ RULES:
       }
     } catch (error) {
       console.warn('[Plain Urdu Cloudflare AI]', error.message);
+    }
+  }
+
+  if (geminiKey && !urduEntry) {
+    try {
+      const res = await callGemini(prompt, geminiKey);
+      if (res && res.text) {
+        const entry = formatEntry(res.text);
+        if (!entry.isOverLimit && entry.charCount > 20) urduEntry = entry;
+      }
+    } catch (error) {
+      console.warn('[Plain Urdu Gemini]', error.message);
     }
   }
 
@@ -1676,7 +1676,7 @@ export async function callCloudflareAI(prompt, model = null) {
         messages: [
           {
             role: 'system',
-            content: 'You write engaging X posts in simple conversational A1-A2 English like regular people talk and text. Every post MUST strictly follow this exact 3-part layout separated by double line breaks (\\n\\n):\nLine 1: A single punchy hook line.\n\\n\\nParagraph: The real body with verified facts and real numbers.\n\\n\\nClosing Line: A one-line engaging conclusion or thoughtful question.\nTotal post length MUST be between 400 and 600 characters. Never use hashtags, emojis, or labels like "Hook:" or "Body:". Return ONLY a valid JSON object matching the requested schema.'
+            content: 'You write engaging X posts in simple conversational A1-A2 English like regular people talk and text. Every post MUST strictly follow this exact 3-part layout separated by double line breaks (\\n\\n):\nLine 1: A single punchy hook line that directly introduces and discusses the topic\'s main point.\n\\n\\nParagraph: The real analytical body that elaborates on the main point with verified facts and real numbers.\n\\n\\nClosing Line: A short concluding takeaway or thoughtful question.\nTotal post length MUST be between 400 and 600 characters. Never use hashtags, emojis, or labels like "Hook:" or "Body:". Return ONLY a valid JSON object matching the requested schema.'
           },
           { role: 'user', content: prompt }
         ]
@@ -1725,7 +1725,7 @@ async function callGroq(prompt, apiKey) {
         messages: [
           {
             role: 'system',
-            content: 'You write engaging X posts in simple conversational A1-A2 English like regular people talk and text. Every post MUST strictly follow this exact 3-part layout separated by double line breaks (\\n\\n):\nLine 1: A single punchy hook line.\n\\n\\nParagraph: The real body with verified facts and real numbers.\n\\n\\nClosing Line: A one-line engaging conclusion or thoughtful question.\nTotal post length MUST be between 400 and 600 characters. Never use hashtags, emojis, or labels like "Hook:" or "Body:". Return ONLY a valid JSON object matching the requested schema.'
+            content: 'You write engaging X posts in simple conversational A1-A2 English like regular people talk and text. Every post MUST strictly follow this exact 3-part layout separated by double line breaks (\\n\\n):\nLine 1: A single punchy hook line that directly introduces and discusses the topic\'s main point.\n\\n\\nParagraph: The real analytical body that elaborates on the main point with verified facts and real numbers.\n\\n\\nClosing Line: A short concluding takeaway or thoughtful question.\nTotal post length MUST be between 400 and 600 characters. Never use hashtags, emojis, or labels like "Hook:" or "Body:". Return ONLY a valid JSON object matching the requested schema.'
           },
           { role: 'user', content: prompt }
         ],
@@ -1771,7 +1771,7 @@ async function callXai(prompt, model = 'grok-2-latest') {
           messages: [
             {
               role: 'system',
-              content: 'You write engaging X posts in simple conversational A1-A2 English like regular people talk and text. Every post MUST strictly follow this exact 3-part layout separated by double line breaks (\\n\\n):\nLine 1: A single punchy hook line.\n\\n\\nParagraph: The real body with verified facts and real numbers.\n\\n\\nClosing Line: A one-line engaging conclusion or thoughtful question.\nTotal post length MUST be between 400 and 600 characters. Never use hashtags, emojis, or labels like "Hook:" or "Body:". Return ONLY a valid JSON object matching the requested schema.'
+              content: 'You write engaging X posts in simple conversational A1-A2 English like regular people talk and text. Every post MUST strictly follow this exact 3-part layout separated by double line breaks (\\n\\n):\nLine 1: A single punchy hook line that directly introduces and discusses the topic\'s main point.\n\\n\\nParagraph: The real analytical body that elaborates on the main point with verified facts and real numbers.\n\\n\\nClosing Line: A short concluding takeaway or thoughtful question.\nTotal post length MUST be between 400 and 600 characters. Never use hashtags, emojis, or labels like "Hook:" or "Body:". Return ONLY a valid JSON object matching the requested schema.'
             },
             { role: 'user', content: prompt }
           ],
