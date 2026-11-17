@@ -16,6 +16,7 @@ import assert from 'assert';
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { config } from '../src/config.js';
 import {
   historyStore,
   computeNormalizedHash,
@@ -229,8 +230,8 @@ async function runTests() {
   assert.ok(genResult.centralArgument, 'Central argument metadata must be populated');
   assert.ok(genResult.importantStatistics, 'Statistics metadata must be populated');
   assert.ok(
-    genResult.english.charCount >= 380 && genResult.english.charCount <= 500,
-    `Length must be 380-500, got ${genResult.english.charCount}`
+    genResult.english.charCount >= 380 && genResult.english.charCount <= 600,
+    `Length must be 400-600, got ${genResult.english.charCount}`
   );
   console.log(`✓ TEST 8 PASSED: Post generated via tier "${genResult.provider}" (${genResult.english.charCount} chars) with full metadata!\n`);
 

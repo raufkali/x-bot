@@ -2,10 +2,10 @@
  * Validation and Character Counting Utilities for Social Media Content
  *
  * NOTE: Data-Driven Analytical Posts.
- * Strict target length: 400–500 characters. Maximum limit: 500 chars.
+ * Strict target length: 400–600 characters. Maximum limit: 600 chars.
  */
 
-const X_CHAR_LIMIT = 500;
+const X_CHAR_LIMIT = 600;
 
 /**
  * Validates the user's topic

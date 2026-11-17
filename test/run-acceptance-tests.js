@@ -5,6 +5,8 @@
 
 import assert from 'assert';
 import { checkSimpleEnglish, SIMPLE_ENGLISH_RULES } from '../src/utils/simpleEnglish.js';
+import { config } from '../src/config.js';
+import { historyStore } from '../src/db/historyStore.js';
 import {
   FALLBACK_BANK,
   CURATED_STORY_TOPICS,
@@ -36,15 +38,15 @@ FALLBACK_BANK.forEach((entry, idx) => {
 
   if (err) {
     test1Errors.push(`Entry #${idx + 1} (${entry.topic}): ${err}`);
-  } else if (len < 380 || len > 500) {
-    test1Errors.push(`Entry #${idx + 1} (${entry.topic}): Length ${len} is outside 380-500`);
+  } else if (len < 400 || len > 600) {
+    test1Errors.push(`Entry #${idx + 1} (${entry.topic}): Length ${len} is outside 400-600`);
   } else {
     console.log(`  ✓ [#${String(idx + 1).padStart(2, '0')}] ${len} chars | Pass | "${entry.topic}"`);
   }
 });
 
 assert.strictEqual(test1Errors.length, 0, `Test 1 failed with errors:\n${test1Errors.join('\n')}`);
-console.log(`\n✓ TEST 1 PASSED: All ${FALLBACK_BANK.length} entries pass checkSimpleEnglish and have valid 380-500 length.\n`);
+console.log(`\n✓ TEST 1 PASSED: All ${FALLBACK_BANK.length} entries pass checkSimpleEnglish and have valid 400-600 length.\n`);
 
 // -----------------------------------------------------------------------------
 // TEST 2: Run generateEnglishPost() 10 times and verify simple English and zero hashtags
@@ -58,12 +60,22 @@ async function runTest2() {
   const originalGrok = process.env.GROK_API_KEY;
   const originalXai = process.env.XAI_API_KEY;
   const originalGroq = process.env.GROQ_API_KEY;
+  const originalCfToken = process.env.CLOUDFLARE_API_TOKEN;
+  const originalCfAccount = process.env.CLOUDFLARE_ACCOUNT_ID;
+  const originalConfigCfToken = config.cloudflareApiToken;
+  const originalConfigCfAccount = config.cloudflareAccountId;
+  const savedHistory = [...historyStore.posts];
+  historyStore.reset();
 
   // Temporarily unset keys to test fallback generation cleanly without network variance
   delete process.env.GEMINI_API_KEY;
   delete process.env.GROK_API_KEY;
   delete process.env.XAI_API_KEY;
   delete process.env.GROQ_API_KEY;
+  delete process.env.CLOUDFLARE_API_TOKEN;
+  delete process.env.CLOUDFLARE_ACCOUNT_ID;
+  config.cloudflareApiToken = '';
+  config.cloudflareAccountId = '';
 
   try {
     for (let i = 1; i <= 10; i++) {
@@ -74,7 +86,7 @@ async function runTest2() {
 
       assert.strictEqual(simpleErr, null, `Run #${i} failed checkSimpleEnglish: ${simpleErr}`);
       assert.strictEqual(hashtagMatch, null, `Run #${i} contains hashtags: ${hashtagMatch}`);
-      assert.ok(text.length >= 380 && text.length <= 500, `Run #${i} length ${text.length} outside 380-500`);
+      assert.ok(text.length >= 400 && text.length <= 600, `Run #${i} length ${text.length} outside 400-600`);
 
       console.log(`  ✓ Run #${i}: [${post.provider}] "${post.topic}" (${text.length} chars)`);
     }
@@ -83,11 +95,18 @@ async function runTest2() {
     if (originalGrok) process.env.GROK_API_KEY = originalGrok;
     if (originalXai) process.env.XAI_API_KEY = originalXai;
     if (originalGroq) process.env.GROQ_API_KEY = originalGroq;
+    if (originalCfToken) process.env.CLOUDFLARE_API_TOKEN = originalCfToken;
+    if (originalCfAccount) process.env.CLOUDFLARE_ACCOUNT_ID = originalCfAccount;
+    config.cloudflareApiToken = originalConfigCfToken;
+    config.cloudflareAccountId = originalConfigCfAccount;
+    historyStore.posts = savedHistory;
+    historyStore.rebuildIndexes();
+    historyStore.save();
   }
 }
 
 await runTest2();
-console.log('\n✓ TEST 2 PASSED: 10/10 generated posts passed checkSimpleEnglish with 0 hashtags and 380-500 chars.\n');
+console.log('\n✓ TEST 2 PASSED: 10/10 generated posts passed checkSimpleEnglish with 0 hashtags and 400-600 chars.\n');
 
 // -----------------------------------------------------------------------------
 // TEST 3: Confirm rejection criteria is removed (no blocking rejections)
@@ -144,11 +163,19 @@ const originalGemini = process.env.GEMINI_API_KEY;
 const originalGrok = process.env.GROK_API_KEY;
 const originalXai = process.env.XAI_API_KEY;
 const originalGroq = process.env.GROQ_API_KEY;
+const originalCfToken = process.env.CLOUDFLARE_API_TOKEN;
+const originalCfAccount = process.env.CLOUDFLARE_ACCOUNT_ID;
+const originalConfigCfToken = config.cloudflareApiToken;
+const originalConfigCfAccount = config.cloudflareAccountId;
 
 delete process.env.GEMINI_API_KEY;
 delete process.env.GROK_API_KEY;
 delete process.env.XAI_API_KEY;
 delete process.env.GROQ_API_KEY;
+delete process.env.CLOUDFLARE_API_TOKEN;
+delete process.env.CLOUDFLARE_ACCOUNT_ID;
+config.cloudflareApiToken = '';
+config.cloudflareAccountId = '';
 
 let romanThrew = false;
 let romanErrorMessage = '';
@@ -173,6 +200,10 @@ if (originalGemini) process.env.GEMINI_API_KEY = originalGemini;
 if (originalGrok) process.env.GROK_API_KEY = originalGrok;
 if (originalXai) process.env.XAI_API_KEY = originalXai;
 if (originalGroq) process.env.GROQ_API_KEY = originalGroq;
+if (originalCfToken) process.env.CLOUDFLARE_API_TOKEN = originalCfToken;
+if (originalCfAccount) process.env.CLOUDFLARE_ACCOUNT_ID = originalCfAccount;
+config.cloudflareApiToken = originalConfigCfToken;
+config.cloudflareAccountId = originalConfigCfAccount;
 
 assert.strictEqual(romanThrew, true, 'Roman Urdu must throw an error when all providers fail and topic is not in bank');
 assert.ok(romanErrorMessage.includes('all AI providers failed and no matching bank entry found'), `Unexpected Roman Urdu error: ${romanErrorMessage}`);

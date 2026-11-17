@@ -112,8 +112,8 @@ export class Display {
     const countInfo = calculateXCharacterCount(full);
 
     const limitWarning = countInfo.isOverLimit
-      ? ansi.redText(` [EXCEEDS 280 CHAR LIMIT: ${countInfo.weightedCount}/280]`)
-      : ansi.emeraldText(` [${countInfo.weightedCount}/280 chars]`);
+      ? ansi.redText(` [EXCEEDS 600 CHAR LIMIT: ${countInfo.weightedCount}/600]`)
+      : ansi.emeraldText(` [${countInfo.weightedCount}/600 chars]`);
 
     console.log(`\n  ${ansi.dimText('Length:')}${limitWarning}`);
   }

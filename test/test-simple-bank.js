@@ -447,13 +447,13 @@ export const ALL_ENTRIES = [
     importantStatistics: ["70% minerals cleaned in China", "90% motor magnets"],
     keywords: ["minerals", "batteries", "cars", "clean", "energy"],
     english: {
-      text: "Electric cars and clean power generators need special minerals to run. Today, one country cleans over 70% of those rare minerals from the ground. It also makes about 90% of the magnets used in electric car motors.\n\nOther countries want to build their own plants, but cleaning these minerals takes years of work.\n\nDid the world move away from oil sellers only to depend on one mineral seller?"
+      text: "Electric cars and clean power generators need special minerals to run. Today, one country cleans over 70% of those rare minerals from the ground. It also makes about 90% of the magnets used in electric car motors worldwide.\n\nOther countries want to build their own processing plants, but cleaning these minerals takes years of hard work.\n\nDid the world move away from oil sellers only to depend on one mineral seller?"
     },
     romanUrdu: {
-      text: "Bijli se chalnay wali gariyon aur solar panels ko khas madaniyat chahiye hoti hain. Aaj ek mulk zameen se nikli in 70% se zyada madaniyat ko saaf karta hai. Wo electric gariyon ke motors ke 90% magnets bhi banata hai.\n\nDoosray mulk apne plants lagana chahte hain magar is kaam mein saalon lagte hain.\n\nKya dunya tail walon se azaad ho kar mineral bechne walay ke haath mein aagayi?"
+      text: "Bijli se chalnay wali gariyon aur solar panels ko khas madaniyat chahiye hoti hain. Aaj sirf ek mulk zameen se nikli in 70% se zyada madaniyat ko saaf karta hai. Wo electric gariyon ke motors ke 90% magnets bhi akele banata hai.\n\nDoosray mulk apne plants lagana chahte hain magar is kaam mein saalon ki sakht mehnat lagti hai.\n\nKya dunya tail walon se azaad ho kar mineral bechne walay ke haath mein aagayi?"
     },
     plainUrdu: {
-      text: "بجلی سے چلنے والی گاڑیوں اور سولر سسٹمز کو خاص معدنیات درکار ہوتی ہیں۔ آج ایک ملک زمین سے نکلنے والی ستر فیصد سے زیادہ معدنیات کو صاف کرتا ہے۔ وہ گاڑیوں کی موٹروں کے نوے فیصد میگنیٹ بھی بناتا ہے۔\n\nدوسرے ممالک اپنے پلانٹس لگانا چاہتے ہیں لیکن اس کام میں سالوں کی محنت لگتی ہے۔\n\nکیا دنیا تیل بیچنے والوں سے جان چھڑا کر معدنیات کی اجارہ داری میں پھنس گئی ہے؟"
+      text: "بجلی سے چلنے والی نئی گاڑیوں اور سولر سسٹمز کو خاص معدنیات درکار ہوتی ہیں۔ آج صرف ایک ملک زمین سے نکلنے والی ستر فیصد سے زیادہ معدنیات کو صاف کرتا ہے۔ وہ نئی گاڑیوں کی موٹروں کے نوے فیصد میگنیٹ بھی اکیلے تیار کرتا ہے۔\n\nدوسرے ممالک اپنے کارخانے لگانا چاہتے ہیں لیکن اس کام میں سالوں کی طویل اور سخت محنت درکار ہوتی ہے۔\n\nکیا دنیا تیل بیچنے والوں سے جان چھڑا کر معدنیات کی اجارہ داری میں پھنس گئی ہے؟"
     }
   },
 
@@ -733,8 +733,8 @@ ALL_ENTRIES.forEach((item, idx) => {
 
   if (simpleErr) {
     errors.push(`Entry #${idx + 1} (${item.topic}): ${simpleErr}`);
-  } else if (len < 380 || len > 500) {
-    errors.push(`Entry #${idx + 1} (${item.topic}): Length is ${len} (must be 380-500)`);
+  } else if (len < 400 || len > 600) {
+    errors.push(`Entry #${idx + 1} (${item.topic}): Length is ${len} (must be 400-600)`);
   } else {
     passed++;
   }

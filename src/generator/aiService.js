@@ -15,7 +15,7 @@
  * 7. Double-Meaning & Satirical Commentary
  *
  * Standards:
- * - English Level: Simplest Everyday English (Sentences 6–14 words, hard limits 380–500 chars, target 400–460 chars)
+ * - English Level: Simplest Everyday English (Sentences 6–14 words, hard limits 400–600 chars, target 400–600 chars)
  * - Zero hashtags, zero emojis, no internal labels or bullet lists
  * - Translations: Pakistani Roman Urdu and Plain Urdu script (اردو) in-place without duplicate creation
  * - Strict 6-Stage Anti-Duplication Engine
@@ -24,6 +24,7 @@
 
 import https from 'https';
 import Groq from 'groq-sdk';
+import { config } from '../config.js';
 import { calculateXCharacterCount } from '../utils/validation.js';
 import { SIMPLE_ENGLISH_RULES, checkSimpleEnglish } from '../utils/simpleEnglish.js';
 import {
@@ -41,10 +42,10 @@ import { genreManager } from './genreManager.js';
 
 let categoryRotationIndex = 0;
 
-const MIN_CHARACTERS = 100;
+const MIN_CHARACTERS = 380;
 const ABSOLUTE_MAX_CHARACTERS = 600;
-const TARGET_MIN_CHARACTERS = 180;
-const TARGET_MAX_CHARACTERS = 460;
+const TARGET_MIN_CHARACTERS = 400;
+const TARGET_MAX_CHARACTERS = 600;
 
 /* =========================================================
    TEXT FORMATTING AND VALIDATION
@@ -168,10 +169,10 @@ function validateAIResponse(res, chosenTopic, chosenCategory = 'PAK_VS_IND', cho
 
   const entry = formatEntry(rawText);
   if (entry.isOverLimit || entry.charCount > ABSOLUTE_MAX_CHARACTERS) {
-    throw new Error(`AI post exceeds strict 500-char limit (${entry.charCount} chars, max ${ABSOLUTE_MAX_CHARACTERS})`);
+    throw new Error(`AI post exceeds strict 600-char limit (${entry.charCount} chars, max ${ABSOLUTE_MAX_CHARACTERS})`);
   }
   if (entry.charCount < MIN_CHARACTERS) {
-    throw new Error(`AI post is too short (${entry.charCount} chars, must be ${MIN_CHARACTERS}-500)`);
+    throw new Error(`AI post is too short (${entry.charCount} chars, must be ${MIN_CHARACTERS}-600)`);
   }
 
   const topic = typeof res.topic === 'string' && res.topic.trim() ? res.topic.trim() : chosenTopic;
@@ -240,8 +241,8 @@ Paragraph: The real analytical body with 1 or 2 verified numbers, economic facts
 Line 3: A one-line engaging conclusion or thoughtful closing question that sparks discussion.
 
 STRICT POST LENGTH & FORMAT RULES:
-- TARGET LENGTH: 240 to 460 characters total (including spaces and punctuation).
-- HARD LIMITS: 150 to 520 characters.
+- TARGET LENGTH: 400 to 600 characters total (including spaces and punctuation).
+- HARD LIMITS: 380 to 600 characters.
 - ZERO hashtags. ZERO emojis in the post body. NO bullet points.
 - NEVER include labels like "Hook:", "Line 1:", "Body:", or "Conclusion:" in the post text.
 
@@ -286,7 +287,7 @@ WRITING RULES:
 1. FACTS & NUMBERS: Include 1 or 2 real numbers only.
 2. SIMPLE A1-A2 ENGLISH: Short, direct, human sentences. Everyday words only.
 3. ZERO hashtags. ZERO emojis in the post. NO bullet points. NO labels like "Hook:" or "Body:".
-4. TARGET LENGTH: 240 to 460 characters total (hard limits 150 to 520).
+4. TARGET LENGTH: 400 to 600 characters total (hard limits 380 to 600).
 
 MANDATORY HISTORICAL AVOIDANCE:
 • ${avoidStr}
@@ -302,7 +303,7 @@ Return ONLY valid JSON matching this exact structure:
 
 /* =========================================================
    FALLBACK BANK (MERGED CURATED & DYNAMIC BANK)
-   All entries written in simplest English (380-480 chars),
+   All entries written in simplest English (400-600 chars),
    verified numbers with source citations, passing checkSimpleEnglish.
 ========================================================= */
 
@@ -753,13 +754,13 @@ export const FALLBACK_BANK = [
     importantStatistics: ["70% minerals cleaned in China", "90% motor magnets"],
     keywords: ["minerals", "batteries", "cars", "clean", "energy"],
     english: {
-      text: "Electric cars and clean power generators need special minerals to run. Today, one country cleans over 70% of those rare minerals from the ground. It also makes about 90% of the magnets used in electric car motors.\n\nOther countries want to build their own plants, but cleaning these minerals takes years of work.\n\nDid the world move away from oil sellers only to depend on one mineral seller?"
+      text: "Electric cars and clean power generators need special minerals to run. Today, one country cleans over 70% of those rare minerals from the ground. It also makes about 90% of the magnets used in electric car motors worldwide.\n\nOther countries want to build their own processing plants, but cleaning these minerals takes years of hard work.\n\nDid the world move away from oil sellers only to depend on one mineral seller?"
     },
     romanUrdu: {
-      text: "Bijli se chalnay wali gariyon aur solar panels ko khas madaniyat chahiye hoti hain. Aaj ek mulk zameen se nikli in 70% se zyada madaniyat ko saaf karta hai. Wo electric gariyon ke motors ke 90% magnets bhi banata hai.\n\nDoosray mulk apne plants lagana chahte hain magar is kaam mein saalon lagte hain.\n\nKya dunya tail walon se azaad ho kar mineral bechne walay ke haath mein aagayi?"
+      text: "Bijli se chalnay wali gariyon aur solar panels ko khas madaniyat chahiye hoti hain. Aaj sirf ek mulk zameen se nikli in 70% se zyada madaniyat ko saaf karta hai. Wo electric gariyon ke motors ke 90% magnets bhi akele banata hai.\n\nDoosray mulk apne plants lagana chahte hain magar is kaam mein saalon ki sakht mehnat lagti hai.\n\nKya dunya tail walon se azaad ho kar mineral bechne walay ke haath mein aagayi?"
     },
     plainUrdu: {
-      text: "بجلی سے چلنے والی گاڑیوں اور سولر سسٹمز کو خاص معدنیات درکار ہوتی ہیں۔ آج ایک ملک زمین سے نکلنے والی ستر فیصد سے زیادہ معدنیات کو صاف کرتا ہے۔ وہ گاڑیوں کی موٹروں کے نوے فیصد میگنیٹ بھی بناتا ہے۔\n\nدوسرے ممالک اپنے پلانٹس لگانا چاہتے ہیں لیکن اس کام میں سالوں کی محنت لگتی ہے۔\n\nکیا دنیا تیل بیچنے والوں سے جان چھڑا کر معدنیات کی اجارہ داری میں پھنس گئی ہے؟"
+      text: "بجلی سے چلنے والی نئی گاڑیوں اور سولر سسٹمز کو خاص معدنیات درکار ہوتی ہیں۔ آج صرف ایک ملک زمین سے نکلنے والی ستر فیصد سے زیادہ معدنیات کو صاف کرتا ہے۔ وہ نئی گاڑیوں کی موٹروں کے نوے فیصد میگنیٹ بھی اکیلے تیار کرتا ہے۔\n\nدوسرے ممالک اپنے کارخانے لگانا چاہتے ہیں لیکن اس کام میں سالوں کی طویل اور سخت محنت درکار ہوتی ہے۔\n\nکیا دنیا تیل بیچنے والوں سے جان چھڑا کر معدنیات کی اجارہ داری میں پھنس گئی ہے؟"
     }
   },
 
@@ -1084,6 +1085,49 @@ function generateDynamicFallback(category, subtopic = '', excludedTopic = '', av
     };
   }
 
+  // Second pass: if category has no entries (e.g. custom user-added genre), pick any unseen entry
+  for (const item of FALLBACK_BANK) {
+    const isExcluded = cleanExcluded && (
+      item.topic.toLowerCase().trim() === cleanExcluded ||
+      (item.subtopic && item.subtopic.toLowerCase().trim() === cleanExcluded)
+    );
+    if (isExcluded) continue;
+
+    if (avoidCombined.some(a => a.includes(item.topic.toLowerCase()) || (item.subtopic && a.includes(item.subtopic.toLowerCase())))) {
+      continue;
+    }
+
+    if (historyStore.hasSeenTopic(item.topic)) {
+      continue;
+    }
+
+    const simpleErr = checkSimpleEnglish(item.english.text);
+    if (simpleErr) {
+      continue;
+    }
+
+    const dupCheck = historyStore.isDuplicateOrSimilar(item.english.text, item.topic, item);
+    if (dupCheck.isDuplicate) {
+      continue;
+    }
+
+    return {
+      topic: item.topic,
+      subtopic: item.subtopic || subtopic || item.topic,
+      category: category || item.category,
+      genreId: category || item.category,
+      mainSubject: item.mainSubject,
+      specificEventOrIssue: item.specificEventOrIssue,
+      centralArgument: item.centralArgument,
+      analyticalAngle: item.analyticalAngle,
+      importantStatistics: item.importantStatistics,
+      keywords: item.keywords,
+      english: formatEntry(item.english.text),
+      romanUrdu: item.romanUrdu ? formatEntry(item.romanUrdu.text) : null,
+      plainUrdu: item.plainUrdu ? formatEntry(item.plainUrdu.text) : null
+    };
+  }
+
   return null;
 }
 
@@ -1367,7 +1411,7 @@ RULES:
 - Use simple everyday words that any regular Pakistani speaks at home.
 - Keep the exact same numbers, facts, and the final question intact.
 - Every sentence must be short and easy to understand.
-- Target length: 240 to 460 characters total.
+- Target length: 400 to 600 characters total.
 - ZERO hashtags, ZERO emojis. NEVER use labels like "Hook:" or "Body:".
 - Return ONLY valid JSON:
 {
@@ -1470,7 +1514,7 @@ RULES:
 - Avoid heavy bookish words or complicated literary terms.
 - Keep the exact same numbers, facts, and the final question intact.
 - Every sentence must be short and easy to understand.
-- Target length: 240 to 460 characters total.
+- Target length: 400 to 600 characters total.
 - ZERO hashtags, ZERO emojis. NEVER use labels.
 - Return ONLY valid JSON:
 {
@@ -1632,7 +1676,7 @@ export async function callCloudflareAI(prompt, model = null) {
         messages: [
           {
             role: 'system',
-            content: 'You write engaging X posts in simple conversational A1-A2 English like regular people talk and text. Every post MUST strictly follow this exact 3-part layout separated by double line breaks (\\n\\n):\nLine 1: A single punchy hook line.\n\\n\\nParagraph: The real body with verified facts and real numbers.\n\\n\\nClosing Line: A one-line engaging conclusion or thoughtful question.\nTotal post length MUST be between 220 and 460 characters. Never use hashtags, emojis, or labels like "Hook:" or "Body:". Return ONLY a valid JSON object matching the requested schema.'
+            content: 'You write engaging X posts in simple conversational A1-A2 English like regular people talk and text. Every post MUST strictly follow this exact 3-part layout separated by double line breaks (\\n\\n):\nLine 1: A single punchy hook line.\n\\n\\nParagraph: The real body with verified facts and real numbers.\n\\n\\nClosing Line: A one-line engaging conclusion or thoughtful question.\nTotal post length MUST be between 400 and 600 characters. Never use hashtags, emojis, or labels like "Hook:" or "Body:". Return ONLY a valid JSON object matching the requested schema.'
           },
           { role: 'user', content: prompt }
         ]
@@ -1681,7 +1725,7 @@ async function callGroq(prompt, apiKey) {
         messages: [
           {
             role: 'system',
-            content: 'You write engaging X posts in simple conversational A1-A2 English like regular people talk and text. Every post MUST strictly follow this exact 3-part layout separated by double line breaks (\\n\\n):\nLine 1: A single punchy hook line.\n\\n\\nParagraph: The real body with verified facts and real numbers.\n\\n\\nClosing Line: A one-line engaging conclusion or thoughtful question.\nTotal post length MUST be between 220 and 460 characters. Never use hashtags, emojis, or labels like "Hook:" or "Body:". Return ONLY a valid JSON object matching the requested schema.'
+            content: 'You write engaging X posts in simple conversational A1-A2 English like regular people talk and text. Every post MUST strictly follow this exact 3-part layout separated by double line breaks (\\n\\n):\nLine 1: A single punchy hook line.\n\\n\\nParagraph: The real body with verified facts and real numbers.\n\\n\\nClosing Line: A one-line engaging conclusion or thoughtful question.\nTotal post length MUST be between 400 and 600 characters. Never use hashtags, emojis, or labels like "Hook:" or "Body:". Return ONLY a valid JSON object matching the requested schema.'
           },
           { role: 'user', content: prompt }
         ],
@@ -1727,7 +1771,7 @@ async function callXai(prompt, model = 'grok-2-latest') {
           messages: [
             {
               role: 'system',
-              content: 'You write engaging X posts in simple conversational A1-A2 English like regular people talk and text. Every post MUST strictly follow this exact 3-part layout separated by double line breaks (\\n\\n):\nLine 1: A single punchy hook line.\n\\n\\nParagraph: The real body with verified facts and real numbers.\n\\n\\nClosing Line: A one-line engaging conclusion or thoughtful question.\nTotal post length MUST be between 220 and 460 characters. Never use hashtags, emojis, or labels like "Hook:" or "Body:". Return ONLY a valid JSON object matching the requested schema.'
+              content: 'You write engaging X posts in simple conversational A1-A2 English like regular people talk and text. Every post MUST strictly follow this exact 3-part layout separated by double line breaks (\\n\\n):\nLine 1: A single punchy hook line.\n\\n\\nParagraph: The real body with verified facts and real numbers.\n\\n\\nClosing Line: A one-line engaging conclusion or thoughtful question.\nTotal post length MUST be between 400 and 600 characters. Never use hashtags, emojis, or labels like "Hook:" or "Body:". Return ONLY a valid JSON object matching the requested schema.'
             },
             { role: 'user', content: prompt }
           ],

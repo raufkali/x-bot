@@ -66,6 +66,6 @@ export const config = {
   xCallbackUrl: process.env.X_CALLBACK_URL || 'https://x-bot-7p2s.onrender.com/auth/x/callback',
 
   // Content Generation Profile
-  englishLevel: 'A2 Simple Pakistani English (Data-Driven, 400-500 chars)',
+  englishLevel: 'A2 Simple Pakistani English (Data-Driven, 400-600 chars)',
   contentThemes: 'Geopolitics & Military Power, Pakistan Politics & Economy, Social & Regional Issues, AI & Technology, Climate & Resources, Double Meaning & Social Commentary'
 };

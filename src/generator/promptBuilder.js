@@ -67,7 +67,7 @@ CONTENT RULES:
 8. Do not force a political or controversial angle.
 9. ZERO emojis. Do not use any emojis.
 10. ZERO hashtags. Do not use any hashtags. Always output "Hashtags: NONE".
-11. STRICT LENGTH REQUIREMENT: 380 to 480 characters, never above 500.
+11. STRICT LENGTH REQUIREMENT: 400 to 600 characters, never above 600.
 12. Preserve the original topic and intention.
 
 INPUT DETAILS:
@@ -88,15 +88,15 @@ Return the results in the following strict, clearly separated structure without 
 POST ${padded}
 
 ENGLISH:
-Post text: [Insert English post text here: 380-480 characters, sentences of 6-14 words, everyday words]
+Post text: [Insert English post text here: 400-600 characters, sentences of 6-14 words, everyday words]
 Hashtags: NONE
 
 ROMAN URDU:
-Post text: [Insert Roman Urdu post text here: 380-480 characters]
+Post text: [Insert Roman Urdu post text here: 400-600 characters]
 Hashtags: NONE
 
 PLAIN URDU:
-Post text: [Insert Plain Urdu script post text here: 380-480 characters]
+Post text: [Insert Plain Urdu script post text here: 400-600 characters]
 Hashtags: NONE
 `;
   }
@@ -162,13 +162,13 @@ ${
 }
 - ZERO hashtags. Always output "Hashtags: NONE".
 - ZERO emojis.
-- STRICT LENGTH REQUIREMENT: 380 to 480 characters, never above 500.
+- STRICT LENGTH REQUIREMENT: 400 to 600 characters, never above 600.
 
 OUTPUT FORMAT:
 Return strictly the following format:
 
 ${language.toUpperCase()}:
-Post text: [New regenerated post text: 380-480 characters]
+Post text: [New regenerated post text: 400-600 characters]
 Hashtags: NONE
 `;
 
@@ -216,21 +216,21 @@ Generate fresh versions in:
 All three versions must communicate the same central idea.
 ZERO hashtags. Always output "Hashtags: NONE".
 ZERO emojis.
-STRICT LENGTH REQUIREMENT: 380 to 480 characters, never above 500.
+STRICT LENGTH REQUIREMENT: 400 to 600 characters, never above 600.
 
 OUTPUT FORMAT:
 POST ${padded}
 
 ENGLISH:
-Post text: [New English post: 380-480 characters]
+Post text: [New English post: 400-600 characters]
 Hashtags: NONE
 
 ROMAN URDU:
-Post text: [New Roman Urdu post: 380-480 characters]
+Post text: [New Roman Urdu post: 400-600 characters]
 Hashtags: NONE
 
 PLAIN URDU:
-Post text: [New Plain Urdu post: 380-480 characters]
+Post text: [New Plain Urdu post: 400-600 characters]
 Hashtags: NONE
 `;
 
