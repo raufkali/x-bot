@@ -1,17 +1,6 @@
 {
-  "primaryGenreId": "CUSTOM_BAD_SIDE_OF_INDIA_1499",
-  "customGenres": [
-    {
-      "id": "CUSTOM_BAD_SIDE_OF_INDIA_1499",
-      "name": "bad side of india",
-      "description": "Sharp geopolitical, cultural and economic analysis of India",
-      "keywords": [
-        "bad side of india"
-      ],
-      "isCustom": true,
-      "createdAt": "2026-11-17T09:53:41.499Z"
-    }
-  ],
+  "primaryGenreId": null,
+  "customGenres": [],
   "removedGenreIds": [],
-  "updatedAt": "2026-11-17T09:53:41.502Z"
+  "updatedAt": "2026-11-19T07:14:13.365Z"
 }

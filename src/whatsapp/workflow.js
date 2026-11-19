@@ -24,7 +24,7 @@ class WhatsAppWorkflowManager extends EventEmitter {
     this.currentPendingPost = null; // { topic, category, english, romanUrdu, plainUrdu, activeView }
     this.approvedPost = null;
     this.status = 'IDLE'; // IDLE | AWAITING_GENERATE | AWAITING_APPROVAL | APPROVED | DISCARDED
-    this.menuState = 'DEFAULT'; // DEFAULT | CUSTOMIZE_MENU | AWAITING_NEW_GENRE | POST_GENRE_ADD_OPTIONS | AWAITING_PRIMARY_SELECTION | AWAITING_REMOVE_SELECTION
+    this.menuState = 'DEFAULT'; // DEFAULT | CUSTOMIZE_MENU | AWAITING_NEW_GENRE | POST_GENRE_ADD_OPTIONS | AWAITING_PRIMARY_SELECTION | AWAITING_REMOVE_SELECTION | AWAITING_CUSTOM_TOPIC
     this.newlyAddedGenre = null;
   }
 
@@ -33,8 +33,9 @@ class WhatsAppWorkflowManager extends EventEmitter {
    * @param {string} [customTopic]
    * @param {string} [excludedTopic]
    * @param {object} [excludedContext]
+   * @param {boolean} [isUserForcedTopic] - When true the topic is exactly what the user typed (bypasses AI topic fetch)
    */
-  async generateAndSend(customTopic = '', excludedTopic = '', excludedContext = null) {
+  async generateAndSend(customTopic = '', excludedTopic = '', excludedContext = null, isUserForcedTopic = false) {
     const primary = genreManager.getPrimaryGenre();
     if (primary) {
       console.log(ansi.emeraldText(`⚡ [Primary Genre Active: ${primary.name}] Generating post exclusively for this genre...`));
@@ -42,7 +43,7 @@ class WhatsAppWorkflowManager extends EventEmitter {
       console.log(ansi.emeraldText('⚡ Generating 1 high-quality English post for WhatsApp review...'));
     }
 
-    const gen = await generateEnglishPost(customTopic, excludedTopic, excludedContext);
+    const gen = await generateEnglishPost(customTopic, excludedTopic, excludedContext, isUserForcedTopic);
     this.currentPendingPost = {
       topic: gen.topic,
       subtopic: gen.subtopic || gen.topic,
@@ -332,6 +333,34 @@ class WhatsAppWorkflowManager extends EventEmitter {
       return { action: 'CUSTOMIZE_MENU_OPENED', status: this.status, message: menuText };
     }
 
+    // --- SUB-STATE: AWAITING CUSTOM TOPIC ---
+    if (this.menuState === 'AWAITING_CUSTOM_TOPIC') {
+      if (input === '0' || input === 'cancel' || input === 'back') {
+        this.menuState = 'DEFAULT';
+        this.status = 'AWAITING_GENERATE';
+        const backMsg =
+          `👋 *Main Menu:*\n\n` +
+          `• *1* ➔ Generate new post\n` +
+          `• *2* ➔ Customize the bot\n` +
+          `• *3* ➔ Write about a custom topic`;
+        if (whatsappClient.isConfigured() && fromNumber) {
+          try { await whatsappClient.sendText(fromNumber, backMsg); } catch (e) {}
+        }
+        return { action: 'MENU_CANCELLED', message: backMsg };
+      }
+
+      const userTopic = rawInput.trim();
+      this.menuState = 'DEFAULT';
+      this.status = 'AWAITING_GENERATE';
+      console.log(ansi.emeraldText(`\n✍️ [WhatsApp Action] Owner requested custom topic: "${userTopic}"`));
+      if (whatsappClient.isConfigured() && fromNumber) {
+        try {
+          await whatsappClient.sendText(fromNumber, `✍️ Writing a post about: *"${userTopic}"*\n⚡ Generating... Please wait.`);
+        } catch (e) {}
+      }
+      return await this.generateAndSend(userTopic, '', null, true); // isUserForcedTopic = true
+    }
+
     // --- SUB-STATE: AWAITING NEW GENRE (Option 1) ---
     if (this.menuState === 'AWAITING_NEW_GENRE') {
       if (input === '0' || input === 'cancel' || input === 'back') {
@@ -408,7 +437,8 @@ class WhatsAppWorkflowManager extends EventEmitter {
             `✅ *Primary Genre Set:* 🎯 *${targetGenre.name}*\n\n` +
             `_From now on, the bot will post only of that genre nothing else!_\n\n` +
             `• *1* ➔ Generate a new post now\n` +
-            `• *2* ➔ Customize the bot`;
+            `• *2* ➔ Customize the bot\n` +
+            `• *3* ➔ Write about a custom topic`;
         }
         this.menuState = 'DEFAULT';
         this.status = 'AWAITING_GENERATE';
@@ -436,7 +466,8 @@ class WhatsAppWorkflowManager extends EventEmitter {
         const backMsg =
           `🏠 *Main Menu*\n\n` +
           `• *1* ➔ Generate a new post\n` +
-          `• *2* ➔ Customize the bot`;
+          `• *2* ➔ Customize the bot\n` +
+          `• *3* ➔ Write about a custom topic`;
         if (whatsappClient.isConfigured() && fromNumber) {
           try { await whatsappClient.sendText(fromNumber, backMsg); } catch (e) {}
         }
@@ -470,14 +501,16 @@ class WhatsAppWorkflowManager extends EventEmitter {
             `✅ *Primary Genre Set:* 🎲 *Random (Rotate across all genres)*\n\n` +
             `The bot will rotate smoothly through all available genres!\n\n` +
             `• *1* ➔ Generate a new post now\n` +
-            `• *2* ➔ Customize the bot`;
+            `• *2* ➔ Customize the bot\n` +
+            `• *3* ➔ Write about a custom topic`;
         } else {
           console.log(ansi.emeraldText(`\n✓ [WhatsApp Action] Primary genre set to: "${res.genre.name}"`));
           confMsg =
             `✅ *Primary Genre Set:* 🎯 *${res.genre.name}*\n\n` +
             `_From now on, the bot will post only of that genre nothing else!_\n\n` +
             `• *1* ➔ Generate a new post now\n` +
-            `• *2* ➔ Customize the bot`;
+            `• *2* ➔ Customize the bot\n` +
+            `• *3* ➔ Write about a custom topic`;
         }
 
         if (whatsappClient.isConfigured() && fromNumber) {
@@ -612,7 +645,8 @@ class WhatsAppWorkflowManager extends EventEmitter {
           const backMsg =
             `👋 *Main Menu:*\n\n` +
             `• *1* ➔ Generate new post\n` +
-            `• *2* ➔ Customize the bot`;
+            `• *2* ➔ Customize the bot\n` +
+            `• *3* ➔ Write about a custom topic`;
           if (whatsappClient.isConfigured() && fromNumber) {
             try { await whatsappClient.sendText(fromNumber, backMsg); } catch (e) {}
           }
@@ -658,11 +692,30 @@ class WhatsAppWorkflowManager extends EventEmitter {
         return await this.generateAndSend(customTopic);
       }
 
+      // Option 3: Write about a custom topic
+      if (input === '3' || input.includes('custom topic')) {
+        this.menuState = 'AWAITING_CUSTOM_TOPIC';
+        console.log(ansi.emeraldText('\n✍️ [WhatsApp Action] Owner opened custom topic mode...'));
+        const askMsg =
+          `✍️ *Custom Topic Post*\n\n` +
+          `Reply with any topic you want the bot to write about.\n` +
+          `_(The bot will write a post about this topic regardless of the active genre.)_\n\n` +
+          `_Or reply *0* to cancel._`;
+        if (whatsappClient.isConfigured() && fromNumber) {
+          try { await whatsappClient.sendText(fromNumber, askMsg); } catch (e) {}
+        }
+        return { action: 'AWAITING_CUSTOM_TOPIC', message: askMsg };
+      }
+
       // Any other SMS wakes the bot and sends the welcome greeting!
       this.status = 'AWAITING_GENERATE';
       this.menuState = 'DEFAULT';
       console.log(ansi.emeraldText('\n👋 [WhatsApp Action] Bot woken up by owner! Sending welcome greeting...'));
-      const welcomeMsg = 'HI, welcome to your X Assistant press 1 to generate new post or 2 to customize the bot\n\n• *1* ➔ Generate new post\n• *2* ➔ Customize the bot';
+      const welcomeMsg =
+        `HI, welcome to your X Assistant!\n\n` +
+        `• *1* ➔ Generate new post\n` +
+        `• *2* ➔ Customize the bot\n` +
+        `• *3* ➔ Write about a custom topic`;
 
       if (whatsappClient.isConfigured() && fromNumber) {
         try {
@@ -861,7 +914,11 @@ class WhatsAppWorkflowManager extends EventEmitter {
           english: usedPost.english
         }).catch(() => {});
 
-        const confirmMsg = '🔒 Post marked as USED permanently. Its topic, argument, and content will never be reused or regenerated.\n\n• *1* ➔ Generate a new post\n• *2* ➔ Customize the bot';
+        const confirmMsg = '🔒 Post marked as USED permanently. Its topic, argument, and content will never be reused or regenerated.
+
+• *1* ➔ Generate a new post
+• *2* ➔ Customize the bot
+• *3* ➔ Write about a custom topic';
         if (whatsappClient.isConfigured() && fromNumber) {
           try {
             await whatsappClient.sendText(fromNumber, confirmMsg);
@@ -1038,7 +1095,11 @@ class WhatsAppWorkflowManager extends EventEmitter {
           english: usedPost.english
         }).catch(() => {});
 
-        const confirmMsg = '🔒 Post marked as USED permanently. Its topic, argument, and content will never be reused or regenerated.\n\n• *1* ➔ Generate a new post\n• *2* ➔ Customize the bot';
+        const confirmMsg = '🔒 Post marked as USED permanently. Its topic, argument, and content will never be reused or regenerated.
+
+• *1* ➔ Generate a new post
+• *2* ➔ Customize the bot
+• *3* ➔ Write about a custom topic';
         if (whatsappClient.isConfigured() && fromNumber) {
           try {
             await whatsappClient.sendText(fromNumber, confirmMsg);
@@ -1216,7 +1277,11 @@ class WhatsAppWorkflowManager extends EventEmitter {
           english: usedPost.english
         }).catch(() => {});
 
-        const confirmMsg = '🔒 Post marked as USED permanently. Its topic, argument, and content will never be reused or regenerated.\n\n• *1* ➔ Generate a new post\n• *2* ➔ Customize the bot';
+        const confirmMsg = '🔒 Post marked as USED permanently. Its topic, argument, and content will never be reused or regenerated.
+
+• *1* ➔ Generate a new post
+• *2* ➔ Customize the bot
+• *3* ➔ Write about a custom topic';
         if (whatsappClient.isConfigured() && fromNumber) {
           try {
             await whatsappClient.sendText(fromNumber, confirmMsg);

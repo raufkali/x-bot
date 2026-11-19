@@ -1224,11 +1224,106 @@ async function callWithSimplify(callFn, prompt, ...args) {
 }
 
 /* =========================================================
+   TOPIC FETCHER — Phase 1: Get a unique topic before generating
+   Asks AI to suggest a fresh, specific topic related to genre/category
+========================================================= */
+
+/**
+ * Uses AI to fetch a fresh unique topic for a given genre.
+ * Retries until it finds one not in the used topics list.
+ * @param {object} targetCategory - Genre object { id, name, description }
+ * @param {string[]} avoidList - Recent topics to avoid
+ * @param {string} [forceCustomTopic] - If provided, skips AI fetch and uses this directly
+ * @returns {Promise<string>} A unique topic string
+ */
+async function fetchUniqueTopic(targetCategory, avoidList = [], forceCustomTopic = '') {
+  const cfToken = process.env.CLOUDFLARE_API_TOKEN || config.cloudflareApiToken;
+  const cfAccountId = process.env.CLOUDFLARE_ACCOUNT_ID || config.cloudflareAccountId;
+  const geminiKey = process.env.GEMINI_API_KEY;
+
+  // If a custom topic is explicitly forced (user-entered topic), use it directly — no AI fetch
+  if (forceCustomTopic && forceCustomTopic.trim()) {
+    const topic = forceCustomTopic.trim();
+    console.log(`[Topic Fetch] User-specified custom topic: "${topic}"`);
+    return topic;
+  }
+
+  const usedTopics = historyStore.getAllUsedTopics();
+  const avoidStr = avoidList.slice(0, 20).map(a => `- ${a}`).join('\n');
+  const usedStr = usedTopics.slice(-30).join('\n- ');
+
+  const topicFetchPrompt = `You are a creative editorial director for a high-impact geopolitical and social commentary X (Twitter) account.
+
+GENRE / CATEGORY: "${targetCategory.name}"
+GENRE DESCRIPTION: ${targetCategory.description || targetCategory.name}
+
+Your task: Suggest ONE fresh, specific, and compelling topic for a post under this genre.
+- It must be a real, verifiable issue, event, contradiction, or angle related to "${targetCategory.name}".
+- It must be specific (not generic like "economy" — say something like "India's Himalayan Pink Salt rebranding from Pakistani mines").
+- It must NOT repeat or closely resemble any of these already-covered topics:
+${usedStr ? `- ${usedStr}` : '(none yet)'}
+
+RECENT AVOIDANCE CONTEXT:
+${avoidStr || 'None'}
+
+Return ONLY a valid JSON object:
+{
+  "topic": "The specific topic headline",
+  "subtopic": "The specific angle or sub-issue being explored"
+}`;
+
+  const MAX_TOPIC_ATTEMPTS = 4;
+  for (let attempt = 1; attempt <= MAX_TOPIC_ATTEMPTS; attempt++) {
+    let topicResult = null;
+
+    // Try Cloudflare first
+    if (cfToken && cfAccountId) {
+      try {
+        topicResult = await callCloudflareAI(topicFetchPrompt);
+      } catch (e) {
+        console.warn(`[Topic Fetch] Cloudflare failed: ${e.message}`);
+      }
+    }
+
+    // Try Gemini if Cloudflare failed
+    if (!topicResult && geminiKey) {
+      try {
+        topicResult = await callGemini(topicFetchPrompt, geminiKey);
+      } catch (e) {
+        console.warn(`[Topic Fetch] Gemini failed: ${e.message}`);
+      }
+    }
+
+    if (topicResult?.topic) {
+      const candidateTopic = String(topicResult.topic).trim();
+      // Check if this topic was already seen
+      if (!historyStore.hasSeenTopic(candidateTopic)) {
+        console.log(`[Topic Fetch] ✓ Unique topic found on attempt ${attempt}: "${candidateTopic}"`);
+        return candidateTopic;
+      } else {
+        console.warn(`[Topic Fetch] Topic already seen: "${candidateTopic}". Retrying...`);
+      }
+    } else {
+      console.warn(`[Topic Fetch] Attempt ${attempt} returned no topic. Retrying...`);
+    }
+  }
+
+  // Fallback: pick from genre subtopics
+  const fallbackSubtopic = genreManager.getUnusedSubtopic(
+    targetCategory.id,
+    historyStore.getAllUsedSubtopics(targetCategory.id),
+    ''
+  );
+  console.warn(`[Topic Fetch] All AI attempts exhausted. Using fallback subtopic: "${fallbackSubtopic}"`);
+  return fallbackSubtopic || targetCategory.name;
+}
+
+/* =========================================================
    GENERATE ENGLISH POST (NEVER REGENERATES OLD POST)
    UP TO 5 ATTEMPTS WITH STRICT CONTENT-LEVEL UNIQUE CHECKS
 ========================================================= */
 
-export async function generateEnglishPost(customTopic = '', excludedTopic = '', excludedContext = null) {
+export async function generateEnglishPost(customTopic = '', excludedTopic = '', excludedContext = null, isUserForcedTopic = false) {
   const geminiKey = process.env.GEMINI_API_KEY;
   const cfToken = process.env.CLOUDFLARE_API_TOKEN || config.cloudflareApiToken;
   const cfAccountId = process.env.CLOUDFLARE_ACCOUNT_ID || config.cloudflareAccountId;
@@ -1309,17 +1404,31 @@ export async function generateEnglishPost(customTopic = '', excludedTopic = '', 
 
   const usedSubtopics = historyStore.getAllUsedSubtopics(chosenCategory);
 
-  // RETRY LOOP: Try up to 5 times to generate a genuinely unique post
+  // PHASE 1: Fetch a unique topic via AI before attempting full post generation.
+  // If isUserForcedTopic is true (custom topic from WhatsApp user input), skip AI fetch and use it directly.
+  let resolvedTopic = '';
+  try {
+    resolvedTopic = await fetchUniqueTopic(
+      targetCategory,
+      avoidList,
+      isUserForcedTopic ? customTopic.trim() : ''
+    );
+    if (!resolvedTopic) resolvedTopic = customTopic.trim() || '';
+  } catch (e) {
+    console.warn(`[Topic Fetch] Failed: ${e.message}. Falling back to subtopic selection.`);
+    resolvedTopic = customTopic.trim() || genreManager.getUnusedSubtopic(chosenCategory, usedSubtopics, cleanExcluded) || targetCategory.name;
+  }
+  console.log(`[Pipeline] Phase 1 topic resolved: "${resolvedTopic}"`);
+
+  // RETRY LOOP: Try up to 5 times to generate a genuinely unique post using the resolved topic
   const MAX_ATTEMPTS = 5;
   let lastRejectionReason = '';
 
   for (let attempt = 1; attempt <= MAX_ATTEMPTS; attempt++) {
-    let chosenTopic = customTopic.trim();
-    if (chosenTopic && (attempt > 1 || (cleanExcluded && chosenTopic.toLowerCase() === cleanExcluded))) {
-      chosenTopic = '';
-    }
+    // On first attempt use the phase-1 resolved topic; on retries pick a fresh subtopic
+    let chosenTopic = attempt === 1 ? resolvedTopic : '';
 
-    // Select an unused subtopic for this attempt
+    // Select an unused subtopic for retry attempts
     const chosenSubtopic = chosenTopic || genreManager.getUnusedSubtopic(chosenCategory, usedSubtopics, cleanExcluded);
     if (!chosenTopic) {
       chosenTopic = chosenSubtopic;
