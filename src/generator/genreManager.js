@@ -310,7 +310,7 @@ export const DEFAULT_GENRES = [
     description: 'Loss and damage, emissions injustice, Indus Waters Treaty, cross-border smog, critical energy minerals',
     subtopics: [
       'Loss and Damage fund: promised billions vs disbursed realities',
-      'Pakistan 2022 floods and historical emissions debt of G7',
+      'Pakistan recurring climate disasters, flood recovery deficits, and 2025-2026 Loss and Damage financing',
       'Indus Waters Treaty under glacial retreat and climate volatility',
       'Transboundary smog crisis across Lahore, Amritsar and Delhi',
       'Global race for lithium, cobalt and nickel critical transition minerals',

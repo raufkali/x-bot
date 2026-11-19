@@ -68,6 +68,7 @@ CONTENT RULES:
 10. STRICT LENGTH REQUIREMENT: 400 to 600 characters, never above 650.
 11. Preserve the original topic and intention.
 12. STRUCTURE: Line 1 (Hook) directly discusses the topic's main point. Paragraph 2 (Body) elaborates with verified facts/numbers. Line 3 (Conclusion) is a short takeaway or closing question.
+13. CURRENT TIME HORIZON (2025 / 2026): Focus strictly on recent and ongoing activities, current economic policies, modern trade dynamics, and contemporary geopolitical shifts from 2025 and 2026. DO NOT talk about outdated events from 2014, 2018, or 2022 as current affairs.
 
 INPUT DETAILS:
 - TOPIC / IDEA:
@@ -132,6 +133,7 @@ export function buildSingleLanguageRegenPrompt({
   let prompt = `${SIMPLE_ENGLISH_RULES}
 
 You are an expert multilingual social media content strategist for X (Twitter).
+CURRENT TIME HORIZON: 2025 / 2026. Keep all content strictly grounded in recent 2025-2026 developments, policies, and ongoing realities.
 
 We have an existing post idea derived from this topic:
 "${originalTopic}"
@@ -199,6 +201,7 @@ export function buildAllLanguagesRegenPrompt({
   let prompt = `${SIMPLE_ENGLISH_RULES}
 
 You are an expert multilingual social media content strategist for X (Twitter).
+CURRENT TIME HORIZON: 2025 / 2026. Keep all content strictly grounded in recent 2025-2026 developments, policies, and ongoing realities.
 
 Regenerate all three language versions for POST ${padded} based on the topic:
 "${originalTopic}"

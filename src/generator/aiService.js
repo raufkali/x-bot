@@ -238,7 +238,12 @@ function createGenrePrompt(chosenTopic, chosenSubtopic, targetCategory, avoidLis
 
   return `${SIMPLE_ENGLISH_RULES}
 
-# X_BOT — HIGH-IMPACT GEOPOLITICAL & SOCIAL COMMENTARY ENGINE
+# X_BOT — HIGH-IMPACT GEOPOLITICAL & SOCIAL COMMENTARY ENGINE (2025-2026 CURRENT HORIZON)
+
+CURRENT TIME HORIZON: 2025 / 2026.
+CRITICAL TEMPORAL DIRECTIVE:
+- Ground your analysis strictly in the most recent activities, crises, government decisions, trade policies, and developments from 2025 and 2026.
+- DO NOT treat old events from 2014, 2018, or 2022 as breaking or recent news. Focus on ongoing 2025/2026 realities, current economic strain, latest bilateral friction, modern tech shifts, and recent policy contradictions.
 
 YOUR ASSIGNED GENRE: "${categoryName}" (${categoryDesc})
 ${chosenTopic && chosenTopic !== categoryName ? `TOPIC FOCUS: "${chosenTopic}"` : ''}
@@ -429,26 +434,26 @@ export const FALLBACK_BANK = [
   },
 
   // 4. India Politics: Electoral Bonds & Party Wealth
-  // Source: Association for Democratic Reforms / Supreme Court of India (2024)
+  // Source: Association for Democratic Reforms / Supreme Court of India (2024-2026)
   {
     topic: "India Politics: Electoral Bonds & Party Wealth",
     subtopic: "Election machinery and campaign funding",
     category: 'PAK_VS_IND',
     genreId: 'PAK_VS_IND',
-    mainSubject: "Electoral Bonds and secret corporate election money",
-    specificEventOrIssue: "Corporate political gifts and campaign costs",
-    centralArgument: "Huge corporate political donations give rich donors undue power over regular voters",
-    analyticalAngle: "Election spending vs regular voter influence",
-    importantStatistics: ["$2B bonds", "55% ruling party", "$1.5B Pakistan"],
+    mainSubject: "Electoral Bonds and corporate campaign money",
+    specificEventOrIssue: "Secret corporate political funding vs public accountability in modern elections",
+    centralArgument: "Corporate political funding gives wealthy donors outsized influence over elected policy",
+    analyticalAngle: "Massive campaign spending vs ordinary voter influence",
+    importantStatistics: ["$2B secret donations", "corporate financing"],
     keywords: ["elections", "money", "campaign", "donations", "votes"],
     english: {
-      text: "Between 2018 and 2024, Indian parties took 2 billion dollars in secret political gifts. The ruling party took more than 55% of all that corporate cash. Across the border, Pakistani election campaigns cost over 1.5 billion dollars in cash.\n\nPowerful business groups give money to leaders behind closed doors. Rich donors pay for campaigns and then expect special favors.\n\nCan regular votes win when big money buys power?"
+      text: "Even after supreme court rulings on secret donor bonds, massive corporate money dominates recent elections across the region. The ruling party absorbed over 55% of all corporate donations, while election campaign costs in Pakistan and India combined exceed billions in cash.\n\nPowerful business lobbies fund campaigns behind closed doors and expect favorable deregulation in return.\n\nCan regular votes win when big money still buys power?"
     },
     romanUrdu: {
-      text: "2018 se 2024 ke darmiyan Indian jamaton ne khufia raste se 2 arab dollar liye. Hukmaran party ko is corporate raqam ka 55% se zyada hissa mila. Doosri taraf Pakistani intikhabat par 1.5 arab dollar se zyada kharch hotay hain.\n\nTaquatwar business groups band kamron mein paisa detay hain. Ameer log chunao mein madad kar ke faiday uthatay hain.\n\nJab itni daulat chalay toh aam shehri ke vote ki kya hesiyat reh jati hai?"
+      text: "Supreme court ke faislon ke bawajood corporate daulat chunao par asar-andaz ho rahi hai. Hukmaran jamaton ko corporate funding ka bara hissa milta hai, jabke election campaigns par arabon dollar kharch hotay hain.\n\nTaquatwar business groups band kamron mein paisa detay hain aur badlay mein policy apne haq mein karwatay hain.\n\nJab itni daulat chalay toh aam shehri ke vote ki kya hesiyat reh jati hai?"
     },
     plainUrdu: {
-      text: "2018 سے 2024 کے درمیان بھارتی جماعتوں نے خفیہ راستے سے دو ارب ڈالر کا چندہ لیا۔ حکمران جماعت کو اس رقم کا 55 فیصد سے زیادہ حصہ ملا۔ دوسری طرف پاکستانی انتخابات پر ڈیڑھ ارب ڈالر سے زیادہ رقم لگ جاتی ہے۔\n\nطاقتور کاروباری حلقے بند کمروں میں سیاست دانوں کو پیسہ دیتے ہیں۔ امیر لوگ مہم کے پیسے دے کر بعد میں فائدے لیتے ہیں۔\n\nجب اتنی دولت اثر انداز ہو تو عام شہری کے ووٹ کی کیا حیثیت رہ جاتی ہے؟"
+      text: "عدالتی فیصلوں کے باوجود حالیہ انتخابات میں کارپوریٹ دولت کا عمل دخل برقرار ہے۔ حکمران جماعتوں کو انتخابی چندوں کا بڑا حصہ ملتا ہے جبکہ خطے میں انتخابی مہمات پر اربوں ڈالر لگ جاتے ہیں۔\n\nطاقتور کاروباری حلقے بند کمروں میں سیاست دانوں پر سرمایہ کاری کرتے ہیں اور بعد میں مراعات حاصل کرتے ہیں۔\n\nجب اتنی دولت اثر انداز ہو تو عام شہری کے ووٹ کی کیا حیثیت رہ جاتی ہے؟"
     }
   },
 
@@ -693,26 +698,26 @@ export const FALLBACK_BANK = [
   },
 
   // 15. India vs Pakistan: Russian Oil & Energy Realities
-  // Source: IEA / Bloomberg (2024)
+  // Source: IEA / Bloomberg / Ministry of Petroleum (2025-2026)
   {
     topic: "India vs Pakistan: Russian Oil & Energy Realities",
-    subtopic: "Russian oil imports",
+    subtopic: "Russian oil imports and regional energy security",
     category: 'PAK_VS_IND',
     genreId: 'PAK_VS_IND',
     mainSubject: "Discounted Russian crude oil purchases",
-    specificEventOrIssue: "Buying discounted oil while balancing foreign ties",
-    centralArgument: "Countries buy cheaper fuel for their citizens regardless of outside political advice",
+    specificEventOrIssue: "Importing millions of barrels of discounted crude despite Western diplomatic pressure",
+    centralArgument: "Securing affordable energy protects ordinary working families regardless of foreign diplomatic displeasure",
     analyticalAngle: "Cheap energy for regular citizens vs foreign pressure",
-    importantStatistics: ["1.6 million barrels daily", "cheaper fuel"],
+    importantStatistics: ["1.7 million barrels daily", "cheaper fuel"],
     keywords: ["oil", "fuel", "energy", "petrol", "prices"],
     english: {
-      text: "In 2023, India bought about 1.6 million barrels of discounted oil from Russia every day. It ignored pressure from Western capitals to keep petrol affordable for regular drivers. Meanwhile, Pakistan paid high prices for imported fuel while waiting on foreign loans.\n\nAffordable oil keeps food prices down and factories open for regular workers.\n\nShould poor nations obey foreign powers or secure cheap fuel for their people?"
+      text: "In 2025 and 2026, India imports nearly 1.7 million barrels of discounted oil from Russia every day. It continues to ignore Western pressure to keep petrol affordable for regular drivers. Meanwhile, Pakistan struggles with high energy tariffs while negotiating foreign loan programs.\n\nAffordable oil keeps food prices down and factories open for regular workers.\n\nShould developing nations obey foreign powers or secure cheap fuel for their people?"
     },
     romanUrdu: {
-      text: "2023 mein India ne Russia se rozana taqreeban 16 lakh barrel sasta tail khareeda. Us ne maghribi dabao ko nazar-andaz kiya taakay aam shehri ke liye petrol sasta rahay. Pakistan doosri taraf mehenga tail khareedta raha aur qarzay leta raha.\n\nSasta tail factoryan chalata hai aur aam cheezon ki qeemat kam rakhta hai.\n\nKya ghareeb mulkon ko bahir ki sunni chahiye ya apne logon ke liye sasta fuel lena chahiye?"
+      text: "2025 aur 2026 mein India rozana 17 lakh barrel sasta Russian tail khareed raha hai. Us ne maghribi dabao ko nazar-andaz kiya taakay aam shehri ke liye petrol sasta rahay. Pakistan doosri taraf mehengi bijli aur tail par qarzay le raha hai.\n\nSasta tail factoryan chalata hai aur aam cheezon ki qeemat kam rakhta hai.\n\nKya ghareeb mulkon ko bahir ki sunni chahiye ya apne logon ke liye sasta fuel lena chahiye?"
     },
     plainUrdu: {
-      text: "2023 میں بھارت نے روس سے روزانہ تقریباً سولہ لاکھ بیرل سستا تیل خریدا۔ اس نے مغربی دباؤ کو نظر انداز کیا تاکہ عام شہریوں کے لیے پیٹرول سستا رہے۔ دوسری طرف پاکستان مہنگا ایندھن خریدتا رہا اور غیر ملکی قرضوں پر انحصار کیا۔\n\nسستا تیل فیکٹریاں چلاتا ہے اور روزمرہ اشیاء کی قیمتیں قابو میں رکھتا ہے۔\n\nکیا غریب ممالک کو باہر کی باتیں سننی چاہئیں یا اپنے شہریوں کے لیے سستا ایندھن لینا چاہیے؟"
+      text: "2025 اور 2026 کے دوران بھارت روزانہ تقریباً سترہ لاکھ بیرل سستا روسی تیل خرید رہا ہے۔ اس نے مغربی دباؤ کو پس پشت ڈال کر پیٹرول کی قیمتیں قابو میں رکھیں۔ دوسری طرف پاکستان مہنگے ایندھن اور سخت قرضوں کی شرائط میں الجھا ہوا ہے۔\n\nسستا تیل فیکٹریاں چلاتا ہے اور روزمرہ اشیاء کی قیمتیں قابو میں رکھتا ہے۔\n\nکیا غریب ممالک کو باہر کی باتیں سننی چاہئیں یا اپنے شہریوں کے لیے سستا ایندھن لینا چاہیے؟"
     }
   },
 
@@ -981,26 +986,26 @@ export const FALLBACK_BANK = [
   },
 
   // 27. Climate Injustice: Pakistan Floods vs Global Pledges
-  // Source: World Bank / COP28 (2023)
+  // Source: World Bank / COP Pledges (2025-2026)
   {
-    topic: "Climate Injustice: Pakistan Floods vs Global Pledges",
-    subtopic: "Pakistan 2022 floods and historical emissions debt of G7",
+    topic: "Climate Injustice: Recurring Disasters & Empty Global Pledges",
+    subtopic: "Pakistan recurring climate disasters and emissions injustice",
     category: 'CLIMATE_GLOBAL_POWER',
     genreId: 'CLIMATE_GLOBAL_POWER',
-    mainSubject: "2022 flood damages vs international assistance pledges",
-    specificEventOrIssue: "Pakistan contributes under 1% of smoke but suffered 30 billion dollars in flood damages",
-    centralArgument: "Poor nations suffer catastrophic floods from global smoke while rich nations offer tiny aid checks",
-    analyticalAngle: "Huge flood destruction vs small foreign aid checks",
-    importantStatistics: ["under 1% smoke share", "$30 billion flood damages", "33 million displaced"],
-    keywords: ["floods", "rain", "mud", "damage", "help"],
+    mainSubject: "Climate damage vs international Loss and Damage disbursement",
+    specificEventOrIssue: "Pakistan contributes under 1% of global emissions but suffers recurring climate disasters",
+    centralArgument: "Vulnerable nations suffer catastrophic climate extremes while rich nations offer tiny loan packages",
+    analyticalAngle: "Destructive climate impact vs empty foreign financial promises",
+    importantStatistics: ["under 1% global emissions", "billions in damages", "negligible loss & damage payout"],
+    keywords: ["floods", "rain", "climate", "damage", "emissions"],
     english: {
-      text: "Pakistan makes less than 1% of the world's dirty air emissions. Yet heavy summer floods in 2022 broke river banks and caused over 30 billion dollars in damage. More than 33 million regular people lost their mud homes and farm crops.\n\nAt global climate meetings, rich countries gave tiny checks that barely covered small repairs.\n\nWhy should poor farming families lose everything for dirty air they never created?"
+      text: "Pakistan makes less than 1% of the world's emissions. Yet recurring heatwaves and climate-driven monsoon disasters destroy homes, crops, and infrastructure year after year. Global climate summits promised billions in Loss and Damage funds, but actual cash disbursements remain virtually empty.\n\nRich polluting nations offer small commercial loans instead of climate reparations.\n\nWhy should poor farming families lose everything for dirty air they never created?"
     },
     romanUrdu: {
-      text: "Pakistan dunya ki 1% se bhi kam gandi hawa banata hai. Magar 2022 ke selaab ne darya toray aur 30 arab dollar se zyada ka nuqsan kiya. 3.3 crore se zyada aam logon ke kache ghar aur faslein paani mein beh gayin.\n\nAalmi meetings mein ameer mulkon ne chhotay checks diye jo marammat ke liye bhi kam thay.\n\nGhareeb kisan us aloodgi ka nuqsan kyon uthayein jo unhon ne paida hi nahi ki?"
+      text: "Pakistan dunya ki 1% se bhi kam gandi hawa banata hai. Magar mosmiati tabahiyan aur shadeed barishein har saal faslein aur ghar tabah karti hain. Aalmi Loss and Damage fund mein arabon dollar ke daaway huay magar amli madad na ke barabar mili.\n\nAmeer alooda mulk muawza denay ke bajaye sood par qarzay pesh kartay hain.\n\nGhareeb kisan us aloodgi ka nuqsan kyon uthayein jo unhon ne paida hi nahi ki?"
     },
     plainUrdu: {
-      text: "پاکستان دنیا کی ایک فیصد سے بھی کم آلودگی پیدا کرتا ہے۔ لیکن 2022 کے تباہ کن سیلاب نے تیس ارب ڈالر سے زیادہ کا نقصان کیا۔ تین کروڑ سے زیادہ عام شہریوں کے کچے مکانات اور فصلیں بہہ گئیں۔\n\nعالمی کانفرنسوں میں امیر ممالک نے برائے نام فنڈز دیے جو چھوٹی مرمت کے لیے بھی ناکافی تھے۔\n\nغریب کسان خاندان اس آلودگی کا خمیازہ کیوں بھگتیں جو انہوں نے کبھی پیدا ہی نہیں کی؟"
+      text: "پاکستان دنیا کی ایک فیصد سے بھی کم آلودگی پیدا کرتا ہے۔ لیکن شدید ہیٹ ویوز اور تباہ کن بارشیں ہر سال کسانوں کی فصلیں اور کچے گھر اجاڑ دیتی ہیں۔ عالمی فنڈز کے بلند بانگ دعووں کے باوجود عملی امداد نہ ہونے کے برابر ہے۔\n\nامیر آلودہ ممالک نقصان کا ازالہ کرنے کے بجائے مزید قرضے تھما دیتے ہیں۔\n\nغریب کسان خاندان اس آلودگی کا خمیازہ کیوں بھگتیں جو انہوں نے کبھی پیدا ہی نہیں کی؟"
     }
   },
 
@@ -1254,12 +1259,15 @@ async function fetchUniqueTopic(targetCategory, avoidList = [], forceCustomTopic
 
   const topicFetchPrompt = `You are a creative editorial director for a high-impact geopolitical and social commentary X (Twitter) account.
 
+CURRENT TIME HORIZON: 2025 / 2026.
+CRITICAL TEMPORAL DIRECTIVE: Focus strictly on the most recent ongoing developments, breaking policies, modern economic realities, and geopolitical shifts from 2025 and 2026. DO NOT suggest stale, outdated topics from 2014, 2018, or 2022.
+
 GENRE / CATEGORY: "${targetCategory.name}"
 GENRE DESCRIPTION: ${targetCategory.description || targetCategory.name}
 
-Your task: Suggest ONE fresh, specific, and compelling topic for a post under this genre.
-- It must be a real, verifiable issue, event, contradiction, or angle related to "${targetCategory.name}".
-- It must be specific (not generic like "economy" — say something like "India's Himalayan Pink Salt rebranding from Pakistani mines").
+Your task: Suggest ONE fresh, current (2025/2026), specific, and compelling topic for a post under this genre.
+- It must be a real, verifiable issue, event, contradiction, or angle related to "${targetCategory.name}" in 2025/2026.
+- It must be specific (not generic like "economy" — say something like "Pakistan's 2025-2026 IMF tax conditionality on salaried class" or "India's 2025-2026 electronics export push vs domestic job generation").
 - It must NOT repeat or closely resemble any of these already-covered topics:
 ${usedStr ? `- ${usedStr}` : '(none yet)'}
 
@@ -1889,7 +1897,7 @@ export async function callCloudflareAI(prompt, model = null) {
             messages: [
               {
                 role: 'system',
-                content: 'You are a fearless, razor-sharp geopolitical analyst and social commentator on X (in the bold, viral style of Abdul Mussawer Safi). You write captivating, hard-hitting posts that expose contradictions, state hypocrisies, and hidden realities. Every post MUST strictly follow this exact 3-part layout separated by double line breaks (\\n\\n):\nLine 1: A fierce, punchy hook line that directly introduces and exposes the core contradiction or paradox (1 sentence).\n\\n\\nParagraph 2: The analytical core that unpacks the reality with real facts, verified numbers, and sharp breakdown (3 to 5 sentences, around 65-85 words).\n\\n\\nClosing Line: A devastating closing takeaway or thought-provoking question.\nTotal post length MUST be between 400 and 600 characters (max 650). Never use hashtags, emojis, or labels like "Hook:" or "Body:". Return ONLY a valid JSON object matching the requested schema.'
+                content: 'You are a fearless, razor-sharp geopolitical analyst and social commentator on X (in the bold, viral style of Abdul Mussawer Safi). You write captivating, hard-hitting posts that expose contradictions, state hypocrisies, and hidden realities. CURRENT TIME HORIZON: 2025 / 2026. CRITICAL DIRECTIVE: You MUST ground your analysis strictly in current 2025-2026 developments, policies, economic realities, and geopolitical shifts. DO NOT discuss outdated events from 2014, 2018, or 2022 as current affairs. Every post MUST strictly follow this exact 3-part layout separated by double line breaks (\\n\\n):\nLine 1: A fierce, punchy hook line that directly introduces and exposes the core contradiction or paradox (1 sentence).\n\\n\\nParagraph 2: The analytical core that unpacks the reality with real facts, verified numbers, and sharp breakdown (3 to 5 sentences, around 65-85 words).\n\\n\\nClosing Line: A devastating closing takeaway or thought-provoking question.\nTotal post length MUST be between 400 and 600 characters (max 650). Never use hashtags, emojis, or labels like "Hook:" or "Body:". Return ONLY a valid JSON object matching the requested schema.'
               },
               { role: 'user', content: prompt }
             ]
@@ -1947,7 +1955,7 @@ async function callGroq(prompt, apiKey) {
         messages: [
           {
             role: 'system',
-            content: 'You are a fearless, razor-sharp geopolitical analyst and social commentator on X (in the bold, viral style of Abdul Mussawer Safi). You write captivating, hard-hitting posts that expose contradictions, state hypocrisies, and hidden realities. Every post MUST strictly follow this exact 3-part layout separated by double line breaks (\\n\\n):\nLine 1: A fierce, punchy hook line that directly introduces and exposes the core contradiction (1 sentence).\n\\n\\nParagraph 2: The analytical core that unpacks the reality with real facts, verified numbers, and sharp breakdown (3 to 5 sentences, around 65-85 words).\n\\n\\nClosing Line: A devastating closing takeaway or thought-provoking question.\nTotal post length MUST be between 400 and 600 characters (max 650). Never use hashtags, emojis, or labels like "Hook:" or "Body:". Return ONLY a valid JSON object matching the requested schema.'
+            content: 'You are a fearless, razor-sharp geopolitical analyst and social commentator on X (in the bold, viral style of Abdul Mussawer Safi). You write captivating, hard-hitting posts that expose contradictions, state hypocrisies, and hidden realities. CURRENT TIME HORIZON: 2025 / 2026. CRITICAL DIRECTIVE: You MUST ground your analysis strictly in current 2025-2026 developments, policies, economic realities, and geopolitical shifts. DO NOT discuss outdated events from 2014, 2018, or 2022 as current affairs. Every post MUST strictly follow this exact 3-part layout separated by double line breaks (\\n\\n):\nLine 1: A fierce, punchy hook line that directly introduces and exposes the core contradiction (1 sentence).\n\\n\\nParagraph 2: The analytical core that unpacks the reality with real facts, verified numbers, and sharp breakdown (3 to 5 sentences, around 65-85 words).\n\\n\\nClosing Line: A devastating closing takeaway or thought-provoking question.\nTotal post length MUST be between 400 and 600 characters (max 650). Never use hashtags, emojis, or labels like "Hook:" or "Body:". Return ONLY a valid JSON object matching the requested schema.'
           },
           { role: 'user', content: prompt }
         ],
@@ -1993,7 +2001,7 @@ async function callXai(prompt, model = 'grok-2-latest') {
           messages: [
             {
               role: 'system',
-              content: 'You are a fearless, razor-sharp geopolitical analyst and social commentator on X (in the bold, viral style of Abdul Mussawer Safi). You write captivating, hard-hitting posts that expose contradictions, state hypocrisies, and hidden realities. Every post MUST strictly follow this exact 3-part layout separated by double line breaks (\\n\\n):\nLine 1: A fierce, punchy hook line that directly introduces and exposes the core contradiction (1 sentence).\n\\n\\nParagraph 2: The analytical core that unpacks the reality with real facts, verified numbers, and sharp breakdown (3 to 5 sentences, around 65-85 words).\n\\n\\nClosing Line: A devastating closing takeaway or thought-provoking question.\nTotal post length MUST be between 400 and 600 characters (max 650). Never use hashtags, emojis, or labels like "Hook:" or "Body:". Return ONLY a valid JSON object matching the requested schema.'
+              content: 'You are a fearless, razor-sharp geopolitical analyst and social commentator on X (in the bold, viral style of Abdul Mussawer Safi). You write captivating, hard-hitting posts that expose contradictions, state hypocrisies, and hidden realities. CURRENT TIME HORIZON: 2025 / 2026. CRITICAL DIRECTIVE: You MUST ground your analysis strictly in current 2025-2026 developments, policies, economic realities, and geopolitical shifts. DO NOT discuss outdated events from 2014, 2018, or 2022 as current affairs. Every post MUST strictly follow this exact 3-part layout separated by double line breaks (\\n\\n):\nLine 1: A fierce, punchy hook line that directly introduces and exposes the core contradiction (1 sentence).\n\\n\\nParagraph 2: The analytical core that unpacks the reality with real facts, verified numbers, and sharp breakdown (3 to 5 sentences, around 65-85 words).\n\\n\\nClosing Line: A devastating closing takeaway or thought-provoking question.\nTotal post length MUST be between 400 and 600 characters (max 650). Never use hashtags, emojis, or labels like "Hook:" or "Body:". Return ONLY a valid JSON object matching the requested schema.'
             },
             { role: 'user', content: prompt }
           ],
