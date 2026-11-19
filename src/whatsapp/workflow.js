@@ -914,11 +914,11 @@ class WhatsAppWorkflowManager extends EventEmitter {
           english: usedPost.english
         }).catch(() => {});
 
-        const confirmMsg = '🔒 Post marked as USED permanently. Its topic, argument, and content will never be reused or regenerated.
+        const confirmMsg = `🔒 Post marked as USED permanently. Its topic, argument, and content will never be reused or regenerated.
 
 • *1* ➔ Generate a new post
 • *2* ➔ Customize the bot
-• *3* ➔ Write about a custom topic';
+• *3* ➔ Write about a custom topic`;
         if (whatsappClient.isConfigured() && fromNumber) {
           try {
             await whatsappClient.sendText(fromNumber, confirmMsg);
@@ -1095,11 +1095,11 @@ class WhatsAppWorkflowManager extends EventEmitter {
           english: usedPost.english
         }).catch(() => {});
 
-        const confirmMsg = '🔒 Post marked as USED permanently. Its topic, argument, and content will never be reused or regenerated.
+        const confirmMsg = `🔒 Post marked as USED permanently. Its topic, argument, and content will never be reused or regenerated.
 
 • *1* ➔ Generate a new post
 • *2* ➔ Customize the bot
-• *3* ➔ Write about a custom topic';
+• *3* ➔ Write about a custom topic`;
         if (whatsappClient.isConfigured() && fromNumber) {
           try {
             await whatsappClient.sendText(fromNumber, confirmMsg);
@@ -1277,11 +1277,11 @@ class WhatsAppWorkflowManager extends EventEmitter {
           english: usedPost.english
         }).catch(() => {});
 
-        const confirmMsg = '🔒 Post marked as USED permanently. Its topic, argument, and content will never be reused or regenerated.
+        const confirmMsg = `🔒 Post marked as USED permanently. Its topic, argument, and content will never be reused or regenerated.
 
 • *1* ➔ Generate a new post
 • *2* ➔ Customize the bot
-• *3* ➔ Write about a custom topic';
+• *3* ➔ Write about a custom topic`;
         if (whatsappClient.isConfigured() && fromNumber) {
           try {
             await whatsappClient.sendText(fromNumber, confirmMsg);
