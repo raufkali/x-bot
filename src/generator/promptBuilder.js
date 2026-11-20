@@ -37,23 +37,22 @@ Generate exactly ${postWord}. Each idea must communicate a distinct angle or poi
 For EVERY post idea, generate exactly three language versions communicating the same core message:
 
 LANGUAGE 1 — ENGLISH
-- Write in high-impact, razor-sharp conversational English like a fearless geopolitical analyst on X.
-- Rhythmic, punchy, and compelling prose that cuts straight to the point.
-- Keep sentences concise, natural, and direct.
-- Ground the commentary in verifiable real-world facts, trade flows, institutions, or historical realities.
+- Write in high-impact, engaging conversational English.
+- Use simple everyday words that anyone can easily read and understand.
+- Punchy, scroll-stopping hook that cuts straight to the core of the trend.
+- Ground the commentary in verifiable real-world facts, numbers, and data.
 
 LANGUAGE 2 — ROMAN URDU
 - Write Urdu using English alphabets.
-- Use natural Pakistani conversational Urdu with sharp bite and bold tone.
-- Do not translate English word by word.
-- Keep the language punchy, natural, and readable.
-- Avoid unnatural combinations of English and Urdu.
+- Use natural, everyday conversational Urdu.
+- Do not translate English word by word; keep the meaning and impact intact.
+- Keep the language clear, natural, and easy to read.
 
 LANGUAGE 3 — PLAIN URDU
 - Write proper Urdu script (اردو).
-- Use natural, grammatically correct Pakistani Urdu with strong analytical depth.
+- Use natural, grammatically correct Urdu with analytical clarity.
 - Avoid unnecessary English words when appropriate Urdu alternatives exist.
-- Maintain the original punch, message, and meaning.
+- Maintain the original meaning, punch, and engaging takeaway.
 
 CONTENT RULES:
 1. All three versions of an idea must communicate the same central idea.
@@ -156,10 +155,10 @@ ${feedback.trim() ? `USER FEEDBACK / IMPROVEMENT REQUEST:\n"${feedback.trim()}"\
 RULES FOR ${language.toUpperCase()}:
 ${
   language.toLowerCase().includes('roman')
-    ? `- Write Urdu using English alphabets in natural Pakistani conversational phrasing.\n- Do not translate word-by-word.\n- Keep vocabulary easy, engaging, and readable.`
+    ? `- Write Urdu using English alphabets in natural, everyday conversational phrasing.\n- Do not translate word-by-word.\n- Keep vocabulary easy, engaging, and readable.`
     : language.toLowerCase().includes('plain') || language.toLowerCase().includes('urdu')
-    ? `- Write proper Urdu script (اردو).\n- Use grammatically correct, natural Pakistani Urdu.\n- Maintain high readability and avoid unnecessary English words.`
-    : `- Use simple everyday A1-A2 English like regular writing.\n- Short sentences, everyday words, no complicated words.\n- 1 or 2 numbers only.`
+    ? `- Write proper Urdu script (اردو).\n- Use grammatically correct, natural Urdu.\n- Maintain high readability and avoid unnecessary English words.`
+    : `- Use simple everyday English like regular conversation.\n- Short sentences, everyday words, no complicated words.\n- 1 or 2 real numbers or facts only.`
 }
 - ZERO hashtags. Always output "Hashtags: NONE".
 - ZERO emojis.
@@ -211,9 +210,9 @@ Audience: ${audience}
 ${feedback.trim() ? `USER FEEDBACK / IMPROVEMENT REQUEST:\n"${feedback.trim()}"\n` : ''}
 
 Generate fresh versions in:
-1. ENGLISH (Simple everyday A1-A2 English, short sentences, no complicated words, 1 or 2 numbers only)
-2. ROMAN URDU (Conversational Pakistani Urdu in English alphabets)
-3. PLAIN URDU (Proper Urdu script, natural Pakistani phrasing)
+1. ENGLISH (Simple everyday English, short sentences, no complicated words, verified facts)
+2. ROMAN URDU (Conversational Urdu in English alphabets)
+3. PLAIN URDU (Proper Urdu script, natural phrasing)
 
 All three versions must communicate the same central idea.
 ZERO hashtags. Always output "Hashtags: NONE".

@@ -31,7 +31,7 @@ import {
   updatePostTranslation,
   getAllUsedTopics
 } from '../src/db/postModel.js';
-import { genreManager } from '../src/generator/genreManager.js';
+
 import {
   generateEnglishPost,
   generateRomanUrduFromEnglish,
@@ -49,7 +49,6 @@ async function runTests() {
   // SETUP: Clean test state
   // --------------------------------------------------------
   historyStore.reset();
-  genreManager.reset();
 
   // Baseline post
   const BASELINE_POST = {
@@ -197,7 +196,6 @@ async function runTests() {
   // TEST 7: Fresh-Post WhatsApp Command (Option 5)
   // ========================================================
   console.log('TEST 7: Fresh-Post WhatsApp Command (Option 5)...');
-  genreManager.setPrimaryGenre('PAK_VS_IND');
 
   const initialGen = await whatsappWorkflow.generateAndSend('', '');
   assert.ok(initialGen.post, 'Initial post must be generated');

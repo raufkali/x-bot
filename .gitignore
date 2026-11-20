@@ -13,3 +13,4 @@ node_modules/
 # Logs and system
 *.log
 .DS_Store
+data/trends_cache.json

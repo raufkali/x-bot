@@ -16,7 +16,7 @@ import { keepAliveService } from '../utils/keepAlive.js';
 import { initMongo, isMongoConnected } from '../db/mongo.js';
 import { PostModel } from '../db/postModel.js';
 import { xService } from '../x/xService.js';
-import { genreManager } from '../generator/genreManager.js';
+import { getTrendingTopics } from '../generator/trendFetcher.js';
 import { ansi } from '../utils/ansi.js';
 
 const app = express();
@@ -475,18 +475,28 @@ app.get('/status', async (req, res) => {
       themes: config.contentThemes
     },
     schedule: postScheduler.getStatus(),
-    genres: {
-      primaryGenre: genreManager.getPrimaryGenre()?.name || 'Random (All Genres)',
-      totalGenres: genreManager.getAllGenres().length
+    contentEngine: {
+      mode: 'TRENDING_TOPICS_RESEARCH',
+      audience: 'Global',
+      style: 'High-Engagement Analytics & Everyday Words'
     },
     state: whatsappWorkflow.getCurrentState()
   });
 });
 
+app.get('/trends', async (req, res) => {
+  try {
+    const trends = await getTrendingTopics();
+    res.json({ success: true, count: trends.length, trends });
+  } catch (e) {
+    res.status(500).json({ success: false, error: e.message });
+  }
+});
+
 app.get('/genres', (req, res) => {
   res.json({
-    primary: genreManager.getPrimaryGenre(),
-    all: genreManager.getAllGenres()
+    message: 'The genre system has been retired. The bot now researches daily trending topics for high engagement.',
+    mode: 'TRENDING_TOPICS_RESEARCH'
   });
 });
 

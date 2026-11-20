@@ -200,11 +200,10 @@ export class WhatsAppClient {
   async sendEnglishPostForReview(to, post) {
     const english = post.english || post;
     const body = english.fullPost || english.text;
-    const genreStr = post.category ? `\n🏷️ *Genre:* ${post.category}` : '';
     const message = `🤖 *X ASSISTANT — POST REVIEW*
 🇬🇧 *NEW POST (ENGLISH)*
 
-📌 *Topic:* ${post.topic || 'Trending Insight'}${genreStr}
+📌 *Topic:* ${post.topic || 'Trending Insight'}
 
 ━━━━━━━━━━━━━━━━━━━━
 ${body}
@@ -217,7 +216,7 @@ Reply with:
 • *3* ➔ Post directly to X (Twitter)
 • *4* ➔ Discard post
 • *5* ➔ Generate a NEW fresh post
-• *6* ➔ ⚙️ Customize the bot
+• *6* ➔ 📈 View today's trending topics
 • *7* ➔ 🔒 Mark post as used (never reuse)`;
 
     return this.sendText(to, message);
@@ -228,11 +227,10 @@ Reply with:
    */
   async sendRomanUrduVersion(to, post) {
     const body = post.romanUrdu.fullPost || post.romanUrdu.text;
-    const genreStr = post.category ? `\n🏷️ *Genre:* ${post.category}` : '';
     const message = `🤖 *X ASSISTANT — POST REVIEW*
-🇵🇰 *ROMAN URDU VERSION*
+🌐 *ROMAN URDU VERSION*
 
-📌 *Topic:* ${post.topic || ''}${genreStr}
+📌 *Topic:* ${post.topic || ''}
 
 ━━━━━━━━━━━━━━━━━━━━
 ${body}
@@ -245,7 +243,7 @@ Reply with:
 • *3* ➔ Post English directly to X
 • *4* ➔ Discard post
 • *5* ➔ Generate a NEW fresh post
-• *6* ➔ ⚙️ Customize the bot
+• *6* ➔ 📈 View today's trending topics
 • *7* ➔ 🔒 Mark post as used (never reuse)`;
 
     return this.sendText(to, message);
@@ -256,11 +254,10 @@ Reply with:
    */
   async sendPlainUrduVersion(to, post) {
     const body = post.plainUrdu.fullPost || post.plainUrdu.text;
-    const genreStr = post.category ? `\n🏷️ *Genre:* ${post.category}` : '';
     const message = `🤖 *X ASSISTANT — POST REVIEW*
 🇵🇰 *URDU VERSION (اردو)*
 
-📌 *Topic:* ${post.topic || ''}${genreStr}
+📌 *Topic:* ${post.topic || ''}
 
 ━━━━━━━━━━━━━━━━━━━━
 ${body}
@@ -273,7 +270,7 @@ Reply with:
 • *3* ➔ Post English directly to X
 • *4* ➔ Discard post
 • *5* ➔ Generate a NEW fresh post
-• *6* ➔ ⚙️ Customize the bot
+• *6* ➔ 📈 View today's trending topics
 • *7* ➔ 🔒 Mark post as used (never reuse)`;
 
     return this.sendText(to, message);
