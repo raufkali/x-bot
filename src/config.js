@@ -21,7 +21,7 @@ export const config = {
   geminiModel: process.env.GEMINI_MODEL || 'gemini-2.5-flash',
   cloudflareAccountId: process.env.CLOUDFLARE_ACCOUNT_ID || '',
   cloudflareApiToken: process.env.CLOUDFLARE_API_TOKEN || '',
-  cloudflareAiModel: process.env.CLOUDFLARE_AI_MODEL || '@cf/meta/llama-3.1-8b-instruct',
+  cloudflareAiModel: process.env.CLOUDFLARE_AI_MODEL || '@cf/meta/llama-3.3-70b-instruct-fp8-fast',
   grokMode: process.env.GROK_MODE || 'auto',
   grokUrl: process.env.GROK_URL || 'https://grok.com',
   chromeCdpUrl: process.env.CHROME_CDP_URL || '',
@@ -66,6 +66,6 @@ export const config = {
   xCallbackUrl: process.env.X_CALLBACK_URL || `http://localhost:${Number(process.env.PORT || 3000)}/auth/x/callback`,
 
   // Content Generation Profile
-  englishLevel: 'Simple Everyday English (Data-Driven Analytical, 400-600 chars)',
-  contentThemes: 'India Economy & Policy, India Tech & Digital Public Infrastructure, India Jobs & Education, India Geopolitics & Trade, India Infrastructure & Climate, Global Trends Impacting India'
+  englishLevel: 'Simplest Everyday English (India Downsides & Effects, 400-580 chars)',
+  contentThemes: 'India Jobs & Youth Struggle, Household Debt & Low Savings, Medical Bills & Public Health, Dirty Air & Water Shortage, Small Shop Credit Gap, Farm Earnings & Food Prices, Power & Coal Dependency'
 };

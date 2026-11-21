@@ -17,6 +17,7 @@ import { initMongo, isMongoConnected } from '../db/mongo.js';
 import { PostModel } from '../db/postModel.js';
 import { xService } from '../x/xService.js';
 import { getTrendingTopics } from '../generator/trendFetcher.js';
+import { getLiveIndiaFactsSnapshot } from '../integrations/indiaDataService.js';
 import { ansi } from '../utils/ansi.js';
 
 const app = express();
@@ -462,14 +463,16 @@ app.get('/', async (req, res) => {
     app: config.appName,
     version: config.appVersion,
     status: 'running',
-    regionBias: 'India (geo=IN)',
-    mode: 'INDIA_TRENDING_TOPICS_RESEARCH',
+    regionBias: 'India (Downsides & Real Effects)',
+    mode: 'INDIA_DOWNSIDES_AND_EFFECTS_LIVE_DATA',
+    cloudflareModel: config.cloudflareAiModel,
     whatsappConfigured: whatsappClient.isConfigured(),
     xConnected: xStatus?.connected || false,
     databaseConnected: isMongoConnected(),
     endpoints: [
       'GET /health',
       'GET /status',
+      'GET /india-data',
       'GET /trends',
       'GET /posts',
       'GET /schedule',
@@ -514,18 +517,31 @@ app.get('/status', async (req, res) => {
     },
     schedule: postScheduler.getStatus(),
     contentEngine: {
-      mode: 'INDIA_TRENDING_TOPICS_RESEARCH',
+      mode: 'INDIA_DOWNSIDES_AND_EFFECTS_LIVE_DATA',
       regionBias: 'India (geo=IN)',
       audience: 'India & Global',
-      style: 'High-Engagement Analytical Commentary & Everyday Words'
+      style: 'Non-News India Downsides, Real Effects & Simplest Everyday Words',
+      cloudflareModel: config.cloudflareAiModel,
+      dataIntegrations: ['World Bank Open Data (IND)', 'Open-Meteo Live Air Quality', 'Live USD/INR FX', 'Google News India Issue Search']
     },
     state: whatsappWorkflow.getCurrentState()
   });
 });
 
+app.get('/india-data', async (req, res) => {
+  try {
+    const force = req.query.refresh === '1' || req.query.refresh === 'true';
+    const snapshot = await getLiveIndiaFactsSnapshot(force);
+    res.json({ success: true, snapshot });
+  } catch (e) {
+    res.status(500).json({ success: false, error: e.message });
+  }
+});
+
 app.get('/trends', async (req, res) => {
   try {
-    const trends = await getTrendingTopics();
+    const force = req.query.refresh === '1' || req.query.refresh === 'true';
+    const trends = await getTrendingTopics(force);
     res.json({ success: true, count: trends.length, trends });
   } catch (e) {
     res.status(500).json({ success: false, error: e.message });

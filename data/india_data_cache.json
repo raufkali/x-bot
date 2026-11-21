@@ -1,0 +1,251 @@
+{
+  "fetchedAt": "2026-11-21T18:16:48.458Z",
+  "macroFetchedAt": "2026-11-21T18:16:46.220Z",
+  "liveFetchedAt": "2026-11-21T18:16:48.457Z",
+  "macroFacts": [
+    {
+      "factId": "youth_unemployment",
+      "indicator": "SL.UEM.1524.ZS",
+      "label": "Youth jobless rate (ages 15-24)",
+      "value": 16.02,
+      "formattedValue": "16.0%",
+      "year": "2025",
+      "source": "World Bank",
+      "topicAngle": "Young people in India finish college and still cannot find steady work",
+      "effect": "Millions spend years preparing for clerk exams or take low-pay gig delivery work instead of building careers.",
+      "keywords": [
+        "job",
+        "jobs",
+        "youth",
+        "young",
+        "work",
+        "graduate",
+        "college",
+        "unemploy",
+        "hire",
+        "hiring",
+        "career"
+      ]
+    },
+    {
+      "factId": "farm_jobs",
+      "indicator": "SL.AGR.EMPL.ZS",
+      "label": "Workers stuck in farming",
+      "value": 41.63,
+      "formattedValue": "41.6%",
+      "year": "2025",
+      "source": "World Bank",
+      "topicAngle": "Too many Indian workers still depend on small farms that barely pay",
+      "effect": "Families stay trapped in low earnings and crop debt because factories do not create enough steady jobs.",
+      "keywords": [
+        "farm",
+        "farmer",
+        "crop",
+        "rural",
+        "village",
+        "food",
+        "agriculture",
+        "factory",
+        "jobs"
+      ]
+    },
+    {
+      "factId": "health_out_of_pocket",
+      "indicator": "SH.XPD.OOPC.CH.ZS",
+      "label": "Health bills paid straight from family pockets",
+      "value": 43.89,
+      "formattedValue": "43.9%",
+      "year": "2023",
+      "source": "World Bank",
+      "topicAngle": "One hospital trip can wipe out years of savings for an Indian family",
+      "effect": "Because public clinics lack doctors and tests, families pay almost half of all medical costs themselves or borrow cash.",
+      "keywords": [
+        "health",
+        "hospital",
+        "doctor",
+        "sick",
+        "medical",
+        "medicine",
+        "clinic",
+        "bill",
+        "care"
+      ]
+    },
+    {
+      "factId": "health_gdp_share",
+      "indicator": "SH.XPD.CHEX.GD.ZS",
+      "label": "Total health spending share of GDP",
+      "value": 3.34,
+      "formattedValue": "3.3% of GDP",
+      "year": "2023",
+      "source": "World Bank",
+      "topicAngle": "India spends too little on public clinics while private hospital prices surge",
+      "effect": "Overcrowded government wards push ordinary people into costly private hospitals they cannot afford.",
+      "keywords": [
+        "health",
+        "hospital",
+        "doctor",
+        "medical",
+        "spending",
+        "budget",
+        "public"
+      ]
+    },
+    {
+      "factId": "women_workforce",
+      "indicator": "SL.TLF.CACT.FE.ZS",
+      "label": "Adult women in the paid workforce",
+      "value": 32.42,
+      "formattedValue": "32.4%",
+      "year": "2025",
+      "source": "World Bank",
+      "topicAngle": "Most Indian women are locked out of paid jobs",
+      "effect": "Unsafe travel, lack of childcare, and fewer safe jobs mean most homes rely on just one paycheck.",
+      "keywords": [
+        "women",
+        "woman",
+        "female",
+        "safety",
+        "work",
+        "job",
+        "family",
+        "income"
+      ]
+    },
+    {
+      "factId": "gdp_per_person",
+      "indicator": "NY.GDP.PCAP.CD",
+      "label": "Average yearly income output per person",
+      "value": 2702.48,
+      "formattedValue": "$2,702/year",
+      "year": "2025",
+      "source": "World Bank",
+      "topicAngle": "Headline growth numbers hide how little the average Indian actually earns",
+      "effect": "While total national output looks huge, average income per person stays low so rising food and rent squeeze homes.",
+      "keywords": [
+        "gdp",
+        "rich",
+        "poor",
+        "income",
+        "salary",
+        "wage",
+        "money",
+        "economy",
+        "price",
+        "cost",
+        "inflation"
+      ]
+    },
+    {
+      "factId": "coal_power",
+      "indicator": "EG.ELC.COAL.ZS",
+      "label": "Electricity still coming from coal",
+      "value": 72.3,
+      "formattedValue": "72.3%",
+      "year": "2024",
+      "source": "World Bank",
+      "topicAngle": "India still burns coal for most of its daily electricity",
+      "effect": "Coal smoke worsens city air, heats up towns, and exposes power grids to blackouts during extreme summer heat.",
+      "keywords": [
+        "coal",
+        "power",
+        "electricity",
+        "energy",
+        "solar",
+        "grid",
+        "heat",
+        "climate",
+        "air"
+      ]
+    },
+    {
+      "factId": "education_gdp",
+      "indicator": "SE.XPD.TOTL.GD.ZS",
+      "label": "Government spending on schools and colleges",
+      "value": 4.1,
+      "formattedValue": "4.1% of GDP",
+      "year": "2022",
+      "source": "World Bank",
+      "topicAngle": "Weak public schools force Indian parents into expensive private tuition",
+      "effect": "Parents spend hard-earned money on coaching centers just so kids can pass basic tests.",
+      "keywords": [
+        "school",
+        "education",
+        "teacher",
+        "exam",
+        "college",
+        "student",
+        "coaching",
+        "paper",
+        "degree"
+      ]
+    },
+    {
+      "factId": "private_credit",
+      "indicator": "FS.AST.PRVT.GD.ZS",
+      "label": "Formal bank credit to private businesses",
+      "value": 44.03,
+      "formattedValue": "44.0% of GDP",
+      "year": "2025",
+      "source": "World Bank",
+      "topicAngle": "Small shops in India still struggle to get fair bank loans",
+      "effect": "Even with fast phone payments, local shop owners often pay steep informal interest just to buy daily stock.",
+      "keywords": [
+        "bank",
+        "loan",
+        "debt",
+        "emi",
+        "credit",
+        "upi",
+        "shop",
+        "business",
+        "money",
+        "rbi",
+        "rupee"
+      ]
+    }
+  ],
+  "airQuality": [
+    {
+      "city": "Delhi",
+      "pm25": 224,
+      "pm10": 229,
+      "usAqi": 211,
+      "whoMultiple": 14.9,
+      "time": "2026-11-21T18:00",
+      "source": "Open-Meteo Live Air Quality"
+    },
+    {
+      "city": "Mumbai",
+      "pm25": 66,
+      "pm10": 69,
+      "usAqi": 236,
+      "whoMultiple": 4.4,
+      "time": "2026-11-21T18:00",
+      "source": "Open-Meteo Live Air Quality"
+    },
+    {
+      "city": "Bengaluru",
+      "pm25": 62,
+      "pm10": 64,
+      "usAqi": 155,
+      "whoMultiple": 4.2,
+      "time": "2026-11-21T18:00",
+      "source": "Open-Meteo Live Air Quality"
+    },
+    {
+      "city": "Kolkata",
+      "pm25": 15,
+      "pm10": 16,
+      "usAqi": 58,
+      "whoMultiple": 1,
+      "time": "2026-11-21T18:00",
+      "source": "Open-Meteo Live Air Quality"
+    }
+  ],
+  "exchangeRate": {
+    "usdToInr": 93.37,
+    "fetchedAt": "2026-11-21T18:16:46.662Z",
+    "source": "ExchangeRate-API"
+  }
+}

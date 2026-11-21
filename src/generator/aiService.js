@@ -19,7 +19,15 @@ import https from 'https';
 import Groq from 'groq-sdk';
 import { config } from '../config.js';
 import { calculateXCharacterCount } from '../utils/validation.js';
-import { SIMPLE_ENGLISH_RULES, checkSimpleEnglish } from '../utils/simpleEnglish.js';
+import {
+  SIMPLE_ENGLISH_RULES,
+  checkSimpleEnglish,
+  auditDraftForSimplification
+} from '../utils/simpleEnglish.js';
+import {
+  getLiveIndiaFactsSnapshot,
+  formatFactsBrief
+} from '../integrations/indiaDataService.js';
 import {
   isDuplicatePost,
   saveGeneratedPost,
@@ -236,40 +244,34 @@ function validateAIResponse(res, chosenTopic, chosenCategory = 'TRENDING', chose
  * @param {string[]} avoidList - Recent posts/topics to avoid repeating
  * @returns {string} Full prompt string
  */
-function createTrendingPostPrompt(trendTopic, trendContext = '', avoidList = []) {
+export function createTrendingPostPrompt(trendTopic, trendContext = '', avoidList = [], liveFactsBrief = '') {
   const avoidStr = avoidList.length > 0 ? avoidList.slice(0, 20).join('\n• ') : 'None';
 
   return `${SIMPLE_ENGLISH_RULES}
 
-# X_BOT — INDIA TRENDS ANALYTICAL POST ENGINE (2025-2026)
+# X_BOT — INDIA DOWNSIDES & REAL EFFECTS ENGINE (2025-2026)
 
-TRENDING TOPIC: "${trendTopic}"
-${trendContext ? `TRENDING CONTEXT: ${trendContext}` : ''}
+ISSUE / ANGLE: "${trendTopic}"
+${trendContext ? `WHY IT MATTERS: ${trendContext}` : ''}
 
-CURRENT TIME HORIZON: 2025-2026. Write about this topic with a strong analytical focus on INDIA using the most current, verifiable data and developments available.
+VERIFIED LATEST INDIA DATA (USE ONLY THESE REAL NUMBERS OR WIDELY KNOWN OFFICIAL FIGURES — NEVER GUESS NUMBERS):
+${liveFactsBrief || '- Use verified 2024-2026 official India numbers (World Bank, RBI, live air sensors).'}
 
-YOUR GOAL: Write an analytical X post about this trending topic through an India lens that:
-1. STOPS THE SCROLL with a surprising, counterintuitive, or bold hook connected to India
-2. GROUNDS the analysis in real, verifiable facts, specific numbers (e.g., RBI, NITI Aayog, UPI, GDP, trade, jobs, or Indian state data), and clear cause-and-effect
-3. CLOSES with a sharp insight or thought-provoking question about what this means for India and regular people
-4. Uses the SIMPLEST everyday English — short sentences, everyday words, nothing complicated
-
-ENGAGEMENT & ANALYTICAL RULES:
-- Bias the framing toward India: highlight how this trend affects Indian citizens, India's economy, policy, tech sector, or India's global standing
-- Even if the topic is global, connect it analytically to India's reality (trade, rupees, jobs, energy, or supply chains)
-- Pick the most surprising or underreported angle — avoid generic news summaries
-- Use real facts and numbers that most people don't know — that's what gets shared
-- Keep language simple enough for a 12-year-old to follow
-- Bold, analytical, and direct — no hedging, no "perhaps", no "it could be argued"
+YOUR MISSION: Write the BEST possible X post about this **India downside and its real-world effect on ordinary people**:
+1. DO NOT SOUND LIKE NEWS. Never write "A new report says", "Today", "Yesterday", "PM X opened", or headline summaries.
+2. EXPOSE THE DOWNSIDE & EFFECT: Explain clearly what is broken or unfair in India AND how it hurts everyday families, students, workers, or small shops (lost cash, debt, poor health, wasted years, higher bills).
+3. USE THE SIMPLEST POSSIBLE WORDS: Write like you are explaining it to a 12-year-old friend. Short words, short sentences (5-12 words). No academic or business jargon.
+4. USE ACCURATE LATEST DATA: Anchor the middle paragraph in 1 or 2 exact numbers from the Verified Latest India Data above.
+5. END WITH A SHARP QUESTION: Make people stop and reply with their own view.
 
 STRICT POST STRUCTURE (3 parts, separated by double line breaks \\n\\n):
-Line 1: One fierce, punchy hook sentence that directly exposes the most surprising India-relevant angle
+Line 1: One punchy sentence stating the India downside clearly (no news intro)
 \\n\\n
-Paragraph 2: 2-3 hard-hitting sentences of real facts, specific numbers, and sharp analysis (around 60-80 words)
+Paragraph 2: 2-3 short, very simple sentences with accurate latest numbers AND the real effect on daily life (around 50-70 words)
 \\n\\n
-Line 3: A devastating one-line takeaway or thought-provoking question that makes readers want to comment
+Line 3: One short, thought-provoking question
 
-LENGTH: Strictly 400 to 580 characters total. Never exceed 600.
+LENGTH: Strictly 400 to 560 characters total. Never exceed 600.
 ZERO hashtags. ZERO emojis. NO labels like "Hook:" or "Body:".
 
 TOPICS TO AVOID (do not repeat these angles):
@@ -277,10 +279,10 @@ TOPICS TO AVOID (do not repeat these angles):
 
 Return ONLY valid JSON in this exact format:
 {
-  "topic": "Specific India-focused headline for this post",
-  "subtopic": "The specific angle or sub-issue being explored",
+  "topic": "Short plain-English downside headline (not news)",
+  "subtopic": "The specific India downside and everyday effect",
   "category": "TRENDING",
-  "text": "Hook line\\n\\nBody paragraph with facts\\n\\nClosing takeaway or question"
+  "text": "Hook line\\n\\nBody paragraph with real data and effect\\n\\nClosing question"
 }`;
 }
 
@@ -288,41 +290,43 @@ Return ONLY valid JSON in this exact format:
  * Creates a post prompt for a user-specified custom topic (ignores trends).
  * @param {string} userTopic - What the user wants to write about
  * @param {string[]} avoidList
+ * @param {string} liveFactsBrief
  * @returns {string}
  */
-function createCustomTopicPrompt(userTopic, avoidList = []) {
+export function createCustomTopicPrompt(userTopic, avoidList = [], liveFactsBrief = '') {
   const avoidStr = avoidList.length > 0 ? avoidList.slice(0, 15).join('\n• ') : 'None';
 
   return `${SIMPLE_ENGLISH_RULES}
 
-# X_BOT — INDIA ANALYTICAL CUSTOM TOPIC ENGINE (2025-2026)
+# X_BOT — INDIA DOWNSIDES CUSTOM TOPIC ENGINE (2025-2026)
 
-USER REQUESTED TOPIC: "${userTopic}"
+USER TOPIC: "${userTopic}"
 
-CURRENT TIME HORIZON: 2025-2026. Use the most current facts and developments about this topic.
+VERIFIED LATEST INDIA DATA (USE WHEN RELEVANT — NEVER GUESS NUMBERS):
+${liveFactsBrief || '- Use verified 2024-2026 official India data.'}
 
-Write a viral, analytical X post about "${userTopic}" (connecting to India's perspective, economy, or real-world impact wherever relevant):
-- Pick the most surprising, counterintuitive, or underreported analytical angle
-- Use real facts, specific numbers, and verified data
-- Use the SIMPLEST everyday English — short sentences, clear words
-- Bold and direct — expose the trade-off or hidden reality
+Write a sharp, viral X post about "${userTopic}" focused on India's downside and real-world effects:
+- NOT a news report — speak directly about the problem and how it hurts regular people
+- Use accurate latest facts and numbers
+- Use the SIMPLEST possible words — short sentences, everyday English, zero jargon
+- Show the clear cause and effect on families, workers, or young people
 
 STRICT POST STRUCTURE (3 parts, separated by double line breaks \\n\\n):
-Line 1: One fierce hook sentence about "${userTopic}"
+Line 1: One short hook sentence about "${userTopic}"
 \\n\\n
-Paragraph 2: 2-3 sentences of real facts with specific numbers (around 60-80 words)
+Paragraph 2: 2-3 simple sentences with real latest numbers and everyday impact (around 50-70 words)
 \\n\\n
-Line 3: A sharp closing insight or question
+Line 3: A sharp closing question
 
-LENGTH: Strictly 400 to 580 characters. Never exceed 600.
+LENGTH: Strictly 400 to 560 characters. Never exceed 600.
 ZERO hashtags. ZERO emojis.
 
 AVOID: ${avoidStr}
 
 Return ONLY valid JSON:
 {
-  "topic": "Specific headline for this post",
-  "subtopic": "The angle being explored",
+  "topic": "Short plain-English headline",
+  "subtopic": "The downside and effect explored",
   "category": "CUSTOM_TOPIC",
   "text": "Hook\\n\\nBody\\n\\nConclusion"
 }`;
@@ -334,118 +338,118 @@ Return ONLY valid JSON:
 ========================================================= */
 
 export const FALLBACK_BANK = [
-  // F1. India UPI scale vs small business credit gap
+  // F1. Youth jobless crisis & wasted years chasing rare clerk posts
   {
-    topic: 'India UPI processes 16B+ monthly payments while small shops lack bank loans',
-    subtopic: 'UPI digital payments boom vs formal credit access in India',
+    topic: 'Young Indians finish college and still cannot find steady jobs',
+    subtopic: '16% youth jobless rate and years lost chasing rare government posts',
     category: 'TRENDING',
     genreId: 'TRENDING',
-    mainSubject: 'India UPI payments and informal lending gap',
-    specificEventOrIssue: 'NPCI 16B+ monthly UPI transactions vs high-interest informal loans for small vendors',
-    centralArgument: 'India built world-leading instant payments via UPI, yet small vendors still rely on expensive informal lenders for credit',
-    analyticalAngle: 'Instant digital payments vs lack of affordable bank credit',
-    importantStatistics: ['16 billion UPI payments', '36% informal loan interest'],
-    keywords: ['India', 'UPI', 'payments', 'banks', 'vendors'],
+    mainSubject: 'India youth job shortage and gig work trap',
+    specificEventOrIssue: 'World Bank 16.0% youth jobless rate and 12M annual job seekers',
+    centralArgument: 'Too few steady jobs force millions of young Indians into exam coaching or low-pay gig work',
+    analyticalAngle: 'College degrees vs shortage of real steady jobs',
+    importantStatistics: ['16.0% youth jobless rate', '12 million new job seekers', '2 million steady jobs'],
+    keywords: ['India', 'youth', 'jobs', 'college', 'work'],
     english: {
-      text: 'India now processes over 16 billion UPI digital payments every single month.\n\nThat is nearly half of all real-time digital payments on the planet. Yet Reserve Bank data shows millions of small shops and farmers still cannot get formal bank loans. Instant phone payments make buying easy, but street vendors still pay local lenders 36% interest to keep shops running.\n\nWhy can India move billions in seconds online, yet struggle to lend fairly to small sellers?'
+      text: 'About 16% of young Indians ages 15 to 24 still cannot find steady work.\n\nEach year, 12 million young people finish school and look for real jobs. Yet factories and big firms add less than 2 million steady posts. Millions spend their best years studying for rare clerk tests or riding delivery bikes for tiny daily pay.\n\nWhat happens to a country when millions of young minds wait years for one decent job?'
     },
-    romanUrdu: { text: 'India ab har mahine 16 arab se zyada UPI digital payments process karta hai.\n\nYe dunya ki taqreeban aadhi real-time digital adayegiyan hain. Magar Reserve Bank ke mutabiq lakhon chhoti dukanein aur kisan ab bhi bank se qarz nahi le saktay. Phone se foran payment aasan hai magar rehrri walay ab bhi 36% sood par qarz letay hain.\n\nIndia secondon mein arbon bhej sakta hai toh chhotay dukandaron ko sasta qarz kyon nahi milta?' },
-    plainUrdu: { text: 'بھارت اب ہر ماہ سولہ ارب سے زیادہ یو پی آئی ڈیجیٹل ادائیگیاں کرتا ہے۔\n\nیہ دنیا کی تقریباً آدھی فوری ڈیجیٹل ادائیگیاں ہیں۔ مگر ریزرو بینک کے مطابق لاکھوں چھوٹی دکانوں اور کسانوں کو اب بھی بینک سے قرض نہیں ملتا۔ فون سے ادائیگی آسان ہے لیکن چھوٹے دکاندار اب بھی مقامی ساہوکاروں کو 36 فیصد سود دیتے ہیں۔\n\nبھارت سیکنڈوں میں اربوں منتقل کر سکتا ہے تو چھوٹے تاجروں کو آسان قرض کیوں نہیں ملتا؟' }
+    romanUrdu: { text: 'India mein 15 se 24 saal ke taqreeban 16% nojawanon ko ab bhi pakki nokri nahi milti.\n\nHar saal 1.2 crore nojawan parhai poori kar ke kaam dhoondte hain. Magar karkhanay aur baray idaray 20 lakh pakki nokriyan bhi nahi detay. Lakhon nojawan chhoti sarkari poston ke test detay hain ya kam kamai par delivery bike chalatay hain.\n\nJab lakhon jawan zehan aik achi nokri ke liye saalon intezar karein toh mulk ka kya hoga?' },
+    plainUrdu: { text: 'بھارت میں پندرہ سے چوبیس سال کے تقریباً سولہ فیصد نوجوانوں کو اب بھی مستقل کام نہیں ملتا۔\n\nہر سال ایک کروڑ بیس لاکھ نوجوان تعلیم مکمل کر کے روزگار تلاش کرتے ہیں۔ مگر کارخانے اور بڑی کمپنیاں بیس لاکھ پکی نوکریاں بھی نہیں دیتیں۔ لاکھوں نوجوان سرکاری کلرک کے امتحانوں میں برسوں ضائع کرتے یا معمولی اجرت پر ڈیلیوری کا کام کرتے ہیں۔\n\nجب لاکھوں ذہین نوجوان ایک اچھے روزگار کے لیے برسوں انتظار کریں تو ملک کا کیا ہوگا؟' }
   },
 
-  // F2. India youth demographic & formal jobs challenge
+  // F2. Hospital bills wiping out family savings
   {
-    topic: 'India adds 12 million young job seekers every year while formal hiring lags',
-    subtopic: 'India youth workforce vs formal manufacturing and office job creation',
+    topic: 'One hospital trip can wipe out an Indian family savings account',
+    subtopic: '43.9% out-of-pocket medical bills pushing families into debt',
     category: 'TRENDING',
     genreId: 'TRENDING',
-    mainSubject: 'India demographic dividend and formal employment gap',
-    specificEventOrIssue: '65% population under 35 vs under 2M new formal private jobs yearly',
-    centralArgument: 'India has the largest youth workforce in the world, but formal job creation lags behind college graduations',
-    analyticalAngle: 'Youth workforce growth vs formal job supply',
-    importantStatistics: ['12 million job seekers', '65% under age 35', '2 million formal jobs'],
-    keywords: ['India', 'youth', 'jobs', 'graduates', 'economy'],
+    mainSubject: 'India medical costs and weak public clinics',
+    specificEventOrIssue: 'World Bank data showing 43.9% of health costs paid directly by families',
+    centralArgument: 'Weak public hospitals force ordinary Indians to borrow money for basic medical care',
+    analyticalAngle: 'Overcrowded public clinics vs costly private hospital bills',
+    importantStatistics: ['43.9% from family pockets', '3.3% GDP health spending'],
+    keywords: ['India', 'hospital', 'health', 'bills', 'savings'],
     english: {
-      text: 'Over 12 million young Indians enter the job market every single year.\n\nMore than 65% of India\'s people are under age 35, creating the world\'s biggest youth workforce. Yet formal factories and big tech firms add less than 2 million steady jobs a year. Millions of college graduates now spend years studying for a tiny number of government clerk posts.\n\nWhat happens to a fast-growing economy when millions of educated young people lack real jobs?'
+      text: 'One bad hospital visit in India can wipe out years of a family\'s hard-earned savings.\n\nWorld Bank figures show Indians pay almost 44% of all medical bills straight from their own pockets. Public clinics often lack enough doctors, beds, and lab tests. So working families must borrow cash at high rates or sell home gold just to treat a sick parent.\n\nWhy does one illness push millions of hardworking Indian families back into debt?'
     },
-    romanUrdu: { text: 'Har saal 1.2 crore se zyada nojawan Bharti job market mein dakhil hotay hain.\n\nIndia ki 65% se zyada abadi 35 saal se kam hai jo dunya ki sab se barri jawan taqat hai. Magar baray karkhanay aur tech companiyan saalana 20 lakh pakki nokriyan bhi nahi dein. Lakhon degree walay chhoti sarkari poston ke liye saalon tayyari kartay hain.\n\nTaiz barhti maeeshat ka kya hoga jab parhay likhay nojawanon ke paas asli rozgar na ho?' },
-    plainUrdu: { text: 'ہر سال ایک کروڑ بیس لاکھ سے زیادہ نوجوان بھارتی روزگار کی منڈی میں داخل ہوتے ہیں۔\n\nبھارت کی پینسٹھ فیصد آبادی پینتیس سال سے کم عمر ہے جو دنیا کی سب سے بڑی نوجوان افرادی قوت ہے۔ مگر کارخانے اور بڑی ٹیک کمپنیاں سالانہ بیس لاکھ مستقل ملازمتیں بھی نہیں بناتیں۔ لاکھوں گریجویٹ چند سرکاری اسامیوں کے لیے برسوں امتحان دیتے ہیں۔\n\nتیز معیشت کا کیا ہوگا جب تعلیم یافتہ نوجوانوں کے پاس معیاری روزگار نہ ہو؟' }
+    romanUrdu: { text: 'India mein aik bada hospital ka chakkar kisi bhi khandan ki barson ki bachat khatam kar sakta hai.\n\nWorld Bank ke mutabiq Bharti log ilaj ke 44% kharch apni jaib se detay hain. Sarkari clinic mein aksar doctor, bistar aur test nahi hotay. Is liye aam khandanon ko bimaar maa baap ke ilaj ke liye qarz lena ya sona bechna parta hai.\n\nAik bimari lakhon mehnat-kash Bharti khandanon ko dobara qarz mein kyon dhakel deti hai?' },
+    plainUrdu: { text: 'بھارت میں اسپتال کا ایک بڑا خرچ کسی بھی خاندان کی برسوں کی بچت ختم کر سکتا ہے۔\n\nورلڈ بینک کے مطابق بھارتی شہری علاج کے تقریباً چوالیس فیصد اخراجات خود اپنی جیب سے ادا کرتے ہیں۔ سرکاری کلینکوں میں اکثر ڈاکٹر، بستر اور ٹیسٹ دستیاب نہیں ہوتے۔ مجبوراً محنت کش خاندانوں کو علاج کے لیے قرض لینا یا سونا بیچنا پڑتا ہے۔\n\nایک بیماری لاکھوں محنتی بھارتی خاندانوں کو دوبارہ قرض کے بوجھ تلے کیوں دبا دیتی ہے؟' }
   },
 
-  // F3. India household savings vs EMI consumption
+  // F3. Dirty air hurting lungs, schools, and wages
   {
-    topic: 'India household financial savings fall while urban EMI debt keeps surging',
-    subtopic: 'RBI household savings drop vs personal loan and EMI boom in India',
+    topic: 'Dirty city air in northern India steals health and paychecks every year',
+    subtopic: 'Toxic smog above safe WHO limits hurting children and daily workers',
     category: 'TRENDING',
     genreId: 'TRENDING',
-    mainSubject: 'Indian middle-class household savings and retail debt',
-    specificEventOrIssue: 'RBI data showing multi-decade low net financial savings alongside rising unsecured debt',
-    centralArgument: 'Urban Indian consumption is increasingly funded by personal loans and EMIs as inflation eats into family savings',
-    analyticalAngle: 'Borrowing-driven spending vs real household income growth',
-    importantStatistics: ['multi-decade low savings', 'surging EMI debt'],
-    keywords: ['India', 'RBI', 'savings', 'debt', 'inflation'],
+    mainSubject: 'Northern India air pollution and family health costs',
+    specificEventOrIssue: 'Live PM2.5 readings reaching 15x WHO safe health limits',
+    centralArgument: 'Bad air shuts schools, slows outdoor work, and forces families to spend cash on medicine',
+    analyticalAngle: 'Dirty winter air vs children health and daily wages',
+    importantStatistics: ['15 times WHO safe limit', '72% coal power'],
+    keywords: ['India', 'Delhi', 'air', 'smog', 'health'],
     english: {
-      text: 'Indian household net financial savings dropped to their lowest share in decades.\n\nReserve Bank numbers show families are saving less cash while personal loans and credit card bills keep rising fast. Across big cities, middle-class families buy phones, bikes, and groceries on monthly EMIs. Meanwhile, food and school costs grow faster than regular office paychecks.\n\nIs India\'s consumer boom powered by rising incomes, or by families borrowing tomorrow\'s money?'
+      text: 'Breathing city air in northern India quietly steals health and paychecks from millions.\n\nAir sensors across Delhi often record dirt levels 15 times worse than safe world limits. Schools close for weeks, outdoor work slows down, and kids fill clinics with bad coughs. Parents lose daily wages while spending scarce cash on doctor visits and lung inhalers.\n\nHow can people build a better life when the air outside hurts their kids every day?'
     },
-    romanUrdu: { text: 'Bharti khandanon ki khalis maali bachat dahaiyon ki kam-tareen satah par aa gayi hai.\n\nReserve Bank ke adaad batatay hain ke log kam paise bacha rahay hain jabke personal loans aur credit card bills barh rahay hain. Baray shehron mein log phone, bike aur rashan bhi mahana qiston par le rahay hain. Khane aur school ka kharch tankhwah se taiz barh raha hai.\n\nKya India ki khareedari barhti aamdani se chal rahi hai ya kal ke qarz par?' },
-    plainUrdu: { text: 'بھارتی خاندانوں کی خالص مالی بچت کئی دہائیوں کی کم ترین سطح پر آ گئی ہے۔\n\nریزرو بینک کے اعداد و شمار بتاتے ہیں کہ خاندان کم رقم بچا رہے ہیں جبکہ ذاتی قرضے اور کریڈٹ کارڈ بل تیزی سے بڑھ رہے ہیں۔ بڑے شہروں میں لوگ فون، موٹرسائیکل اور راشن بھی ماہانہ اقساط پر خریدتے ہیں۔ خوراک اور تعلیم کے اخراجات تنخواہوں سے تیز بڑھ رہے ہیں۔\n\nکیا بھارت کی خریداری بڑھتی آمدنی سے چل رہی ہے یا مستقبل کے قرض پر؟' }
+    romanUrdu: { text: 'Shumali India ke shehron ki gandi hawa har saal lakhon logon ki sehat aur kamai cheen leti hai.\n\nDelhi mein hawa ke sensor aksar mehfooz had se 15 guna zyada gandagi dikhatay hain. School hafton band ho jatay hain, mazdoori ruk jati hai aur bachay khansi le kar clinic jatay hain. Maa baap ko dawai aur doctor par apni kamai kharch karni parti hai.\n\nLog behtar mustaqbil kaisay banayein jab bahar ki hawa roz un ke bachon ko bimaar karay?' },
+    plainUrdu: { text: 'شمالی بھارت کے شہروں کی زہریلی ہوا ہر سال لاکھوں لوگوں کی صحت اور کمائی چھین لیتی ہے۔\n\nدہلی کے سینسر اکثر فضائی آلودگی کو محفوظ عالمی حد سے پندرہ گنا زیادہ دکھاتے ہیں۔ اسکول بند ہو جاتے ہیں، مزدوری سست پڑتی ہے اور بچے کھانسی لے کر کلینک پہنچتے ہیں۔ والدین کی کمائی دوائی اور ڈاکٹر پر خرچ ہو جاتی ہے۔\n\nلوگ بہتر مستقبل کیسے بنائیں جب باہر کی ہوا روز ان کے بچوں کو بیمار کرے؟' }
   },
 
-  // F4. India IT services vs AI automation
+  // F4. Too many workers stuck in tiny farms
   {
-    topic: 'India $250B IT services sector faces sharp AI shift for 5.4M tech workers',
-    subtopic: 'Generative AI impact on Indian IT outsourcing and fresher hiring',
+    topic: 'Over 41% of Indian workers stay stuck in low-pay farm work',
+    subtopic: 'Too few factory jobs trap rural families in small earnings',
     category: 'TRENDING',
     genreId: 'TRENDING',
-    mainSubject: 'Indian IT outsourcing industry and AI automation',
-    specificEventOrIssue: '$250B IT exports and 5.4M workforce adapting as AI automates routine coding',
-    centralArgument: 'India became an IT superpower through low-cost coding services, but AI now threatens entry-level outsourcing jobs',
-    analyticalAngle: 'Service outsourcing vs building original AI products',
-    importantStatistics: ['$250 billion IT sector', '5.4 million tech workers'],
-    keywords: ['India', 'IT', 'AI', 'software', 'engineers'],
+    mainSubject: 'India farm dependency and weak factory job growth',
+    specificEventOrIssue: 'World Bank 41.6% agriculture employment share in 2025',
+    centralArgument: 'Because factories add too few jobs, nearly half of Indian workers remain in low-income farming',
+    analyticalAngle: 'High farm headcount vs low family income',
+    importantStatistics: ['41.6% farm workers', '$2,702 yearly output per person'],
+    keywords: ['India', 'farm', 'workers', 'villages', 'jobs'],
     english: {
-      text: 'India\'s $250 billion IT sector employs 5.4 million tech workers across major cities.\n\nFor thirty years, Indian engineers built and fixed software for banks and firms across America and Europe. Today, new AI tools write basic code and run customer support desks in seconds at a fraction of the cost. Hiring at top Indian tech firms has slowed sharply for fresh college graduates.\n\nCan India\'s tech giants move from cheap coding services to building their own global AI products?'
+      text: 'Over 41% of Indian workers still depend on small farms that barely pay the bills.\n\nWorld Bank data shows nearly half of India\'s workforce stays tied to tiny plots of land. Because cities do not add enough steady factory jobs, one weak rain season or sudden price drop pushes whole villages into debt. Young men leave home for risky city labor just to send food money back.\n\nWhy do so many hardworking Indians stay trapped in work that cannot pay a fair living?'
     },
-    romanUrdu: { text: 'India ka 250 arab dollar ka IT sector baray shehron mein 54 lakh tech workers ko rozgar deta hai.\n\nTees saal tak Bharti engineers ne America aur Europe ke bankon ka software banaya. Aaj naye AI tools sasta aur foran code likh detay hain aur customer support chala letay hain. Baray Indian tech idaron mein naye graduates ki bharti bohot kam ho gayi hai.\n\nKya India ki tech companiyan sasti coding chhor kar apnay aalmi AI products bana sakti hain?' },
-    plainUrdu: { text: 'بھارت کا ڈھائی سو ارب ڈالر کا آئی ٹی شعبہ بڑے شہروں میں چون لاکھ ٹیک کارکنوں کو روزگار دیتا ہے۔\n\nتیس سال تک بھارتی انجینئروں نے امریکہ اور یورپ کے بینکوں کے لیے سافٹ ویئر بنائے۔ آج نئے اے آئی ٹولز سیکنڈوں میں بنیادی کوڈ لکھتے اور کسٹمر سپورٹ چلاتے ہیں۔ بڑی بھارتی ٹیک کمپنیوں میں نئے گریجویٹس کی بھرتی کم ہو گئی ہے۔\n\nکیا بھارت کی ٹیک کمپنیاں سستی سروسز سے نکل کر اپنی عالمی اے آئی مصنوعات بنا سکیں گی؟' }
+    romanUrdu: { text: 'India ke 41% se zyada mazdoor ab bhi chhoti zameenon ki kheti par guzara kartay hain.\n\nWorld Bank ke mutabiq taqreeban aadhi Bharti abadi chhotay kheton se juri hai kyonke shehron mein pakkay karkhanon ki nokriyan kam hain. Aik kamzor barish ya fasal ki kam qeemat pooray gaon ko qarz mein dooba deti hai.\n\nItnay mehnat-kash Bharti aise kaam mein kyon phansay hain jo ghar ka kharch bhi mushkil se chalaye?' },
+    plainUrdu: { text: 'بھارت کے اکتالیس فیصد سے زیادہ محنت کش اب بھی چھوٹی زمینوں کی کاشتکاری پر گزارا کرتے ہیں۔\n\nورلڈ بینک کے مطابق تقریباً آدھی افرادی قوت کھیتوں سے جڑی ہے کیونکہ شہروں میں کارخانوں کی مستقل ملازمتیں کم ہیں۔ ایک کمزور بارش یا فصل کی قیمت گرنے سے پورا گاؤں قرض میں ڈوب جاتا ہے۔\n\nاتنے محنتی بھارتی ایسے کام میں کیوں پھنسے ہیں جو گھر کا خرچ بھی مشکل سے پورا کرے؟' }
   },
 
-  // F5. India urban groundwater crisis
+  // F5. Women locked out of paid jobs
   {
-    topic: '21 major Indian cities face severe groundwater shortages as tankers take over',
-    subtopic: 'Urban water table depletion in Bengaluru, Delhi, and Chennai',
+    topic: 'Two out of three adult women in India are outside paid jobs',
+    subtopic: 'Only 32.4% female workforce participation holds back family incomes',
     category: 'TRENDING',
     genreId: 'TRENDING',
-    mainSubject: 'India urban groundwater depletion and water tanker economy',
-    specificEventOrIssue: 'NITI Aayog warning on urban aquifers and summer water shortages',
-    centralArgument: 'Rapid concrete growth without rainwater storage is draining underground aquifers beneath India\'s fastest-growing cities',
-    analyticalAngle: 'Urban real estate boom vs disappearing groundwater',
-    importantStatistics: ['21 major Indian cities', 'private water tankers'],
-    keywords: ['India', 'water', 'Bengaluru', 'Delhi', 'cities'],
+    mainSubject: 'Low women workforce share and one-paycheck households',
+    specificEventOrIssue: 'World Bank 32.4% female labor force rate in 2025',
+    centralArgument: 'Unsafe transit and lack of safe nearby jobs leave most Indian families relying on a single paycheck',
+    analyticalAngle: 'Low female employment vs rising city family living costs',
+    importantStatistics: ['32.4% women in paid work', 'two-thirds left out'],
+    keywords: ['India', 'women', 'jobs', 'safety', 'family'],
     english: {
-      text: 'Over 21 major Indian cities risk running short of groundwater in the coming years.\n\nGovernment reports warn that cities like Bengaluru, Chennai, and Delhi pump out underground water far faster than monsoon rain can refill it. Millions of urban apartments already pay private water tankers every summer just to cook and bathe. Farms in Punjab face the same dropping water table.\n\nHow can India build world-class cities when its people have to buy drinking water from tankers?'
+      text: 'Two out of three adult women in India are still shut out of paid jobs.\n\nWorld Bank numbers show only 32% of Indian women work for pay today. Unsafe streets, poor night buses, and few safe childcare options force millions of skilled women to stay home. That leaves most families trying to pay higher rent, food, and school fees on just one monthly paycheck.\n\nHow much stronger would Indian homes be if women had safe travel and fair work?'
     },
-    romanUrdu: { text: 'India ke 21 se zyada baray shehron mein aanay walay saalon mein zameeni paani khatam honay ka khatra hai.\n\nSarkari report batati hai ke Bengaluru, Chennai aur Delhi mein barsaat se zyada tezi se zameen se paani nikala ja raha hai. Lakhon shehri khandan garmiyon mein khana pakane ke liye private water tankers khareedte hain. Punjab ke kheton mein bhi paani neechay gir raha hai.\n\nIndia aalmi mayar ke shehr kaisay banaye ga jab logon ko peenay ka paani tankers se lena paray?' },
-    plainUrdu: { text: 'بھارت کے اکیس سے زائد بڑے شہروں کو آنے والے برسوں میں زیرزمین پانی کی شدید قلت کا خطرہ ہے۔\n\nسرکاری رپورٹس خبردار کرتی ہیں کہ بنگلورو، چنئی اور دہلی میں بارش سے زیادہ تیزی سے زمین سے پانی نکالا جا رہا ہے۔ لاکھوں شہری خاندان گرمیوں میں نجی واٹر ٹینکروں سے پانی خریدتے ہیں۔ پنجاب کی زراعت بھی گرتے ہوئے پانی سے متاثر ہے۔\n\nبھارت عالمی معیار کے شہر کیسے بنائے گا جب لوگوں کو پینے کا پانی ٹینکروں سے خریدنا پڑے؟' }
+    romanUrdu: { text: 'India mein teen mein se do jawan khawateen ab bhi tankhwah wali nokri se bahar hain.\n\nWorld Bank ke mutabiq aaj sirf 32% Bharti khawateen kamai karti hain. Ghair-mehfooz raste, kamzor night bus service aur bachon ki dekh-bhaal ki kami lakhon parhi likhi auraton ko ghar bitha deti hai. Ghar ka sara bojh aik tankhwah par aa jata hai.\n\nBharti ghar kitnay mazboot hotay agar khawateen ko mehfooz safar aur barabar kaam milta?' },
+    plainUrdu: { text: 'بھارت میں تین میں سے دو بالغ خواتین اب بھی تنخواہ والی ملازمت سے باہر ہیں۔\n\nورلڈ بینک کے مطابق آج صرف بتیس فیصد بھارتی خواتین روزگار سے وابستہ ہیں۔ غیر محفوظ راستے، کمزور ٹرانسپورٹ اور سہولیات کی کمی لاکھوں قابل خواتین کو گھر بیٹھنے پر مجبور کرتی ہے۔ اس سے گھر کا پورا بوجھ ایک تنخواہ پر آ جاتا ہے۔\n\nبھارتی گھرانے کتنے مضبوط ہوتے اگر خواتین کو محفوظ سفر اور مناسب روزگار میسر ہوتا؟' }
   },
 
-  // F6. India winter air pollution economic toll
+  // F6. Low average pay and rising family loans
   {
-    topic: 'Toxic winter air in northern India costs billions and shuts schools every year',
-    subtopic: 'Delhi NCR air pollution crisis and public health cost',
+    topic: 'Big growth headlines hide how little the average Indian earns',
+    subtopic: '$2,702 yearly output per person and rising monthly family loan debt',
     category: 'TRENDING',
     genreId: 'TRENDING',
-    mainSubject: 'Northern India air pollution and productivity loss',
-    specificEventOrIssue: 'AQI exceeding 15x WHO limits across Delhi NCR and Gangetic plains',
-    centralArgument: 'Treating toxic air as an annual winter headline instead of a year-round policy crisis drains billions from Indian families',
-    analyticalAngle: 'Short-term emergency curbs vs structural clean-air reform',
-    importantStatistics: ['15 times WHO safe limit', 'billions in lost productivity'],
-    keywords: ['India', 'Delhi', 'pollution', 'air', 'health'],
+    mainSubject: 'Low per-person earnings vs rising living costs and retail loans',
+    specificEventOrIssue: 'World Bank $2,702 GDP per person in 2025 alongside rising household debt',
+    centralArgument: 'Headline growth masks flat family incomes, pushing city homes into monthly loans for daily goods',
+    analyticalAngle: 'Big national numbers vs tight everyday family budgets',
+    importantStatistics: ['$2,702 per person', '₹93 per dollar import pressure'],
+    keywords: ['India', 'income', 'loans', 'prices', 'families'],
     english: {
-      text: 'Dirty winter air in northern India cuts billions of dollars from the economy every year.\n\nEvery November, air pollution in Delhi and nearby cities jumps more than 15 times above safe health limits. Factories slow down, schools shut for weeks, and millions of workers fall sick with lung trouble. Families spend hard-earned savings on air filters and hospital bills.\n\nWhy does India treat toxic air like a short seasonal problem instead of a national health emergency?'
+      text: 'Big growth numbers hide how little the average person in India still earns.\n\nWorld Bank figures put yearly output at just $2,702 per person across India. Yet city rent, milk, cooking oil, and school fees keep climbing while regular office pay barely moves. More families now use quick phone loans and monthly credit plans just to buy daily groceries.\n\nIs India\'s spending boom built on real rising pay, or on families borrowing tomorrow\'s cash?'
     },
-    romanUrdu: { text: 'Shumali India ki zehreeli sardi ki hawa har saal maeeshat ko arbon dollar ka nuqsan deti hai.\n\nHar November mein Delhi aur qareebi shehron mein aloodgi mehfooz had se 15 guna barh jati hai. Karkhanay sust ho jatay hain, school hafton band rehte hain aur lakhon log saans ki bimariyon ka shikar hotay hain. Khandan apni bachat hospital ke billon par lagatay hain.\n\nIndia zehreeli hawa ko aik mausami masla kyon samajhta hai jabke ye qaumi sehat ki emergency hai?' },
-    plainUrdu: { text: 'شمالی بھارت کی زہریلی سردیوں کی ہوا ہر سال معیشت کو اربوں ڈالر کا نقصان پہنچاتی ہے۔\n\nہر نومبر میں دہلی اور قریبی شہروں میں فضائی آلودگی محفوظ حد سے پندرہ گنا بڑھ جاتی ہے۔ کارخانے سست پڑ جاتے ہیں، اسکول ہفتوں بند رہتے ہیں اور لاکھوں مزدور بیماریوں کا شکار ہوتے ہیں۔ خاندان اپنی جمع پونجی اسپتالوں پر خرچ کرتے ہیں۔\n\nبھارت زہریلی ہوا کو محض موسمی مسئلہ کیوں سمجھتا ہے جب کہ یہ قومی صحت کی ایمرجنسی ہے؟' }
+    romanUrdu: { text: 'Baray maashi adaad ye chhupa letay hain ke India mein aam aadmi aaj bhi kitna kam kamata hai.\n\nWorld Bank ke mutabiq India mein fi kas salana paidawar sirf 2,702 dollar hai. Magar shehr ka kiraya, doodh, tail aur school fees barh rahi hain jabke tankhwah wahin khari hai. Ab log rozmarra rashan ke liye bhi phone se chhotay qarz le rahay hain.\n\nKya India ki khareedari barhti kamai se chal rahi hai ya kal ka paisa udhar le kar?' },
+    plainUrdu: { text: 'بڑے معاشی اعداد و شمار یہ حقیقت چھپا لیتے ہیں کہ بھارت میں عام آدمی آج بھی کتنا کم کماتا ہے۔\n\nورلڈ بینک کے مطابق بھارت میں فی کس سالانہ پیداوار صرف دو ہزار سات سو دو ڈالر ہے۔ مگر شہروں کا کرایہ، دودھ، تیل اور اسکول فیس بڑھتی جا رہی ہے جبکہ تنخواہیں وہیں کھڑی ہیں۔ اب خاندان راشن کے لیے بھی چھوٹے قرضے لے رہے ہیں۔\n\nکیا بھارت کی خریداری بڑھتی آمدنی سے چل رہی ہے یا کل کا پیسہ ادھار لے کر؟' }
   }
 ];
 
@@ -509,8 +513,15 @@ function generateDynamicFallback(category = 'TRENDING', subtopic = '', excludedT
     return formatCandidate(item, category || 'TRENDING');
   }
 
-  // If all were seen or avoided, return first item formatted
-  return formatCandidate(FALLBACK_BANK[0], category || 'TRENDING');
+  // If all were seen, still avoid returning the explicitly excluded or locked item
+  const nonExcluded = FALLBACK_BANK.find(item => {
+    const isExcl = cleanExcluded && item.topic.toLowerCase().trim() === cleanExcluded;
+    const h = computeNormalizedHash(item.english.text).toLowerCase();
+    const isLocked = historyStore.inFlightLocks && historyStore.inFlightLocks.has(h);
+    return !isExcl && !isLocked;
+  }) || FALLBACK_BANK.find(item => !cleanExcluded || item.topic.toLowerCase().trim() !== cleanExcluded) || FALLBACK_BANK[0];
+
+  return formatCandidate(nonExcluded, category || 'TRENDING');
 }
 
 /**
@@ -583,11 +594,20 @@ export async function generateEnglishPost(customTopic = '', excludedTopic = '', 
       const trend = await pickUnusedTrendingTopic(allUsedTopics);
       chosenTopic = trend.topic;
       trendContext = trend.context || '';
-      console.log(`[Pipeline] Phase 1 — Trending topic selected: "${chosenTopic}" (source: ${trend.source})`);
+      console.log(`[Pipeline] Phase 1 — Downside topic selected: "${chosenTopic}" (source: ${trend.source})`);
     } catch (e) {
-      console.warn(`[Pipeline] Trend fetch failed: ${e.message}. Using fallback.`);
-      chosenTopic = customTopic.trim() || 'global economic inequality';
+      console.warn(`[Pipeline] Topic fetch failed: ${e.message}. Using fallback.`);
+      chosenTopic = customTopic.trim() || 'Young Indians finish college and still cannot find steady jobs';
     }
+  }
+
+  // Gather live verified India statistics from integrated public APIs (World Bank + Open-Meteo + FX)
+  let liveFactsBrief = '';
+  try {
+    const liveSnapshot = await getLiveIndiaFactsSnapshot();
+    liveFactsBrief = formatFactsBrief(chosenTopic, liveSnapshot);
+  } catch (e) {
+    console.warn(`[Pipeline] Live India data integration fallback: ${e.message}`);
   }
 
   // ─── PHASE 2: GENERATE POST (up to 5 attempts) ───────────────────────────
@@ -598,22 +618,37 @@ export async function generateEnglishPost(customTopic = '', excludedTopic = '', 
     // On retries, slightly vary the topic framing to get a fresh angle
     const attemptTopic = attempt === 1 ? chosenTopic : `${chosenTopic} — angle ${attempt}`;
 
-    // Build the right prompt
+    // Build the right prompt grounded in live verified India data
     const prompt = isUserForcedTopic
-      ? createCustomTopicPrompt(chosenTopic, avoidList)
-      : createTrendingPostPrompt(attemptTopic, trendContext, avoidList);
+      ? createCustomTopicPrompt(chosenTopic, avoidList, liveFactsBrief)
+      : createTrendingPostPrompt(attemptTopic, trendContext, avoidList, liveFactsBrief);
 
     let candidate = null;
     let providerName = '';
 
-    /* ---------------- TIER 1. CLOUDFLARE WORKERS AI (PRIMARY) ---------------- */
+    /* ---------------- TIER 1. CLOUDFLARE WORKERS AI (PRIMARY + 2-PASS POLISH) ---------------- */
     if (cfToken && cfAccountId && !candidate) {
       try {
-        console.log(`[Cloudflare AI] Generating post for topic: "${chosenTopic}"...`);
+        console.log(`[Cloudflare AI] Generating post for India downside topic: "${chosenTopic}"...`);
         const res = await callWithSimplify(callCloudflareAI, prompt);
-        const validated = validateAIResponse(res, chosenTopic, chosenCategory, '');
+        let validated = validateAIResponse(res, chosenTopic, chosenCategory, '');
+
+        // Pass 2: Polish & simplify into simplest possible everyday words with zero news tone
+        const audit = auditDraftForSimplification(validated.english.text);
+        if (audit.needsPolish) {
+          console.log(`[Cloudflare AI] Pass 2 polish triggered (${audit.reasons.join(', ')})...`);
+          try {
+            const polished = await polishWithCloudflareAI(validated, liveFactsBrief);
+            if (polished) {
+              validated = polished;
+            }
+          } catch (polishErr) {
+            console.warn(`[Cloudflare AI] Pass 2 polish skipped: ${polishErr.message}`);
+          }
+        }
+
         candidate = validated;
-        providerName = 'Cloudflare Workers AI (Llama 3.1)';
+        providerName = 'Cloudflare Workers AI (Verified India Data + Polish)';
         console.log(`[Cloudflare AI] ✓ Success!`);
       } catch (err) {
         console.warn(`[Cloudflare AI] ${err.message}. Trying next tier...`);
@@ -1039,65 +1074,109 @@ function safeJsonParse(rawText) {
   }
 }
 
+async function polishWithCloudflareAI(candidate, liveFactsBrief = '') {
+  const polishPrompt = `Rewrite this X post so it is the BEST possible post about an India downside and its real effect on everyday people.
+
+CURRENT DRAFT:
+"${candidate.english.text}"
+
+VERIFIED FACTS TO KEEP ACCURATE:
+${liveFactsBrief || '- Keep the verified numbers accurate.'}
+
+STRICT REWRITE RULES:
+1. NOT NEWS: Remove any newspaper phrases ("A report says", "Today", "Yesterday", "Latest news").
+2. INDIA DOWNSIDE + EFFECT: Keep the clear focus on what is broken in India and how it hurts ordinary families, students, or workers.
+3. SIMPLEST POSSIBLE WORDS: Replace every long or fancy word (like infrastructure, disparity, demographic, inflation, macroeconomic, expenditure, deteriorating) with tiny everyday words a 12-year-old uses.
+4. SHORT SENTENCES: 5 to 12 words per sentence.
+5. EXACT 3-PART LAYOUT separated by \\n\\n:
+   Line 1: Punchy hook sentence.
+   \\n\\n
+   Paragraph 2: 2-3 simple sentences with the accurate latest number + everyday human effect.
+   \\n\\n
+   Line 3: Short, sharp closing question.
+6. LENGTH: Strictly 400 to 560 characters. ZERO hashtags, ZERO emojis, NO labels.
+
+Return ONLY valid JSON:
+{
+  "topic": "${(candidate.topic || '').replace(/"/g, "'")}",
+  "subtopic": "${(candidate.subtopic || '').replace(/"/g, "'")}",
+  "category": "${candidate.category || 'TRENDING'}",
+  "text": "Rewritten hook\\n\\nRewritten body\\n\\nRewritten question"
+}`;
+
+  const polishedRes = await callCloudflareAI(polishPrompt);
+  return validateAIResponse(polishedRes, candidate.topic, candidate.category, candidate.subtopic);
+}
+
 export async function callCloudflareAI(prompt, model = null) {
   const accountId = (process.env.CLOUDFLARE_ACCOUNT_ID || config.cloudflareAccountId || '').trim();
   const apiToken = (process.env.CLOUDFLARE_API_TOKEN || config.cloudflareApiToken || '').trim();
   if (!accountId || !apiToken) {
     throw new Error('Cloudflare AI credentials not configured (CLOUDFLARE_ACCOUNT_ID, CLOUDFLARE_API_TOKEN)');
   }
-  const targetModel = model || process.env.CLOUDFLARE_AI_MODEL || config.cloudflareAiModel || '@cf/meta/llama-3.1-8b-instruct';
+
+  const candidateModels = Array.from(new Set([
+    model,
+    process.env.CLOUDFLARE_AI_MODEL,
+    config.cloudflareAiModel,
+    '@cf/meta/llama-3.3-70b-instruct-fp8-fast',
+    '@cf/qwen/qwen3-30b-a3b-fp8',
+    '@cf/meta/llama-3.1-8b-instruct'
+  ].filter(Boolean)));
 
   let lastError = null;
-  for (let attempt = 0; attempt < 3; attempt++) {
-    try {
-      const response = await fetch(
-        `https://api.cloudflare.com/client/v4/accounts/${accountId}/ai/run/${targetModel}`,
-        {
-          method: 'POST',
-          headers: {
-            Authorization: `Bearer ${apiToken}`,
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({
-            max_tokens: 1024,
-            temperature: 0.7,
-            messages: [
-              {
-                role: 'system',
-                content: 'You are an expert social media trend analyst and storyteller on X focused on India. You write captivating, analytical, eye-opening posts about India\'s latest trends, economy, policy, tech, jobs, infrastructure, and real-world statistics using the SIMPLEST everyday English. CURRENT TIME HORIZON: 2025 / 2026. Every post MUST strictly follow this exact 3-part layout separated by double line breaks (\\n\\n):\nLine 1: A bold, scroll-stopping hook line about the Indian trend (1 sentence).\n\\n\\nParagraph 2: The analytical core that unpacks the reality with real facts, verified numbers, and clear comparisons using simple everyday words (2 to 3 sentences, around 50-70 words).\n\\n\\nClosing Line: An engaging takeaway or thought-provoking question that compels readers to comment.\nTotal post length MUST be strictly between 400 and 580 characters (never exceed 600). Never use hashtags, emojis, or labels like "Hook:" or "Body:". Return ONLY a valid JSON object matching the requested schema.'
-              },
-              { role: 'user', content: prompt }
-            ]
-          })
+  for (const targetModel of candidateModels) {
+    for (let attempt = 0; attempt < 2; attempt++) {
+      try {
+        const response = await fetch(
+          `https://api.cloudflare.com/client/v4/accounts/${accountId}/ai/run/${targetModel}`,
+          {
+            method: 'POST',
+            headers: {
+              Authorization: `Bearer ${apiToken}`,
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+              max_tokens: 1024,
+              temperature: 0.65,
+              messages: [
+                {
+                  role: 'system',
+                  content: 'You write high-impact X posts about India\'s real downsides and how they hurt ordinary people, using the SIMPLEST everyday English (Grade 4-5 words). NEVER sound like a news report. Use ONLY verified latest numbers provided in the prompt. Every post MUST strictly follow this exact 3-part layout separated by double line breaks (\\n\\n):\nLine 1: One short punchy hook exposing an India downside (1 sentence).\n\\n\\nParagraph 2: 2 to 3 short simple sentences with real latest data AND the everyday effect on families, students, or workers (around 50-70 words).\n\\n\\nClosing Line: One short, sharp question that makes people want to reply.\nTotal length MUST be strictly between 400 and 560 characters (never exceed 600). Zero hashtags, zero emojis, no labels. Return ONLY valid JSON.'
+                },
+                { role: 'user', content: prompt }
+              ]
+            })
+          }
+        );
+
+        if (!response.ok) {
+          const errorText = await response.text();
+          throw new Error(`Cloudflare AI (${targetModel}) HTTP ${response.status}: ${errorText.slice(0, 150)}`);
         }
-      );
 
-      if (!response.ok) {
-        const errorText = await response.text();
-        throw new Error(`Cloudflare AI HTTP ${response.status}: ${errorText.slice(0, 150)}`);
-      }
+        const json = await response.json();
+        if (!json.success && json.errors && json.errors.length > 0) {
+          throw new Error(`Cloudflare AI error: ${json.errors[0].message}`);
+        }
 
-      const json = await response.json();
-      if (!json.success && json.errors && json.errors.length > 0) {
-        throw new Error(`Cloudflare AI error: ${json.errors[0].message}`);
-      }
+        let rawText = json.result?.choices?.[0]?.message?.content;
+        if (!rawText && typeof json.result?.response === 'string') {
+          rawText = json.result.response;
+        } else if (!rawText && typeof json.result?.response === 'object' && json.result.response !== null) {
+          return json.result.response;
+        }
 
-      let rawText = json.result?.choices?.[0]?.message?.content;
-      if (!rawText && typeof json.result?.response === 'string') {
-        rawText = json.result.response;
-      } else if (!rawText && typeof json.result?.response === 'object' && json.result.response !== null) {
-        return json.result.response;
-      }
+        if (!rawText) {
+          throw new Error('Empty Cloudflare AI response');
+        }
 
-      if (!rawText) {
-        throw new Error('Empty Cloudflare AI response');
-      }
-
-      return safeJsonParse(rawText);
-    } catch (err) {
-      lastError = err;
-      if (attempt < 2) {
-        await new Promise(r => setTimeout(r, 600));
+        return safeJsonParse(rawText);
+      } catch (err) {
+        lastError = err;
+        if (attempt === 0) {
+          await new Promise(r => setTimeout(r, 400));
+        }
       }
     }
   }
@@ -1122,7 +1201,7 @@ async function callGroq(prompt, apiKey) {
         messages: [
           {
             role: 'system',
-            content: 'You are an expert social media trend analyst and storyteller on X focused on India. You write captivating, analytical, eye-opening posts about India\'s latest trends, economy, policy, tech, jobs, infrastructure, and real-world statistics using the SIMPLEST everyday English. CURRENT TIME HORIZON: 2025 / 2026. Every post MUST strictly follow this exact 3-part layout separated by double line breaks (\\n\\n):\nLine 1: A bold, scroll-stopping hook line about the Indian trend (1 sentence).\n\\n\\nParagraph 2: The analytical core that unpacks the reality with real facts, verified numbers, and clear comparisons using simple everyday words (2 to 3 sentences, around 50-70 words).\n\\n\\nClosing Line: An engaging takeaway or thought-provoking question that compels readers to comment.\nTotal post length MUST be strictly between 400 and 580 characters (never exceed 600). Never use hashtags, emojis, or labels like "Hook:" or "Body:". Return ONLY a valid JSON object matching the requested schema.'
+            content: 'You write high-impact X posts about India\'s real downsides and how they hurt ordinary people, using the SIMPLEST everyday English (Grade 4-5 words). NEVER sound like a news report. Use ONLY verified latest numbers provided in the prompt. Every post MUST strictly follow this exact 3-part layout separated by double line breaks (\\n\\n):\nLine 1: One short punchy hook exposing an India downside (1 sentence).\n\\n\\nParagraph 2: 2 to 3 short simple sentences with real latest data AND the everyday effect on families, students, or workers (around 50-70 words).\n\\n\\nClosing Line: One short, sharp question that makes people want to reply.\nTotal length MUST be strictly between 400 and 560 characters (never exceed 600). Zero hashtags, zero emojis, no labels. Return ONLY valid JSON.'
           },
           { role: 'user', content: prompt }
         ],
@@ -1168,7 +1247,7 @@ async function callXai(prompt, model = 'grok-2-latest') {
           messages: [
             {
               role: 'system',
-              content: 'You are an expert social media trend analyst and storyteller on X focused on India. You write captivating, analytical, eye-opening posts about India\'s latest trends, economy, policy, tech, jobs, infrastructure, and real-world statistics using the SIMPLEST everyday English. CURRENT TIME HORIZON: 2025 / 2026. Every post MUST strictly follow this exact 3-part layout separated by double line breaks (\\n\\n):\nLine 1: A bold, scroll-stopping hook line about the Indian trend (1 sentence).\n\\n\\nParagraph 2: The analytical core that unpacks the reality with real facts, verified numbers, and clear comparisons using simple everyday words (2 to 3 sentences, around 50-70 words).\n\\n\\nClosing Line: An engaging takeaway or thought-provoking question that compels readers to comment.\nTotal post length MUST be strictly between 400 and 580 characters (never exceed 600). Never use hashtags, emojis, or labels like "Hook:" or "Body:". Return ONLY a valid JSON object matching the requested schema.'
+              content: 'You write high-impact X posts about India\'s real downsides and how they hurt ordinary people, using the SIMPLEST everyday English (Grade 4-5 words). NEVER sound like a news report. Use ONLY verified latest numbers provided in the prompt. Every post MUST strictly follow this exact 3-part layout separated by double line breaks (\\n\\n):\nLine 1: One short punchy hook exposing an India downside (1 sentence).\n\\n\\nParagraph 2: 2 to 3 short simple sentences with real latest data AND the everyday effect on families, students, or workers (around 50-70 words).\n\\n\\nClosing Line: One short, sharp question that makes people want to reply.\nTotal length MUST be strictly between 400 and 560 characters (never exceed 600). Zero hashtags, zero emojis, no labels. Return ONLY valid JSON.'
             },
             { role: 'user', content: prompt }
           ],
