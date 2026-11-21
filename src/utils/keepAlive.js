@@ -8,7 +8,7 @@
  */
 
 export class KeepAliveService {
-  constructor(targetUrl = process.env.RENDER_EXTERNAL_URL || 'https://x-bot-7p2s.onrender.com') {
+  constructor(targetUrl = process.env.RENDER_EXTERNAL_URL || process.env.KEEP_ALIVE_URL || '') {
     this.targetUrl = targetUrl;
     this.intervalTimer = null;
     this.isWaitingForResponse = false;

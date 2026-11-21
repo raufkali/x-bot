@@ -18,7 +18,7 @@ if (fs.existsSync('.env.add1')) {
 export const config = {
   // AI Engine API Keys & Settings
   geminiApiKey: process.env.GEMINI_API_KEY || '',
-  geminiModel: process.env.GEMINI_MODEL || 'gemini-3.5-flash',
+  geminiModel: process.env.GEMINI_MODEL || 'gemini-2.5-flash',
   cloudflareAccountId: process.env.CLOUDFLARE_ACCOUNT_ID || '',
   cloudflareApiToken: process.env.CLOUDFLARE_API_TOKEN || '',
   cloudflareAiModel: process.env.CLOUDFLARE_AI_MODEL || '@cf/meta/llama-3.1-8b-instruct',
@@ -51,7 +51,7 @@ export const config = {
   scheduleTimes: process.env.POST_SCHEDULE_TIMES
     ? process.env.POST_SCHEDULE_TIMES.split(',').map(s => s.trim())
     : ['09:00', '14:00', '20:00'],
-  scheduleTimezone: process.env.SCHEDULE_TIMEZONE || 'Asia/Karachi',
+  scheduleTimezone: process.env.SCHEDULE_TIMEZONE || 'Asia/Kolkata',
   scheduleEnabled: String(process.env.SCHEDULE_ENABLED || 'true').toLowerCase() === 'true',
 
   // MongoDB Atlas Database (Set via MONGODB_URI in .env or Render dashboard)
@@ -61,11 +61,11 @@ export const config = {
   xApiKey: process.env.X_API_KEY || '',
   xApiSecret: process.env.X_API_SECRET || '',
   xBearerToken: process.env.X_BEARER_TOKEN || '',
-  xClientId: process.env.X_CLIENT_ID || 'eldpTmpRbnVLRGk1RXN3ZnNfSXA6MTpjaQ',
-  xClientSecret: process.env.X_CLIENT_SECRET || 'a6Fg0i4agDmIulwW9C4kfGT-TzpK1lyXLuxWECQd3LqQlxw1J0',
-  xCallbackUrl: process.env.X_CALLBACK_URL || 'https://x-bot-7p2s.onrender.com/auth/x/callback',
+  xClientId: process.env.X_CLIENT_ID || '',
+  xClientSecret: process.env.X_CLIENT_SECRET || '',
+  xCallbackUrl: process.env.X_CALLBACK_URL || `http://localhost:${Number(process.env.PORT || 3000)}/auth/x/callback`,
 
   // Content Generation Profile
-  englishLevel: 'A2 Simple Pakistani English (Data-Driven, 400-600 chars)',
-  contentThemes: 'Geopolitics & Military Power, Pakistan Politics & Economy, Social & Regional Issues, AI & Technology, Climate & Resources, Double Meaning & Social Commentary'
+  englishLevel: 'Simple Everyday English (Data-Driven Analytical, 400-600 chars)',
+  contentThemes: 'India Economy & Policy, India Tech & Digital Public Infrastructure, India Jobs & Education, India Geopolitics & Trade, India Infrastructure & Climate, Global Trends Impacting India'
 };

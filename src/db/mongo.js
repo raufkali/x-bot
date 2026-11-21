@@ -1,6 +1,9 @@
 import mongoose from 'mongoose';
 import { config } from '../config.js';
 
+// CRITICAL: fail fast when MongoDB is offline instead of buffering queries until timeout
+mongoose.set('bufferCommands', false);
+
 let isConnected = false;
 
 /**

@@ -19,9 +19,9 @@ process.on('unhandledRejection', (reason) => {
 });
 
 async function main() {
-  // If running in cloud hosting (Render, Railway) or non-interactive container
-  if (process.env.RENDER || (process.env.PORT && !process.stdin.isTTY)) {
-    console.log('[X_BOT] Cloud server environment detected. Starting WhatsApp Webhook HTTP Server...');
+  // If running in cloud hosting (Render, Railway, AI Studio) or non-interactive container
+  if (process.env.RENDER || process.env.PORT || !process.stdin.isTTY) {
+    console.log('[X_BOT] Server environment detected. Starting Express Webhook HTTP Server...');
     startServer(process.env.PORT || 3000);
     return;
   }

@@ -456,6 +456,44 @@ app.post('/publish', async (req, res) => {
 // ============================================================
 // 9. STATUS, POSTS & HEALTH ENDPOINTS
 // ============================================================
+app.get('/', async (req, res) => {
+  const xStatus = await xService.getStatus().catch(() => null);
+  const payload = {
+    app: config.appName,
+    version: config.appVersion,
+    status: 'running',
+    regionBias: 'India (geo=IN)',
+    mode: 'INDIA_TRENDING_TOPICS_RESEARCH',
+    whatsappConfigured: whatsappClient.isConfigured(),
+    xConnected: xStatus?.connected || false,
+    databaseConnected: isMongoConnected(),
+    endpoints: [
+      'GET /health',
+      'GET /status',
+      'GET /trends',
+      'GET /posts',
+      'GET /schedule',
+      'POST /generate',
+      'POST /trigger',
+      'POST /respond',
+      'GET /webhook',
+      'POST /webhook',
+      'GET /auth/x'
+    ]
+  };
+  if (req.accepts('html') && !req.accepts('json')) {
+    return res.status(200).send(
+      `<!DOCTYPE html><html><head><title>X_BOT — India Trends Engine</title></head>` +
+      `<body style="font-family:system-ui,sans-serif;max-width:720px;margin:40px auto;padding:0 20px;background:#0f172a;color:#e2e8f0;">` +
+      `<h1>X_BOT — India Trends Analytical Engine</h1>` +
+      `<p>Server is running on port ${config.serverPort}.</p>` +
+      `<pre style="background:#1e293b;padding:16px;border-radius:8px;overflow:auto;">${JSON.stringify(payload, null, 2)}</pre>` +
+      `</body></html>`
+    );
+  }
+  res.status(200).json(payload);
+});
+
 app.get('/status', async (req, res) => {
   const xStatus = await xService.getStatus().catch(() => null);
   res.json({
@@ -467,7 +505,7 @@ app.get('/status', async (req, res) => {
     xUser: xStatus?.user?.username ? `@${xStatus.user.username}` : null,
     database: {
       connected: isMongoConnected(),
-      cluster: 'MongoDB Atlas (cluster0.jsxyhxh.mongodb.net)',
+      mode: config.mongoUri ? 'MongoDB Atlas' : 'In-Memory / Local JSON Fallback',
       database: 'x_bot'
     },
     contentConfig: {
@@ -476,9 +514,10 @@ app.get('/status', async (req, res) => {
     },
     schedule: postScheduler.getStatus(),
     contentEngine: {
-      mode: 'TRENDING_TOPICS_RESEARCH',
-      audience: 'Global',
-      style: 'High-Engagement Analytics & Everyday Words'
+      mode: 'INDIA_TRENDING_TOPICS_RESEARCH',
+      regionBias: 'India (geo=IN)',
+      audience: 'India & Global',
+      style: 'High-Engagement Analytical Commentary & Everyday Words'
     },
     state: whatsappWorkflow.getCurrentState()
   });
@@ -517,6 +556,24 @@ app.get('/health', (req, res) => {
 });
 
 // ============================================================
+// GRACEFUL DATABASE OFFLINE FALLBACK MIDDLEWARE
+// ============================================================
+app.use((err, req, res, next) => {
+  if (
+    err.name === 'MongooseError' ||
+    err.name === 'MongoNetworkError' ||
+    (err.message && err.message.includes('buffering timed out'))
+  ) {
+    console.warn('[AI Studio] Database offline — returning mock empty response');
+    if (req.method === 'GET') {
+      return res.json(req.path.endsWith('s') || req.path.endsWith('s/') ? [] : {});
+    }
+    return res.status(503).json({ error: 'Service temporarily unavailable (database offline)' });
+  }
+  next(err);
+});
+
+// ============================================================
 // START SERVER
 // ============================================================
 export function startServer(port = config.serverPort) {
@@ -528,15 +585,15 @@ export function startServer(port = config.serverPort) {
   // Start the background post scheduler
   postScheduler.start();
 
-  // Start the self-ping keep-alive service to prevent free Render from sleeping
+  // Start the self-ping keep-alive service if configured
   keepAliveService.start();
 
-  return app.listen(port, () => {
+  return app.listen(port, '0.0.0.0', () => {
     console.log(ansi.separator('=', 64, ansi.emerald));
     console.log(ansi.boldText(`       ${ansi.emeraldText('X_BOT — WHATSAPP WEBHOOK SERVER RUNNING')}`));
     console.log(ansi.separator('=', 64, ansi.emerald));
-    console.log(`  Local URL:        ${ansi.boldText(`http://localhost:${port}`)}`);
-    console.log(`  Webhook Endpoint: ${ansi.emeraldText(`http://localhost:${port}/webhook`)}`);
+    console.log(`  Local URL:        ${ansi.boldText(`http://0.0.0.0:${port}`)}`);
+    console.log(`  Webhook Endpoint: ${ansi.emeraldText(`http://0.0.0.0:${port}/webhook`)}`);
     console.log(`  Verify Token:     ${ansi.cyanText(config.webhookVerifyToken)}`);
     console.log(`  WhatsApp Ready:   ${whatsappClient.isConfigured() ? ansi.emeraldText('YES') : ansi.yellowText('PENDING .env CREDENTIALS')}`);
     console.log(`  Owner Number:     ${config.ownerPhoneNumber ? ansi.emeraldText(config.ownerPhoneNumber) : ansi.yellowText('NOT SET YET')}`);

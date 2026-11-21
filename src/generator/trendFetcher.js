@@ -60,26 +60,36 @@ function writeCache(trends) {
    HTTP HELPER — returns plain text body
 ========================================================= */
 
-function fetchUrl(url, timeoutMs = 8000) {
-  return new Promise((resolve, reject) => {
-    const mod = url.startsWith('https') ? https : http;
-    const req = mod.get(url, { headers: { 'User-Agent': 'Mozilla/5.0 X_BOT/1.0' } }, (res) => {
-      if (res.statusCode !== 200) {
-        res.resume();
-        return reject(new Error(`HTTP ${res.statusCode}`));
-      }
-      let data = '';
-      res.on('data', chunk => { data += chunk; });
-      res.on('end', () => resolve(data));
-    });
-    req.setTimeout(timeoutMs, () => { req.destroy(); reject(new Error('Timeout')); });
-    req.on('error', reject);
+async function fetchUrl(url, timeoutMs = 8000) {
+  const res = await fetch(url, {
+    redirect: 'follow',
+    headers: { 'User-Agent': 'Mozilla/5.0 X_BOT/1.0' },
+    signal: AbortSignal.timeout(timeoutMs)
   });
+  if (!res.ok) {
+    throw new Error(`HTTP ${res.status}`);
+  }
+  return await res.text();
 }
 
 /* =========================================================
-   SOURCE 1 — GOOGLE TRENDS RSS
+   SOURCE 1 — GOOGLE TRENDS & GOOGLE NEWS INDIA RSS
 ========================================================= */
+
+function decodeXmlEntities(str = '') {
+  return String(str)
+    .replace(/<!\[CDATA\[([\s\S]*?)\]\]>/g, '$1')
+    .replace(/&amp;/g, '&')
+    .replace(/&lt;/g, '<')
+    .replace(/&gt;/g, '>')
+    .replace(/&quot;/g, '"')
+    .replace(/&#39;|&apos;/g, "'")
+    .replace(/<[^>]+>/g, ' ')
+    .replace(/\s+/g, ' ')
+    .trim();
+}
+
+const NOISE_TREND_PATTERN = /\b(lottery|karunya|sambad|satta|matka|dream11|player props|betting odds|ipl score|live score|cricket score|match highlights|box office|horoscope|rashifal|panchang|admit card|exam result|answer key|weather today|gold rate today|petrol price today|76ers vs|bucks vs|lakers vs|celtics vs)\b/i;
 
 /**
  * Parses Google Trends RSS XML and returns trend title + traffic context.
@@ -88,38 +98,101 @@ function parseGoogleTrendsRSS(xml) {
   const trends = [];
   // Match <item> blocks
   const items = xml.match(/<item>[\s\S]*?<\/item>/g) || [];
-  for (const item of items.slice(0, 10)) {
-    const title = (item.match(/<title><!\[CDATA\[(.*?)\]\]><\/title>/) || item.match(/<title>(.*?)<\/title>/))?.[1]?.trim();
-    const traffic = item.match(/approx_traffic[^>]*>(.*?)</)?.[1]?.trim() || '';
-    const news = (item.match(/<ht:news_item_title><!\[CDATA\[(.*?)\]\]>/g) || [])
-      .map(m => m.replace(/<ht:news_item_title><!\[CDATA\[/, '').replace(/\]\]>/, '').trim())
+  for (const item of items.slice(0, 15)) {
+    const rawTitle = (item.match(/<title><!\[CDATA\[(.*?)\]\]><\/title>/) || item.match(/<title>([\s\S]*?)<\/title>/))?.[1];
+    const title = decodeXmlEntities(rawTitle || '');
+    const traffic = decodeXmlEntities(item.match(/approx_traffic[^>]*>([\s\S]*?)</)?.[1] || '');
+    const news = (item.match(/<ht:news_item_title>[\s\S]*?<\/ht:news_item_title>/g) || [])
+      .map(m => decodeXmlEntities(m.replace(/<\/?ht:news_item_title>/g, '')))
+      .filter(Boolean)
       .slice(0, 2)
       .join('; ');
-    if (title) {
-      trends.push({ topic: title, context: news || traffic || 'Trending on Google', source: 'google_trends' });
+    if (title && !NOISE_TREND_PATTERN.test(title) && !NOISE_TREND_PATTERN.test(news)) {
+      trends.push({
+        topic: news ? `${title}: ${news}` : title,
+        context: news || (traffic ? `Trending in India (${traffic} searches)` : 'Trending in India'),
+        source: 'google_trends_india'
+      });
+    }
+  }
+  return trends;
+}
+
+/**
+ * Parses Google News India RSS XML for current Indian business, policy, and national trends.
+ */
+function parseGoogleNewsIndiaRSS(xml) {
+  const trends = [];
+  const items = xml.match(/<item>[\s\S]*?<\/item>/g) || [];
+  for (const item of items.slice(0, 12)) {
+    const rawTitle = (item.match(/<title><!\[CDATA\[([\s\S]*?)\]\]><\/title>/) || item.match(/<title>([\s\S]*?)<\/title>/))?.[1];
+    if (!rawTitle) continue;
+
+    let cleanTitle = decodeXmlEntities(rawTitle);
+    let publisher = '';
+    const dashIdx = cleanTitle.lastIndexOf(' - ');
+    if (dashIdx > 15) {
+      publisher = cleanTitle.slice(dashIdx + 3).trim();
+      cleanTitle = cleanTitle.slice(0, dashIdx).trim();
+    }
+
+    if (NOISE_TREND_PATTERN.test(cleanTitle) || /\b(bigg boss|bollywood gossip|trailer release)\b/i.test(cleanTitle)) {
+      continue;
+    }
+
+    if (cleanTitle.length >= 15) {
+      trends.push({
+        topic: cleanTitle,
+        context: publisher ? `Latest India news trend (${publisher})` : 'Latest India news trend',
+        source: 'google_news_india'
+      });
     }
   }
   return trends;
 }
 
 async function fetchGoogleTrends() {
-  const urls = [
-    'https://trends.google.com/trends/trendingsearches/daily/rss?geo=US',
-    'https://trends.google.com/trends/trendingsearches/daily/rss?geo=GB',
+  const trendUrls = [
+    'https://trends.google.com/trending/rss?geo=IN',
+    'https://trends.google.com/trends/trendingsearches/daily/rss?geo=IN',
   ];
-  for (const url of urls) {
+  const collected = [];
+
+  // Prioritize Google News India Business, Nation & Technology headlines for analytical depth
+  const newsUrls = [
+    'https://news.google.com/rss/headlines/section/TOPIC/BUSINESS?hl=en-IN&gl=IN&ceid=IN:en',
+    'https://news.google.com/rss/headlines/section/TOPIC/NATION?hl=en-IN&gl=IN&ceid=IN:en',
+    'https://news.google.com/rss/headlines/section/TOPIC/TECHNOLOGY?hl=en-IN&gl=IN&ceid=IN:en'
+  ];
+
+  for (const url of newsUrls) {
+    try {
+      const xml = await fetchUrl(url, 8000);
+      const newsTrends = parseGoogleNewsIndiaRSS(xml);
+      if (newsTrends.length > 0) {
+        console.log(`[TrendFetcher] ✓ Google News India RSS: fetched ${newsTrends.length} trends`);
+        collected.push(...newsTrends.slice(0, 3));
+      }
+    } catch (e) {
+      console.warn(`[TrendFetcher] Google News India failed: ${e.message}`);
+    }
+  }
+
+  for (const url of trendUrls) {
     try {
       const xml = await fetchUrl(url, 8000);
       const trends = parseGoogleTrendsRSS(xml);
-      if (trends.length >= 3) {
-        console.log(`[TrendFetcher] ✓ Google Trends: fetched ${trends.length} trends`);
-        return trends;
+      if (trends.length > 0) {
+        console.log(`[TrendFetcher] ✓ Google Trends India (geo=IN): fetched ${trends.length} clean trends`);
+        collected.push(...trends.slice(0, 4));
+        break;
       }
     } catch (e) {
-      console.warn(`[TrendFetcher] Google Trends failed: ${e.message}`);
+      console.warn(`[TrendFetcher] Google Trends India failed (${url}): ${e.message}`);
     }
   }
-  return [];
+
+  return collected;
 }
 
 /* =========================================================
@@ -186,7 +259,7 @@ async function callGeminiForTrends(prompt) {
       contents: [{ parts: [{ text: prompt }] }],
       generationConfig: { temperature: 0.6, maxOutputTokens: 512 }
     });
-    const model = 'gemini-1.5-flash-latest';
+    const model = process.env.GEMINI_MODEL || 'gemini-2.5-flash';
     const options = {
       hostname: 'generativelanguage.googleapis.com',
       path: `/v1beta/models/${model}:generateContent?key=${geminiKey}`,
@@ -225,16 +298,16 @@ async function fetchAITrends() {
 
   const prompt = `Today is ${dateStr}.
 
-List 6 currently trending global topics on X (Twitter) and social media RIGHT NOW that would get maximum engagement and shares.
+List 6 currently trending topics in INDIA on X (Twitter) and Indian news RIGHT NOW that invite sharp analytical discussion and high engagement.
 
-Focus on: geopolitics, AI/technology breakthroughs, economic events, surprising statistics, viral controversies, environmental crises, or social justice issues with global impact.
+Focus strictly on India: Indian economy, RBI & rupee, UPI & fintech, manufacturing & trade tariffs, youth jobs & IT sector shifts, infrastructure, elections & governance, urban water/air crises, energy transition, or global geopolitics impacting India.
 
-Do NOT include sports scores, celebrity gossip, or entertainment.
+Do NOT include cricket match scores, celebrity gossip, or movie reviews.
 
 Return ONLY valid JSON in this exact format:
 {
   "trends": [
-    { "topic": "Brief topic name", "context": "1-2 sentence explanation of why it's trending and key facts" },
+    { "topic": "Brief India-focused topic name", "context": "1-2 sentence analytical explanation of why it's trending in India and key numbers/facts" },
     { "topic": "...", "context": "..." }
   ]
 }`;
@@ -243,8 +316,8 @@ Return ONLY valid JSON in this exact format:
   try {
     const result = await callCloudflareForTrends(prompt);
     if (result?.trends && Array.isArray(result.trends) && result.trends.length >= 3) {
-      console.log(`[TrendFetcher] ✓ Cloudflare AI: fetched ${result.trends.length} AI trends`);
-      return result.trends.map(t => ({ ...t, source: 'ai_cloudflare' }));
+      console.log(`[TrendFetcher] ✓ Cloudflare AI: fetched ${result.trends.length} India AI trends`);
+      return result.trends.map(t => ({ ...t, source: 'ai_cloudflare_india' }));
     }
   } catch (e) {
     console.warn(`[TrendFetcher] Cloudflare AI trends failed: ${e.message}`);
@@ -254,8 +327,8 @@ Return ONLY valid JSON in this exact format:
   try {
     const result = await callGeminiForTrends(prompt);
     if (result?.trends && Array.isArray(result.trends) && result.trends.length >= 3) {
-      console.log(`[TrendFetcher] ✓ Gemini: fetched ${result.trends.length} AI trends`);
-      return result.trends.map(t => ({ ...t, source: 'ai_gemini' }));
+      console.log(`[TrendFetcher] ✓ Gemini: fetched ${result.trends.length} India AI trends`);
+      return result.trends.map(t => ({ ...t, source: 'ai_gemini_india' }));
     }
   } catch (e) {
     console.warn(`[TrendFetcher] Gemini trends failed: ${e.message}`);
@@ -265,21 +338,20 @@ Return ONLY valid JSON in this exact format:
 }
 
 /* =========================================================
-   SOURCE 3 — EVERGREEN FALLBACK TOPICS
-   High-engagement, global, non-biased topics
+   SOURCE 3 — INDIA-FOCUSED EVERGREEN ANALYTICAL FALLBACKS
 ========================================================= */
 
 const EVERGREEN_FALLBACKS = [
-  { topic: 'AI replacing jobs faster than new ones are created', context: 'The World Economic Forum estimates AI will displace 85 million jobs by 2025 while creating only 97 million new ones — but those new roles require skills most workers don\'t have yet.', source: 'fallback' },
-  { topic: 'Central banks raising interest rates as inflation remains sticky', context: 'Despite aggressive rate hikes, global inflation in food and energy remains above targets in 2025, squeezing household budgets worldwide.', source: 'fallback' },
-  { topic: 'Climate tipping points reached sooner than predicted', context: 'Scientists warn that the Amazon, Greenland ice sheet, and Atlantic currents are approaching irreversible tipping points years ahead of IPCC projections.', source: 'fallback' },
-  { topic: 'US-China trade war escalating with new tariff rounds', context: 'New rounds of US tariffs on Chinese goods in 2025 are reshaping global supply chains, pushing manufacturing to Vietnam, Mexico, and India.', source: 'fallback' },
-  { topic: 'Global debt hitting record highs as governments overspend', context: 'Global public debt exceeded $100 trillion in 2024. Interest payments now consume more of national budgets than education or healthcare in many countries.', source: 'fallback' },
-  { topic: 'AI chatbots outperforming doctors and lawyers on exams', context: 'GPT-4 and its successors now pass bar exams, medical licensing tests, and coding interviews — raising urgent questions about professional gatekeeping.', source: 'fallback' },
-  { topic: 'Youth unemployment crisis in Africa and South Asia', context: 'Over 60% of Africa\'s population is under 25. With formal jobs scarce, millions of young people are turning to gig work, online freelancing, and informal economies.', source: 'fallback' },
-  { topic: 'Water scarcity becoming a national security crisis', context: 'Over 2 billion people lack access to safe drinking water. Major aquifers in India, the US, and China are being depleted faster than rainfall can replenish them.', source: 'fallback' },
-  { topic: 'Social media algorithms amplifying outrage and division', context: 'Internal research from major platforms confirms that outrage-based content gets 3x more engagement — and platforms prioritize it because it drives ad revenue.', source: 'fallback' },
-  { topic: 'Billionaires\' wealth grew 54% while median wages stagnated', context: 'Oxfam reports that the world\'s richest 1% captured nearly two-thirds of all new global wealth since 2020, while billions saw real wages fall due to inflation.', source: 'fallback' },
+  { topic: 'India UPI processes 16+ billion monthly payments while rural credit lags', context: 'India handles nearly half of global real-time digital payments via UPI, yet millions of small rural businesses still lack formal bank credit.', source: 'fallback_india' },
+  { topic: 'India youth jobs crisis: millions of graduates struggle for formal work', context: 'Over 65% of Indians are under 35, yet formal manufacturing and white-collar hiring has failed to match the 12 million young people entering the workforce yearly.', source: 'fallback_india' },
+  { topic: 'India household savings hit multi-decade low as personal debt climbs', context: 'RBI data shows Indian household net financial savings fell sharply while unsecured personal loans and EMI spending surged across urban middle-class families.', source: 'fallback_india' },
+  { topic: 'India IT services face AI disruption across $250 billion export sector', context: 'India employs over 5.4 million tech workers in IT outsourcing, where generative AI tools are now automating routine coding and support roles.', source: 'fallback_india' },
+  { topic: 'India food inflation squeezes families despite record GDP headlines', context: 'While headline GDP growth tops 6-7%, staple vegetable, pulse, and healthcare costs in Indian cities continue outpacing middle-class wage growth.', source: 'fallback_india' },
+  { topic: 'India semiconductor push vs heavy reliance on Chinese electronics imports', context: 'India imports tens of billions in electronic components and active pharma ingredients from China even as domestic PLI assembly plants expand.', source: 'fallback_india' },
+  { topic: 'India urban water crisis hits Bengaluru and Delhi groundwater reserves', context: 'NITI Aayog warned that major Indian cities face severe groundwater depletion, forcing millions to depend on expensive private water tankers.', source: 'fallback_india' },
+  { topic: 'India billionaire wealth concentration vs shrinking middle-class consumption', context: 'World Inequality Lab data shows India\'s top 1% hold over 40% of national wealth, raising concerns over weak mass consumer demand.', source: 'fallback_india' },
+  { topic: 'India air pollution crisis costs the economy billions in lost productivity', context: 'Air quality across northern India regularly exceeds safe WHO limits by 15-20x, cutting life expectancy and straining public hospitals every winter.', source: 'fallback_india' },
+  { topic: 'India green energy surge vs 70% coal dependency for electricity', context: 'India is rapidly adding solar capacity to meet 2030 targets, yet coal still generates over 70% of the country\'s daily power grid load.', source: 'fallback_india' },
 ];
 
 /* =========================================================
@@ -406,8 +478,8 @@ export async function pickUnusedTrendingTopic(usedTopics = [], forceRefresh = fa
  * @returns {string}
  */
 export function formatTrendsForWhatsApp(trends) {
-  if (!trends || trends.length === 0) return '⚠️ No trending topics available right now.';
-  const lines = [`🔥 *Today's Trending Topics*\n`];
+  if (!trends || trends.length === 0) return '⚠️ No India trending topics available right now.';
+  const lines = [`🔥 *Today's Trending Topics in India*\n`];
   trends.slice(0, 6).forEach((t, i) => {
     lines.push(`*${i + 1}.* ${t.topic}`);
     if (t.context) lines.push(`   _${t.context.slice(0, 100)}${t.context.length > 100 ? '...' : ''}_`);
