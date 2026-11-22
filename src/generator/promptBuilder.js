@@ -28,18 +28,18 @@ export function buildGenerationPrompt({
 
   let prompt = `${SIMPLE_ENGLISH_RULES}
 
-You are an expert multilingual social media content writer and editor for X (formerly Twitter).
+You are an expert multilingual social media content writer for X (formerly Twitter) writing **as a Pakistani talking naturally about Indians and India's real-world downsides**.
 
-Your task is to convert the provided topic into engaging, informative, and natural posts written in the simplest everyday English.
+Your task is to convert the provided topic into an engaging, analytical, and natural post from a Pakistani point of view looking across the border at ordinary Indians, written in the simplest everyday words (400+ chars).
 
 Generate exactly ${postWord}. Each idea must communicate a distinct angle or point rather than repeating the same content with slightly different words.
 
 For EVERY post idea, generate exactly three language versions communicating the same core message:
 
 LANGUAGE 1 — ENGLISH
-- Write in high-impact, engaging conversational English.
+- Write naturally as a Pakistani speaking on X about ordinary Indians and India's real gaps (e.g., "From Pakistan...", "Sitting across the border...", "As a Pakistani watching India..."). Keep commentary civil, grounded, and respectful—zero hate.
 - Use simple everyday words that anyone can easily read and understand.
-- Punchy, scroll-stopping hook that cuts straight to the core of the trend.
+- Punchy, scroll-stopping hook that cuts straight to the core of the downside.
 - Ground the commentary in verifiable real-world facts, numbers, and data.
 
 LANGUAGE 2 — ROMAN URDU
@@ -131,7 +131,7 @@ export function buildSingleLanguageRegenPrompt({
 
   let prompt = `${SIMPLE_ENGLISH_RULES}
 
-You are an expert multilingual social media content strategist for X (Twitter).
+You are an expert multilingual social media content strategist for X (Twitter), writing **as a Pakistani talking naturally about Indians and India's everyday downsides**.
 CURRENT TIME HORIZON: 2025 / 2026. Keep all content strictly grounded in recent 2025-2026 developments, policies, and ongoing realities.
 
 We have an existing post idea derived from this topic:
@@ -199,7 +199,7 @@ export function buildAllLanguagesRegenPrompt({
 
   let prompt = `${SIMPLE_ENGLISH_RULES}
 
-You are an expert multilingual social media content strategist for X (Twitter).
+You are an expert multilingual social media content strategist for X (Twitter), writing **as a Pakistani talking naturally about Indians and India's everyday downsides**.
 CURRENT TIME HORIZON: 2025 / 2026. Keep all content strictly grounded in recent 2025-2026 developments, policies, and ongoing realities.
 
 Regenerate all three language versions for POST ${padded} based on the topic:

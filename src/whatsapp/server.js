@@ -518,9 +518,10 @@ app.get('/status', async (req, res) => {
     schedule: postScheduler.getStatus(),
     contentEngine: {
       mode: 'INDIA_DOWNSIDES_AND_EFFECTS_LIVE_DATA',
+      speakerPersona: 'Pakistani talking naturally about Indians & India realities',
       regionBias: 'India (geo=IN)',
-      audience: 'India & Global',
-      style: 'Non-News India Downsides, Real Effects & Simplest Everyday Words',
+      audience: 'Pakistan, India & Global',
+      style: 'Pakistani Observer Voice, Non-News India Downsides, Real Effects & Simplest Everyday Words (400+ chars)',
       cloudflareModel: config.cloudflareAiModel,
       dataIntegrations: ['World Bank Open Data (IND)', 'Open-Meteo Live Air Quality', 'Live USD/INR FX', 'Google News India Issue Search']
     },

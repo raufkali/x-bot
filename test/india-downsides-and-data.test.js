@@ -128,7 +128,7 @@ test('auditDraftForSimplification detects news tone, jargon words, and sub-400 c
   assert.ok(lenRes.reasons.includes('length_out_of_range:395'));
 });
 
-test('Every FALLBACK_BANK entry (English, Roman Urdu, Plain Urdu) is strictly 400-600 chars and simple', () => {
+test('Every FALLBACK_BANK entry (English, Roman Urdu, Plain Urdu) is strictly 400-600 chars, simple, and in Pakistani voice about Indians', () => {
   assert.ok(FALLBACK_BANK.length >= 6);
   for (const item of FALLBACK_BANK) {
     const text = item.english.text;
@@ -136,23 +136,32 @@ test('Every FALLBACK_BANK entry (English, Roman Urdu, Plain Urdu) is strictly 40
     assert.equal(audit.needsPolish, false, `Fallback "${item.topic}" failed audit: ${audit.reasons.join(', ')}`);
     assert.ok(text.length >= 400 && text.length <= 600, `English length ${text.length} out of 400-600 for "${item.topic}"`);
     assert.equal(text.includes('#'), false);
+    assert.ok(/pakistan/i.test(text), `English fallback "${item.topic}" should reflect Pakistani speaker`);
+    assert.ok(/india/i.test(text), `English fallback "${item.topic}" should talk about India/Indians`);
 
-    const ruLen = item.romanUrdu?.text?.length || 0;
-    const puLen = item.plainUrdu?.text?.length || 0;
-    assert.ok(ruLen >= 400 && ruLen <= 600, `Roman Urdu length ${ruLen} out of 400-600 for "${item.topic}"`);
-    assert.ok(puLen >= 400 && puLen <= 600, `Plain Urdu length ${puLen} out of 400-600 for "${item.topic}"`);
+    const ruText = item.romanUrdu?.text || '';
+    const puText = item.plainUrdu?.text || '';
+    assert.ok(ruText.length >= 400 && ruText.length <= 600, `Roman Urdu length ${ruText.length} out of 400-600 for "${item.topic}"`);
+    assert.ok(/pakistan/i.test(ruText), `Roman Urdu fallback "${item.topic}" should reflect Pakistani speaker`);
+    assert.ok(/india|bharti/i.test(ruText), `Roman Urdu fallback "${item.topic}" should talk about India/Indians`);
+
+    assert.ok(puText.length >= 400 && puText.length <= 600, `Plain Urdu length ${puText.length} out of 400-600 for "${item.topic}"`);
+    assert.ok(puText.includes('پاکستان'), `Plain Urdu fallback "${item.topic}" should reflect Pakistani speaker`);
+    assert.ok(puText.includes('بھارت') || puText.includes('بھارتی'), `Plain Urdu fallback "${item.topic}" should talk about India/Indians`);
   }
 });
 
-test('Prompt builders embed non-news downside+effect guidance, 400+ minimum, and live verified data', () => {
+test('Prompt builders embed Pakistani-talking-about-Indians persona, non-news guidance, 400+ minimum, and live data', () => {
   const brief = formatFactsBrief('Delhi air and hospital bills', MOCK_SNAPSHOT);
   const trendingPrompt = createTrendingPostPrompt('Dirty air in Delhi', 'Hurts kids', [], brief);
+  assert.ok(trendingPrompt.includes('as a Pakistani talking about Indians'));
   assert.ok(trendingPrompt.includes('DO NOT SOUND LIKE NEWS'));
   assert.ok(trendingPrompt.includes('SIMPLEST POSSIBLE WORDS'));
   assert.ok(trendingPrompt.includes('400+'));
   assert.ok(trendingPrompt.includes('224'));
 
   const customPrompt = createCustomTopicPrompt('Hospital bills', [], brief);
+  assert.ok(customPrompt.includes('as a Pakistani talking about Indians'));
   assert.ok(customPrompt.includes('NOT a news report'));
   assert.ok(customPrompt.includes('400+'));
   assert.ok(customPrompt.includes('43.9%'));
@@ -273,6 +282,7 @@ test('Cloudflare AI Pass 2 auto-expands short <400 Pass 1 draft to 400+ chars wi
     const result = await generateEnglishPost('Power cuts hurting small Indian shops', '', null, true);
     assert.equal(cfCalls, 2);
     assert.ok(secondPrompt.includes('CRITICAL LENGTH FIX'));
+    assert.ok(secondPrompt.includes('PAKISTANI PERSPECTIVE ON INDIANS'));
     assert.ok(result.provider.includes('Cloudflare Workers AI'));
     assert.ok(result.english.charCount >= 400, `Expected >= 400 chars, got ${result.english.charCount}`);
   } finally {

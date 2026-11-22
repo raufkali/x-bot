@@ -66,6 +66,6 @@ export const config = {
   xCallbackUrl: process.env.X_CALLBACK_URL || `http://localhost:${Number(process.env.PORT || 3000)}/auth/x/callback`,
 
   // Content Generation Profile
-  englishLevel: 'Simplest Everyday English (India Downsides & Effects, 400-580 chars)',
+  englishLevel: 'Pakistani Perspective on India Downsides (Simplest Everyday English, 400-580 chars)',
   contentThemes: 'India Jobs & Youth Struggle, Household Debt & Low Savings, Medical Bills & Public Health, Dirty Air & Water Shortage, Small Shop Credit Gap, Farm Earnings & Food Prices, Power & Coal Dependency'
 };

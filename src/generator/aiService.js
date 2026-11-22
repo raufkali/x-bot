@@ -257,19 +257,20 @@ ${trendContext ? `WHY IT MATTERS: ${trendContext}` : ''}
 VERIFIED LATEST INDIA DATA (USE ONLY THESE REAL NUMBERS OR WIDELY KNOWN OFFICIAL FIGURES — NEVER GUESS NUMBERS):
 ${liveFactsBrief || '- Use verified 2024-2026 official India numbers (World Bank, RBI, live air sensors).'}
 
-YOUR MISSION: Write the BEST possible X post about this **India downside and its real-world effect on ordinary people**:
-1. DO NOT SOUND LIKE NEWS. Never write "A new report says", "Today", "Yesterday", "PM X opened", or headline summaries.
-2. EXPOSE THE DOWNSIDE & EFFECT: Explain clearly what is broken or unfair in India AND how it hurts everyday families, students, workers, or small shops (lost cash, debt, poor health, wasted years, higher bills).
-3. USE THE SIMPLEST POSSIBLE WORDS: Write like you are explaining it to a 12-year-old friend. Short words, short sentences (5-12 words). No academic or business jargon.
-4. USE ACCURATE LATEST DATA: Anchor the middle paragraph in 1 or 2 exact numbers from the Verified Latest India Data above.
-5. END WITH A SHARP QUESTION: Make people stop and reply with their own view.
+YOUR MISSION: Write the BEST possible X post **as a Pakistani talking about Indians**, exposing this **India downside and its real-world effect on ordinary Indians**:
+1. PAKISTANI VOICE ABOUT INDIANS: Sound naturally like a Pakistani looking across the border at India and talking about how everyday Indians actually live behind India's big claims (vary openings naturally: "From Pakistan, you hear...", "Sitting across the border in Pakistan...", "As a Pakistani watching India...", "Here in Pakistan we hear big talk about India..."). Keep it grounded, analytical, and respectful—never abusive.
+2. DO NOT SOUND LIKE NEWS: Never write "A new report says", "Today", "Yesterday", "PM X opened", or headline summaries.
+3. EXPOSE THE DOWNSIDE & EFFECT: Explain clearly what is broken or unfair in India AND how it hurts everyday Indian families, students, workers, or small shops (lost cash, debt, poor health, wasted years, higher bills).
+4. USE THE SIMPLEST POSSIBLE WORDS: Write like you are explaining it to a 12-year-old friend. Short words, short sentences (5-12 words). No academic or business jargon.
+5. USE ACCURATE LATEST DATA: Anchor the middle paragraph in 1 or 2 exact numbers from the Verified Latest India Data above.
+6. END WITH A SHARP QUESTION: Make people stop and reply with their own view.
 
 STRICT POST STRUCTURE (3 parts, separated by double line breaks \\n\\n):
-Line 1: One punchy sentence stating the India downside clearly (no news intro)
+Line 1: One punchy sentence from a Pakistani perspective exposing this downside facing ordinary Indians (no news intro)
 \\n\\n
-Paragraph 2: 2-3 short, very simple sentences with accurate latest numbers AND the real effect on daily life (around 50-70 words)
+Paragraph 2: 2-3 short, very simple sentences with accurate latest numbers AND the real effect on everyday Indians (around 50-70 words)
 \\n\\n
-Line 3: One short, thought-provoking question
+Line 3: One short, thought-provoking question about India/Indians
 
 LENGTH: Strictly 400+ characters (420 to 560 characters ideal). NEVER under 400 and NEVER exceed 600.
 ZERO hashtags. ZERO emojis. NO labels like "Hook:" or "Body:".
@@ -305,16 +306,17 @@ USER TOPIC: "${userTopic}"
 VERIFIED LATEST INDIA DATA (USE WHEN RELEVANT — NEVER GUESS NUMBERS):
 ${liveFactsBrief || '- Use verified 2024-2026 official India data.'}
 
-Write a sharp, viral X post about "${userTopic}" focused on India's downside and real-world effects:
-- NOT a news report — speak directly about the problem and how it hurts regular people
+Write a sharp, viral X post **as a Pakistani talking about Indians**, focused on "${userTopic}" and its real-world effects inside India:
+- Write naturally from a Pakistani point of view looking across the border at ordinary Indians (civil, grounded, zero hate)
+- NOT a news report — speak directly about the problem and how it hurts regular Indian people
 - Use accurate latest facts and numbers
 - Use the SIMPLEST possible words — short sentences, everyday English, zero jargon
-- Show the clear cause and effect on families, workers, or young people
+- Show the clear cause and effect on Indian families, workers, or young people
 
 STRICT POST STRUCTURE (3 parts, separated by double line breaks \\n\\n):
-Line 1: One short hook sentence about "${userTopic}"
+Line 1: One short hook sentence as a Pakistani talking about "${userTopic}" in India
 \\n\\n
-Paragraph 2: 2-3 simple sentences with real latest numbers and everyday impact (around 50-70 words)
+Paragraph 2: 2-3 simple sentences with real latest numbers and everyday impact on Indians (around 50-70 words)
 \\n\\n
 Line 3: A sharp closing question
 
@@ -347,109 +349,109 @@ export const FALLBACK_BANK = [
     mainSubject: 'India youth job shortage and gig work trap',
     specificEventOrIssue: 'World Bank 16.0% youth jobless rate and 12M annual job seekers',
     centralArgument: 'Too few steady jobs force millions of young Indians into exam coaching or low-pay gig work',
-    analyticalAngle: 'College degrees vs shortage of real steady jobs',
+    analyticalAngle: 'Pakistani perspective on Indian college degrees vs shortage of steady jobs',
     importantStatistics: ['16.0% youth jobless rate', '12 million new job seekers', '2 million steady jobs'],
-    keywords: ['India', 'youth', 'jobs', 'college', 'work'],
+    keywords: ['Pakistan', 'India', 'Indians', 'youth', 'jobs'],
     english: {
-      text: 'About 16% of young Indians ages 15 to 24 still cannot find steady work.\n\nEach year, 12 million young people finish school and look for real jobs. Yet factories and big firms add less than 2 million steady posts. Millions spend their best years studying for rare clerk tests or riding delivery bikes for tiny daily pay.\n\nWhat happens to a country when millions of young minds wait years for one decent job?'
+      text: 'From Pakistan, you hear huge claims about India, yet 16% of young Indians ages 15 to 24 still lack steady work.\n\nEach year, 12 million young Indians finish college and hunt for real jobs. Yet factories add under 2 million steady posts. Millions waste years chasing rare clerk tests or ride delivery bikes for tiny daily pay.\n\nWhy do loud growth headlines hide how hard life stays for ordinary young Indians?'
     },
-    romanUrdu: { text: 'India mein 15 se 24 saal ke taqreeban 16% nojawanon ko ab bhi pakki nokri nahi milti.\n\nHar saal 1.2 crore nojawan parhai poori kar ke kaam dhoondte hain. Magar karkhanay aur baray idaray 20 lakh pakki nokriyan bhi nahi detay. Lakhon nojawan chhoti sarkari poston ke test detay hain ya kam kamai par delivery bike chalatay hain.\n\nJab lakhon jawan zehan aik achi nokri ke liye saalon intezar karein toh mulk ka kya hoga?' },
-    plainUrdu: { text: 'بھارت میں پندرہ سے چوبیس سال کے تقریباً سولہ فیصد نوجوانوں کو اب بھی مستقل کام نہیں ملتا۔\n\nہر سال ایک کروڑ بیس لاکھ نوجوان تعلیم مکمل کر کے روزگار تلاش کرتے ہیں۔ مگر کارخانے اور بڑی کمپنیاں بیس لاکھ پکی نوکریاں بھی نہیں دیتیں۔ لاکھوں نوجوان سرکاری کلرک کے امتحانوں میں برسوں ضائع کرتے یا معمولی اجرت پر ڈیلیوری کا کام کرتے ہیں۔\n\nجب لاکھوں ذہین نوجوان ایک اچھے روزگار کے لیے برسوں انتظار کریں تو ملک کا کیا ہوگا؟' }
+    romanUrdu: { text: 'Pakistan mein baith kar hum India ki taraqqi ke bare daway suntay hain, magar wahan 15 se 24 saal ke 16% nojawan ab bhi be-rozgar hain.\n\nHar saal 1.2 crore Bharti nojawan degree le kar kaam dhoondte hain. Magar karkhanay 20 lakh pakki nokriyan bhi nahi detay. Lakhon nojawan chhoti sarkari poston ke test detay ya delivery bike chalatay hain.\n\nItni bari numayish ke baad bhi aam Bharti nojawanon ke paas pakkay rozgar kyon nahi?' },
+    plainUrdu: { text: 'پاکستان میں بیٹھ کر ہم بھارت کی ترقی کے بڑے دعوے سنتے ہیں، مگر وہاں سولہ فیصد نوجوان اب بھی مستقل کام سے محروم ہیں۔\n\nہر سال ایک کروڑ بیس لاکھ بھارتی نوجوان پڑھائی مکمل کر کے نوکری ڈھونڈتے ہیں۔ مگر کارخانے بیس لاکھ پکی نوکریاں بھی نہیں دیتے۔ لاکھوں نوجوان کلرک کے امتحانوں میں برسوں ضائع کرتے یا معمولی اجرت پر ڈیلیوری کرتے ہیں۔\n\nاتنی چمک دمک کے باوجود عام بھارتی نوجوانوں کے لیے اچھا روزگار اتنا مشکل کیوں ہے؟' }
   },
 
   // F2. Hospital bills wiping out family savings
   {
     topic: 'One hospital trip can wipe out an Indian family savings account',
-    subtopic: '43.9% out-of-pocket medical bills pushing families into debt',
+    subtopic: '43.9% out-of-pocket medical bills pushing Indian families into debt',
     category: 'TRENDING',
     genreId: 'TRENDING',
     mainSubject: 'India medical costs and weak public clinics',
     specificEventOrIssue: 'World Bank data showing 43.9% of health costs paid directly by families',
     centralArgument: 'Weak public hospitals force ordinary Indians to borrow money for basic medical care',
-    analyticalAngle: 'Overcrowded public clinics vs costly private hospital bills',
+    analyticalAngle: 'Pakistani perspective on overcrowded Indian clinics vs private hospital bills',
     importantStatistics: ['43.9% from family pockets', '3.3% GDP health spending'],
-    keywords: ['India', 'hospital', 'health', 'bills', 'savings'],
+    keywords: ['Pakistan', 'India', 'Indians', 'hospital', 'bills'],
     english: {
-      text: 'One bad hospital visit in India can wipe out years of a family\'s hard-earned savings.\n\nWorld Bank figures show Indians pay almost 44% of all medical bills straight from their own pockets. Public clinics often lack enough doctors, beds, and lab tests. So working families must borrow cash at high rates or sell home gold just to treat a sick parent.\n\nWhy does one illness push millions of hardworking Indian families back into debt?'
+      text: 'Sitting in Pakistan, it is shocking to see how one hospital trip wipes out an ordinary Indian family.\n\nWorld Bank data shows Indians pay almost 44% of all medical bills from their own pockets. Overcrowded public clinics lack doctors, beds, and tests. Working parents must borrow cash or sell home gold just to pay private clinics.\n\nWhy does getting sick still push millions of everyday Indians deep into debt?'
     },
-    romanUrdu: { text: 'India mein aik bada hospital ka chakkar kisi bhi khandan ki barson ki bachat khatam kar sakta hai.\n\nWorld Bank ke mutabiq Bharti log ilaj ke 44% kharch apni jaib se detay hain. Sarkari clinic mein aksar doctor, bistar aur test nahi hotay. Is liye aam khandanon ko bimaar maa baap ke ilaj ke liye qarz lena ya sona bechna parta hai.\n\nAik bimari lakhon mehnat-kash Bharti khandanon ko dobara qarz mein kyon dhakel deti hai?' },
-    plainUrdu: { text: 'بھارت میں اسپتال کا ایک بڑا خرچ کسی بھی خاندان کی برسوں کی بچت ختم کر سکتا ہے۔\n\nورلڈ بینک کے مطابق بھارتی شہری علاج کے تقریباً چوالیس فیصد اخراجات خود اپنی جیب سے ادا کرتے ہیں۔ سرکاری کلینکوں میں اکثر ڈاکٹر، بستر اور ضروری ٹیسٹ دستیاب نہیں ہوتے۔ مجبوراً محنت کش خاندانوں کو اپنے پیاروں کے علاج کے لیے مہنگا قرض لینا یا گھر کا سونا بیچنا پڑتا ہے۔\n\nایک بیماری لاکھوں محنتی بھارتی خاندانوں کو دوبارہ قرض کے بوجھ تلے کیوں دبا دیتی ہے؟' }
+    romanUrdu: { text: 'Sarhad ke is paar Pakistan se dekhein toh hairat hoti hai ke India mein aik hospital ka kharch aam khandan ki bachat khatam kar deta hai.\n\nWorld Bank ke mutabiq Bharti log ilaj ke taqreeban 44% kharch apni jaib se detay hain. Sarkari clinic mein aksar doctor aur bistar kam par jatay hain, is liye aam waldain ko qarz lena ya sona bechna parta hai.\n\nAik bimari lakhon aam Bharti gharon ko dobara qarz ke bojh mein kyon dhakel deti hai?' },
+    plainUrdu: { text: 'سرحد کے اس پار پاکستان سے دیکھیں تو حیرت ہوتی ہے کہ بھارت میں اسپتال کا ایک خرچ کسی بھی عام خاندان کی برسوں کی بچت ختم کر دیتا ہے۔\n\nورلڈ بینک کے مطابق بھارتی شہری علاج کے تقریباً چوالیس فیصد اخراجات خود اپنی جیب سے ادا کرتے ہیں۔ سرکاری کلینکوں میں ڈاکٹر اور بستر کم ہونے پر محنت کش والدین کو مہنگا قرض لینا یا گھر کا سونا بیچنا پڑتا ہے۔\n\nایک بیماری لاکھوں عام بھارتی گھرانوں کو دوبارہ قرض کے بوجھ تلے کیوں دبا دیتی ہے؟' }
   },
 
   // F3. Dirty air hurting lungs, schools, and wages
   {
-    topic: 'Dirty city air in northern India steals health and paychecks every year',
-    subtopic: 'Toxic smog above safe WHO limits hurting children and daily workers',
+    topic: 'Dirty city air in northern India steals Indian health and paychecks',
+    subtopic: 'Toxic smog above safe WHO limits hurting Indian children and daily workers',
     category: 'TRENDING',
     genreId: 'TRENDING',
-    mainSubject: 'Northern India air pollution and family health costs',
+    mainSubject: 'Northern India air pollution and Indian family health costs',
     specificEventOrIssue: 'Live PM2.5 readings reaching 15x WHO safe health limits',
-    centralArgument: 'Bad air shuts schools, slows outdoor work, and forces families to spend cash on medicine',
-    analyticalAngle: 'Dirty winter air vs children health and daily wages',
+    centralArgument: 'Bad air shuts schools, slows outdoor work, and forces Indian families to spend cash on medicine',
+    analyticalAngle: 'Pakistani view on shared winter smog hurting Indian cities and daily wages',
     importantStatistics: ['15 times WHO safe limit', '72% coal power'],
-    keywords: ['India', 'Delhi', 'air', 'smog', 'health'],
+    keywords: ['Pakistan', 'India', 'Indians', 'Delhi', 'air'],
     english: {
-      text: 'Breathing city air in northern India quietly steals health and paychecks from millions.\n\nAir sensors across Delhi often record dirt levels 15 times worse than safe world limits. Schools close for weeks, outdoor work slows down, and kids fill clinics with bad coughs. Parents lose daily wages while spending scarce cash on doctor visits and lung inhalers.\n\nHow can people build a better life when the air outside hurts their kids every day?'
+      text: 'Here in Pakistan we fight smog too, and looking across at northern India shows how bad air steals Indian paychecks.\n\nAir sensors across Delhi often hit levels 15 times worse than safe world limits. Schools shut for weeks, outdoor work stops, and kids fill clinics with bad coughs. Everyday Indians lose wages while buying costly inhalers.\n\nHow can ordinary Indians live well when city air hurts their kids every day?'
     },
-    romanUrdu: { text: 'Shumali India ke shehron ki gandi hawa har saal lakhon logon ki sehat aur kamai cheen leti hai.\n\nDelhi mein hawa ke sensor aksar mehfooz had se 15 guna zyada gandagi dikhatay hain. School hafton band ho jatay hain, mazdoori ruk jati hai aur bachay khansi le kar clinic jatay hain. Maa baap ko dawai aur doctor par apni kamai kharch karni parti hai.\n\nLog behtar mustaqbil kaisay banayein jab bahar ki hawa roz un ke bachon ko bimaar karay?' },
-    plainUrdu: { text: 'شمالی بھارت کے شہروں کی زہریلی ہوا ہر سال لاکھوں لوگوں کی صحت اور کمائی چھین لیتی ہے۔\n\nدہلی کے فضائی سینسر اکثر آلودگی کو محفوظ عالمی حد سے پندرہ گنا زیادہ دکھاتے ہیں۔ اسکول کئی ہفتوں کے لیے بند ہو جاتے ہیں، مزدوری سست پڑتی ہے اور بچے شدید کھانسی لے کر کلینک پہنچتے ہیں۔ والدین کی محنت کی کمائی دوائی اور ڈاکٹر پر خرچ ہو جاتی ہے۔\n\nعام لوگ بہتر مستقبل کیسے بنائیں جب باہر کی زہریلی ہوا روز ان کے بچوں کو بیمار کرے؟' }
+    romanUrdu: { text: 'Pakistan mein bhi smog ka masla hai, aur jab hum sarhad paar shumali India ko dekhtay hain toh wahan ki gandi hawa logon ki kamai cheen leti hai.\n\nDelhi ke sensor aksar mehfooz had se 15 guna zyada gandagi dikhatay hain. School hafton band rehtay hain, mazdoori ruk jati hai aur aam Bharti khandanon ki kamai dawai aur doctor par kharch hoti hai.\n\nAam Bharti behtar zindagi kaisay banayein jab bahar ki hawa roz un ke bachon ko bimaar karay?' },
+    plainUrdu: { text: 'پاکستان کی طرح سرحد پار شمالی بھارت کے شہروں میں بھی زہریلی ہوا عام لوگوں کی صحت اور روزگار دونوں چھین لیتی ہے۔\n\nدہلی کے فضائی سینسر اکثر محفوظ عالمی حد سے پندرہ گنا زیادہ آلودگی دکھاتے ہیں۔ اسکول کئی ہفتوں تک بند رہتے ہیں، مزدوری سست پڑتی ہے اور عام بھارتی والدین کی محنت کی کمائی بچوں کی دوائی اور ڈاکٹر پر خرچ ہو جاتی ہے۔\n\nعام بھارتی شہری بہتر زندگی کیسے بنائیں جب باہر کی فضا روز ان کے بچوں کو بیمار کرے؟' }
   },
 
   // F4. Too many workers stuck in tiny farms
   {
     topic: 'Over 41% of Indian workers stay stuck in low-pay farm work',
-    subtopic: 'Too few factory jobs trap rural families in small earnings',
+    subtopic: 'Too few factory jobs trap rural Indians in small earnings',
     category: 'TRENDING',
     genreId: 'TRENDING',
     mainSubject: 'India farm dependency and weak factory job growth',
     specificEventOrIssue: 'World Bank 41.6% agriculture employment share in 2025',
     centralArgument: 'Because factories add too few jobs, nearly half of Indian workers remain in low-income farming',
-    analyticalAngle: 'High farm headcount vs low family income',
+    analyticalAngle: 'Pakistani perspective on high Indian farm headcount vs low family pay',
     importantStatistics: ['41.6% farm workers', '$2,702 yearly output per person'],
-    keywords: ['India', 'farm', 'workers', 'villages', 'jobs'],
+    keywords: ['Pakistan', 'India', 'Indians', 'farm', 'workers'],
     english: {
-      text: 'Over 41% of Indian workers still depend on small farms that barely pay the bills.\n\nWorld Bank data shows nearly half of India\'s workforce stays tied to tiny plots of land. Because cities do not add enough steady factory jobs, one weak rain season or sudden price drop pushes whole villages into debt. Young men leave home for risky city labor just to send food money back.\n\nWhy do so many hardworking Indians stay trapped in work that cannot pay a fair living?'
+      text: 'As a Pakistani watching India closely, the real gap is seeing over 41% of Indian workers still stuck on tiny farms.\n\nWorld Bank data shows nearly half of India\'s workers rely on small plots that barely pay bills. Cities add too few factory jobs, so one weak rain season or price drop pushes whole villages into loans.\n\nWhy do so many hardworking Indians stay trapped in farm work that cannot pay a fair living?'
     },
-    romanUrdu: { text: 'India ke 41% se zyada mazdoor ab bhi chhoti zameenon ki kheti par guzara kartay hain.\n\nWorld Bank ke mutabiq taqreeban aadhi Bharti abadi chhotay kheton se juri hai kyonke shehron mein pakkay karkhanon ki nokriyan kam hain. Aik kamzor barish ya fasal ki kam qeemat pooray gaon ko qarz mein dooba deti hai.\n\nItnay mehnat-kash Bharti aise kaam mein kyon phansay hain jo ghar ka kharch bhi mushkil se chalaye?' },
-    plainUrdu: { text: 'بھارت کے اکتالیس فیصد سے زیادہ محنت کش آج بھی چھوٹی زمینوں کی کاشتکاری پر گزارا کرتے ہیں۔\n\nورلڈ بینک کے مطابق تقریباً آدھی بھارتی افرادی قوت کھیتوں سے جڑی ہے کیونکہ شہروں میں کارخانوں کی مستقل ملازمتیں بہت کم ہیں۔ ایک کمزور بارش یا فصل کی قیمت گرنے سے پورا گاؤں قرض میں ڈوب جاتا ہے اور نوجوان شہروں میں مزدوری کرنے پر مجبور ہوتے ہیں۔\n\nاتنے محنتی بھارتی ایسے کام میں کیوں پھنسے ہیں جو گھر کا خرچ بھی مشکل سے پورا کرے؟' }
+    romanUrdu: { text: 'Aik Pakistani ki nazar se India ko dekhein toh sab se bari kami yeh dikhti hai ke 41% se zyada Bharti mazdoor ab bhi chhoti kheti par guzara kartay hain.\n\nWorld Bank ke mutabiq taqreeban aadhi Bharti abadi chhotay kheton se juri hai kyonke shehron mein factory nokriyan kam hain. Aik kamzor barish pooray gaon ko qarz mein dooba deti hai.\n\nItnay mehnat-kash Bharti aise kaam mein kyon phansay hain jo ghar ka kharch bhi poora na karay?' },
+    plainUrdu: { text: 'پاکستان سے بھارت کی معیشت کو دیکھیں تو سب سے بڑا خلا یہ نظر آتا ہے کہ اکتالیس فیصد سے زیادہ بھارتی محنت کش آج بھی چھوٹی کھیتی پر گزارا کرتے ہیں۔\n\nورلڈ بینک کے مطابق تقریباً آدھی بھارتی آبادی چھوٹے کھیتوں سے جڑی ہے کیونکہ شہروں میں کارخانوں کی مستقل ملازمتیں بہت کم ہیں۔ ایک کمزور بارش یا فصل سستی ہونے سے پورا گاؤں قرض میں ڈوب جاتا ہے۔\n\nاتنے محنتی بھارتی ایسے کام میں کیوں پھنسے ہیں جو گھر کا خرچ بھی مشکل سے پورا کرے؟' }
   },
 
   // F5. Women locked out of paid jobs
   {
     topic: 'Two out of three adult women in India are outside paid jobs',
-    subtopic: 'Only 32.4% female workforce participation holds back family incomes',
+    subtopic: 'Only 32.4% female workforce participation holds back Indian family incomes',
     category: 'TRENDING',
     genreId: 'TRENDING',
-    mainSubject: 'Low women workforce share and one-paycheck households',
+    mainSubject: 'Low Indian women workforce share and one-paycheck households',
     specificEventOrIssue: 'World Bank 32.4% female labor force rate in 2025',
     centralArgument: 'Unsafe transit and lack of safe nearby jobs leave most Indian families relying on a single paycheck',
-    analyticalAngle: 'Low female employment vs rising city family living costs',
+    analyticalAngle: 'Pakistani view on India tech image vs low women employment at home',
     importantStatistics: ['32.4% women in paid work', 'two-thirds left out'],
-    keywords: ['India', 'women', 'jobs', 'safety', 'family'],
+    keywords: ['Pakistan', 'India', 'Indians', 'women', 'jobs'],
     english: {
-      text: 'Two out of three adult women in India are still shut out of paid jobs.\n\nWorld Bank numbers show only 32% of Indian women work for pay today. Unsafe streets, poor night buses, and few safe childcare options force millions of skilled women to stay home. That leaves most families trying to pay higher rent, food, and school fees on just one monthly paycheck.\n\nHow much stronger would Indian homes be if women had safe travel and fair work?'
+      text: 'When we discuss India\'s tech image in Pakistan, few notice two in three Indian women stay outside paid jobs.\n\nWorld Bank numbers show only 32% of Indian women work for pay today. Unsafe streets, weak night buses, and costly childcare keep millions of skilled women at home. That leaves most homes relying on just one monthly paycheck.\n\nHow much stronger would Indian families be if women had safe travel and fair work?'
     },
-    romanUrdu: { text: 'India mein teen mein se do jawan khawateen ab bhi tankhwah wali nokri se bahar hain.\n\nWorld Bank ke mutabiq aaj sirf 32% Bharti khawateen kamai karti hain. Ghair-mehfooz raste, kamzor night bus service aur bachon ki dekh-bhaal ki kami lakhon parhi likhi auraton ko ghar bitha deti hai. Ghar ka sara bojh aik tankhwah par aa jata hai.\n\nBharti ghar kitnay mazboot hotay agar khawateen ko mehfooz safar aur barabar kaam milta?' },
-    plainUrdu: { text: 'بھارت میں تین میں سے دو بالغ خواتین آج بھی تنخواہ والی ملازمت سے باہر ہیں۔\n\nورلڈ بینک کے مطابق اس وقت صرف بتیس فیصد بھارتی خواتین روزگار سے وابستہ ہیں۔ غیر محفوظ راستے، کمزور ٹرانسپورٹ اور بچوں کی دیکھ بھال کی سہولیات نہ ہونے سے لاکھوں قابل خواتین گھر بیٹھنے پر مجبور ہیں۔ یوں پورے گھر کا بوجھ صرف ایک تنخواہ پر آ جاتا ہے۔\n\nبھارتی گھرانے کتنے مضبوط ہوتے اگر خواتین کو محفوظ سفر اور مناسب روزگار میسر ہوتا؟' }
+    romanUrdu: { text: 'Pakistan mein jab India ki tech tasveer par baat hoti hai toh kam log dekhtay hain ke wahan teen mein se do jawan khawateen paid nokri se bahar hain.\n\nWorld Bank ke mutabiq aaj sirf 32% Bharti khawateen kamai karti hain. Ghair-mehfooz raste aur kamzor transport lakhon parhi likhi auraton ko ghar bitha detay hain aur bojh aik tankhwah par aata hai.\n\nBharti ghar kitnay mazboot hotay agar wahan khawateen ko mehfooz safar aur barabar kaam milta?' },
+    plainUrdu: { text: 'پاکستان میں جب بھارت کی جدید تصویر پر بات ہوتی ہے تو کم لوگ دیکھتے ہیں کہ وہاں تین میں سے دو بالغ خواتین تنخواہ والی ملازمت سے باہر ہیں۔\n\nورلڈ بینک کے مطابق آج صرف بتیس فیصد بھارتی خواتین روزگار سے جڑی ہیں۔ غیر محفوظ راستوں اور کمزور ٹرانسپورٹ کی وجہ سے لاکھوں تعلیم یافتہ خواتین گھر بیٹھنے پر مجبور ہیں اور پورا بوجھ ایک تنخواہ پر آتا ہے۔\n\nبھارتی گھرانے کتنے مضبوط ہوتے اگر وہاں خواتین کو محفوظ سفر اور مناسب روزگار ملتا؟' }
   },
 
   // F6. Low average pay and rising family loans
   {
     topic: 'Big growth headlines hide how little the average Indian earns',
-    subtopic: '$2,702 yearly output per person and rising monthly family loan debt',
+    subtopic: '$2,702 yearly output per person and rising monthly Indian family loans',
     category: 'TRENDING',
     genreId: 'TRENDING',
-    mainSubject: 'Low per-person earnings vs rising living costs and retail loans',
+    mainSubject: 'Low Indian per-person earnings vs rising living costs and retail loans',
     specificEventOrIssue: 'World Bank $2,702 GDP per person in 2025 alongside rising household debt',
-    centralArgument: 'Headline growth masks flat family incomes, pushing city homes into monthly loans for daily goods',
-    analyticalAngle: 'Big national numbers vs tight everyday family budgets',
+    centralArgument: 'Headline growth masks flat Indian family incomes, pushing city homes into monthly loans for groceries',
+    analyticalAngle: 'Pakistani perspective on big India GDP numbers vs average Indian pay',
     importantStatistics: ['$2,702 per person', '₹93 per dollar import pressure'],
-    keywords: ['India', 'income', 'loans', 'prices', 'families'],
+    keywords: ['Pakistan', 'India', 'Indians', 'income', 'loans'],
     english: {
-      text: 'Big growth numbers hide how little the average person in India still earns.\n\nWorld Bank figures put yearly output at just $2,702 per person across India. Yet city rent, milk, cooking oil, and school fees keep climbing while regular office pay barely moves. More families now use quick phone loans and monthly credit plans just to buy daily groceries.\n\nIs India\'s spending boom built on real rising pay, or on families borrowing tomorrow\'s cash?'
+      text: 'From Pakistan, India\'s big GDP headlines look huge, yet they hide how little the average Indian still earns.\n\nWorld Bank figures put yearly output at just $2,702 per person across India. Yet city rent, milk, cooking oil, and school fees climb while office pay stalls. More Indian families now use quick phone loans just for groceries.\n\nIs India\'s boom built on real pay, or on ordinary Indians borrowing tomorrow\'s cash?'
     },
-    romanUrdu: { text: 'Baray maashi adaad ye chhupa letay hain ke India mein aam aadmi aaj bhi kitna kam kamata hai.\n\nWorld Bank ke mutabiq India mein fi kas salana paidawar sirf 2,702 dollar hai. Magar shehr ka kiraya, doodh, tail aur school fees barh rahi hain jabke tankhwah wahin khari hai. Ab log rozmarra rashan ke liye bhi phone se chhotay qarz le rahay hain.\n\nKya India ki khareedari barhti kamai se chal rahi hai ya kal ka paisa udhar le kar?' },
-    plainUrdu: { text: 'بڑے معاشی اعداد و شمار یہ تلخ حقیقت چھپا لیتے ہیں کہ بھارت میں عام آدمی آج بھی کتنا کم کماتا ہے۔\n\nورلڈ بینک کے مطابق بھارت میں فی کس سالانہ پیداوار صرف دو ہزار سات سو دو ڈالر ہے۔ مگر شہروں کا کرایہ، دودھ، تیل اور اسکول فیس مسلسل بڑھ رہی ہے جبکہ تنخواہیں وہیں کھڑی ہیں۔ اب خاندان روزمرہ راشن خریدنے کے لیے بھی چھوٹے قرضے لے رہے ہیں۔\n\nکیا بھارت کی خریداری بڑھتی آمدنی سے چل رہی ہے یا کل کا پیسہ ادھار لے کر؟' }
+    romanUrdu: { text: 'Pakistan se India ki bari maashi surkhiyan bohat baray nazar aati hain, magar yeh chhupa leti hain ke aam Bharti aaj bhi kitna kam kamata hai.\n\nWorld Bank ke mutabiq India mein fi kas salana paidawar sirf 2,702 dollar hai. Magar shehr ka kiraya, doodh aur school fees barh rahi hain, jis se aam log rashan ke liye bhi phone se chhotay qarz le rahay hain.\n\nKya India ki khareedari barhti kamai se chal rahi hai ya aam log kal ka paisa udhar le rahay hain?' },
+    plainUrdu: { text: 'پاکستان سے بھارت کے بڑے معاشی اعداد بہت شاندار لگتے ہیں، مگر یہ چھپا لیتے ہیں کہ عام بھارتی آج بھی کتنا کم کماتا ہے۔\n\nورلڈ بینک کے مطابق بھارت میں فی کس سالانہ پیداوار صرف دو ہزار سات سو دو ڈالر ہے۔ دوسری طرف کرایہ، دودھ اور اسکول فیس مسلسل بڑھ رہی ہے، جس سے عام بھارتی گھرانے روزمرہ راشن کے لیے بھی چھوٹے قرضے لے رہے ہیں۔\n\nکیا بھارت کی خریداری بڑھتی آمدنی سے چل رہی ہے یا عام لوگ کل کا پیسہ ادھار لے رہے ہیں؟' }
   }
 ];
 
@@ -821,19 +823,19 @@ export async function generateRomanUrduFromEnglish(englishPost, topic = '') {
   const xaiKey = process.env.GROK_API_KEY || process.env.XAI_API_KEY;
   const groqKey = process.env.GROQ_API_KEY;
 
-  const prompt = `Translate this post into very simple conversational Roman Urdu.
+  const prompt = `Translate this post into natural, everyday Pakistani Roman Urdu, keeping the voice of a Pakistani talking about Indians and everyday life in India.
 
 ENGLISH POST:
 "${englishPost.text}"
 
 RULES:
 - Preserve the exact 3-part layout separated by double line breaks (\\n\\n):
-  Line 1: A single punchy hook line in Roman Urdu discussing the main point.
+  Line 1: A single punchy hook line in Pakistani Roman Urdu talking about India/Indians.
   \\n\\n
-  Paragraph 2: The real body in Roman Urdu elaborating on the main point with the exact same numbers and facts.
+  Paragraph 2: The real body in Pakistani Roman Urdu explaining the downside and effect on ordinary Indians with the exact same numbers and facts.
   \\n\\n
   Line 3: A short concluding takeaway or closing question in Roman Urdu.
-- Use simple everyday conversational words that anyone understands easily.
+- Use simple everyday conversational Pakistani words that anyone understands easily.
 - Keep the exact same numbers, facts, and the final question intact.
 - Every sentence must be short and easy to understand.
 - STRICT MINIMUM LENGTH: Must be 400+ characters (420 to 580 characters total, NEVER under 400 and NEVER over 600).
@@ -927,19 +929,19 @@ export async function generatePlainUrduFromEnglish(englishPost, topic = '') {
   const xaiKey = process.env.GROK_API_KEY || process.env.XAI_API_KEY;
   const groqKey = process.env.GROQ_API_KEY;
 
-  const prompt = `Translate this post into very simple Urdu script (اردو).
+  const prompt = `Translate this post into very simple everyday Pakistani Urdu script (اردو), keeping the voice of a Pakistani talking about Indians and India's real issues.
 
 ENGLISH POST:
 "${englishPost.text}"
 
 RULES:
 - Preserve the exact 3-part layout separated by double line breaks (\\n\\n):
-  Line 1: A single punchy hook line in Urdu (اردو) discussing the main point.
+  Line 1: A single punchy hook line in Urdu (اردو) from a Pakistani observer's view about India/Indians.
   \\n\\n
-  Paragraph 2: The real body in Urdu elaborating on the main point with the exact same numbers and facts.
+  Paragraph 2: The real body in Urdu explaining the downside and everyday effect on ordinary Indians with the exact same numbers and facts.
   \\n\\n
   Line 3: A short concluding takeaway or closing question in Urdu.
-- Use simple everyday Urdu that an ordinary reader or shopkeeper understands easily.
+- Use simple everyday Pakistani Urdu that an ordinary reader or shopkeeper understands easily.
 - Avoid heavy bookish words or complicated literary terms.
 - Keep the exact same numbers, facts, and the final question intact.
 - Every sentence must be short and easy to understand.
@@ -1093,7 +1095,7 @@ async function polishWithCloudflareAI(candidate, liveFactsBrief = '') {
     ? `CRITICAL LENGTH FIX: The current draft is only ${currentLen} characters, which is TOO SHORT (under the strict ${MIN_CHARACTERS}-character minimum). Expand Paragraph 2 by adding one clear everyday effect sentence in simple words so the final post is strictly between 420 and 560 characters.`
     : `LENGTH: Strictly 400+ characters (420 to 560 characters ideal, NEVER under 400 and NEVER over 600). ZERO hashtags, ZERO emojis, NO labels.`;
 
-  const polishPrompt = `Rewrite this X post so it is the BEST possible post about an India downside and its real effect on everyday people.
+  const polishPrompt = `Rewrite this X post so it sounds naturally like **a Pakistani talking about Indians** and India's downsides/real effects, using the simplest words.
 
 CURRENT DRAFT (${currentLen} chars):
 "${candidate.english.text}"
@@ -1102,17 +1104,18 @@ VERIFIED FACTS TO KEEP ACCURATE:
 ${liveFactsBrief || '- Keep the verified numbers accurate.'}
 
 STRICT REWRITE RULES:
-1. NOT NEWS: Remove any newspaper phrases ("A report says", "Today", "Yesterday", "Latest news").
-2. INDIA DOWNSIDE + EFFECT: Keep the clear focus on what is broken in India and how it hurts ordinary families, students, or workers.
-3. SIMPLEST POSSIBLE WORDS: Replace every long or fancy word (like infrastructure, disparity, demographic, inflation, macroeconomic, expenditure, deteriorating) with tiny everyday words a 12-year-old uses.
-4. SHORT SENTENCES: 5 to 12 words per sentence.
-5. EXACT 3-PART LAYOUT separated by \\n\\n:
-   Line 1: Punchy hook sentence.
+1. PAKISTANI PERSPECTIVE ON INDIANS: Write as a Pakistani looking across the border at India and talking directly about how this hurts everyday Indians (e.g., "From Pakistan, ...", "Sitting in Pakistan...", "Across the border, ordinary Indians..."). Keep it grounded, analytical, and civil—zero hate speech.
+2. NOT NEWS: Remove any newspaper phrases ("A report says", "Today", "Yesterday", "Latest news").
+3. INDIA DOWNSIDE + EFFECT: Keep the clear focus on what is broken in India and how it hurts ordinary Indian families, students, or workers.
+4. SIMPLEST POSSIBLE WORDS: Replace every long or fancy word (like infrastructure, disparity, demographic, inflation, macroeconomic, expenditure, deteriorating) with tiny everyday words a 12-year-old uses.
+5. SHORT SENTENCES: 5 to 12 words per sentence.
+6. EXACT 3-PART LAYOUT separated by \\n\\n:
+   Line 1: Punchy hook sentence from a Pakistani angle about India/Indians.
    \\n\\n
-   Paragraph 2: 2-3 simple sentences with the accurate latest number + everyday human effect.
+   Paragraph 2: 2-3 simple sentences with the accurate latest number + everyday human effect on Indians.
    \\n\\n
    Line 3: Short, sharp closing question.
-6. ${lengthInstruction}
+7. ${lengthInstruction}
 
 Return ONLY valid JSON:
 {
@@ -1160,7 +1163,7 @@ export async function callCloudflareAI(prompt, model = null) {
               messages: [
                 {
                   role: 'system',
-                  content: 'You write high-impact X posts about India\'s real downsides and how they hurt ordinary people, using the SIMPLEST everyday English (Grade 4-5 words). NEVER sound like a news report. Use ONLY verified latest numbers provided in the prompt. Every post MUST strictly follow this exact 3-part layout separated by double line breaks (\\n\\n):\nLine 1: One short punchy hook exposing an India downside (1 sentence).\n\\n\\nParagraph 2: 2 to 3 short simple sentences with real latest data AND the everyday effect on families, students, or workers (around 50-70 words).\n\\n\\nClosing Line: One short, sharp question that makes people want to reply.\nTotal length MUST be strictly between 400 and 560 characters (never exceed 600). Zero hashtags, zero emojis, no labels. Return ONLY valid JSON.'
+                  content: 'You write high-impact X posts as a Pakistani talking naturally about Indians and India\'s real downsides and how they hurt ordinary people across the border, using the SIMPLEST everyday English (Grade 4-5 words). Keep commentary grounded, analytical, and civil (zero hate). NEVER sound like a news report. Use ONLY verified latest numbers provided in the prompt. Every post MUST strictly follow this exact 3-part layout separated by double line breaks (\\n\\n):\nLine 1: One short punchy hook from a Pakistani point of view exposing an India downside affecting Indians (1 sentence).\n\\n\\nParagraph 2: 2 to 3 short simple sentences with real latest data AND the everyday effect on Indian families, students, or workers (around 50-70 words).\n\\n\\nClosing Line: One short, sharp question that makes people want to reply.\nTotal length MUST be strictly between 400 and 560 characters (never exceed 600). Zero hashtags, zero emojis, no labels. Return ONLY valid JSON.'
                 },
                 { role: 'user', content: prompt }
               ]
@@ -1219,7 +1222,7 @@ async function callGroq(prompt, apiKey) {
         messages: [
           {
             role: 'system',
-            content: 'You write high-impact X posts about India\'s real downsides and how they hurt ordinary people, using the SIMPLEST everyday English (Grade 4-5 words). NEVER sound like a news report. Use ONLY verified latest numbers provided in the prompt. Every post MUST strictly follow this exact 3-part layout separated by double line breaks (\\n\\n):\nLine 1: One short punchy hook exposing an India downside (1 sentence).\n\\n\\nParagraph 2: 2 to 3 short simple sentences with real latest data AND the everyday effect on families, students, or workers (around 50-70 words).\n\\n\\nClosing Line: One short, sharp question that makes people want to reply.\nTotal length MUST be strictly between 400 and 560 characters (never exceed 600). Zero hashtags, zero emojis, no labels. Return ONLY valid JSON.'
+            content: 'You write high-impact X posts as a Pakistani talking naturally about Indians and India\'s real downsides and how they hurt ordinary people across the border, using the SIMPLEST everyday English (Grade 4-5 words). Keep commentary grounded, analytical, and civil (zero hate). NEVER sound like a news report. Use ONLY verified latest numbers provided in the prompt. Every post MUST strictly follow this exact 3-part layout separated by double line breaks (\\n\\n):\nLine 1: One short punchy hook from a Pakistani point of view exposing an India downside affecting Indians (1 sentence).\n\\n\\nParagraph 2: 2 to 3 short simple sentences with real latest data AND the everyday effect on Indian families, students, or workers (around 50-70 words).\n\\n\\nClosing Line: One short, sharp question that makes people want to reply.\nTotal length MUST be strictly between 400 and 560 characters (never exceed 600). Zero hashtags, zero emojis, no labels. Return ONLY valid JSON.'
           },
           { role: 'user', content: prompt }
         ],
@@ -1265,7 +1268,7 @@ async function callXai(prompt, model = 'grok-2-latest') {
           messages: [
             {
               role: 'system',
-              content: 'You write high-impact X posts about India\'s real downsides and how they hurt ordinary people, using the SIMPLEST everyday English (Grade 4-5 words). NEVER sound like a news report. Use ONLY verified latest numbers provided in the prompt. Every post MUST strictly follow this exact 3-part layout separated by double line breaks (\\n\\n):\nLine 1: One short punchy hook exposing an India downside (1 sentence).\n\\n\\nParagraph 2: 2 to 3 short simple sentences with real latest data AND the everyday effect on families, students, or workers (around 50-70 words).\n\\n\\nClosing Line: One short, sharp question that makes people want to reply.\nTotal length MUST be strictly between 400 and 560 characters (never exceed 600). Zero hashtags, zero emojis, no labels. Return ONLY valid JSON.'
+              content: 'You write high-impact X posts as a Pakistani talking naturally about Indians and India\'s real downsides and how they hurt ordinary people across the border, using the SIMPLEST everyday English (Grade 4-5 words). Keep commentary grounded, analytical, and civil (zero hate). NEVER sound like a news report. Use ONLY verified latest numbers provided in the prompt. Every post MUST strictly follow this exact 3-part layout separated by double line breaks (\\n\\n):\nLine 1: One short punchy hook from a Pakistani point of view exposing an India downside affecting Indians (1 sentence).\n\\n\\nParagraph 2: 2 to 3 short simple sentences with real latest data AND the everyday effect on Indian families, students, or workers (around 50-70 words).\n\\n\\nClosing Line: One short, sharp question that makes people want to reply.\nTotal length MUST be strictly between 400 and 560 characters (never exceed 600). Zero hashtags, zero emojis, no labels. Return ONLY valid JSON.'
             },
             { role: 'user', content: prompt }
           ],
