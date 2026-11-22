@@ -43,7 +43,7 @@ import { pickUnusedTrendingTopic, getTrendingTopics } from './trendFetcher.js';
 
 let categoryRotationIndex = 0;
 
-const MIN_CHARACTERS = 200;
+const MIN_CHARACTERS = 400;
 const ABSOLUTE_MAX_CHARACTERS = 650;
 const TARGET_MIN_CHARACTERS = 400;
 const TARGET_MAX_CHARACTERS = 600;
@@ -158,7 +158,7 @@ function formatEntry(text) {
 /**
  * Validates and derives complete analytical metadata from raw AI output
  */
-function validateAIResponse(res, chosenTopic, chosenCategory = 'TRENDING', chosenSubtopic = '') {
+function validateAIResponse(res, chosenTopic, chosenCategory = 'TRENDING', chosenSubtopic = '', minCharacters = MIN_CHARACTERS) {
   if (!res || typeof res !== 'object') {
     throw new Error('Invalid AI response object');
   }
@@ -188,8 +188,8 @@ function validateAIResponse(res, chosenTopic, chosenCategory = 'TRENDING', chose
   if (entry.isOverLimit || entry.charCount > ABSOLUTE_MAX_CHARACTERS) {
     throw new Error(`AI post exceeds strict 600-char limit (${entry.charCount} chars, max ${ABSOLUTE_MAX_CHARACTERS})`);
   }
-  if (entry.charCount < MIN_CHARACTERS) {
-    throw new Error(`AI post is too short (${entry.charCount} chars, must be ${MIN_CHARACTERS}-600)`);
+  if (entry.charCount < minCharacters) {
+    throw new Error(`AI post is too short (${entry.charCount} chars, minimum ${minCharacters}+ required)`);
   }
 
   const topic = typeof res.topic === 'string' && res.topic.trim() ? res.topic.trim() : chosenTopic;
@@ -271,7 +271,7 @@ Paragraph 2: 2-3 short, very simple sentences with accurate latest numbers AND t
 \\n\\n
 Line 3: One short, thought-provoking question
 
-LENGTH: Strictly 400 to 560 characters total. Never exceed 600.
+LENGTH: Strictly 400+ characters (420 to 560 characters ideal). NEVER under 400 and NEVER exceed 600.
 ZERO hashtags. ZERO emojis. NO labels like "Hook:" or "Body:".
 
 TOPICS TO AVOID (do not repeat these angles):
@@ -318,7 +318,7 @@ Paragraph 2: 2-3 simple sentences with real latest numbers and everyday impact (
 \\n\\n
 Line 3: A sharp closing question
 
-LENGTH: Strictly 400 to 560 characters. Never exceed 600.
+LENGTH: Strictly 400+ characters (420 to 560 characters ideal). NEVER under 400 and NEVER exceed 600.
 ZERO hashtags. ZERO emojis.
 
 AVOID: ${avoidStr}
@@ -373,7 +373,7 @@ export const FALLBACK_BANK = [
       text: 'One bad hospital visit in India can wipe out years of a family\'s hard-earned savings.\n\nWorld Bank figures show Indians pay almost 44% of all medical bills straight from their own pockets. Public clinics often lack enough doctors, beds, and lab tests. So working families must borrow cash at high rates or sell home gold just to treat a sick parent.\n\nWhy does one illness push millions of hardworking Indian families back into debt?'
     },
     romanUrdu: { text: 'India mein aik bada hospital ka chakkar kisi bhi khandan ki barson ki bachat khatam kar sakta hai.\n\nWorld Bank ke mutabiq Bharti log ilaj ke 44% kharch apni jaib se detay hain. Sarkari clinic mein aksar doctor, bistar aur test nahi hotay. Is liye aam khandanon ko bimaar maa baap ke ilaj ke liye qarz lena ya sona bechna parta hai.\n\nAik bimari lakhon mehnat-kash Bharti khandanon ko dobara qarz mein kyon dhakel deti hai?' },
-    plainUrdu: { text: 'بھارت میں اسپتال کا ایک بڑا خرچ کسی بھی خاندان کی برسوں کی بچت ختم کر سکتا ہے۔\n\nورلڈ بینک کے مطابق بھارتی شہری علاج کے تقریباً چوالیس فیصد اخراجات خود اپنی جیب سے ادا کرتے ہیں۔ سرکاری کلینکوں میں اکثر ڈاکٹر، بستر اور ٹیسٹ دستیاب نہیں ہوتے۔ مجبوراً محنت کش خاندانوں کو علاج کے لیے قرض لینا یا سونا بیچنا پڑتا ہے۔\n\nایک بیماری لاکھوں محنتی بھارتی خاندانوں کو دوبارہ قرض کے بوجھ تلے کیوں دبا دیتی ہے؟' }
+    plainUrdu: { text: 'بھارت میں اسپتال کا ایک بڑا خرچ کسی بھی خاندان کی برسوں کی بچت ختم کر سکتا ہے۔\n\nورلڈ بینک کے مطابق بھارتی شہری علاج کے تقریباً چوالیس فیصد اخراجات خود اپنی جیب سے ادا کرتے ہیں۔ سرکاری کلینکوں میں اکثر ڈاکٹر، بستر اور ضروری ٹیسٹ دستیاب نہیں ہوتے۔ مجبوراً محنت کش خاندانوں کو اپنے پیاروں کے علاج کے لیے مہنگا قرض لینا یا گھر کا سونا بیچنا پڑتا ہے۔\n\nایک بیماری لاکھوں محنتی بھارتی خاندانوں کو دوبارہ قرض کے بوجھ تلے کیوں دبا دیتی ہے؟' }
   },
 
   // F3. Dirty air hurting lungs, schools, and wages
@@ -392,7 +392,7 @@ export const FALLBACK_BANK = [
       text: 'Breathing city air in northern India quietly steals health and paychecks from millions.\n\nAir sensors across Delhi often record dirt levels 15 times worse than safe world limits. Schools close for weeks, outdoor work slows down, and kids fill clinics with bad coughs. Parents lose daily wages while spending scarce cash on doctor visits and lung inhalers.\n\nHow can people build a better life when the air outside hurts their kids every day?'
     },
     romanUrdu: { text: 'Shumali India ke shehron ki gandi hawa har saal lakhon logon ki sehat aur kamai cheen leti hai.\n\nDelhi mein hawa ke sensor aksar mehfooz had se 15 guna zyada gandagi dikhatay hain. School hafton band ho jatay hain, mazdoori ruk jati hai aur bachay khansi le kar clinic jatay hain. Maa baap ko dawai aur doctor par apni kamai kharch karni parti hai.\n\nLog behtar mustaqbil kaisay banayein jab bahar ki hawa roz un ke bachon ko bimaar karay?' },
-    plainUrdu: { text: 'شمالی بھارت کے شہروں کی زہریلی ہوا ہر سال لاکھوں لوگوں کی صحت اور کمائی چھین لیتی ہے۔\n\nدہلی کے سینسر اکثر فضائی آلودگی کو محفوظ عالمی حد سے پندرہ گنا زیادہ دکھاتے ہیں۔ اسکول بند ہو جاتے ہیں، مزدوری سست پڑتی ہے اور بچے کھانسی لے کر کلینک پہنچتے ہیں۔ والدین کی کمائی دوائی اور ڈاکٹر پر خرچ ہو جاتی ہے۔\n\nلوگ بہتر مستقبل کیسے بنائیں جب باہر کی ہوا روز ان کے بچوں کو بیمار کرے؟' }
+    plainUrdu: { text: 'شمالی بھارت کے شہروں کی زہریلی ہوا ہر سال لاکھوں لوگوں کی صحت اور کمائی چھین لیتی ہے۔\n\nدہلی کے فضائی سینسر اکثر آلودگی کو محفوظ عالمی حد سے پندرہ گنا زیادہ دکھاتے ہیں۔ اسکول کئی ہفتوں کے لیے بند ہو جاتے ہیں، مزدوری سست پڑتی ہے اور بچے شدید کھانسی لے کر کلینک پہنچتے ہیں۔ والدین کی محنت کی کمائی دوائی اور ڈاکٹر پر خرچ ہو جاتی ہے۔\n\nعام لوگ بہتر مستقبل کیسے بنائیں جب باہر کی زہریلی ہوا روز ان کے بچوں کو بیمار کرے؟' }
   },
 
   // F4. Too many workers stuck in tiny farms
@@ -411,7 +411,7 @@ export const FALLBACK_BANK = [
       text: 'Over 41% of Indian workers still depend on small farms that barely pay the bills.\n\nWorld Bank data shows nearly half of India\'s workforce stays tied to tiny plots of land. Because cities do not add enough steady factory jobs, one weak rain season or sudden price drop pushes whole villages into debt. Young men leave home for risky city labor just to send food money back.\n\nWhy do so many hardworking Indians stay trapped in work that cannot pay a fair living?'
     },
     romanUrdu: { text: 'India ke 41% se zyada mazdoor ab bhi chhoti zameenon ki kheti par guzara kartay hain.\n\nWorld Bank ke mutabiq taqreeban aadhi Bharti abadi chhotay kheton se juri hai kyonke shehron mein pakkay karkhanon ki nokriyan kam hain. Aik kamzor barish ya fasal ki kam qeemat pooray gaon ko qarz mein dooba deti hai.\n\nItnay mehnat-kash Bharti aise kaam mein kyon phansay hain jo ghar ka kharch bhi mushkil se chalaye?' },
-    plainUrdu: { text: 'بھارت کے اکتالیس فیصد سے زیادہ محنت کش اب بھی چھوٹی زمینوں کی کاشتکاری پر گزارا کرتے ہیں۔\n\nورلڈ بینک کے مطابق تقریباً آدھی افرادی قوت کھیتوں سے جڑی ہے کیونکہ شہروں میں کارخانوں کی مستقل ملازمتیں کم ہیں۔ ایک کمزور بارش یا فصل کی قیمت گرنے سے پورا گاؤں قرض میں ڈوب جاتا ہے۔\n\nاتنے محنتی بھارتی ایسے کام میں کیوں پھنسے ہیں جو گھر کا خرچ بھی مشکل سے پورا کرے؟' }
+    plainUrdu: { text: 'بھارت کے اکتالیس فیصد سے زیادہ محنت کش آج بھی چھوٹی زمینوں کی کاشتکاری پر گزارا کرتے ہیں۔\n\nورلڈ بینک کے مطابق تقریباً آدھی بھارتی افرادی قوت کھیتوں سے جڑی ہے کیونکہ شہروں میں کارخانوں کی مستقل ملازمتیں بہت کم ہیں۔ ایک کمزور بارش یا فصل کی قیمت گرنے سے پورا گاؤں قرض میں ڈوب جاتا ہے اور نوجوان شہروں میں مزدوری کرنے پر مجبور ہوتے ہیں۔\n\nاتنے محنتی بھارتی ایسے کام میں کیوں پھنسے ہیں جو گھر کا خرچ بھی مشکل سے پورا کرے؟' }
   },
 
   // F5. Women locked out of paid jobs
@@ -430,7 +430,7 @@ export const FALLBACK_BANK = [
       text: 'Two out of three adult women in India are still shut out of paid jobs.\n\nWorld Bank numbers show only 32% of Indian women work for pay today. Unsafe streets, poor night buses, and few safe childcare options force millions of skilled women to stay home. That leaves most families trying to pay higher rent, food, and school fees on just one monthly paycheck.\n\nHow much stronger would Indian homes be if women had safe travel and fair work?'
     },
     romanUrdu: { text: 'India mein teen mein se do jawan khawateen ab bhi tankhwah wali nokri se bahar hain.\n\nWorld Bank ke mutabiq aaj sirf 32% Bharti khawateen kamai karti hain. Ghair-mehfooz raste, kamzor night bus service aur bachon ki dekh-bhaal ki kami lakhon parhi likhi auraton ko ghar bitha deti hai. Ghar ka sara bojh aik tankhwah par aa jata hai.\n\nBharti ghar kitnay mazboot hotay agar khawateen ko mehfooz safar aur barabar kaam milta?' },
-    plainUrdu: { text: 'بھارت میں تین میں سے دو بالغ خواتین اب بھی تنخواہ والی ملازمت سے باہر ہیں۔\n\nورلڈ بینک کے مطابق آج صرف بتیس فیصد بھارتی خواتین روزگار سے وابستہ ہیں۔ غیر محفوظ راستے، کمزور ٹرانسپورٹ اور سہولیات کی کمی لاکھوں قابل خواتین کو گھر بیٹھنے پر مجبور کرتی ہے۔ اس سے گھر کا پورا بوجھ ایک تنخواہ پر آ جاتا ہے۔\n\nبھارتی گھرانے کتنے مضبوط ہوتے اگر خواتین کو محفوظ سفر اور مناسب روزگار میسر ہوتا؟' }
+    plainUrdu: { text: 'بھارت میں تین میں سے دو بالغ خواتین آج بھی تنخواہ والی ملازمت سے باہر ہیں۔\n\nورلڈ بینک کے مطابق اس وقت صرف بتیس فیصد بھارتی خواتین روزگار سے وابستہ ہیں۔ غیر محفوظ راستے، کمزور ٹرانسپورٹ اور بچوں کی دیکھ بھال کی سہولیات نہ ہونے سے لاکھوں قابل خواتین گھر بیٹھنے پر مجبور ہیں۔ یوں پورے گھر کا بوجھ صرف ایک تنخواہ پر آ جاتا ہے۔\n\nبھارتی گھرانے کتنے مضبوط ہوتے اگر خواتین کو محفوظ سفر اور مناسب روزگار میسر ہوتا؟' }
   },
 
   // F6. Low average pay and rising family loans
@@ -449,7 +449,7 @@ export const FALLBACK_BANK = [
       text: 'Big growth numbers hide how little the average person in India still earns.\n\nWorld Bank figures put yearly output at just $2,702 per person across India. Yet city rent, milk, cooking oil, and school fees keep climbing while regular office pay barely moves. More families now use quick phone loans and monthly credit plans just to buy daily groceries.\n\nIs India\'s spending boom built on real rising pay, or on families borrowing tomorrow\'s cash?'
     },
     romanUrdu: { text: 'Baray maashi adaad ye chhupa letay hain ke India mein aam aadmi aaj bhi kitna kam kamata hai.\n\nWorld Bank ke mutabiq India mein fi kas salana paidawar sirf 2,702 dollar hai. Magar shehr ka kiraya, doodh, tail aur school fees barh rahi hain jabke tankhwah wahin khari hai. Ab log rozmarra rashan ke liye bhi phone se chhotay qarz le rahay hain.\n\nKya India ki khareedari barhti kamai se chal rahi hai ya kal ka paisa udhar le kar?' },
-    plainUrdu: { text: 'بڑے معاشی اعداد و شمار یہ حقیقت چھپا لیتے ہیں کہ بھارت میں عام آدمی آج بھی کتنا کم کماتا ہے۔\n\nورلڈ بینک کے مطابق بھارت میں فی کس سالانہ پیداوار صرف دو ہزار سات سو دو ڈالر ہے۔ مگر شہروں کا کرایہ، دودھ، تیل اور اسکول فیس بڑھتی جا رہی ہے جبکہ تنخواہیں وہیں کھڑی ہیں۔ اب خاندان راشن کے لیے بھی چھوٹے قرضے لے رہے ہیں۔\n\nکیا بھارت کی خریداری بڑھتی آمدنی سے چل رہی ہے یا کل کا پیسہ ادھار لے کر؟' }
+    plainUrdu: { text: 'بڑے معاشی اعداد و شمار یہ تلخ حقیقت چھپا لیتے ہیں کہ بھارت میں عام آدمی آج بھی کتنا کم کماتا ہے۔\n\nورلڈ بینک کے مطابق بھارت میں فی کس سالانہ پیداوار صرف دو ہزار سات سو دو ڈالر ہے۔ مگر شہروں کا کرایہ، دودھ، تیل اور اسکول فیس مسلسل بڑھ رہی ہے جبکہ تنخواہیں وہیں کھڑی ہیں۔ اب خاندان روزمرہ راشن خریدنے کے لیے بھی چھوٹے قرضے لے رہے ہیں۔\n\nکیا بھارت کی خریداری بڑھتی آمدنی سے چل رہی ہے یا کل کا پیسہ ادھار لے کر؟' }
   }
 ];
 
@@ -626,16 +626,17 @@ export async function generateEnglishPost(customTopic = '', excludedTopic = '', 
     let candidate = null;
     let providerName = '';
 
-    /* ---------------- TIER 1. CLOUDFLARE WORKERS AI (PRIMARY + 2-PASS POLISH) ---------------- */
+    /* ---------------- TIER 1. CLOUDFLARE WORKERS AI (PRIMARY + 2-PASS POLISH/EXPAND) ---------------- */
     if (cfToken && cfAccountId && !candidate) {
       try {
         console.log(`[Cloudflare AI] Generating post for India downside topic: "${chosenTopic}"...`);
         const res = await callWithSimplify(callCloudflareAI, prompt);
-        let validated = validateAIResponse(res, chosenTopic, chosenCategory, '');
+        // Allow shorter Pass 1 drafts (120+ chars) so Pass 2 can expand them cleanly to 400+ chars
+        let validated = validateAIResponse(res, chosenTopic, chosenCategory, '', 120);
 
-        // Pass 2: Polish & simplify into simplest possible everyday words with zero news tone
+        // Pass 2: Polish, simplify words, remove news tone, and enforce 400+ character minimum
         const audit = auditDraftForSimplification(validated.english.text);
-        if (audit.needsPolish) {
+        if (audit.needsPolish || validated.english.charCount < MIN_CHARACTERS) {
           console.log(`[Cloudflare AI] Pass 2 polish triggered (${audit.reasons.join(', ')})...`);
           try {
             const polished = await polishWithCloudflareAI(validated, liveFactsBrief);
@@ -643,13 +644,17 @@ export async function generateEnglishPost(customTopic = '', excludedTopic = '', 
               validated = polished;
             }
           } catch (polishErr) {
-            console.warn(`[Cloudflare AI] Pass 2 polish skipped: ${polishErr.message}`);
+            console.warn(`[Cloudflare AI] Pass 2 polish warning: ${polishErr.message}`);
           }
+        }
+
+        if (validated.english.charCount < MIN_CHARACTERS) {
+          throw new Error(`Cloudflare AI post still under ${MIN_CHARACTERS} chars (${validated.english.charCount} chars)`);
         }
 
         candidate = validated;
         providerName = 'Cloudflare Workers AI (Verified India Data + Polish)';
-        console.log(`[Cloudflare AI] ✓ Success!`);
+        console.log(`[Cloudflare AI] ✓ Success! (${candidate.english.charCount} chars)`);
       } catch (err) {
         console.warn(`[Cloudflare AI] ${err.message}. Trying next tier...`);
       }
@@ -831,7 +836,7 @@ RULES:
 - Use simple everyday conversational words that anyone understands easily.
 - Keep the exact same numbers, facts, and the final question intact.
 - Every sentence must be short and easy to understand.
-- Target length: 400 to 600 characters total.
+- STRICT MINIMUM LENGTH: Must be 400+ characters (420 to 580 characters total, NEVER under 400 and NEVER over 600).
 - ZERO hashtags, ZERO emojis. NEVER use labels like "Hook:" or "Body:".
 - Return ONLY valid JSON:
 {
@@ -842,10 +847,14 @@ RULES:
 
   if (cfToken && cfAccountId && !romanEntry) {
     try {
-      const res = await callCloudflareAI(prompt);
+      let res = await callCloudflareAI(prompt);
       if (res && res.text) {
-        const entry = formatEntry(res.text);
-        if (!entry.isOverLimit && entry.charCount > 20) romanEntry = entry;
+        let entry = formatEntry(res.text);
+        if (!entry.isOverLimit && entry.charCount >= 120 && entry.charCount < MIN_CHARACTERS) {
+          res = await callCloudflareAI(`${prompt}\n\nLENGTH FIX: Your last Roman Urdu draft was only ${entry.charCount} characters. Expand Paragraph 2 slightly with simple everyday words so the total length is strictly 420 to 580 characters (400+ required).`);
+          if (res && res.text) entry = formatEntry(res.text);
+        }
+        if (!entry.isOverLimit && entry.charCount >= MIN_CHARACTERS) romanEntry = entry;
       }
     } catch (error) {
       console.warn('[Roman Urdu Cloudflare AI]', error.message);
@@ -857,7 +866,7 @@ RULES:
       const res = await callGemini(prompt, geminiKey);
       if (res && res.text) {
         const entry = formatEntry(res.text);
-        if (!entry.isOverLimit && entry.charCount > 20) romanEntry = entry;
+        if (!entry.isOverLimit && entry.charCount >= MIN_CHARACTERS) romanEntry = entry;
       }
     } catch (error) {
       console.warn('[Roman Urdu Gemini]', error.message);
@@ -869,7 +878,7 @@ RULES:
       const res = await callXai(prompt, 'grok-2-latest');
       if (res && res.text) {
         const entry = formatEntry(res.text);
-        if (!entry.isOverLimit && entry.charCount > 20) romanEntry = entry;
+        if (!entry.isOverLimit && entry.charCount >= MIN_CHARACTERS) romanEntry = entry;
       }
     } catch (error) {
       console.warn('[Roman Urdu Grok]', error.message);
@@ -881,7 +890,7 @@ RULES:
       const res = await callGroq(prompt, groqKey);
       if (res && res.text) {
         const entry = formatEntry(res.text);
-        if (!entry.isOverLimit && entry.charCount > 20) romanEntry = entry;
+        if (!entry.isOverLimit && entry.charCount >= MIN_CHARACTERS) romanEntry = entry;
       }
     } catch (error) {
       console.warn('[Roman Urdu Groq]', error.message);
@@ -934,7 +943,7 @@ RULES:
 - Avoid heavy bookish words or complicated literary terms.
 - Keep the exact same numbers, facts, and the final question intact.
 - Every sentence must be short and easy to understand.
-- Target length: 400 to 600 characters total.
+- STRICT MINIMUM LENGTH: Must be 400+ characters (420 to 580 characters total, NEVER under 400 and NEVER over 600).
 - ZERO hashtags, ZERO emojis. NEVER use labels.
 - Return ONLY valid JSON:
 {
@@ -945,10 +954,14 @@ RULES:
 
   if (cfToken && cfAccountId && !urduEntry) {
     try {
-      const res = await callCloudflareAI(prompt);
+      let res = await callCloudflareAI(prompt);
       if (res && res.text) {
-        const entry = formatEntry(res.text);
-        if (!entry.isOverLimit && entry.charCount > 20) urduEntry = entry;
+        let entry = formatEntry(res.text);
+        if (!entry.isOverLimit && entry.charCount >= 120 && entry.charCount < MIN_CHARACTERS) {
+          res = await callCloudflareAI(`${prompt}\n\nLENGTH FIX: Your last Urdu draft was only ${entry.charCount} characters. Expand Paragraph 2 slightly in simple everyday Urdu so the total length is strictly 420 to 580 characters (400+ required).`);
+          if (res && res.text) entry = formatEntry(res.text);
+        }
+        if (!entry.isOverLimit && entry.charCount >= MIN_CHARACTERS) urduEntry = entry;
       }
     } catch (error) {
       console.warn('[Plain Urdu Cloudflare AI]', error.message);
@@ -960,7 +973,7 @@ RULES:
       const res = await callGemini(prompt, geminiKey);
       if (res && res.text) {
         const entry = formatEntry(res.text);
-        if (!entry.isOverLimit && entry.charCount > 20) urduEntry = entry;
+        if (!entry.isOverLimit && entry.charCount >= MIN_CHARACTERS) urduEntry = entry;
       }
     } catch (error) {
       console.warn('[Plain Urdu Gemini]', error.message);
@@ -972,7 +985,7 @@ RULES:
       const res = await callXai(prompt, 'grok-2-latest');
       if (res && res.text) {
         const entry = formatEntry(res.text);
-        if (!entry.isOverLimit && entry.charCount > 20) urduEntry = entry;
+        if (!entry.isOverLimit && entry.charCount >= MIN_CHARACTERS) urduEntry = entry;
       }
     } catch (error) {
       console.warn('[Plain Urdu Grok]', error.message);
@@ -984,7 +997,7 @@ RULES:
       const res = await callGroq(prompt, groqKey);
       if (res && res.text) {
         const entry = formatEntry(res.text);
-        if (!entry.isOverLimit && entry.charCount > 20) urduEntry = entry;
+        if (!entry.isOverLimit && entry.charCount >= MIN_CHARACTERS) urduEntry = entry;
       }
     } catch (error) {
       console.warn('[Plain Urdu Groq]', error.message);
@@ -1075,9 +1088,14 @@ function safeJsonParse(rawText) {
 }
 
 async function polishWithCloudflareAI(candidate, liveFactsBrief = '') {
+  const currentLen = candidate.english.charCount || candidate.english.text.length;
+  const lengthInstruction = currentLen < MIN_CHARACTERS
+    ? `CRITICAL LENGTH FIX: The current draft is only ${currentLen} characters, which is TOO SHORT (under the strict ${MIN_CHARACTERS}-character minimum). Expand Paragraph 2 by adding one clear everyday effect sentence in simple words so the final post is strictly between 420 and 560 characters.`
+    : `LENGTH: Strictly 400+ characters (420 to 560 characters ideal, NEVER under 400 and NEVER over 600). ZERO hashtags, ZERO emojis, NO labels.`;
+
   const polishPrompt = `Rewrite this X post so it is the BEST possible post about an India downside and its real effect on everyday people.
 
-CURRENT DRAFT:
+CURRENT DRAFT (${currentLen} chars):
 "${candidate.english.text}"
 
 VERIFIED FACTS TO KEEP ACCURATE:
@@ -1094,7 +1112,7 @@ STRICT REWRITE RULES:
    Paragraph 2: 2-3 simple sentences with the accurate latest number + everyday human effect.
    \\n\\n
    Line 3: Short, sharp closing question.
-6. LENGTH: Strictly 400 to 560 characters. ZERO hashtags, ZERO emojis, NO labels.
+6. ${lengthInstruction}
 
 Return ONLY valid JSON:
 {
@@ -1105,7 +1123,7 @@ Return ONLY valid JSON:
 }`;
 
   const polishedRes = await callCloudflareAI(polishPrompt);
-  return validateAIResponse(polishedRes, candidate.topic, candidate.category, candidate.subtopic);
+  return validateAIResponse(polishedRes, candidate.topic, candidate.category, candidate.subtopic, MIN_CHARACTERS);
 }
 
 export async function callCloudflareAI(prompt, model = null) {

@@ -34,7 +34,7 @@ export const VIRAL_COMMENTARY_RULES = `EDITORIAL VOICE & STYLE (INDIA DOWNSIDES 
   * Paragraph 2 (Downside + Latest Data + Real Effect): 2 to 3 short simple sentences showing the real number and how it hurts regular people's money, health, or future.
   * Line 3 (Closing Question): One short, sharp question that makes people want to reply.
 - ZERO emojis, ZERO hashtags, NO bullet points, NO labels like "Hook:" or "Body:".
-- Target length: Strictly 400 to 560 characters (never exceed 600 characters).`;
+- Target length: Strictly 400+ characters (420 to 560 characters ideal, NEVER under 400 and NEVER over 600).`;
 
 export const SIMPLE_ENGLISH_RULES = VIRAL_COMMENTARY_RULES;
 
@@ -94,8 +94,8 @@ export function auditDraftForSimplification(text = '') {
     reasons.push(`complex_words:${foundJargon.slice(0, 4).join(',')}`);
   }
 
-  if (clean.length < 380 || clean.length > 580) {
-    reasons.push(`length_out_of_sweet_spot:${clean.length}`);
+  if (clean.length < 400 || clean.length > 580) {
+    reasons.push(`length_out_of_range:${clean.length}`);
   }
 
   const blocks = clean.split(/\n\s*\n/).filter(Boolean);

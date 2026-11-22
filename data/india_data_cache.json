@@ -1,7 +1,7 @@
 {
-  "fetchedAt": "2026-11-21T18:16:48.458Z",
-  "macroFetchedAt": "2026-11-21T18:16:46.220Z",
-  "liveFetchedAt": "2026-11-21T18:16:48.457Z",
+  "fetchedAt": "2026-11-22T20:30:58.418Z",
+  "macroFetchedAt": "2026-11-22T20:30:58.418Z",
+  "liveFetchedAt": "2026-11-22T20:29:53.899Z",
   "macroFacts": [
     {
       "factId": "youth_unemployment",
@@ -208,44 +208,44 @@
   "airQuality": [
     {
       "city": "Delhi",
-      "pm25": 224,
-      "pm10": 229,
-      "usAqi": 211,
-      "whoMultiple": 14.9,
-      "time": "2026-11-21T18:00",
+      "pm25": 95,
+      "pm10": 97,
+      "usAqi": 195,
+      "whoMultiple": 6.3,
+      "time": "2026-11-22T20:00",
       "source": "Open-Meteo Live Air Quality"
     },
     {
       "city": "Mumbai",
-      "pm25": 66,
-      "pm10": 69,
-      "usAqi": 236,
-      "whoMultiple": 4.4,
-      "time": "2026-11-21T18:00",
+      "pm25": 85,
+      "pm10": 88,
+      "usAqi": 173,
+      "whoMultiple": 5.7,
+      "time": "2026-11-22T20:00",
       "source": "Open-Meteo Live Air Quality"
     },
     {
       "city": "Bengaluru",
-      "pm25": 62,
-      "pm10": 64,
-      "usAqi": 155,
-      "whoMultiple": 4.2,
-      "time": "2026-11-21T18:00",
+      "pm25": 38,
+      "pm10": 39,
+      "usAqi": 140,
+      "whoMultiple": 2.5,
+      "time": "2026-11-22T20:00",
       "source": "Open-Meteo Live Air Quality"
     },
     {
       "city": "Kolkata",
-      "pm25": 15,
-      "pm10": 16,
-      "usAqi": 58,
-      "whoMultiple": 1,
-      "time": "2026-11-21T18:00",
+      "pm25": 21,
+      "pm10": 22,
+      "usAqi": 69,
+      "whoMultiple": 1.4,
+      "time": "2026-11-22T20:00",
       "source": "Open-Meteo Live Air Quality"
     }
   ],
   "exchangeRate": {
-    "usdToInr": 93.37,
-    "fetchedAt": "2026-11-21T18:16:46.662Z",
+    "usdToInr": 92.89,
+    "fetchedAt": "2026-11-22T20:29:52.071Z",
     "source": "ExchangeRate-API"
   }
 }
