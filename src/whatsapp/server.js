@@ -175,7 +175,8 @@ app.post('/generate', async (req, res) => {
   console.log(`   Requested Topic: "${customTopic || 'Auto Trending Theme'}"`);
 
   try {
-    const result = await whatsappWorkflow.generateAndSend(customTopic);
+    const isForced = Boolean(customTopic && String(customTopic).trim());
+    const result = await whatsappWorkflow.generateAndSend(customTopic, '', null, isForced);
 
     console.log(`   AI Result:       ✓ Generated topic "${result.post?.topic}"`);
     if (result.sent) {

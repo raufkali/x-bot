@@ -21,6 +21,7 @@ import { config } from '../config.js';
 import { calculateXCharacterCount } from '../utils/validation.js';
 import {
   SIMPLE_ENGLISH_RULES,
+  NEUTRAL_CUSTOM_TOPIC_RULES,
   checkSimpleEnglish,
   auditDraftForSimplification
 } from '../utils/simpleEnglish.js';
@@ -47,6 +48,17 @@ const MIN_CHARACTERS = 400;
 const ABSOLUTE_MAX_CHARACTERS = 650;
 const TARGET_MIN_CHARACTERS = 400;
 const TARGET_MAX_CHARACTERS = 600;
+
+const INDIA_MENTION_REGEX = /\b(india|indian|indians|delhi|mumbai|kolkata|bengaluru|bangalore|rupee|rbi|bharti|hindu|modi)\b/i;
+const OFF_TOPIC_COUNTRY_REGEX = /\b(india|indian|indians|pakistan|pakistani|pakistanis|bharti|delhi)\b/i;
+
+function topicExplicitlyMentionsIndia(topic = '') {
+  return INDIA_MENTION_REGEX.test(String(topic || ''));
+}
+
+const DEFAULT_PAKISTANI_INDIA_SYSTEM_PROMPT = 'You write high-impact X posts as a Pakistani talking naturally about Indians and India\'s real downsides and how they hurt ordinary people across the border, using the SIMPLEST everyday English (Grade 4-5 words). Keep commentary grounded, analytical, and civil (zero hate). NEVER sound like a news report. Use ONLY verified latest numbers provided in the prompt. Every post MUST strictly follow this exact 3-part layout separated by double line breaks (\\n\\n):\nLine 1: One short punchy hook from a Pakistani point of view exposing an India downside affecting Indians (1 sentence).\n\\n\\nParagraph 2: 2 to 3 short simple sentences with real latest data AND the everyday effect on Indian families, students, or workers (around 50-70 words).\n\\n\\nClosing Line: One short, sharp question that makes people want to reply.\nTotal length MUST be strictly between 400 and 560 characters (never exceed 600). Zero hashtags, zero emojis, no labels. Return ONLY valid JSON.';
+
+const CUSTOM_TOPIC_SYSTEM_PROMPT = 'You write high-impact X posts focused 100% on the exact custom topic entered by the user, using the SIMPLEST everyday English (Grade 4-5 words). NEVER mention India, Indians, or Pakistan unless the user\'s topic explicitly asks about them. Focus on current 2025-2026 trends, real facts, and how this topic affects everyday work or life. Every post MUST strictly follow this exact 3-part layout separated by double line breaks (\\n\\n):\nLine 1: One short punchy hook directly about the user\'s topic (1 sentence).\n\\n\\nParagraph 2: 2 to 3 short simple sentences with real current trends or facts and practical impact (around 50-70 words).\n\\n\\nClosing Line: One short, sharp question that makes people want to reply.\nTotal length MUST be strictly between 400 and 560 characters (never exceed 600). Zero hashtags, zero emojis, no labels. Return ONLY valid JSON.';
 
 /* =========================================================
    TEXT FORMATTING AND VALIDATION
@@ -296,29 +308,28 @@ Return ONLY valid JSON in this exact format:
  */
 export function createCustomTopicPrompt(userTopic, avoidList = [], liveFactsBrief = '') {
   const avoidStr = avoidList.length > 0 ? avoidList.slice(0, 15).join('\n• ') : 'None';
+  const topicWantsIndia = topicExplicitlyMentionsIndia(userTopic);
 
-  return `${SIMPLE_ENGLISH_RULES}
+  return `${topicWantsIndia ? SIMPLE_ENGLISH_RULES : NEUTRAL_CUSTOM_TOPIC_RULES}
 
-# X_BOT — INDIA DOWNSIDES CUSTOM TOPIC ENGINE (2025-2026)
+# X_BOT — DIRECT CUSTOM TOPIC ENGINE (2025-2026)
 
 USER TOPIC: "${userTopic}"
-
-VERIFIED LATEST INDIA DATA (USE WHEN RELEVANT — NEVER GUESS NUMBERS):
-${liveFactsBrief || '- Use verified 2024-2026 official India data.'}
-
-Write a sharp, viral X post **as a Pakistani talking about Indians**, focused on "${userTopic}" and its real-world effects inside India:
-- Write naturally from a Pakistani point of view looking across the border at ordinary Indians (civil, grounded, zero hate)
-- NOT a news report — speak directly about the problem and how it hurts regular Indian people
-- Use accurate latest facts and numbers
-- Use the SIMPLEST possible words — short sentences, everyday English, zero jargon
-- Show the clear cause and effect on Indian families, workers, or young people
+${liveFactsBrief ? `\nVERIFIED REFERENCE DATA (USE ONLY IF RELEVANT TO "${userTopic}"):\n${liveFactsBrief}\n` : ''}
+YOUR MISSION: Write the BEST, most engaging X post strictly about "${userTopic}":
+- Focus 100% on "${userTopic}" — its latest 2025-2026 trends, practical reality, benefits, risks, or everyday effects.
+${topicWantsIndia
+    ? '- Because the topic mentions India/Indians, keep the grounded cross-border perspective focused clearly on the topic.'
+    : '- CRITICAL TOPIC BOUNDARY: Do NOT mention India, Indians, or Pakistan anywhere in this post. Completely ignore India and Pakistan and stick strictly to what the user asked for.'}
+- NOT a stiff news bulletin — talk directly to readers like a sharp friend on X.
+- Use the SIMPLEST possible words — short sentences (5-12 words), everyday English, zero jargon.
 
 STRICT POST STRUCTURE (3 parts, separated by double line breaks \\n\\n):
-Line 1: One short hook sentence as a Pakistani talking about "${userTopic}" in India
+Line 1: One short, scroll-stopping hook sentence directly about "${userTopic}"
 \\n\\n
-Paragraph 2: 2-3 simple sentences with real latest numbers and everyday impact on Indians (around 50-70 words)
+Paragraph 2: 2-3 simple sentences covering what is trending right now around "${userTopic}" and how it affects real people or daily work (around 50-70 words)
 \\n\\n
-Line 3: A sharp closing question
+Line 3: A sharp closing question directly about "${userTopic}"
 
 LENGTH: Strictly 400+ characters (420 to 560 characters ideal). NEVER under 400 and NEVER exceed 600.
 ZERO hashtags. ZERO emojis.
@@ -327,8 +338,8 @@ AVOID: ${avoidStr}
 
 Return ONLY valid JSON:
 {
-  "topic": "Short plain-English headline",
-  "subtopic": "The downside and effect explored",
+  "topic": "Short plain-English headline strictly about ${userTopic.replace(/"/g, "'")}",
+  "subtopic": "Specific angle explored on ${userTopic.replace(/"/g, "'")}",
   "category": "CUSTOM_TOPIC",
   "text": "Hook\\n\\nBody\\n\\nConclusion"
 }`;
@@ -526,6 +537,52 @@ function generateDynamicFallback(category = 'TRENDING', subtopic = '', excludedT
   return formatCandidate(nonExcluded, category || 'TRENDING');
 }
 
+function buildCustomTopicFallback(userTopic, attempt = 1) {
+  const cleanTopic = String(userTopic || 'your topic').replace(/\s+/g, ' ').trim();
+  const shortLabel = cleanTopic.length > 72 ? `${cleanTopic.slice(0, 69)}...` : cleanTopic;
+  const hooks = [
+    `People everywhere are talking about ${shortLabel}, yet most miss what really matters right now.`,
+    `Everyone is watching ${shortLabel} grow fast today, and the biggest shift is only just starting.`,
+    `If you follow ${shortLabel} closely, you can already see how fast daily habits are changing.`
+  ];
+  const bodies = [
+    `New tools and fresh ideas around ${shortLabel} are changing how everyday people learn, write, and finish daily work faster than ever. Those who test these shifts early save hours each week, while anyone waiting too long falls behind on speed, reach, and real results.`,
+    `Across small teams and solo creators, ${shortLabel} is turning slow manual tasks into quick daily wins with less cost and fewer delays. At the same time, copying others blindly creates noisy content that readers scroll right past without caring.`,
+    `Smart builders using ${shortLabel} focus on clear human voice, real usefulness, and simple words that hold attention. The real edge does not come from hype alone, because audiences still reward honest ideas that solve an actual problem.`
+  ];
+  const questions = [
+    `How are you using ${shortLabel} in your own work today, and what actually works best?`,
+    `Do you think ${shortLabel} helps real creators stand out, or just adds more noise online?`,
+    `What is the biggest win or risk you see with ${shortLabel} over the next year?`
+  ];
+  const idx = (Math.max(1, attempt) - 1) % hooks.length;
+  const rawText = `${hooks[idx]}\n\n${bodies[idx]}\n\n${questions[idx]}`;
+  const entry = formatEntry(rawText);
+  const meta = extractPostMetadata({
+    topic: cleanTopic,
+    subtopic: `Current trends and practical impact of ${shortLabel}`,
+    genreId: 'CUSTOM_TOPIC',
+    category: 'CUSTOM_TOPIC',
+    text: entry.text
+  });
+  return {
+    topic: cleanTopic,
+    subtopic: meta.subtopic,
+    category: 'CUSTOM_TOPIC',
+    genreId: 'CUSTOM_TOPIC',
+    mainSubject: meta.mainSubject,
+    specificEventOrIssue: meta.specificEventOrIssue,
+    centralArgument: meta.centralArgument,
+    analyticalAngle: meta.analyticalAngle,
+    importantStatistics: meta.importantStatistics,
+    keywords: meta.keywords,
+    normalizedText: meta.normalizedText,
+    english: entry,
+    romanUrdu: null,
+    plainUrdu: null
+  };
+}
+
 /**
  * Executes an AI provider call cleanly without blocking rejection criteria
  */
@@ -603,13 +660,17 @@ export async function generateEnglishPost(customTopic = '', excludedTopic = '', 
     }
   }
 
-  // Gather live verified India statistics from integrated public APIs (World Bank + Open-Meteo + FX)
+  const isCustomNeutralMode = Boolean(isUserForcedTopic && !topicExplicitlyMentionsIndia(chosenTopic));
+
+  // Gather live verified India statistics ONLY when generating India-focused posts (or custom topics explicitly mentioning India)
   let liveFactsBrief = '';
-  try {
-    const liveSnapshot = await getLiveIndiaFactsSnapshot();
-    liveFactsBrief = formatFactsBrief(chosenTopic, liveSnapshot);
-  } catch (e) {
-    console.warn(`[Pipeline] Live India data integration fallback: ${e.message}`);
+  if (!isCustomNeutralMode) {
+    try {
+      const liveSnapshot = await getLiveIndiaFactsSnapshot();
+      liveFactsBrief = formatFactsBrief(chosenTopic, liveSnapshot);
+    } catch (e) {
+      console.warn(`[Pipeline] Live India data integration fallback: ${e.message}`);
+    }
   }
 
   // ─── PHASE 2: GENERATE POST (up to 5 attempts) ───────────────────────────
@@ -620,10 +681,11 @@ export async function generateEnglishPost(customTopic = '', excludedTopic = '', 
     // On retries, slightly vary the topic framing to get a fresh angle
     const attemptTopic = attempt === 1 ? chosenTopic : `${chosenTopic} — angle ${attempt}`;
 
-    // Build the right prompt grounded in live verified India data
+    // Build the right prompt: 100% custom topic (ignoring India) vs India downsides engine
     const prompt = isUserForcedTopic
-      ? createCustomTopicPrompt(chosenTopic, avoidList, liveFactsBrief)
+      ? createCustomTopicPrompt(attempt === 1 ? chosenTopic : `${chosenTopic} (${attempt === 2 ? 'practical trends and impact' : `fresh angle ${attempt}`})`, avoidList, liveFactsBrief)
       : createTrendingPostPrompt(attemptTopic, trendContext, avoidList, liveFactsBrief);
+    const activeSystemPrompt = isCustomNeutralMode ? CUSTOM_TOPIC_SYSTEM_PROMPT : DEFAULT_PAKISTANI_INDIA_SYSTEM_PROMPT;
 
     let candidate = null;
     let providerName = '';
@@ -631,17 +693,18 @@ export async function generateEnglishPost(customTopic = '', excludedTopic = '', 
     /* ---------------- TIER 1. CLOUDFLARE WORKERS AI (PRIMARY + 2-PASS POLISH/EXPAND) ---------------- */
     if (cfToken && cfAccountId && !candidate) {
       try {
-        console.log(`[Cloudflare AI] Generating post for India downside topic: "${chosenTopic}"...`);
-        const res = await callWithSimplify(callCloudflareAI, prompt);
+        console.log(`[Cloudflare AI] Generating post for ${isCustomNeutralMode ? 'custom topic' : 'India downside topic'}: "${chosenTopic}"...`);
+        const res = await callWithSimplify(callCloudflareAI, prompt, null, activeSystemPrompt);
         // Allow shorter Pass 1 drafts (120+ chars) so Pass 2 can expand them cleanly to 400+ chars
         let validated = validateAIResponse(res, chosenTopic, chosenCategory, '', 120);
 
-        // Pass 2: Polish, simplify words, remove news tone, and enforce 400+ character minimum
+        // Pass 2: Polish, simplify words, enforce 400+ minimum, and strip off-topic country mentions for neutral custom topics
         const audit = auditDraftForSimplification(validated.english.text);
-        if (audit.needsPolish || validated.english.charCount < MIN_CHARACTERS) {
-          console.log(`[Cloudflare AI] Pass 2 polish triggered (${audit.reasons.join(', ')})...`);
+        const offTopicCountryDrift = isCustomNeutralMode && OFF_TOPIC_COUNTRY_REGEX.test(validated.english.text);
+        if (audit.needsPolish || validated.english.charCount < MIN_CHARACTERS || offTopicCountryDrift) {
+          console.log(`[Cloudflare AI] Pass 2 polish triggered (${[...audit.reasons, ...(offTopicCountryDrift ? ['off_topic_country_mention'] : [])].join(', ')})...`);
           try {
-            const polished = await polishWithCloudflareAI(validated, liveFactsBrief);
+            const polished = await polishWithCloudflareAI(validated, liveFactsBrief, isCustomNeutralMode);
             if (polished) {
               validated = polished;
             }
@@ -653,9 +716,14 @@ export async function generateEnglishPost(customTopic = '', excludedTopic = '', 
         if (validated.english.charCount < MIN_CHARACTERS) {
           throw new Error(`Cloudflare AI post still under ${MIN_CHARACTERS} chars (${validated.english.charCount} chars)`);
         }
+        if (isCustomNeutralMode && OFF_TOPIC_COUNTRY_REGEX.test(validated.english.text)) {
+          throw new Error(`Cloudflare AI custom-topic post mentioned India/Pakistan off-topic`);
+        }
 
         candidate = validated;
-        providerName = 'Cloudflare Workers AI (Verified India Data + Polish)';
+        providerName = isCustomNeutralMode
+          ? 'Cloudflare Workers AI (Custom Topic + Polish)'
+          : 'Cloudflare Workers AI (Verified India Data + Polish)';
         console.log(`[Cloudflare AI] ✓ Success! (${candidate.english.charCount} chars)`);
       } catch (err) {
         console.warn(`[Cloudflare AI] ${err.message}. Trying next tier...`);
@@ -667,6 +735,9 @@ export async function generateEnglishPost(customTopic = '', excludedTopic = '', 
       try {
         const res = await callWithSimplify(callGemini, prompt, geminiKey);
         const validated = validateAIResponse(res, chosenTopic, chosenCategory, '');
+        if (isCustomNeutralMode && OFF_TOPIC_COUNTRY_REGEX.test(validated.english.text)) {
+          throw new Error('Gemini custom-topic output drifted off-topic into India/Pakistan');
+        }
         candidate = validated;
         providerName = 'Google Gemini Free API';
         console.log(`[Gemini API] ✓ Success!`);
@@ -678,8 +749,11 @@ export async function generateEnglishPost(customTopic = '', excludedTopic = '', 
     /* ---------------- TIER 3. xAI GROK API ---------------- */
     if (xaiKey && !candidate) {
       try {
-        const res = await callWithSimplify(callXai, prompt, 'grok-2-latest');
+        const res = await callWithSimplify(callXai, prompt, 'grok-2-latest', activeSystemPrompt);
         const validated = validateAIResponse(res, chosenTopic, chosenCategory, '');
+        if (isCustomNeutralMode && OFF_TOPIC_COUNTRY_REGEX.test(validated.english.text)) {
+          throw new Error('xAI custom-topic output drifted off-topic into India/Pakistan');
+        }
         candidate = validated;
         providerName = 'xAI Grok API';
         console.log(`[Grok API] ✓ Success!`);
@@ -691,8 +765,11 @@ export async function generateEnglishPost(customTopic = '', excludedTopic = '', 
     /* ---------------- TIER 4. GROQ CLOUD API ---------------- */
     if (groqKey && !candidate) {
       try {
-        const res = await callWithSimplify(callGroq, prompt, groqKey);
+        const res = await callWithSimplify(callGroq, prompt, groqKey, activeSystemPrompt);
         const validated = validateAIResponse(res, chosenTopic, chosenCategory, '');
+        if (isCustomNeutralMode && OFF_TOPIC_COUNTRY_REGEX.test(validated.english.text)) {
+          throw new Error('Groq custom-topic output drifted off-topic into India/Pakistan');
+        }
         candidate = validated;
         providerName = 'Groq Cloud API (Free)';
         console.log(`[Groq API] ✓ Success!`);
@@ -701,13 +778,15 @@ export async function generateEnglishPost(customTopic = '', excludedTopic = '', 
       }
     }
 
-    /* ---------------- TIER 5. ENGAGEMENT FALLBACK BANK ---------------- */
+    /* ---------------- TIER 5. FALLBACK (CUSTOM-TOPIC AWARE OR INDIA BANK) ---------------- */
     if (!candidate) {
-      const fallback = generateDynamicFallback(chosenCategory, '', cleanExcluded, avoidList);
+      const fallback = isCustomNeutralMode
+        ? buildCustomTopicFallback(chosenTopic, attempt)
+        : generateDynamicFallback(chosenCategory, '', cleanExcluded, avoidList);
       if (fallback) {
         candidate = fallback;
-        providerName = 'Engagement Fallback Bank';
-        console.log(`[Fallback Bank] Serving pre-written post: "${candidate.topic}"`);
+        providerName = isCustomNeutralMode ? 'Custom Topic Fallback' : 'Engagement Fallback Bank';
+        console.log(`[Fallback Bank] Serving post for: "${candidate.topic}"`);
       }
     }
 
@@ -823,7 +902,11 @@ export async function generateRomanUrduFromEnglish(englishPost, topic = '') {
   const xaiKey = process.env.GROK_API_KEY || process.env.XAI_API_KEY;
   const groqKey = process.env.GROQ_API_KEY;
 
-  const prompt = `Translate this post into natural, everyday Pakistani Roman Urdu, keeping the voice of a Pakistani talking about Indians and everyday life in India.
+  const isIndiaFocused = OFF_TOPIC_COUNTRY_REGEX.test(`${topic} ${englishPost?.text || ''}`);
+  const translationSystemPrompt = isIndiaFocused ? DEFAULT_PAKISTANI_INDIA_SYSTEM_PROMPT : CUSTOM_TOPIC_SYSTEM_PROMPT;
+
+  const prompt = isIndiaFocused
+    ? `Translate this post into natural, everyday Pakistani Roman Urdu, keeping the voice of a Pakistani talking about Indians and everyday life in India.
 
 ENGLISH POST:
 "${englishPost.text}"
@@ -843,17 +926,38 @@ RULES:
 - Return ONLY valid JSON:
 {
   "text": "Line 1 hook\\n\\nBody paragraph\\n\\nConclusion line"
+}`
+    : `Translate this custom-topic post accurately into natural, conversational Roman Urdu. Stay 100% on the topic of the English post and DO NOT mention India, Indians, or Pakistan.
+
+ENGLISH POST:
+"${englishPost.text}"
+
+RULES:
+- Preserve the exact 3-part layout separated by double line breaks (\\n\\n):
+  Line 1: A single punchy hook line in Roman Urdu matching the English hook.
+  \\n\\n
+  Paragraph 2: The real body in Roman Urdu explaining the same trends, facts, and impact.
+  \\n\\n
+  Line 3: A short concluding takeaway or closing question in Roman Urdu.
+- Use simple everyday conversational words that anyone understands easily.
+- Keep the exact same numbers, facts, and the final question intact.
+- Every sentence must be short and easy to understand.
+- STRICT MINIMUM LENGTH: Must be 400+ characters (420 to 580 characters total, NEVER under 400 and NEVER over 600).
+- ZERO hashtags, ZERO emojis. NEVER use labels like "Hook:" or "Body:".
+- Return ONLY valid JSON:
+{
+  "text": "Line 1 hook\\n\\nBody paragraph\\n\\nConclusion line"
 }`;
 
   let romanEntry = null;
 
   if (cfToken && cfAccountId && !romanEntry) {
     try {
-      let res = await callCloudflareAI(prompt);
+      let res = await callCloudflareAI(prompt, null, translationSystemPrompt);
       if (res && res.text) {
         let entry = formatEntry(res.text);
         if (!entry.isOverLimit && entry.charCount >= 120 && entry.charCount < MIN_CHARACTERS) {
-          res = await callCloudflareAI(`${prompt}\n\nLENGTH FIX: Your last Roman Urdu draft was only ${entry.charCount} characters. Expand Paragraph 2 slightly with simple everyday words so the total length is strictly 420 to 580 characters (400+ required).`);
+          res = await callCloudflareAI(`${prompt}\n\nLENGTH FIX: Your last Roman Urdu draft was only ${entry.charCount} characters. Expand Paragraph 2 slightly with simple everyday words so the total length is strictly 420 to 580 characters (400+ required).`, null, translationSystemPrompt);
           if (res && res.text) entry = formatEntry(res.text);
         }
         if (!entry.isOverLimit && entry.charCount >= MIN_CHARACTERS) romanEntry = entry;
@@ -929,7 +1033,11 @@ export async function generatePlainUrduFromEnglish(englishPost, topic = '') {
   const xaiKey = process.env.GROK_API_KEY || process.env.XAI_API_KEY;
   const groqKey = process.env.GROQ_API_KEY;
 
-  const prompt = `Translate this post into very simple everyday Pakistani Urdu script (اردو), keeping the voice of a Pakistani talking about Indians and India's real issues.
+  const isIndiaFocused = OFF_TOPIC_COUNTRY_REGEX.test(`${topic} ${englishPost?.text || ''}`);
+  const translationSystemPrompt = isIndiaFocused ? DEFAULT_PAKISTANI_INDIA_SYSTEM_PROMPT : CUSTOM_TOPIC_SYSTEM_PROMPT;
+
+  const prompt = isIndiaFocused
+    ? `Translate this post into very simple everyday Pakistani Urdu script (اردو), keeping the voice of a Pakistani talking about Indians and India's real issues.
 
 ENGLISH POST:
 "${englishPost.text}"
@@ -950,17 +1058,39 @@ RULES:
 - Return ONLY valid JSON:
 {
   "text": "اردو ہک لائن\\n\\nاردو باڈی پیراگراف\\n\\nاردو اختتامی لائن"
+}`
+    : `Translate this custom-topic post accurately into simple everyday Urdu script (اردو). Stay 100% on the topic of the English post and DO NOT mention India, Indians, or Pakistan.
+
+ENGLISH POST:
+"${englishPost.text}"
+
+RULES:
+- Preserve the exact 3-part layout separated by double line breaks (\\n\\n):
+  Line 1: A single punchy hook line in Urdu (اردو) matching the English hook.
+  \\n\\n
+  Paragraph 2: The real body in Urdu explaining the same trends, facts, and impact.
+  \\n\\n
+  Line 3: A short concluding takeaway or closing question in Urdu.
+- Use simple everyday Urdu that an ordinary reader understands easily.
+- Avoid heavy bookish words or complicated literary terms.
+- Keep the exact same numbers, facts, and the final question intact.
+- Every sentence must be short and easy to understand.
+- STRICT MINIMUM LENGTH: Must be 400+ characters (420 to 580 characters total, NEVER under 400 and NEVER over 600).
+- ZERO hashtags, ZERO emojis. NEVER use labels.
+- Return ONLY valid JSON:
+{
+  "text": "اردو ہک لائن\\n\\nاردو باڈی پیراگراف\\n\\nاردو اختتامی لائن"
 }`;
 
   let urduEntry = null;
 
   if (cfToken && cfAccountId && !urduEntry) {
     try {
-      let res = await callCloudflareAI(prompt);
+      let res = await callCloudflareAI(prompt, null, translationSystemPrompt);
       if (res && res.text) {
         let entry = formatEntry(res.text);
         if (!entry.isOverLimit && entry.charCount >= 120 && entry.charCount < MIN_CHARACTERS) {
-          res = await callCloudflareAI(`${prompt}\n\nLENGTH FIX: Your last Urdu draft was only ${entry.charCount} characters. Expand Paragraph 2 slightly in simple everyday Urdu so the total length is strictly 420 to 580 characters (400+ required).`);
+          res = await callCloudflareAI(`${prompt}\n\nLENGTH FIX: Your last Urdu draft was only ${entry.charCount} characters. Expand Paragraph 2 slightly in simple everyday Urdu so the total length is strictly 420 to 580 characters (400+ required).`, null, translationSystemPrompt);
           if (res && res.text) entry = formatEntry(res.text);
         }
         if (!entry.isOverLimit && entry.charCount >= MIN_CHARACTERS) urduEntry = entry;
@@ -1089,13 +1219,40 @@ function safeJsonParse(rawText) {
   }
 }
 
-async function polishWithCloudflareAI(candidate, liveFactsBrief = '') {
+async function polishWithCloudflareAI(candidate, liveFactsBrief = '', isCustomNeutralMode = false) {
   const currentLen = candidate.english.charCount || candidate.english.text.length;
   const lengthInstruction = currentLen < MIN_CHARACTERS
     ? `CRITICAL LENGTH FIX: The current draft is only ${currentLen} characters, which is TOO SHORT (under the strict ${MIN_CHARACTERS}-character minimum). Expand Paragraph 2 by adding one clear everyday effect sentence in simple words so the final post is strictly between 420 and 560 characters.`
     : `LENGTH: Strictly 400+ characters (420 to 560 characters ideal, NEVER under 400 and NEVER over 600). ZERO hashtags, ZERO emojis, NO labels.`;
 
-  const polishPrompt = `Rewrite this X post so it sounds naturally like **a Pakistani talking about Indians** and India's downsides/real effects, using the simplest words.
+  const polishPrompt = isCustomNeutralMode
+    ? `Rewrite this X post so it stays 100% focused on the user's custom topic ("${(candidate.topic || '').replace(/"/g, "'")}") using the simplest everyday words.
+
+CURRENT DRAFT (${currentLen} chars):
+"${candidate.english.text}"
+
+STRICT REWRITE RULES:
+1. IGNORE INDIA / PAKISTAN: Remove any mention of India, Indians, or Pakistan unless explicitly requested by the topic. Focus 100% on "${(candidate.topic || '').replace(/"/g, "'")}".
+2. NOT STIFF NEWS: Remove newspaper phrases ("A report says", "Today", "Yesterday", "Latest news").
+3. REAL TRENDS & PRACTICAL EFFECT: Explain what is actually happening around this topic and how it affects real people or daily work.
+4. SIMPLEST POSSIBLE WORDS: Replace every long or fancy word (like infrastructure, disparity, demographic, inflation, macroeconomic, expenditure, deteriorating) with tiny everyday words a 12-year-old uses.
+5. SHORT SENTENCES: 5 to 12 words per sentence.
+6. EXACT 3-PART LAYOUT separated by \\n\\n:
+   Line 1: Punchy hook sentence directly about the topic.
+   \\n\\n
+   Paragraph 2: 2-3 simple sentences with real trends/facts + everyday impact.
+   \\n\\n
+   Line 3: Short, sharp closing question.
+7. ${lengthInstruction}
+
+Return ONLY valid JSON:
+{
+  "topic": "${(candidate.topic || '').replace(/"/g, "'")}",
+  "subtopic": "${(candidate.subtopic || '').replace(/"/g, "'")}",
+  "category": "CUSTOM_TOPIC",
+  "text": "Rewritten hook\\n\\nRewritten body\\n\\nRewritten question"
+}`
+    : `Rewrite this X post so it sounds naturally like **a Pakistani talking about Indians** and India's downsides/real effects, using the simplest words.
 
 CURRENT DRAFT (${currentLen} chars):
 "${candidate.english.text}"
@@ -1125,11 +1282,11 @@ Return ONLY valid JSON:
   "text": "Rewritten hook\\n\\nRewritten body\\n\\nRewritten question"
 }`;
 
-  const polishedRes = await callCloudflareAI(polishPrompt);
+  const polishedRes = await callCloudflareAI(polishPrompt, null, isCustomNeutralMode ? CUSTOM_TOPIC_SYSTEM_PROMPT : DEFAULT_PAKISTANI_INDIA_SYSTEM_PROMPT);
   return validateAIResponse(polishedRes, candidate.topic, candidate.category, candidate.subtopic, MIN_CHARACTERS);
 }
 
-export async function callCloudflareAI(prompt, model = null) {
+export async function callCloudflareAI(prompt, model = null, systemPrompt = DEFAULT_PAKISTANI_INDIA_SYSTEM_PROMPT) {
   const accountId = (process.env.CLOUDFLARE_ACCOUNT_ID || config.cloudflareAccountId || '').trim();
   const apiToken = (process.env.CLOUDFLARE_API_TOKEN || config.cloudflareApiToken || '').trim();
   if (!accountId || !apiToken) {
@@ -1163,7 +1320,7 @@ export async function callCloudflareAI(prompt, model = null) {
               messages: [
                 {
                   role: 'system',
-                  content: 'You write high-impact X posts as a Pakistani talking naturally about Indians and India\'s real downsides and how they hurt ordinary people across the border, using the SIMPLEST everyday English (Grade 4-5 words). Keep commentary grounded, analytical, and civil (zero hate). NEVER sound like a news report. Use ONLY verified latest numbers provided in the prompt. Every post MUST strictly follow this exact 3-part layout separated by double line breaks (\\n\\n):\nLine 1: One short punchy hook from a Pakistani point of view exposing an India downside affecting Indians (1 sentence).\n\\n\\nParagraph 2: 2 to 3 short simple sentences with real latest data AND the everyday effect on Indian families, students, or workers (around 50-70 words).\n\\n\\nClosing Line: One short, sharp question that makes people want to reply.\nTotal length MUST be strictly between 400 and 560 characters (never exceed 600). Zero hashtags, zero emojis, no labels. Return ONLY valid JSON.'
+                  content: systemPrompt
                 },
                 { role: 'user', content: prompt }
               ]
@@ -1205,7 +1362,7 @@ export async function callCloudflareAI(prompt, model = null) {
   throw lastError;
 }
 
-async function callGroq(prompt, apiKey) {
+async function callGroq(prompt, apiKey, systemPrompt = DEFAULT_PAKISTANI_INDIA_SYSTEM_PROMPT) {
   const groq = new Groq({ apiKey });
   const models = [
     process.env.AI_MODEL,
@@ -1222,7 +1379,7 @@ async function callGroq(prompt, apiKey) {
         messages: [
           {
             role: 'system',
-            content: 'You write high-impact X posts as a Pakistani talking naturally about Indians and India\'s real downsides and how they hurt ordinary people across the border, using the SIMPLEST everyday English (Grade 4-5 words). Keep commentary grounded, analytical, and civil (zero hate). NEVER sound like a news report. Use ONLY verified latest numbers provided in the prompt. Every post MUST strictly follow this exact 3-part layout separated by double line breaks (\\n\\n):\nLine 1: One short punchy hook from a Pakistani point of view exposing an India downside affecting Indians (1 sentence).\n\\n\\nParagraph 2: 2 to 3 short simple sentences with real latest data AND the everyday effect on Indian families, students, or workers (around 50-70 words).\n\\n\\nClosing Line: One short, sharp question that makes people want to reply.\nTotal length MUST be strictly between 400 and 560 characters (never exceed 600). Zero hashtags, zero emojis, no labels. Return ONLY valid JSON.'
+            content: systemPrompt
           },
           { role: 'user', content: prompt }
         ],
@@ -1240,7 +1397,7 @@ async function callGroq(prompt, apiKey) {
   throw lastErr || new Error('All Groq models failed');
 }
 
-async function callXai(prompt, model = 'grok-2-latest') {
+async function callXai(prompt, model = 'grok-2-latest', systemPrompt = DEFAULT_PAKISTANI_INDIA_SYSTEM_PROMPT) {
   const apiKey = process.env.GROK_API_KEY || process.env.XAI_API_KEY;
   if (!apiKey) {
     throw new Error('GROK_API_KEY or XAI_API_KEY is not set');
@@ -1268,7 +1425,7 @@ async function callXai(prompt, model = 'grok-2-latest') {
           messages: [
             {
               role: 'system',
-              content: 'You write high-impact X posts as a Pakistani talking naturally about Indians and India\'s real downsides and how they hurt ordinary people across the border, using the SIMPLEST everyday English (Grade 4-5 words). Keep commentary grounded, analytical, and civil (zero hate). NEVER sound like a news report. Use ONLY verified latest numbers provided in the prompt. Every post MUST strictly follow this exact 3-part layout separated by double line breaks (\\n\\n):\nLine 1: One short punchy hook from a Pakistani point of view exposing an India downside affecting Indians (1 sentence).\n\\n\\nParagraph 2: 2 to 3 short simple sentences with real latest data AND the everyday effect on Indian families, students, or workers (around 50-70 words).\n\\n\\nClosing Line: One short, sharp question that makes people want to reply.\nTotal length MUST be strictly between 400 and 560 characters (never exceed 600). Zero hashtags, zero emojis, no labels. Return ONLY valid JSON.'
+              content: systemPrompt
             },
             { role: 'user', content: prompt }
           ],

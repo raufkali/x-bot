@@ -120,7 +120,7 @@ class WhatsAppWorkflowManager extends EventEmitter {
       // Attach listener first so we don't miss early replies
       this.on('owner_decision', onDecision);
 
-      genResult = await this.generateAndSend(customTopic);
+      genResult = await this.generateAndSend(customTopic, '', null, Boolean(customTopic && customTopic.trim()));
 
       // If owner decision already arrived during generation
       if (this.status === 'APPROVED' || this.status === 'DISCARDED') {
@@ -352,20 +352,20 @@ ${versionObj.hashtags || ''}`).trim();
         return { action: 'TRENDS_LIST', trends, message: trendsMsg };
       }
 
-      // Option 3: Write about a custom topic
-      if (input === '3' || input.includes('custom topic') || input === 'custom' || input.startsWith('topic:')) {
-        let customTopic = '';
-        if (input.startsWith('topic:')) {
-          customTopic = rawInput.slice(6).trim();
-          console.log(ansi.emeraldText(`\n✍️ [WhatsApp Action] Owner provided direct topic: "${customTopic}"`));
-          if (whatsappClient.isConfigured() && fromNumber) {
-            try {
-              await whatsappClient.sendText(fromNumber, `✍️ Writing a post about: *"${customTopic}"*\n⚡ Generating... Please wait.`);
-            } catch (e) {}
-          }
-          return await this.generateAndSend(customTopic, '', null, true);
+      // Option 3: Open custom topic mode OR direct prefixed custom topic ("topic: ...", "write about ...", "3 <topic>")
+      const prefixedMatch = rawInput.trim().match(/^(?:topic\s*:|write\s+about\s+|post\s+about\s+|custom\s*:\s*|3\s+)(.+)$/i);
+      if (prefixedMatch && prefixedMatch[1] && prefixedMatch[1].trim().length >= 3) {
+        const directTopic = prefixedMatch[1].trim();
+        console.log(ansi.emeraldText(`\n✍️ [WhatsApp Action] Owner provided direct custom topic: "${directTopic}"`));
+        if (whatsappClient.isConfigured() && fromNumber) {
+          try {
+            await whatsappClient.sendText(fromNumber, `✍️ Writing a post about: *"${directTopic}"*\n⚡ Generating... Please wait.`);
+          } catch (e) {}
         }
+        return await this.generateAndSend(directTopic, '', null, true);
+      }
 
+      if (input === '3' || input === 'custom topic' || input === 'write about a custom topic' || input === 'custom') {
         this.menuState = 'AWAITING_CUSTOM_TOPIC';
         console.log(ansi.emeraldText('\n✍️ [WhatsApp Action] Owner opened custom topic mode...'));
         const askMsg =
@@ -378,7 +378,28 @@ ${versionObj.hashtags || ''}`).trim();
         return { action: 'AWAITING_CUSTOM_TOPIC', message: askMsg };
       }
 
-      // Any other SMS wakes the bot and sends the welcome greeting!
+      // Direct topic input without pressing 3 first (ignore short greetings/wake-ups so "Hi"/"Hello there!" still shows menu)
+      const normalizedWords = input.replace(/[^\p{L}\p{N}\s]/gu, ' ').trim().split(/\s+/).filter(Boolean);
+      const isGreetingOrWake = /^(?:hi+|he+y+|hello(?:\s+there|\s+bot|\s+assistant)?|yo|sup|salam|assalam(?:\s*o?\s*alaikum)?|asalam|aoa|good\s+(?:morning|afternoon|evening|night)|how\s+are\s+you|menu|help|status|wake(?:\s+up)?|ok|okay|thanks|thank\s+you|\?+)$/i.test(
+        input.replace(/[!?.]+$/g, '').trim()
+      );
+      const looksLikeDirectCustomTopic = !isGreetingOrWake && (
+        normalizedWords.length >= 2 ||
+        (this.status === 'AWAITING_GENERATE' && input.length >= 4 && !/^(?:\d+|yes|no|cancel|back)$/.test(input))
+      );
+
+      if (looksLikeDirectCustomTopic) {
+        const directTopic = rawInput.trim();
+        console.log(ansi.emeraldText(`\n✍️ [WhatsApp Action] Owner typed custom topic directly: "${directTopic}"`));
+        if (whatsappClient.isConfigured() && fromNumber) {
+          try {
+            await whatsappClient.sendText(fromNumber, `✍️ Writing a post about: *"${directTopic}"*\n⚡ Generating... Please wait.`);
+          } catch (e) {}
+        }
+        return await this.generateAndSend(directTopic, '', null, true);
+      }
+
+      // Greetings or wake-up messages send the welcome menu
       this.status = 'AWAITING_GENERATE';
       this.menuState = 'DEFAULT';
       console.log(ansi.emeraldText('\n👋 [WhatsApp Action] Bot woken up by owner! Sending welcome greeting...'));
@@ -386,7 +407,7 @@ ${versionObj.hashtags || ''}`).trim();
         `HI, welcome to your X Assistant press 1 to generate new post or 2 to view trends\n\n` +
         `• *1* ➔ Generate post about today's trend\n` +
         `• *2* ➔ View today's trending topics\n` +
-        `• *3* ➔ Write about a custom topic`;
+        `• *3* ➔ Write about a custom topic (or just type any topic directly!)`;
 
       if (whatsappClient.isConfigured() && fromNumber) {
         try {
@@ -973,4 +994,5 @@ ${versionObj.hashtags || ''}`).trim();
 }
 
 export const whatsappWorkflow = new WhatsAppWorkflowManager();
-export const generateAndSendToWhatsApp = (topic) => whatsappWorkflow.generateAndSend(topic);
+export const generateAndSendToWhatsApp = (topic) =>
+  whatsappWorkflow.generateAndSend(topic, '', null, Boolean(topic && String(topic).trim()));

@@ -17,6 +17,8 @@ import {
   generatePlainUrduFromEnglish
 } from '../src/generator/aiService.js';
 import { historyStore } from '../src/db/historyStore.js';
+import { whatsappWorkflow } from '../src/whatsapp/workflow.js';
+import { config } from '../src/config.js';
 
 const MOCK_SNAPSHOT = {
   fetchedAt: '2026-11-21T18:00:00.000Z',
@@ -160,11 +162,11 @@ test('Prompt builders embed Pakistani-talking-about-Indians persona, non-news gu
   assert.ok(trendingPrompt.includes('400+'));
   assert.ok(trendingPrompt.includes('224'));
 
-  const customPrompt = createCustomTopicPrompt('Hospital bills', [], brief);
-  assert.ok(customPrompt.includes('as a Pakistani talking about Indians'));
-  assert.ok(customPrompt.includes('NOT a news report'));
+  const customPrompt = createCustomTopicPrompt('AI writing trending related topic', []);
+  assert.ok(customPrompt.includes('Do NOT mention India, Indians, or Pakistan'));
+  assert.ok(customPrompt.includes('AI writing trending related topic'));
   assert.ok(customPrompt.includes('400+'));
-  assert.ok(customPrompt.includes('43.9%'));
+  assert.equal(customPrompt.includes('as a Pakistani talking about Indians'), false);
 });
 
 test('Cloudflare AI 2-pass pipeline polishes jargon/news drafts into 400+ simplest India downside posts', async () => {
@@ -389,6 +391,137 @@ test('Sub-400 AI outputs are strictly rejected instead of posted short (English 
     if (origXai !== undefined) process.env.XAI_API_KEY = origXai;
     if (origGrok !== undefined) process.env.GROK_API_KEY = origGrok;
     if (origGroq !== undefined) process.env.GROQ_API_KEY = origGroq;
+    historyStore.posts = savedPosts;
+    historyStore.rebuildIndexes();
+    historyStore.save();
+  }
+});
+
+test('Direct custom topic ignores India/Pakistan across Cloudflare AI Pass 1/2 and offline fallback', async () => {
+  const origToken = process.env.CLOUDFLARE_API_TOKEN;
+  const origAcct = process.env.CLOUDFLARE_ACCOUNT_ID;
+  const origCfConfigToken = config.cloudflareApiToken;
+  const origCfConfigAcct = config.cloudflareAccountId;
+  const origFetch = globalThis.fetch;
+  const savedPosts = [...historyStore.posts];
+  historyStore.reset();
+
+  process.env.CLOUDFLARE_API_TOKEN = 'test-cf-token';
+  process.env.CLOUDFLARE_ACCOUNT_ID = 'test-cf-account';
+
+  let cfCalls = 0;
+  let capturedSystem = '';
+  let capturedPass2Prompt = '';
+
+  globalThis.fetch = async (url, opts) => {
+    if (String(url).includes('api.cloudflare.com')) {
+      cfCalls++;
+      const payload = JSON.parse(opts.body);
+      const sysMsg = payload.messages?.find(m => m.role === 'system')?.content || '';
+      const userMsg = payload.messages?.find(m => m.role === 'user')?.content || '';
+      if (cfCalls === 1) {
+        capturedSystem = sysMsg;
+        // Pass 1 drifts off-topic by mentioning India even though user asked about AI writing
+        return new Response(JSON.stringify({
+          success: true,
+          result: {
+            response: JSON.stringify({
+              topic: 'AI writing trending related topic',
+              subtopic: 'AI writing trends',
+              category: 'CUSTOM_TOPIC',
+              text: 'From Pakistan, look at how India uses AI writing tools today.\n\nWriters across India use smart text tools to draft posts fast, yet generic lines sound flat and copy everyone else online without real human thought.\n\nWill AI writing replace real human voices or help them stand out?'
+            })
+          }
+        }), { status: 200, headers: { 'Content-Type': 'application/json' } });
+      }
+      capturedPass2Prompt = userMsg;
+      return new Response(JSON.stringify({
+        success: true,
+        result: {
+          response: JSON.stringify({
+            topic: 'AI writing trends are changing online content fast',
+            subtopic: 'Human voice vs generic AI writing trends',
+            category: 'CUSTOM_TOPIC',
+            text: 'AI writing tools are everywhere online right now, yet readers scroll straight past copycat posts.\n\nMillions of writers and small teams use AI to outline ideas, clean up grammar, and publish faster every week. The real winners pair quick AI drafts with lived stories and plain everyday words instead of flat robotic filler.\n\nDo you read posts that sound machine-made, or do you still look for a real human voice?'
+          })
+        }
+      }), { status: 200, headers: { 'Content-Type': 'application/json' } });
+    }
+    throw new Error(`Unexpected external call during custom neutral topic: ${url}`);
+  };
+
+  try {
+    const res = await generateEnglishPost('Ai writing trending related topic', '', null, true);
+    assert.equal(cfCalls, 2, 'Should trigger Pass 2 polish when Pass 1 drifts into India/Pakistan or is short');
+    assert.ok(capturedSystem.includes('NEVER mention India, Indians, or Pakistan'));
+    assert.ok(capturedPass2Prompt.includes('IGNORE INDIA / PAKISTAN'));
+    assert.equal(/\b(india|indian|indians|pakistan|pakistani)\b/i.test(res.english.text), false);
+    assert.ok(res.english.charCount >= 400);
+    assert.equal(res.category, 'CUSTOM_TOPIC');
+
+    // Now simulate all AI providers offline and confirm Custom Topic Fallback stays strictly on-topic without India/Indians
+    delete process.env.CLOUDFLARE_API_TOKEN;
+    delete process.env.CLOUDFLARE_ACCOUNT_ID;
+    config.cloudflareApiToken = '';
+    config.cloudflareAccountId = '';
+    const offlineCustom = await generateEnglishPost('Ai writing trending related topic', '', null, true);
+    assert.equal(offlineCustom.provider, 'Custom Topic Fallback');
+    assert.equal(offlineCustom.category, 'CUSTOM_TOPIC');
+    assert.ok(offlineCustom.english.charCount >= 400);
+    assert.ok(offlineCustom.english.text.toLowerCase().includes('ai writing'));
+    assert.equal(/\b(india|indian|indians|pakistan|pakistani)\b/i.test(offlineCustom.english.text), false);
+  } finally {
+    globalThis.fetch = origFetch;
+    if (origToken !== undefined) process.env.CLOUDFLARE_API_TOKEN = origToken; else delete process.env.CLOUDFLARE_API_TOKEN;
+    if (origAcct !== undefined) process.env.CLOUDFLARE_ACCOUNT_ID = origAcct; else delete process.env.CLOUDFLARE_ACCOUNT_ID;
+    config.cloudflareApiToken = origCfConfigToken;
+    config.cloudflareAccountId = origCfConfigAcct;
+    historyStore.posts = savedPosts;
+    historyStore.rebuildIndexes();
+    historyStore.save();
+  }
+});
+
+test('WhatsApp directly generates a topic-focused post when owner types custom topic without pressing 3 first', async () => {
+  const origToken = process.env.CLOUDFLARE_API_TOKEN;
+  const origAcct = process.env.CLOUDFLARE_ACCOUNT_ID;
+  const origCfConfigToken = config.cloudflareApiToken;
+  const origCfConfigAcct = config.cloudflareAccountId;
+  const origOwner = config.ownerPhoneNumber;
+  const savedPosts = [...historyStore.posts];
+  historyStore.reset();
+
+  delete process.env.CLOUDFLARE_API_TOKEN;
+  delete process.env.CLOUDFLARE_ACCOUNT_ID;
+  config.cloudflareApiToken = '';
+  config.cloudflareAccountId = '';
+  config.ownerPhoneNumber = '923001234567';
+
+  whatsappWorkflow.currentPendingPost = null;
+  whatsappWorkflow.status = 'IDLE';
+  whatsappWorkflow.menuState = 'DEFAULT';
+
+  try {
+    // Greeting still returns welcome menu
+    const greetRes = await whatsappWorkflow.handleOwnerReply('Hello there!', config.ownerPhoneNumber);
+    assert.equal(greetRes.action, 'GREETING_SENT');
+
+    // Direct custom topic message in WhatsApp immediately generates post for that topic ignoring India/Indians
+    const topicRes = await whatsappWorkflow.handleOwnerReply('Ai writing trending related topic', config.ownerPhoneNumber);
+    assert.equal(topicRes.success, true);
+    assert.equal(topicRes.post.category, 'CUSTOM_TOPIC');
+    assert.equal(topicRes.post.topic, 'Ai writing trending related topic');
+    assert.ok(topicRes.post.english.charCount >= 400);
+    assert.equal(/\b(india|indian|indians|pakistan|pakistani)\b/i.test(topicRes.post.english.text), false);
+  } finally {
+    whatsappWorkflow.currentPendingPost = null;
+    whatsappWorkflow.status = 'IDLE';
+    whatsappWorkflow.menuState = 'DEFAULT';
+    config.ownerPhoneNumber = origOwner;
+    if (origToken !== undefined) process.env.CLOUDFLARE_API_TOKEN = origToken; else delete process.env.CLOUDFLARE_API_TOKEN;
+    if (origAcct !== undefined) process.env.CLOUDFLARE_ACCOUNT_ID = origAcct; else delete process.env.CLOUDFLARE_ACCOUNT_ID;
+    config.cloudflareApiToken = origCfConfigToken;
+    config.cloudflareAccountId = origCfConfigAcct;
     historyStore.posts = savedPosts;
     historyStore.rebuildIndexes();
     historyStore.save();
