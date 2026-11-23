@@ -518,13 +518,18 @@ app.get('/status', async (req, res) => {
     },
     schedule: postScheduler.getStatus(),
     contentEngine: {
-      mode: 'INDIA_DOWNSIDES_AND_EFFECTS_LIVE_DATA',
-      speakerPersona: 'Pakistani talking naturally about Indians & India realities',
-      regionBias: 'India (geo=IN)',
-      audience: 'Pakistan, India & Global',
-      style: 'Pakistani Observer Voice, Non-News India Downsides, Real Effects & Simplest Everyday Words (400+ chars)',
+      mode: 'DAILY_MULTI_CATEGORY_TRENDS_LIVE_DATA',
+      speakerPersona: 'Sharp analytical voice adapting to each daily trend topic (global or regional)',
+      regionBias: 'Global & Regional Multi-Category Daily Mix',
+      audience: 'Global, Tech, Economy & South Asia',
+      style: 'Non-News Everyday Analytical Commentary, Counter-Intuitive Twists & Simplest Everyday Words (400-600 chars)',
       cloudflareModel: config.cloudflareAiModel,
-      dataIntegrations: ['World Bank Open Data (IND)', 'Open-Meteo Live Air Quality', 'Live USD/INR FX', 'Google News India Issue Search']
+      dataIntegrations: [
+        'Google Trends Daily RSS (US & IN)',
+        'Daily Multi-Category News Trends (Tech/AI, Economy, Work, Energy, Health)',
+        'Daily AI Trend Synthesis',
+        'World Bank Open Data & Open-Meteo Live Sensors'
+      ]
     },
     state: whatsappWorkflow.getCurrentState()
   });

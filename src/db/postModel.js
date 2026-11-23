@@ -30,6 +30,14 @@ const PostSchema = new mongoose.Schema(
       type: String,
       index: true
     },
+    seedTopic: {
+      type: String,
+      index: true
+    },
+    trendCategory: {
+      type: String,
+      index: true
+    },
     mainSubject: {
       type: String,
       index: true
@@ -218,6 +226,8 @@ export async function saveGeneratedPost({
   genreId = 'PAK_VS_IND',
   category = 'PAK_VS_IND',
   subtopic = '',
+  seedTopic = '',
+  trendCategory = '',
   mainSubject = '',
   specificEventOrIssue = '',
   centralArgument = '',
@@ -251,6 +261,8 @@ export async function saveGeneratedPost({
   historyStore.recordPost({
     topic,
     subtopic: meta.subtopic,
+    seedTopic,
+    trendCategory,
     genreId: meta.genreId,
     category: meta.genreId,
     englishText,
@@ -307,6 +319,8 @@ export async function saveGeneratedPost({
             genreId: meta.genreId,
             category: meta.genreId,
             subtopic: meta.subtopic,
+            seedTopic: seedTopic || topic,
+            trendCategory: trendCategory || meta.genreId,
             mainSubject: meta.mainSubject,
             specificEventOrIssue: meta.specificEventOrIssue,
             centralArgument: meta.centralArgument,
@@ -576,12 +590,13 @@ export async function getAllUsedTopics(limit = 0) {
 
   if (isMongoConnected()) {
     try {
-      const query = PostModel.find({}, { topic: 1, subtopic: 1, status: 1 }).sort({ createdAt: -1 });
+      const query = PostModel.find({}, { topic: 1, subtopic: 1, seedTopic: 1, status: 1 }).sort({ createdAt: -1 });
       if (limit > 0) query.limit(limit);
       const records = await query.lean();
       records.forEach(r => {
         if (r.topic && !topics.includes(r.topic)) topics.push(r.topic);
         if (r.subtopic && !topics.includes(r.subtopic)) topics.push(r.subtopic);
+        if (r.seedTopic && !topics.includes(r.seedTopic)) topics.push(r.seedTopic);
       });
     } catch (err) {
       console.warn('[PostModel] Error fetching used topics from MongoDB:', err.message);

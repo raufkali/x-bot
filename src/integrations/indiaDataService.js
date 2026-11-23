@@ -553,8 +553,14 @@ export function matchRelevantFactsForTopic(topic = '', snapshot = BASELINE_SNAPS
 
   matches.sort((a, b) => b.score - a.score);
 
-  if (matches.length === 0) {
-    return macroFacts.slice(0, 4).map(
+  if (matches.length === 0 && macroFacts.length > 0) {
+    let hash = 0;
+    for (let i = 0; i < lower.length; i++) {
+      hash = (hash * 31 + lower.charCodeAt(i)) >>> 0;
+    }
+    const offset = hash % macroFacts.length;
+    const rotated = [...macroFacts.slice(offset), ...macroFacts.slice(0, offset)];
+    return rotated.slice(0, 4).map(
       f => `${f.label}: ${f.formattedValue} (${f.source}, ${f.year}) — ${f.effect}`
     );
   }
@@ -591,7 +597,9 @@ export function buildDataDrivenDownsideTopics(snapshot = BASELINE_SNAPSHOT) {
       topics.push({
         topic: `Dirty air in ${worst.city} is ${worst.whoMultiple} times above safe health limits right now`,
         context: `Live air sensors show ${worst.city} PM2.5 at ${worst.pm25} (US AQI ${worst.usAqi ?? 'very unhealthy'}). Families pay more for doctors and kids miss school.`,
-        source: 'live_open_meteo_india'
+        source: 'live_open_meteo_india',
+        category: 'INDIA_DATA',
+        isIndiaTopic: true
       });
     }
   }
@@ -600,7 +608,9 @@ export function buildDataDrivenDownsideTopics(snapshot = BASELINE_SNAPSHOT) {
     topics.push({
       topic: `A weak rupee near ₹${Math.round(snapshot.exchangeRate.usdToInr)} per dollar makes daily life costlier in India`,
       context: `Live rate is 1 USD = ₹${snapshot.exchangeRate.usdToInr}. Because India buys oil, cooking oil, and phone parts from abroad, everyday prices climb while paychecks stay flat.`,
-      source: 'live_fx_india'
+      source: 'live_fx_india',
+      category: 'INDIA_DATA',
+      isIndiaTopic: true
     });
   }
 
@@ -609,7 +619,9 @@ export function buildDataDrivenDownsideTopics(snapshot = BASELINE_SNAPSHOT) {
     topics.push({
       topic: f.topicAngle,
       context: `Verified ${f.year} ${f.source} data: ${f.label} is ${f.formattedValue}. Effect: ${f.effect}`,
-      source: 'world_bank_india'
+      source: 'world_bank_india',
+      category: 'INDIA_DATA',
+      isIndiaTopic: true
     });
   }
 

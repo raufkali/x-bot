@@ -47,6 +47,7 @@ import {
   fetchCustomTopicTrends,
   formatCustomTrendsBrief
 } from './trendFetcher.js';
+import { normalizeText } from '../db/historyStore.js';
 
 let categoryRotationIndex = 0;
 
@@ -305,6 +306,45 @@ Return ONLY valid JSON in this exact format:
 }`;
 }
 
+export function createDailyTrendPostPrompt(trendTopic, trendContext = '', avoidList = [], liveTrendsBrief = '') {
+  const avoidStr = avoidList.length > 0 ? avoidList.slice(0, 20).join('\n• ') : 'None';
+
+  return `${NEUTRAL_CUSTOM_TOPIC_RULES}
+
+# X_BOT — DAILY TRENDING INSIGHTS ENGINE
+
+TODAY'S TRENDING TOPIC: "${trendTopic}"
+${trendContext ? `TREND CONTEXT: ${trendContext}` : ''}
+${liveTrendsBrief ? `\nLIVE SIGNALS AROUND THIS TREND:\n${liveTrendsBrief}\n` : ''}
+YOUR MISSION: Write a sharp, scroll-stopping X post about this fresh daily trend, sharing ONE **rarely-known, counter-intuitive insight or hidden real-world effect**:
+1. NEVER write obvious surface talk or stiff newspaper leads ("According to reports...", "Today...", "People are talking about...").
+2. Reveal WHY this trend is happening underneath the surface and how it affects real people, jobs, prices, or builders right now.
+3. USE THE SIMPLEST POSSIBLE WORDS: Short words, crisp 5-12 word sentences that a 12-year-old understands immediately.
+4. DO NOT drag unrelated countries (like India or Pakistan) into the post unless the trend topic itself is specifically about them.
+5. END WITH A SHARP QUESTION that invites replies.
+
+STRICT POST STRUCTURE (3 parts, separated by double line breaks \\n\\n):
+Line 1: One short punchy hook revealing a surprising twist in "${trendTopic.replace(/"/g, "'")}"
+\\n\\n
+Paragraph 2: 2-3 short simple sentences explaining the hidden cause and real everyday impact (around 50-70 words)
+\\n\\n
+Line 3: One short, thought-provoking closing question
+
+LENGTH: Strictly 400+ characters (420 to 560 characters ideal). NEVER under 400 and NEVER exceed 600.
+ZERO hashtags. ZERO emojis. NO labels like "Hook:" or "Body:".
+
+TOPICS TO AVOID (never repeat these):
+• ${avoidStr}
+
+Return ONLY valid JSON:
+{
+  "topic": "Short plain-English trend headline",
+  "subtopic": "Specific surprising insight explored in this trend",
+  "category": "TRENDING",
+  "text": "Hook line\\n\\nBody paragraph\\n\\nClosing question"
+}`;
+}
+
 /**
  * Creates a post prompt for a user-specified custom topic grounded in live trends and rarely-known insider analytics.
  * @param {string} userTopic - What the user wants to write about
@@ -482,7 +522,7 @@ export const CURATED_STORY_TOPICS = FALLBACK_BANK;
    DYNAMIC FALLBACK ENGINE — ENGAGEMENT TRENDING VERSION
 ========================================================= */
 
-function generateDynamicFallback(category = 'TRENDING', subtopic = '', excludedTopic = '', avoidList = []) {
+function generateDynamicFallback(category = 'TRENDING', subtopic = '', excludedTopic = '', avoidList = [], preferredTrend = null) {
   const cleanExcluded = String(excludedTopic || '').toLowerCase().trim();
   const avoidCombined = avoidList.map(a => String(a).toLowerCase());
 
@@ -502,48 +542,109 @@ function generateDynamicFallback(category = 'TRENDING', subtopic = '', excludedT
     plainUrdu: item.plainUrdu ? formatEntry(item.plainUrdu.text) : null
   });
 
-  for (const item of FALLBACK_BANK) {
+  const isCandidateEligible = (item) => {
     const isExcluded = cleanExcluded && (
       item.topic.toLowerCase().trim() === cleanExcluded ||
       (item.subtopic && item.subtopic.toLowerCase().trim() === cleanExcluded)
     );
-    if (isExcluded) continue;
+    if (isExcluded) return false;
 
     if (avoidCombined.some(a => a.includes(item.topic.toLowerCase()) || (item.subtopic && a.includes(item.subtopic.toLowerCase())))) {
-      continue;
+      return false;
     }
 
-    if (historyStore.hasSeenTopic(item.topic)) {
-      continue;
-    }
+    if (historyStore.hasSeenTopic(item.topic)) return false;
 
     const itemHash = computeNormalizedHash(item.english.text).toLowerCase();
     if (historyStore.inFlightLocks && historyStore.inFlightLocks.has(itemHash)) {
-      continue;
+      return false;
     }
 
-    const simpleErr = checkSimpleEnglish(item.english.text);
-    if (simpleErr) {
-      continue;
+    if (checkSimpleEnglish(item.english.text)) return false;
+
+    const formattedLen = formatEntry(item.english.text).charCount;
+    if (formattedLen < MIN_CHARACTERS || formattedLen > TARGET_MAX_CHARACTERS) {
+      return false;
     }
 
     const dupCheck = historyStore.isDuplicateOrSimilar(item.english.text, item.topic, item);
-    if (dupCheck.isDuplicate) {
-      continue;
-    }
+    if (dupCheck.isDuplicate) return false;
 
-    return formatCandidate(item, category || 'TRENDING');
+    return true;
+  };
+
+  // Build extended offline pool: India FALLBACK_BANK first (for offline India baseline tests),
+  // followed by diverse global daily trend entries so consecutive runs never loop back to FALLBACK_BANK[0].
+  const globalDailyOfflineEntries = [
+    ...AI_TREND_BANK.map(e => ({ ...e, topic: e.subtopic, category: 'TECH_AI', genreId: 'TECH_AI', english: { text: e.text } })),
+    ...QUANTUM_TREND_BANK.map(e => ({ ...e, topic: e.subtopic, category: 'TECH_AI', genreId: 'TECH_AI', english: { text: e.text } })),
+    ...CRYPTO_TREND_BANK.map(e => ({ ...e, topic: e.subtopic, category: 'ECONOMY_MARKETS', genreId: 'ECONOMY_MARKETS', english: { text: e.text } })),
+    ...STARTUP_TECH_TREND_BANK.map(e => ({ ...e, topic: e.subtopic, category: 'TECH_AI', genreId: 'TECH_AI', english: { text: e.text } })),
+    ...WORK_CAREER_TREND_BANK.map(e => ({ ...e, topic: e.subtopic, category: 'WORK_CAREERS', genreId: 'WORK_CAREERS', english: { text: e.text } })),
+    ...CREATOR_MARKETING_TREND_BANK.map(e => ({ ...e, topic: e.subtopic, category: 'TECH_AI', genreId: 'TECH_AI', english: { text: e.text } }))
+  ];
+
+  // Rotate within FALLBACK_BANK only if preferredTrend suggests an offset, keeping index 0 first when history is empty
+  const bankLen = FALLBACK_BANK.length;
+  const startIdx = historyStore.posts.length === 0 ? 0 : (historyStore.posts.length % bankLen);
+  const rotatedFallbackBank = [
+    ...FALLBACK_BANK.slice(startIdx),
+    ...FALLBACK_BANK.slice(0, startIdx)
+  ];
+
+  // Check unused FALLBACK_BANK first, then global daily offline entries
+  for (const item of [...rotatedFallbackBank, ...globalDailyOfflineEntries]) {
+    if (isCandidateEligible(item)) {
+      return formatCandidate(item, category || item.category || 'TRENDING');
+    }
   }
 
-  // If all were seen, still avoid returning the explicitly excluded or locked item
-  const nonExcluded = FALLBACK_BANK.find(item => {
+  // If even the expanded banks are exhausted, synthesize a fresh post from preferredTrend instead of repeating FALLBACK_BANK[0]
+  if (preferredTrend && preferredTrend.topic) {
+    const cleanTopic = String(preferredTrend.topic).replace(/[.!?]+$/, '').trim();
+    const shortLabel = cleanTopic.length > 78 ? `${cleanTopic.slice(0, 75)}...` : cleanTopic;
+    const contextHint = String(preferredTrend.context || '').replace(/\s+/g, ' ').trim();
+    const bodySentence = contextHint && contextHint.length >= 45
+      ? contextHint.slice(0, 210).replace(/[.!?]+$/, '')
+      : `Behind surface news, sudden shifts in costs and rules quickly push ordinary workers and small builders into brand-new pressure`;
+    const synthesizedText = `${shortLabel} is changing daily habits faster than most headlines show.\n\n${bodySentence}. When one big bottleneck flips overnight, regular households and small teams feel the squeeze in bills, jobs, and daily choices before leaders adjust.\n\nHow do you see ${shortLabel.slice(0, 48).toLowerCase()} affecting normal people next?`;
+    const entry = formatEntry(synthesizedText);
+    if (entry.charCount >= 380 && entry.charCount <= 600) {
+      const meta = extractPostMetadata({
+        topic: cleanTopic,
+        subtopic: shortLabel,
+        genreId: preferredTrend.category || category || 'TRENDING',
+        category: preferredTrend.category || category || 'TRENDING',
+        text: entry.text
+      });
+      return {
+        topic: cleanTopic,
+        subtopic: meta.subtopic,
+        category: meta.genreId,
+        genreId: meta.genreId,
+        mainSubject: meta.mainSubject,
+        specificEventOrIssue: meta.specificEventOrIssue,
+        centralArgument: meta.centralArgument,
+        analyticalAngle: meta.analyticalAngle,
+        importantStatistics: meta.importantStatistics,
+        keywords: meta.keywords,
+        english: entry,
+        romanUrdu: null,
+        plainUrdu: null
+      };
+    }
+  }
+
+  // Last-resort rotation across entire combined pool avoiding excluded and locked items
+  const allPool = [...rotatedFallbackBank, ...globalDailyOfflineEntries];
+  const nonExcluded = allPool.find(item => {
     const isExcl = cleanExcluded && item.topic.toLowerCase().trim() === cleanExcluded;
     const h = computeNormalizedHash(item.english.text).toLowerCase();
     const isLocked = historyStore.inFlightLocks && historyStore.inFlightLocks.has(h);
     return !isExcl && !isLocked;
-  }) || FALLBACK_BANK.find(item => !cleanExcluded || item.topic.toLowerCase().trim() !== cleanExcluded) || FALLBACK_BANK[0];
+  }) || allPool.find(item => !cleanExcluded || item.topic.toLowerCase().trim() !== cleanExcluded) || FALLBACK_BANK[0];
 
-  return formatCandidate(nonExcluded, category || 'TRENDING');
+  return formatCandidate(nonExcluded, category || nonExcluded.category || 'TRENDING');
 }
 
 const AI_TREND_BANK = [
@@ -731,10 +832,13 @@ export async function generateEnglishPost(customTopic = '', excludedTopic = '', 
 
   // Build avoid list from recent history
   const avoidList = historyStore.getRecentAvoidList(40);
+  const sessionAvoidTopics = [];
   if (cleanExcluded) {
     avoidList.unshift(`DISCARDED_TOPIC_TO_NEVER_REPEAT: "${cleanExcluded}"`);
+    sessionAvoidTopics.push(cleanExcluded);
   }
   if (excludedContext) {
+    if (excludedContext.seedTopic) sessionAvoidTopics.push(excludedContext.seedTopic);
     if (excludedContext.subject) avoidList.unshift(`EXCLUDED_PREVIOUS_SUBJECT: "${excludedContext.subject}"`);
     if (excludedContext.argument) avoidList.unshift(`EXCLUDED_PREVIOUS_ARGUMENT: "${excludedContext.argument.slice(0, 100)}"`);
     if (Array.isArray(excludedContext.statistics) && excludedContext.statistics.length > 0) {
@@ -742,7 +846,7 @@ export async function generateEnglishPost(customTopic = '', excludedTopic = '', 
     }
   }
 
-  // Sync Mongo topics into historyStore
+  // Sync Mongo topics into historyStore (without persisting bulk sync every call)
   let mongoTopics = [];
   try {
     mongoTopics = await getAllUsedTopics();
@@ -753,7 +857,7 @@ export async function generateEnglishPost(customTopic = '', excludedTopic = '', 
   for (const t of mongoTopics) {
     if (t) {
       if (typeof historyStore.recordSeenTopic === 'function') {
-        historyStore.recordSeenTopic(t);
+        historyStore.recordSeenTopic(t, false);
       } else if (historyStore.topics && typeof historyStore.topics.add === 'function') {
         historyStore.topics.add(String(t).toLowerCase().trim());
       }
@@ -761,287 +865,352 @@ export async function generateEnglishPost(customTopic = '', excludedTopic = '', 
   }
   const allUsedTopics = Array.from(new Set([...recordedTopics, ...mongoTopics]));
 
-  // ─── PHASE 1: DETERMINE TOPIC ─────────────────────────────────────────────
-  // If user forced a custom topic (from WhatsApp "Write about custom topic"), use it directly.
-  // Otherwise fetch a trending topic from trendFetcher (Google Trends → AI → evergreen).
-
-  let chosenTopic = '';
-  let trendContext = '';
   const chosenCategory = isUserForcedTopic ? 'CUSTOM_TOPIC' : 'TRENDING';
 
-  if (isUserForcedTopic && customTopic.trim()) {
-    chosenTopic = customTopic.trim();
-    trendContext = '';
-    console.log(`[Pipeline] Phase 1 — User-forced custom topic: "${chosenTopic}"`);
-  } else {
+  // Fetch India live facts lazily (only when an India-focused topic is active)
+  let cachedLiveSnapshot = null;
+  const getIndiaFactsOnce = async (topicStr) => {
     try {
-      const trend = await pickUnusedTrendingTopic(allUsedTopics);
-      chosenTopic = trend.topic;
-      trendContext = trend.context || '';
-      console.log(`[Pipeline] Phase 1 — Downside topic selected: "${chosenTopic}" (source: ${trend.source})`);
+      if (!cachedLiveSnapshot) {
+        cachedLiveSnapshot = await getLiveIndiaFactsSnapshot();
+      }
+      return formatFactsBrief(topicStr, cachedLiveSnapshot);
     } catch (e) {
-      console.warn(`[Pipeline] Topic fetch failed: ${e.message}. Using fallback.`);
-      chosenTopic = customTopic.trim() || 'Young Indians finish college and still cannot find steady jobs';
+      console.warn(`[Pipeline] Live India data integration fallback: ${e.message}`);
+      return '';
     }
-  }
+  };
 
-  const isCustomNeutralMode = Boolean(isUserForcedTopic && !topicExplicitlyMentionsIndia(chosenTopic));
+  // Pre-fetch custom trend signals once when user forced a specific topic
+  let forcedTrendItems = [];
+  let forcedTrendsBrief = '';
+  let forcedTopic = '';
+  const isForcedCustom = Boolean(isUserForcedTopic && customTopic.trim());
+  const isForcedNeutralMode = Boolean(isForcedCustom && !topicExplicitlyMentionsIndia(customTopic));
 
-  // Gather live verified India statistics ONLY when generating India-focused posts.
-  // For custom topics, fetch live topic-specific trend signals instead so posts reflect current real trends in that domain.
-  let liveFactsBrief = '';
-  let customTrendItems = [];
-  let liveTrendsBrief = '';
-
-  if (isUserForcedTopic && chosenTopic) {
+  if (isForcedCustom) {
+    forcedTopic = customTopic.trim();
+    console.log(`[Pipeline] Phase 1 — User-forced custom topic: "${forcedTopic}"`);
     try {
-      customTrendItems = await fetchCustomTopicTrends(chosenTopic, {
-        excludeRegionalNoise: isCustomNeutralMode
+      forcedTrendItems = await fetchCustomTopicTrends(forcedTopic, {
+        excludeRegionalNoise: isForcedNeutralMode
       });
-      liveTrendsBrief = formatCustomTrendsBrief(chosenTopic, customTrendItems);
+      forcedTrendsBrief = formatCustomTrendsBrief(forcedTopic, forcedTrendItems);
     } catch (e) {
       console.warn(`[Pipeline] Custom topic trend fetch notice: ${e.message}`);
     }
   }
 
-  if (!isCustomNeutralMode) {
-    try {
-      const liveSnapshot = await getLiveIndiaFactsSnapshot();
-      liveFactsBrief = formatFactsBrief(chosenTopic, liveSnapshot);
-    } catch (e) {
-      console.warn(`[Pipeline] Live India data integration fallback: ${e.message}`);
-    }
-  }
-
-  // ─── PHASE 2: GENERATE POST (up to 5 attempts) ───────────────────────────
+  // ─── PHASE 2: PICK FRESH TREND + GENERATE POST (up to 5 attempts, switching trends on collision) ──
   const MAX_ATTEMPTS = 5;
   let lastRejectionReason = '';
+  let lastChosenTopic = forcedTopic || '';
+  let lastPickedTrend = null;
 
   for (let attempt = 1; attempt <= MAX_ATTEMPTS; attempt++) {
-    // On retries, slightly vary the topic framing to get a fresh angle
-    const attemptTopic = attempt === 1 ? chosenTopic : `${chosenTopic} — angle ${attempt}`;
+    let pickedTrend = null;
+    let chosenTopic = forcedTopic;
+    let trendContext = '';
+    let seedLockKey = '';
 
-    // Build the right prompt: custom topic trend-writer (ignoring India) vs India downsides engine
-    const prompt = isUserForcedTopic
-      ? createCustomTopicPrompt(
-          attempt === 1 ? chosenTopic : `${chosenTopic} (${attempt === 2 ? 'current real-world trends and impact' : `fresh trend angle ${attempt}`})`,
-          avoidList,
-          liveFactsBrief,
-          liveTrendsBrief
-        )
-      : createTrendingPostPrompt(attemptTopic, trendContext, avoidList, liveFactsBrief);
-    const activeSystemPrompt = isCustomNeutralMode ? CUSTOM_TOPIC_SYSTEM_PROMPT : DEFAULT_PAKISTANI_INDIA_SYSTEM_PROMPT;
-
-    let candidate = null;
-    let providerName = '';
-
-    /* ---------------- TIER 1. CLOUDFLARE WORKERS AI (PRIMARY + 2-PASS POLISH/EXPAND) ---------------- */
-    if (cfToken && cfAccountId && !candidate) {
-      try {
-        console.log(`[Cloudflare AI] Generating post for ${isCustomNeutralMode ? 'custom topic trends' : 'India downside topic'}: "${chosenTopic}"...`);
-        const res = await callWithSimplify(callCloudflareAI, prompt, null, activeSystemPrompt);
-        // Allow shorter Pass 1 drafts (120+ chars) so Pass 2 can expand them cleanly to 400+ chars
-        let validated = validateAIResponse(res, chosenTopic, chosenCategory, '', 120);
-
-        // Pass 2: Polish, simplify words, enforce 400+ minimum, and strip off-topic country mentions for neutral custom topics
-        const audit = auditDraftForSimplification(validated.english.text);
-        const offTopicCountryDrift = isCustomNeutralMode && OFF_TOPIC_COUNTRY_REGEX.test(validated.english.text);
-        if (audit.needsPolish || validated.english.charCount < MIN_CHARACTERS || offTopicCountryDrift) {
-          console.log(`[Cloudflare AI] Pass 2 polish triggered (${[...audit.reasons, ...(offTopicCountryDrift ? ['off_topic_country_mention'] : [])].join(', ')})...`);
-          try {
-            const polished = await polishWithCloudflareAI(
-              validated,
-              isCustomNeutralMode ? (liveTrendsBrief || liveFactsBrief) : liveFactsBrief,
-              isCustomNeutralMode
-            );
-            if (polished) {
-              validated = polished;
-            }
-          } catch (polishErr) {
-            console.warn(`[Cloudflare AI] Pass 2 polish warning: ${polishErr.message}`);
+    if (!isForcedCustom) {
+      for (let pickTry = 0; pickTry < 4; pickTry++) {
+        try {
+          const candidateTrend = await pickUnusedTrendingTopic(
+            allUsedTopics,
+            attempt > 2 && pickTry === 0,
+            { avoidTopics: sessionAvoidTopics, attempt: attempt + pickTry }
+          );
+          const candidateSeedKey = `seed:${normalizeText(candidateTrend.topic)}`;
+          if (historyStore.acquireLock(candidateSeedKey)) {
+            pickedTrend = candidateTrend;
+            seedLockKey = candidateSeedKey;
+            chosenTopic = candidateTrend.topic;
+            trendContext = candidateTrend.context || '';
+            break;
+          } else {
+            sessionAvoidTopics.push(candidateTrend.topic);
           }
+        } catch (e) {
+          console.warn(`[Pipeline] Topic fetch failed: ${e.message}. Using fallback.`);
+          chosenTopic = customTopic.trim() || 'Young Indians finish college and still cannot find steady jobs';
+          break;
         }
-
-        if (validated.english.charCount < MIN_CHARACTERS) {
-          throw new Error(`Cloudflare AI post still under ${MIN_CHARACTERS} chars (${validated.english.charCount} chars)`);
-        }
-        if (!isCustomNeutralMode && hasSelfAnnouncingLocationCliche(validated.english.text)) {
-          throw new Error(`Cloudflare AI post still contains banned self-announcing location cliché`);
-        }
-        if (isCustomNeutralMode && OFF_TOPIC_COUNTRY_REGEX.test(validated.english.text)) {
-          throw new Error(`Cloudflare AI custom-topic post mentioned India/Pakistan off-topic`);
-        }
-
-        candidate = validated;
-        providerName = isCustomNeutralMode
-          ? 'Cloudflare Workers AI (Custom Topic + Polish)'
-          : 'Cloudflare Workers AI (Verified India Data + Polish)';
-        console.log(`[Cloudflare AI] ✓ Success! (${candidate.english.charCount} chars)`);
-      } catch (err) {
-        console.warn(`[Cloudflare AI] ${err.message}. Trying next tier...`);
+      }
+      if (!pickedTrend && !chosenTopic) {
+        chosenTopic = 'Global tech and economic shifts reshaping everyday work';
       }
     }
 
-    /* ---------------- TIER 2. GOOGLE GEMINI (BACKUP 1) ---------------- */
-    if (geminiKey && !candidate) {
-      try {
-        const res = await callWithSimplify(callGemini, prompt, geminiKey);
-        const validated = validateAIResponse(res, chosenTopic, chosenCategory, '');
-        if (isCustomNeutralMode && OFF_TOPIC_COUNTRY_REGEX.test(validated.english.text)) {
-          throw new Error('Gemini custom-topic output drifted off-topic into India/Pakistan');
-        }
-        candidate = validated;
-        providerName = 'Google Gemini Free API';
-        console.log(`[Gemini API] ✓ Success!`);
-      } catch (err) {
-        console.warn(`[Gemini API] ${err.message}. Trying next tier...`);
-      }
-    }
-
-    /* ---------------- TIER 3. xAI GROK API ---------------- */
-    if (xaiKey && !candidate) {
-      try {
-        const res = await callWithSimplify(callXai, prompt, 'grok-2-latest', activeSystemPrompt);
-        const validated = validateAIResponse(res, chosenTopic, chosenCategory, '');
-        if (isCustomNeutralMode && OFF_TOPIC_COUNTRY_REGEX.test(validated.english.text)) {
-          throw new Error('xAI custom-topic output drifted off-topic into India/Pakistan');
-        }
-        candidate = validated;
-        providerName = 'xAI Grok API';
-        console.log(`[Grok API] ✓ Success!`);
-      } catch (err) {
-        console.warn(`[Grok API] ${err.message}. Trying next tier...`);
-      }
-    }
-
-    /* ---------------- TIER 4. GROQ CLOUD API ---------------- */
-    if (groqKey && !candidate) {
-      try {
-        const res = await callWithSimplify(callGroq, prompt, groqKey, activeSystemPrompt);
-        const validated = validateAIResponse(res, chosenTopic, chosenCategory, '');
-        if (isCustomNeutralMode && OFF_TOPIC_COUNTRY_REGEX.test(validated.english.text)) {
-          throw new Error('Groq custom-topic output drifted off-topic into India/Pakistan');
-        }
-        candidate = validated;
-        providerName = 'Groq Cloud API (Free)';
-        console.log(`[Groq API] ✓ Success!`);
-      } catch (err) {
-        console.warn(`[Groq API] ${err.message}. Trying fallback bank...`);
-      }
-    }
-
-    /* ---------------- TIER 5. FALLBACK (CUSTOM-TOPIC TREND BANK OR INDIA BANK) ---------------- */
-    if (!candidate) {
-      const fallback = isCustomNeutralMode
-        ? buildCustomTopicFallback(chosenTopic, attempt, customTrendItems)
-        : generateDynamicFallback(chosenCategory, '', cleanExcluded, avoidList);
-      if (fallback) {
-        candidate = fallback;
-        providerName = isCustomNeutralMode ? 'Custom Topic Fallback' : 'Engagement Fallback Bank';
-        console.log(`[Fallback Bank] Serving post for: "${candidate.topic}"`);
-      }
-    }
-
-    if (!candidate) {
-      continue;
-    }
-
-    // Extract full metadata
-    const candidateMeta = extractPostMetadata({
-      topic: candidate.topic,
-      subtopic: candidate.subtopic,
-      genreId: candidate.category,
-      category: candidate.category,
-      text: candidate.english.text,
-      mainSubject: candidate.mainSubject,
-      specificEventOrIssue: candidate.specificEventOrIssue,
-      centralArgument: candidate.centralArgument,
-      analyticalAngle: candidate.analyticalAngle,
-      importantStatistics: candidate.importantStatistics,
-      keywords: candidate.keywords
-    });
-
-    // Acquire concurrency lock on candidate hash
-    const lockAcquired = historyStore.acquireLock(candidateMeta.hash);
-    if (!lockAcquired) {
-      console.warn(`[Pipeline] Concurrency lock conflict for "${candidate.topic}". Retrying...`);
-      avoidList.unshift(`AVOID_LOCKED: "${candidate.topic}"`);
-      continue;
-    }
+    lastChosenTopic = chosenTopic;
+    lastPickedTrend = pickedTrend;
 
     try {
-      // Run 6-stage duplicate & uniqueness checks
-      const dupCheck = historyStore.isDuplicateOrSimilar(candidate.english.text, candidate.topic, candidateMeta);
-      const isMongoDup = await isDuplicatePost(candidate.topic, candidate.english.text, candidateMeta);
+      const isIndiaTrend = isForcedCustom
+        ? !isForcedNeutralMode
+        : Boolean(
+            pickedTrend?.isIndiaTopic === true ||
+            topicExplicitlyMentionsIndia(chosenTopic) ||
+            String(pickedTrend?.source || '').includes('india')
+          );
+      const isNeutralMode = isForcedCustom ? isForcedNeutralMode : !isIndiaTrend;
 
-      if (dupCheck.isDuplicate || isMongoDup) {
-        lastRejectionReason = dupCheck.reason || 'MongoDB collision';
-        console.warn(`[Pipeline Attempt ${attempt}/${MAX_ATTEMPTS}] Rejected: "${candidate.topic}": ${lastRejectionReason}`);
-        avoidList.unshift(`AVOID_REJECTED: "${candidate.topic}" (${lastRejectionReason})`);
+      let liveFactsBrief = '';
+      let customTrendItems = forcedTrendItems;
+      let liveTrendsBrief = forcedTrendsBrief;
+
+      if (!isForcedCustom && isNeutralMode && chosenTopic) {
+        liveTrendsBrief = trendContext ? `- ${trendContext}` : '';
+      } else if (!isNeutralMode && chosenTopic) {
+        liveFactsBrief = await getIndiaFactsOnce(chosenTopic);
+      }
+
+      const attemptTopic = isForcedCustom && attempt > 1
+        ? `${chosenTopic} (${attempt === 2 ? 'current real-world trends and impact' : `fresh trend angle ${attempt}`})`
+        : chosenTopic;
+
+      let prompt = '';
+      if (isForcedCustom) {
+        prompt = createCustomTopicPrompt(attemptTopic, avoidList, liveFactsBrief, liveTrendsBrief);
+      } else if (isIndiaTrend) {
+        prompt = createTrendingPostPrompt(attemptTopic, trendContext, avoidList, liveFactsBrief);
+      } else {
+        prompt = createDailyTrendPostPrompt(attemptTopic, trendContext, avoidList, liveTrendsBrief);
+      }
+
+      const activeSystemPrompt = isNeutralMode ? CUSTOM_TOPIC_SYSTEM_PROMPT : DEFAULT_PAKISTANI_INDIA_SYSTEM_PROMPT;
+
+      let candidate = null;
+      let providerName = '';
+
+      /* ---------------- TIER 1. CLOUDFLARE WORKERS AI (PRIMARY + 2-PASS POLISH/EXPAND) ---------------- */
+      if (cfToken && cfAccountId && !candidate) {
+        try {
+          console.log(`[Cloudflare AI] Generating post for ${isNeutralMode ? (isForcedCustom ? 'custom topic trends' : 'daily global trend') : 'India reality trend'}: "${chosenTopic}"...`);
+          const res = await callWithSimplify(callCloudflareAI, prompt, null, activeSystemPrompt);
+          let validated = validateAIResponse(res, chosenTopic, chosenCategory, '', 120);
+
+          const audit = auditDraftForSimplification(validated.english.text);
+          const offTopicCountryDrift = isNeutralMode && OFF_TOPIC_COUNTRY_REGEX.test(validated.english.text);
+          if (audit.needsPolish || validated.english.charCount < MIN_CHARACTERS || offTopicCountryDrift) {
+            console.log(`[Cloudflare AI] Pass 2 polish triggered (${[...audit.reasons, ...(offTopicCountryDrift ? ['off_topic_country_mention'] : [])].join(', ')})...`);
+            try {
+              const polished = await polishWithCloudflareAI(
+                validated,
+                isNeutralMode ? (liveTrendsBrief || liveFactsBrief) : liveFactsBrief,
+                isNeutralMode
+              );
+              if (polished) {
+                validated = polished;
+              }
+            } catch (polishErr) {
+              console.warn(`[Cloudflare AI] Pass 2 polish warning: ${polishErr.message}`);
+            }
+          }
+
+          if (validated.english.charCount < MIN_CHARACTERS) {
+            throw new Error(`Cloudflare AI post still under ${MIN_CHARACTERS} chars (${validated.english.charCount} chars)`);
+          }
+          if (!isNeutralMode && hasSelfAnnouncingLocationCliche(validated.english.text)) {
+            throw new Error(`Cloudflare AI post still contains banned self-announcing location cliché`);
+          }
+          if (isNeutralMode && OFF_TOPIC_COUNTRY_REGEX.test(validated.english.text)) {
+            throw new Error(`Cloudflare AI trend post mentioned India/Pakistan off-topic`);
+          }
+
+          candidate = validated;
+          providerName = isForcedCustom && isNeutralMode
+            ? 'Cloudflare Workers AI (Custom Topic + Polish)'
+            : (isNeutralMode
+                ? 'Cloudflare Workers AI (Daily Trend + Polish)'
+                : 'Cloudflare Workers AI (Verified India Data + Polish)');
+          console.log(`[Cloudflare AI] ✓ Success! (${candidate.english.charCount} chars)`);
+        } catch (err) {
+          console.warn(`[Cloudflare AI] ${err.message}. Trying next tier...`);
+        }
+      }
+
+      /* ---------------- TIER 2. GOOGLE GEMINI (BACKUP 1) ---------------- */
+      if (geminiKey && !candidate) {
+        try {
+          const res = await callWithSimplify(callGemini, prompt, geminiKey);
+          const validated = validateAIResponse(res, chosenTopic, chosenCategory, '');
+          if (isNeutralMode && OFF_TOPIC_COUNTRY_REGEX.test(validated.english.text)) {
+            throw new Error('Gemini output drifted off-topic into India/Pakistan');
+          }
+          candidate = validated;
+          providerName = 'Google Gemini Free API';
+          console.log(`[Gemini API] ✓ Success!`);
+        } catch (err) {
+          console.warn(`[Gemini API] ${err.message}. Trying next tier...`);
+        }
+      }
+
+      /* ---------------- TIER 3. xAI GROK API ---------------- */
+      if (xaiKey && !candidate) {
+        try {
+          const res = await callWithSimplify(callXai, prompt, 'grok-2-latest', activeSystemPrompt);
+          const validated = validateAIResponse(res, chosenTopic, chosenCategory, '');
+          if (isNeutralMode && OFF_TOPIC_COUNTRY_REGEX.test(validated.english.text)) {
+            throw new Error('xAI output drifted off-topic into India/Pakistan');
+          }
+          candidate = validated;
+          providerName = 'xAI Grok API';
+          console.log(`[Grok API] ✓ Success!`);
+        } catch (err) {
+          console.warn(`[Grok API] ${err.message}. Trying next tier...`);
+        }
+      }
+
+      /* ---------------- TIER 4. GROQ CLOUD API ---------------- */
+      if (groqKey && !candidate) {
+        try {
+          const res = await callWithSimplify(callGroq, prompt, groqKey, activeSystemPrompt);
+          const validated = validateAIResponse(res, chosenTopic, chosenCategory, '');
+          if (isNeutralMode && OFF_TOPIC_COUNTRY_REGEX.test(validated.english.text)) {
+            throw new Error('Groq output drifted off-topic into India/Pakistan');
+          }
+          candidate = validated;
+          providerName = 'Groq Cloud API (Free)';
+          console.log(`[Groq API] ✓ Success!`);
+        } catch (err) {
+          console.warn(`[Groq API] ${err.message}. Trying fallback bank...`);
+        }
+      }
+
+      /* ---------------- TIER 5. FALLBACK (CUSTOM-TOPIC TREND BANK OR DAILY/INDIA BANK) ---------------- */
+      if (!candidate) {
+        const fallback = isForcedNeutralMode
+          ? buildCustomTopicFallback(chosenTopic, attempt, customTrendItems)
+          : generateDynamicFallback(chosenCategory, '', cleanExcluded, avoidList, pickedTrend);
+        if (fallback) {
+          candidate = fallback;
+          providerName = isForcedNeutralMode ? 'Custom Topic Fallback' : 'Engagement Fallback Bank';
+          console.log(`[Fallback Bank] Serving post for: "${candidate.topic}"`);
+        }
+      }
+
+      if (!candidate) {
+        if (chosenTopic) sessionAvoidTopics.push(chosenTopic);
         continue;
       }
 
-      // Unique! Persist to HistoryStore and MongoDB
-      historyStore.recordPost({
+      const candidateMeta = extractPostMetadata({
         topic: candidate.topic,
-        subtopic: candidateMeta.subtopic,
-        genreId: candidateMeta.genreId,
-        category: candidateMeta.genreId,
-        englishText: candidate.english.text,
-        romanUrduText: candidate.romanUrdu?.text || '',
-        plainUrduText: candidate.plainUrdu?.text || '',
-        mainSubject: candidateMeta.mainSubject,
-        specificEventOrIssue: candidateMeta.specificEventOrIssue,
-        centralArgument: candidateMeta.centralArgument,
-        analyticalAngle: candidateMeta.analyticalAngle,
-        importantStatistics: candidateMeta.importantStatistics,
-        keywords: candidateMeta.keywords,
-        provider: providerName,
-        status: 'PENDING'
+        subtopic: candidate.subtopic,
+        genreId: candidate.category,
+        category: candidate.category,
+        text: candidate.english.text,
+        mainSubject: candidate.mainSubject,
+        specificEventOrIssue: candidate.specificEventOrIssue,
+        centralArgument: candidate.centralArgument,
+        analyticalAngle: candidate.analyticalAngle,
+        importantStatistics: candidate.importantStatistics,
+        keywords: candidate.keywords
       });
 
-      await saveGeneratedPost({
-        topic: candidate.topic,
-        genreId: candidateMeta.genreId,
-        category: candidateMeta.genreId,
-        subtopic: candidateMeta.subtopic,
-        mainSubject: candidateMeta.mainSubject,
-        specificEventOrIssue: candidateMeta.specificEventOrIssue,
-        centralArgument: candidateMeta.centralArgument,
-        analyticalAngle: candidateMeta.analyticalAngle,
-        importantStatistics: candidateMeta.importantStatistics,
-        keywords: candidateMeta.keywords,
-        english: candidate.english,
-        romanUrdu: candidate.romanUrdu,
-        plainUrdu: candidate.plainUrdu,
-        provider: providerName
-      }).catch(err => {
-        console.warn('[Pipeline] MongoDB save notice:', err.message);
-      });
+      // Acquire concurrency lock on candidate hash
+      const lockAcquired = historyStore.acquireLock(candidateMeta.hash);
+      if (!lockAcquired) {
+        console.warn(`[Pipeline] Concurrency lock conflict for "${candidate.topic}". Retrying with a new trend...`);
+        avoidList.unshift(`AVOID_LOCKED: "${candidate.topic}"`);
+        if (chosenTopic) sessionAvoidTopics.push(chosenTopic);
+        continue;
+      }
 
-      return {
-        ...candidate,
-        ...candidateMeta,
-        provider: providerName
-      };
+      try {
+        const dupCheck = historyStore.isDuplicateOrSimilar(candidate.english.text, candidate.topic, candidateMeta);
+        const isMongoDup = await isDuplicatePost(candidate.topic, candidate.english.text, candidateMeta);
+
+        if (dupCheck.isDuplicate || isMongoDup) {
+          lastRejectionReason = dupCheck.reason || 'MongoDB collision';
+          console.warn(`[Pipeline Attempt ${attempt}/${MAX_ATTEMPTS}] Rejected: "${candidate.topic}": ${lastRejectionReason} — switching trend`);
+          avoidList.unshift(`AVOID_REJECTED: "${candidate.topic}" (${lastRejectionReason})`);
+          if (chosenTopic) {
+            sessionAvoidTopics.push(chosenTopic);
+            allUsedTopics.push(chosenTopic);
+          }
+          continue;
+        }
+
+        const trendCategory = pickedTrend?.category || candidate.category || chosenCategory;
+
+        // Persist BOTH the generated post topic AND the chosen trend seed so the same seed is never picked again
+        if (chosenTopic && !isForcedCustom) {
+          historyStore.recordSeenTopic(chosenTopic, false);
+        }
+
+        historyStore.recordPost({
+          topic: candidate.topic,
+          subtopic: candidateMeta.subtopic,
+          seedTopic: chosenTopic || candidate.topic,
+          trendCategory,
+          genreId: candidateMeta.genreId,
+          category: candidateMeta.genreId,
+          englishText: candidate.english.text,
+          romanUrduText: candidate.romanUrdu?.text || '',
+          plainUrduText: candidate.plainUrdu?.text || '',
+          mainSubject: candidateMeta.mainSubject,
+          specificEventOrIssue: candidateMeta.specificEventOrIssue,
+          centralArgument: candidateMeta.centralArgument,
+          analyticalAngle: candidateMeta.analyticalAngle,
+          importantStatistics: candidateMeta.importantStatistics,
+          keywords: candidateMeta.keywords,
+          provider: providerName,
+          status: 'PENDING'
+        });
+
+        await saveGeneratedPost({
+          topic: candidate.topic,
+          genreId: candidateMeta.genreId,
+          category: candidateMeta.genreId,
+          subtopic: candidateMeta.subtopic,
+          seedTopic: chosenTopic || candidate.topic,
+          trendCategory,
+          mainSubject: candidateMeta.mainSubject,
+          specificEventOrIssue: candidateMeta.specificEventOrIssue,
+          centralArgument: candidateMeta.centralArgument,
+          analyticalAngle: candidateMeta.analyticalAngle,
+          importantStatistics: candidateMeta.importantStatistics,
+          keywords: candidateMeta.keywords,
+          english: candidate.english,
+          romanUrdu: candidate.romanUrdu,
+          plainUrdu: candidate.plainUrdu,
+          provider: providerName
+        }).catch(err => {
+          console.warn('[Pipeline] MongoDB save notice:', err.message);
+        });
+
+        return {
+          ...candidate,
+          ...candidateMeta,
+          seedTopic: chosenTopic || candidate.topic,
+          trendCategory,
+          provider: providerName
+        };
+      } finally {
+        historyStore.releaseLock(candidateMeta.hash);
+      }
     } finally {
-      historyStore.releaseLock(candidateMeta.hash);
+      if (seedLockKey) {
+        historyStore.releaseLock(seedLockKey);
+      }
     }
   }
 
   // If all retry attempts collided with history, guarantee a fresh post appropriate to the mode
-  const guaranteedFallback = isCustomNeutralMode
-    ? buildCustomTopicFallback(chosenTopic, MAX_ATTEMPTS + 1, customTrendItems)
-    : generateDynamicFallback(chosenCategory, '', cleanExcluded, avoidList);
+  const guaranteedFallback = isForcedNeutralMode
+    ? buildCustomTopicFallback(lastChosenTopic, MAX_ATTEMPTS + 1, forcedTrendItems)
+    : generateDynamicFallback(chosenCategory, '', cleanExcluded, avoidList, lastPickedTrend);
   if (guaranteedFallback) {
     console.log(`[Pipeline] Retries exhausted. Serving guaranteed fresh fallback: "${guaranteedFallback.topic}"`);
     return {
       ...guaranteedFallback,
-      provider: isCustomNeutralMode ? 'Custom Topic Fallback' : 'Engagement Fallback Bank'
+      provider: isForcedNeutralMode ? 'Custom Topic Fallback' : 'Engagement Fallback Bank'
     };
   }
 
-  throw new Error(`Unable to generate a unique post after ${MAX_ATTEMPTS} attempts for topic "${chosenTopic}". Reason: ${lastRejectionReason || 'All providers and fallbacks exhausted'}`);
+  throw new Error(`Unable to generate a unique post after ${MAX_ATTEMPTS} attempts for topic "${lastChosenTopic}". Reason: ${lastRejectionReason || 'All providers and fallbacks exhausted'}`);
 }
 
 

@@ -261,6 +261,7 @@ class HistoryStore {
     this.hashes = new Set();
     this.topics = new Set();
     this.subtopics = new Set();
+    this.seedTopics = new Set();
     this.inFlightLocks = new Set(); // Concurrency locks
     this.load();
   }
@@ -274,6 +275,12 @@ class HistoryStore {
       if (fs.existsSync(HISTORY_FILE)) {
         const raw = fs.readFileSync(HISTORY_FILE, 'utf8');
         const data = JSON.parse(raw);
+        if (Array.isArray(data.seenSeedTopics)) {
+          for (const st of data.seenSeedTopics) {
+            const norm = normalizeText(st);
+            if (norm) this.seedTopics.add(norm);
+          }
+        }
         if (Array.isArray(data.posts)) {
           this.posts = data.posts.map(p => {
             const enriched = extractPostMetadata({
@@ -293,6 +300,8 @@ class HistoryStore {
             return {
               ...p,
               ...enriched,
+              seedTopic: p.seedTopic || '',
+              trendCategory: p.trendCategory || '',
               hash: p.hash || enriched.hash,
               numbers: enriched.importantStatistics,
               englishText: p.englishText || p.text || ''
@@ -318,6 +327,7 @@ class HistoryStore {
       if (p.hash) this.hashes.add(p.hash);
       if (p.topic) this.topics.add(normalizeText(p.topic));
       if (p.subtopic) this.subtopics.add(normalizeText(p.subtopic));
+      if (p.seedTopic) this.seedTopics.add(normalizeText(p.seedTopic));
     }
   }
 
@@ -330,6 +340,7 @@ class HistoryStore {
       const payload = {
         totalPosts: this.posts.length,
         updatedAt: new Date().toISOString(),
+        seenSeedTopics: Array.from(this.seedTopics).slice(-250),
         posts: this.posts
       };
 
@@ -485,6 +496,8 @@ class HistoryStore {
   recordPost({
     topic = '',
     subtopic = '',
+    seedTopic = '',
+    trendCategory = '',
     genreId = 'PAK_VS_IND',
     category = '',
     englishText = '',
@@ -501,6 +514,7 @@ class HistoryStore {
   }) {
     const text = (englishText || topic).trim();
     const cleanTopic = topic.trim();
+    const cleanSeedTopic = String(seedTopic || '').trim();
     const meta = extractPostMetadata({
       topic: cleanTopic,
       subtopic,
@@ -517,6 +531,7 @@ class HistoryStore {
     const hash = meta.hash;
     this.hashes.add(hash);
     if (cleanTopic) this.topics.add(normalizeText(cleanTopic));
+    if (cleanSeedTopic) this.seedTopics.add(normalizeText(cleanSeedTopic));
     if (meta.subtopic) this.subtopics.add(normalizeText(meta.subtopic));
 
     const existingIdx = this.posts.findIndex(p => p.hash === hash || (cleanTopic && p.topic === cleanTopic));
@@ -525,6 +540,8 @@ class HistoryStore {
       hash,
       topic: cleanTopic,
       subtopic: meta.subtopic,
+      seedTopic: cleanSeedTopic || cleanTopic,
+      trendCategory: trendCategory || meta.genreId,
       genreId: meta.genreId,
       category: meta.genreId,
       mainSubject: meta.mainSubject,
@@ -645,23 +662,36 @@ class HistoryStore {
 
   hasSeenTopic(topic = '') {
     if (!topic) return false;
-    return this.topics.has(normalizeText(topic));
+    const norm = normalizeText(topic);
+    return this.topics.has(norm) || this.seedTopics.has(norm);
   }
 
-  recordSeenTopic(topic = '') {
+  recordSeenTopic(topic = '', persist = true) {
     if (!topic) return;
-    this.topics.add(normalizeText(topic));
+    const norm = normalizeText(topic);
+    if (!norm) return;
+    this.topics.add(norm);
+    const isNewSeed = !this.seedTopics.has(norm);
+    this.seedTopics.add(norm);
+    if (persist && isNewSeed) {
+      this.save();
+    }
   }
 
   markDiscarded(topic = '') {
     if (!topic) return;
     const cleanTopic = normalizeText(topic);
     this.topics.add(cleanTopic);
-    const existing = this.posts.find(p => p.topic && normalizeText(p.topic) === cleanTopic);
+    this.seedTopics.add(cleanTopic);
+    const existing = this.posts.find(p =>
+      (p.topic && normalizeText(p.topic) === cleanTopic) ||
+      (p.seedTopic && normalizeText(p.seedTopic) === cleanTopic)
+    );
     if (existing) {
       existing.status = 'DISCARDED';
-      this.save();
+      if (existing.seedTopic) this.seedTopics.add(normalizeText(existing.seedTopic));
     }
+    this.save();
   }
 
   /**
@@ -671,7 +701,11 @@ class HistoryStore {
   markUsed(topic = '', extra = {}) {
     if (!topic && !extra.englishText) return;
     const cleanTopic = topic ? normalizeText(topic) : '';
-    if (cleanTopic) this.topics.add(cleanTopic);
+    if (cleanTopic) {
+      this.topics.add(cleanTopic);
+      this.seedTopics.add(cleanTopic);
+    }
+    if (extra.seedTopic) this.seedTopics.add(normalizeText(extra.seedTopic));
     if (extra.subtopic) this.subtopics.add(normalizeText(extra.subtopic));
 
     const existing = this.posts.find(p => 
@@ -690,6 +724,8 @@ class HistoryStore {
       this.recordPost({
         topic: topic || extra.subtopic || 'Manually Marked Post',
         subtopic: extra.subtopic || topic,
+        seedTopic: extra.seedTopic || topic || '',
+        trendCategory: extra.trendCategory || '',
         genreId: extra.genreId || 'PAK_VS_IND',
         category: extra.genreId || 'PAK_VS_IND',
         englishText: extra.englishText || '',
@@ -703,7 +739,25 @@ class HistoryStore {
   }
 
   getAllUsedTopics() {
-    return Array.from(this.topics);
+    return Array.from(new Set([...this.topics, ...this.seedTopics]));
+  }
+
+  getRecentCategories(limit = 5) {
+    return this.posts
+      .slice(-limit)
+      .map(p => p.trendCategory || p.category || p.genreId)
+      .filter(Boolean)
+      .reverse();
+  }
+
+  getRecentSeedTopics(limit = 30) {
+    const seeds = [];
+    for (const p of this.posts.slice(-limit)) {
+      if (p.seedTopic) seeds.push(p.seedTopic);
+      if (p.topic) seeds.push(p.topic);
+      if (p.subtopic) seeds.push(p.subtopic);
+    }
+    return Array.from(new Set([...seeds, ...Array.from(this.seedTopics).slice(-limit)]));
   }
 
   getAllUsedSubtopics(genreId = '') {
@@ -731,6 +785,7 @@ class HistoryStore {
     this.hashes.clear();
     this.topics.clear();
     this.subtopics.clear();
+    this.seedTopics.clear();
     this.inFlightLocks.clear();
     this.save();
   }

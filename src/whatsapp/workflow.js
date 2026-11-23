@@ -44,8 +44,10 @@ class WhatsAppWorkflowManager extends EventEmitter {
     const gen = await generateEnglishPost(customTopic, excludedTopic, excludedContext, isUserForcedTopic);
     this.currentPendingPost = {
       topic: gen.topic,
+      seedTopic: gen.seedTopic || gen.topic,
       subtopic: gen.subtopic || gen.topic,
       category: gen.category || 'TRENDING',
+      trendCategory: gen.trendCategory || gen.category || 'DAILY_TRENDS',
       genreId: gen.genreId || 'TRENDING',
       mainSubject: gen.mainSubject,
       specificEventOrIssue: gen.specificEventOrIssue,
@@ -535,13 +537,19 @@ ${versionObj.hashtags || ''}`).trim();
       if (input === '5' || input.includes('retry') || input.includes('regen') || input.includes('new') || input.includes('fresh')) {
         console.log(ansi.yellowText('\n⟳ [WhatsApp Action] Owner requested a completely NEW fresh post...'));
         const oldTopic = post.topic;
+        const oldSeedTopic = post.seedTopic || oldTopic;
         const oldContext = {
+          seedTopic: oldSeedTopic,
+          trendCategory: post.trendCategory || post.category,
           subject: post.mainSubject || oldTopic,
           argument: post.centralArgument || '',
           statistics: post.importantStatistics || post.numbers || []
         };
         markPostDiscarded(oldTopic).catch(() => {});
         historyStore.markDiscarded(oldTopic);
+        if (oldSeedTopic && oldSeedTopic !== oldTopic) {
+          historyStore.markDiscarded(oldSeedTopic);
+        }
         this.currentPendingPost = null;
         if (whatsappClient.isConfigured() && fromNumber) {
           try {
@@ -584,6 +592,8 @@ ${versionObj.hashtags || ''}`).trim();
 
         historyStore.markUsed(usedPost.topic, {
           genreId: usedPost.genreId || usedPost.category,
+          seedTopic: usedPost.seedTopic || usedPost.topic,
+          trendCategory: usedPost.trendCategory || usedPost.category,
           subtopic: usedPost.subtopic || usedPost.topic,
           mainSubject: usedPost.mainSubject,
           specificEventOrIssue: usedPost.specificEventOrIssue,
@@ -595,6 +605,8 @@ ${versionObj.hashtags || ''}`).trim();
         });
         markPostUsed(usedPost.topic, {
           genreId: usedPost.genreId || usedPost.category,
+          seedTopic: usedPost.seedTopic || usedPost.topic,
+          trendCategory: usedPost.trendCategory || usedPost.category,
           subtopic: usedPost.subtopic || usedPost.topic,
           mainSubject: usedPost.mainSubject,
           specificEventOrIssue: usedPost.specificEventOrIssue,
@@ -711,13 +723,19 @@ ${versionObj.hashtags || ''}`).trim();
       if (input === '5' || input.includes('retry') || input.includes('regen') || input.includes('new') || input.includes('fresh')) {
         console.log(ansi.yellowText('\n⟳ [WhatsApp Action] Owner requested a completely NEW fresh post from Roman Urdu view...'));
         const oldTopic = post.topic;
+        const oldSeedTopic = post.seedTopic || oldTopic;
         const oldContext = {
+          seedTopic: oldSeedTopic,
+          trendCategory: post.trendCategory || post.category,
           subject: post.mainSubject || oldTopic,
           argument: post.centralArgument || '',
           statistics: post.importantStatistics || post.numbers || []
         };
         markPostDiscarded(oldTopic).catch(() => {});
         historyStore.markDiscarded(oldTopic);
+        if (oldSeedTopic && oldSeedTopic !== oldTopic) {
+          historyStore.markDiscarded(oldSeedTopic);
+        }
         this.currentPendingPost = null;
         if (whatsappClient.isConfigured() && fromNumber) {
           try {
@@ -759,6 +777,8 @@ ${versionObj.hashtags || ''}`).trim();
 
         historyStore.markUsed(usedPost.topic, {
           genreId: usedPost.genreId || usedPost.category,
+          seedTopic: usedPost.seedTopic || usedPost.topic,
+          trendCategory: usedPost.trendCategory || usedPost.category,
           subtopic: usedPost.subtopic || usedPost.topic,
           mainSubject: usedPost.mainSubject,
           specificEventOrIssue: usedPost.specificEventOrIssue,
@@ -770,6 +790,8 @@ ${versionObj.hashtags || ''}`).trim();
         });
         markPostUsed(usedPost.topic, {
           genreId: usedPost.genreId || usedPost.category,
+          seedTopic: usedPost.seedTopic || usedPost.topic,
+          trendCategory: usedPost.trendCategory || usedPost.category,
           subtopic: usedPost.subtopic || usedPost.topic,
           mainSubject: usedPost.mainSubject,
           specificEventOrIssue: usedPost.specificEventOrIssue,
@@ -886,13 +908,19 @@ ${versionObj.hashtags || ''}`).trim();
       if (input === '5' || input.includes('retry') || input.includes('regen') || input.includes('new') || input.includes('fresh')) {
         console.log(ansi.yellowText('\n⟳ [WhatsApp Action] Owner requested a completely NEW fresh post from Plain Urdu view...'));
         const oldTopic = post.topic;
+        const oldSeedTopic = post.seedTopic || oldTopic;
         const oldContext = {
+          seedTopic: oldSeedTopic,
+          trendCategory: post.trendCategory || post.category,
           subject: post.mainSubject || oldTopic,
           argument: post.centralArgument || '',
           statistics: post.importantStatistics || post.numbers || []
         };
         markPostDiscarded(oldTopic).catch(() => {});
         historyStore.markDiscarded(oldTopic);
+        if (oldSeedTopic && oldSeedTopic !== oldTopic) {
+          historyStore.markDiscarded(oldSeedTopic);
+        }
         this.currentPendingPost = null;
         if (whatsappClient.isConfigured() && fromNumber) {
           try {
@@ -934,6 +962,8 @@ ${versionObj.hashtags || ''}`).trim();
 
         historyStore.markUsed(usedPost.topic, {
           genreId: usedPost.genreId || usedPost.category,
+          seedTopic: usedPost.seedTopic || usedPost.topic,
+          trendCategory: usedPost.trendCategory || usedPost.category,
           subtopic: usedPost.subtopic || usedPost.topic,
           mainSubject: usedPost.mainSubject,
           specificEventOrIssue: usedPost.specificEventOrIssue,
@@ -945,6 +975,8 @@ ${versionObj.hashtags || ''}`).trim();
         });
         markPostUsed(usedPost.topic, {
           genreId: usedPost.genreId || usedPost.category,
+          seedTopic: usedPost.seedTopic || usedPost.topic,
+          trendCategory: usedPost.trendCategory || usedPost.category,
           subtopic: usedPost.subtopic || usedPost.topic,
           mainSubject: usedPost.mainSubject,
           specificEventOrIssue: usedPost.specificEventOrIssue,
