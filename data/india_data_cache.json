@@ -1,7 +1,7 @@
 {
-  "fetchedAt": "2026-11-23T07:10:28.125Z",
-  "macroFetchedAt": "2026-11-22T20:30:58.418Z",
-  "liveFetchedAt": "2026-11-23T07:10:28.125Z",
+  "fetchedAt": "2026-11-23T07:32:41.306Z",
+  "macroFetchedAt": "2026-11-23T07:32:39.499Z",
+  "liveFetchedAt": "2026-11-23T07:32:41.305Z",
   "macroFacts": [
     {
       "factId": "youth_unemployment",
@@ -203,6 +203,119 @@
         "rbi",
         "rupee"
       ]
+    },
+    {
+      "factId": "water_to_farms",
+      "indicator": "ER.H2O.FWAG.ZS",
+      "label": "Fresh water pulled strictly for farming crops",
+      "value": 90.41,
+      "formattedValue": "90.4%",
+      "year": "2022",
+      "source": "World Bank",
+      "topicAngle": "India sends over 90% of its fresh water to crops while big cities buy water tankers",
+      "effect": "Free farm power pumps groundwater dry for exported rice and sugar, leaving under 10% for city taps, homes, and factories.",
+      "keywords": [
+        "water",
+        "tanker",
+        "drought",
+        "farm",
+        "rice",
+        "city",
+        "cities",
+        "summer",
+        "tap",
+        "groundwater"
+      ]
+    },
+    {
+      "factId": "tax_to_debt_interest",
+      "indicator": "GC.XPN.INTP.RV.ZS",
+      "label": "Central tax money eaten just by old loan interest",
+      "value": 33.98,
+      "formattedValue": "34.0%",
+      "year": "2022",
+      "source": "World Bank",
+      "topicAngle": "Over one-third of India federal tax cash vanishes paying only old debt interest",
+      "effect": "Before a single rupee pays for schools, trains, or clinics, lenders take 34% of federal taxes while regular people pay steep daily fuel and food taxes.",
+      "keywords": [
+        "tax",
+        "debt",
+        "loan",
+        "budget",
+        "interest",
+        "revenue",
+        "spend",
+        "government",
+        "school",
+        "clinic"
+      ]
+    },
+    {
+      "factId": "insecure_workers",
+      "indicator": "SL.EMP.VULN.ZS",
+      "label": "Workers in unstable jobs without written contracts",
+      "value": 71.58,
+      "formattedValue": "71.6%",
+      "year": "2025",
+      "source": "World Bank",
+      "topicAngle": "Over 71% of Indian workers hold zero steady contracts, sick leave, or pension safety",
+      "effect": "Behind big tech headlines, seven in ten Indians lose income overnight if sickness hits or work slows down.",
+      "keywords": [
+        "job",
+        "jobs",
+        "worker",
+        "workers",
+        "contract",
+        "gig",
+        "salary",
+        "pay",
+        "workforce",
+        "pension"
+      ]
+    },
+    {
+      "factId": "child_stunting",
+      "indicator": "SH.STA.STNT.ZS",
+      "label": "Young children under age 5 stunted from poor nutrition",
+      "value": 35.5,
+      "formattedValue": "35.5%",
+      "year": "2020",
+      "source": "World Bank",
+      "topicAngle": "Over 35% of young Indian kids grow stunted even while India exports millions of tons of grain",
+      "effect": "Lack of protein, eggs, and clean water hurts early brain and body growth for one in three kids, locking in lower adult earnings.",
+      "keywords": [
+        "kid",
+        "kids",
+        "child",
+        "children",
+        "food",
+        "rice",
+        "nutrition",
+        "hunger",
+        "export",
+        "health"
+      ]
+    },
+    {
+      "factId": "hospital_beds_per_1000",
+      "indicator": "SH.MED.BEDS.ZS",
+      "label": "Hospital beds available per 1,000 people",
+      "value": 1.59,
+      "formattedValue": "1.6 per 1,000 people",
+      "year": "2021",
+      "source": "World Bank",
+      "topicAngle": "India has roughly 1.6 hospital beds per 1,000 people despite booming private clinic ads",
+      "effect": "Severe bed shortages force families out of packed public wards into high-cost private clinics that wipe out home savings.",
+      "keywords": [
+        "hospital",
+        "bed",
+        "beds",
+        "clinic",
+        "doctor",
+        "health",
+        "medical",
+        "ward"
+      ]
     }
   ],
   "airQuality": [
@@ -245,7 +358,7 @@
   ],
   "exchangeRate": {
     "usdToInr": 92.75,
-    "fetchedAt": "2026-11-23T07:10:26.816Z",
+    "fetchedAt": "2026-11-23T07:32:39.496Z",
     "source": "ExchangeRate-API"
   }
 }

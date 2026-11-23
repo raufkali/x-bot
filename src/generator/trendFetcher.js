@@ -257,17 +257,18 @@ async function fetchAITrends() {
 
   const prompt = `Today is ${dateStr}.
 
-List 6 real structural DOWNSIDES in INDIA right now and their concrete EFFECTS on regular families, workers, students, or small shops.
+List 6 RARELY-KNOWN, CRAZY-TO-HEAR structural DOWNSIDES in INDIA right now and their hidden EFFECTS on regular families, workers, students, or small shops.
 
 Rules:
+- SKIP obvious everyday talk (do NOT write generic complaints like "traffic is bad" or "food costs more").
+- Pick surprising paradoxes and hidden structural traps few outsiders know (e.g. India pumps over 90% of fresh water into exported farm crops leaving tech cities on tankers; 34% of central tax cash vanishes paying old loan interest before building one clinic; 71.6% of workers have zero written contracts; over 35% of young kids grow stunted while grain exports hit records).
 - NOT news bulletins (do NOT list speeches, inaugurations, cricket scores, or celebrity gossip).
 - Write each topic in very simple everyday English.
-- Focus on issues like: job shortages for young graduates, family medical bills, rising loan debt vs flat wages, dirty city air making kids sick, summer water tankers, weak public schools forcing costly coaching, or low pay for farm workers.
 
 Return ONLY valid JSON:
 {
   "trends": [
-    { "topic": "Simple downside headline", "context": "1-2 simple sentences on the real effect on ordinary Indians" }
+    { "topic": "Surprising hidden downside headline", "context": "1-2 simple sentences on why it happens and the crazy real effect on ordinary Indians" }
   ]
 }`;
 
@@ -299,16 +300,14 @@ Return ONLY valid JSON:
 ========================================================= */
 
 const EVERGREEN_FALLBACKS = [
-  { topic: 'Young Indians finish college and still cannot find steady jobs', context: 'About 16% of young Indians ages 15-24 are jobless. Millions spend years chasing rare government clerk jobs or take low-pay gig work.', source: 'fallback_india_downside' },
-  { topic: 'One hospital trip can wipe out an Indian family savings account', context: 'Around 44% of medical bills in India come straight from family pockets because public clinics are overcrowded.', source: 'fallback_india_downside' },
-  { topic: 'Indian families save less cash while small loan debt keeps growing', context: 'Families borrow on monthly phone and grocery plans because food, rent, and school fees grow faster than salaries.', source: 'fallback_india_downside' },
-  { topic: 'Dirty city air in northern India steals health and paychecks every year', context: 'Toxic winter smog shuts schools, slows factory work, and pushes families to spend savings on doctor visits and inhalers.', source: 'fallback_india_downside' },
-  { topic: 'Too many Indian workers are stuck in low-pay farm work', context: 'Over 41% of Indian workers still farm for small earnings because cities do not build enough factory jobs.', source: 'fallback_india_downside' },
-  { topic: 'Most Indian women are locked out of paid work', context: 'Only 32% of adult women in India hold paid jobs due to unsafe travel and few nearby jobs, leaving families on one paycheck.', source: 'fallback_india_downside' },
-  { topic: 'Big Indian cities run dry and force families to buy tanker water', context: 'Fast building without saving rainwater drains underground water, making millions pay private water tankers every summer.', source: 'fallback_india_downside' },
-  { topic: 'Weak public schools force Indian parents to pay for costly coaching', context: 'Millions of middle-class and poor families spend extra cash on private tutors because crowded classrooms fall behind.', source: 'fallback_india_downside' },
-  { topic: 'Small shops in India move money on phones yet still lack fair bank loans', context: 'While phone payments are instant, small street sellers still pay local lenders steep interest rates just to buy stock.', source: 'fallback_india_downside' },
-  { topic: 'India burns coal for over 72% of its power while summer heat worsens', context: 'Heavy coal power pollutes city air and makes power cuts common when heat waves drive up fan and cooler use.', source: 'fallback_india_downside' }
+  { topic: 'India sends over 90% of its fresh water to crops while big cities buy tanker water', context: 'World Bank data shows 90.4% of fresh water goes to thirsty rice and sugar fields with free power, leaving under 10% for city taps and homes.', source: 'fallback_india_downside' },
+  { topic: 'Over 34% of India federal tax cash vanishes paying only old debt interest', context: 'World Bank figures show one-third of central tax money goes straight to bond lenders before paying for one school, nurse, or train.', source: 'fallback_india_downside' },
+  { topic: 'Over 71% of Indian workers hold zero written contracts or sick pay safety', context: 'World Bank 2025 numbers put 71.6% of Indian workers in unstable jobs where one injury or slow week cuts off family cash.', source: 'fallback_india_downside' },
+  { topic: 'Over 35% of young Indian kids grow stunted while India exports huge piles of grain', context: 'World Bank data shows over 1 in 3 kids under five lack protein and clean water even as farm warehouses overflow for export.', source: 'fallback_india_downside' },
+  { topic: 'India has just 1.6 hospital beds per 1,000 people behind its booming hospital ads', context: 'World Bank data links crowded public wards to Indians paying nearly 44% of all health bills straight from their own pockets.', source: 'fallback_india_downside' },
+  { topic: 'Two out of three adult women in India stay locked outside paid work', context: 'Only 32.4% of adult women hold paid jobs due to unsafe transit and scarce nearby roles, leaving homes on one paycheck.', source: 'fallback_india_downside' },
+  { topic: 'India burns coal for over 72% of its power even as city air hits toxic winter highs', context: 'Heavy coal power fills northern air with fine dust up to 15x WHO limits, shutting schools and draining worker pay.', source: 'fallback_india_downside' },
+  { topic: 'Over 41% of Indian workers stay stuck on tiny farms for barely any yearly cash', context: 'With factory hiring weak and yearly output around $2,702 per person, one bad monsoon traps whole villages in loan debt.', source: 'fallback_india_downside' }
 ];
 
 /* =========================================================
@@ -460,7 +459,7 @@ export async function fetchCustomTopicTrends(topic = '', options = {}) {
   const timeoutMs = Number(options.timeoutMs) || 4500;
 
   try {
-    const query = `${cleanTopic} trends OR latest when:14d`;
+    const query = `${cleanTopic} trends OR bottleneck OR shift OR paradox when:14d`;
     const url = `https://news.google.com/rss/search?q=${encodeURIComponent(query)}&hl=en-US&gl=US&ceid=US:en`;
     const xml = await fetchUrl(url, timeoutMs);
     const items = xml.match(/<item>[\s\S]*?<\/item>/g) || [];

@@ -671,3 +671,46 @@ test('fetchCustomTopicTrends feeds live topic trends into Cloudflare prompt and 
   }
 });
 
+test('Prompts and offline fallbacks prioritize crazy rarely-known analytical info over everyday surface talk', async () => {
+  const trendPrompt = createTrendingPostPrompt('India sends over 90% of its fresh water to crops', 'Cities buy tankers', []);
+  assert.ok(trendPrompt.includes('RARELY-KNOWN, CRAZY-TO-HEAR analytical truth'));
+  assert.ok(trendPrompt.includes('NOT EVERYDAY SURFACE TALK'));
+
+  const aiPrompt = createCustomTopicPrompt('ai', []);
+  assert.ok(aiPrompt.includes('RARELY-KNOWN INSIDER INSIGHT RULE'));
+  assert.ok(aiPrompt.includes('rarely anyone knows and sounds crazy when you first hear it'));
+
+  const origToken = process.env.CLOUDFLARE_API_TOKEN;
+  const origAcct = process.env.CLOUDFLARE_ACCOUNT_ID;
+  const origCfConfigToken = config.cloudflareApiToken;
+  const origCfConfigAcct = config.cloudflareAccountId;
+  const origFetch = globalThis.fetch;
+  const savedPosts = [...historyStore.posts];
+  historyStore.reset();
+
+  delete process.env.CLOUDFLARE_API_TOKEN;
+  delete process.env.CLOUDFLARE_ACCOUNT_ID;
+  config.cloudflareApiToken = '';
+  config.cloudflareAccountId = '';
+  globalThis.fetch = async () => { throw new Error('Offline mode'); };
+
+  try {
+    const aiPost = await generateEnglishPost('ai', '', null, true);
+    assert.ok(aiPost.english.text.includes('36%') || /model collapse|transformer|95%/i.test(aiPost.english.text));
+    assert.ok(aiPost.english.charCount >= 400 && aiPost.english.charCount <= 600);
+
+    const indiaPost = await generateEnglishPost('', '');
+    assert.ok(/90\.4%|34%|71\.6%|35\.5%|1\.6 hospital beds|72\.3%/.test(indiaPost.english.text));
+    assert.ok(indiaPost.english.charCount >= 400 && indiaPost.english.charCount <= 600);
+  } finally {
+    globalThis.fetch = origFetch;
+    if (origToken !== undefined) process.env.CLOUDFLARE_API_TOKEN = origToken; else delete process.env.CLOUDFLARE_API_TOKEN;
+    if (origAcct !== undefined) process.env.CLOUDFLARE_ACCOUNT_ID = origAcct; else delete process.env.CLOUDFLARE_ACCOUNT_ID;
+    config.cloudflareApiToken = origCfConfigToken;
+    config.cloudflareAccountId = origCfConfigAcct;
+    historyStore.posts = savedPosts;
+    historyStore.rebuildIndexes();
+    historyStore.save();
+  }
+});
+

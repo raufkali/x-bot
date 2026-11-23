@@ -61,9 +61,9 @@ function topicExplicitlyMentionsIndia(topic = '') {
   return INDIA_MENTION_REGEX.test(String(topic || ''));
 }
 
-const DEFAULT_PAKISTANI_INDIA_SYSTEM_PROMPT = 'You write high-impact X posts as a Pakistani talking naturally about Indians and India\'s real downsides and how they hurt ordinary people across the border, using the SIMPLEST everyday English (Grade 4-5 words). Keep commentary grounded, analytical, and civil (zero hate). NEVER sound like a news report. Use ONLY verified latest numbers provided in the prompt. Every post MUST strictly follow this exact 3-part layout separated by double line breaks (\\n\\n):\nLine 1: One short punchy hook from a Pakistani point of view exposing an India downside affecting Indians (1 sentence).\n\\n\\nParagraph 2: 2 to 3 short simple sentences with real latest data AND the everyday effect on Indian families, students, or workers (around 50-70 words).\n\\n\\nClosing Line: One short, sharp question that makes people want to reply.\nTotal length MUST be strictly between 400 and 560 characters (never exceed 600). Zero hashtags, zero emojis, no labels. Return ONLY valid JSON.';
+const DEFAULT_PAKISTANI_INDIA_SYSTEM_PROMPT = 'You write high-impact X posts as a Pakistani talking naturally about Indians and India\'s RARELY-KNOWN, CRAZY-TO-HEAR structural paradoxes using the SIMPLEST everyday English (Grade 4-5 words). NEVER repeat obvious everyday talk ("traffic is bad", "prices are high"). Always reveal one shocking hidden link backed by verified numbers (e.g. 90% of water pumped to exported crops while cities buy tankers, or 34% of federal taxes paying only old debt interest). Keep commentary grounded, analytical, and civil (zero hate). NEVER sound like a news report. Every post MUST strictly follow this exact 3-part layout separated by double line breaks (\\n\\n):\nLine 1: One short punchy hook from a Pakistani view dropping a crazy rarely-known fact about India/Indians (1 sentence).\n\\n\\nParagraph 2: 2 to 3 short simple sentences explaining WHY this hidden paradox happens and the shock it causes ordinary Indians (around 50-70 words).\n\\n\\nClosing Line: One short, sharp question that makes people want to reply.\nTotal length MUST be strictly between 400 and 560 characters (never exceed 600). Zero hashtags, zero emojis, no labels. Return ONLY valid JSON.';
 
-const CUSTOM_TOPIC_SYSTEM_PROMPT = 'You act as a sharp, observant person on X writing about SPECIFIC LIVE TRENDS inside the exact topic entered by the user, using the SIMPLEST everyday English (Grade 4-5 words). NEVER write random generic filler or a textbook definition ("People everywhere are talking about..."). Instead, pick one concrete 2025-2026 trend inside that topic (e.g. if the user asks about "AI", write about AI agents doing real tasks, AI coding tools creating bug traps, or AI writing flooding feeds vs real human voice) and explain what is shifting right now. NEVER mention India, Indians, or Pakistan unless the user\'s topic explicitly asks about them. Every post MUST strictly follow this exact 3-part layout separated by double line breaks (\\n\\n):\nLine 1: One short punchy hook naming a concrete current trend inside the user\'s topic (1 sentence).\n\\n\\nParagraph 2: 2 to 3 short simple sentences about what is actually happening in that trend right now and its practical impact (around 50-70 words).\n\\n\\nClosing Line: One short, sharp question that makes people want to reply.\nTotal length MUST be strictly between 400 and 560 characters (never exceed 600). Zero hashtags, zero emojis, no labels. Return ONLY valid JSON.';
+const CUSTOM_TOPIC_SYSTEM_PROMPT = 'You act as a deep insider on X writing about RARELY-KNOWN, CRAZY-TO-HEAR ANALYTICAL INSIGHTS inside live trends of the exact topic entered by the user, using the SIMPLEST everyday English (Grade 4-5 words). NEVER give obvious everyday chatter or generic definitions ("People everywhere are talking about..."). Instead, reveal a surprising second-order mechanism, hidden math, or counter-intuitive twist inside current 2025-2026 trends (e.g. for "AI", explain why 95% per-step agent math drops to 36% over 20 steps, why AI models training on web AI text lose rare ideas via model collapse, or why 3-4 year power-transformer waits limit AI more than chips). NEVER mention India, Indians, or Pakistan unless the user\'s topic explicitly asks about them. Every post MUST strictly follow this exact 3-part layout separated by double line breaks (\\n\\n):\nLine 1: One short punchy hook revealing a shocking rarely-known twist on a live trend in the user\'s topic (1 sentence).\n\\n\\nParagraph 2: 2 to 3 short simple sentences explaining the hidden reason and real consequence right now (around 50-70 words).\n\\n\\nClosing Line: One short, sharp question that makes people want to reply.\nTotal length MUST be strictly between 400 and 560 characters (never exceed 600). Zero hashtags, zero emojis, no labels. Return ONLY valid JSON.';
 
 /* =========================================================
    TEXT FORMATTING AND VALIDATION
@@ -274,18 +274,18 @@ ${trendContext ? `WHY IT MATTERS: ${trendContext}` : ''}
 VERIFIED LATEST INDIA DATA (USE ONLY THESE REAL NUMBERS OR WIDELY KNOWN OFFICIAL FIGURES — NEVER GUESS NUMBERS):
 ${liveFactsBrief || '- Use verified 2024-2026 official India numbers (World Bank, RBI, live air sensors).'}
 
-YOUR MISSION: Write the BEST possible X post **as a Pakistani talking about Indians**, exposing this **India downside and its real-world effect on ordinary Indians**:
-1. PAKISTANI VOICE ABOUT INDIANS: Sound naturally like a Pakistani looking across the border at India and talking about how everyday Indians actually live behind India's big claims (vary openings naturally: "From Pakistan, you hear...", "Sitting across the border in Pakistan...", "As a Pakistani watching India...", "Here in Pakistan we hear big talk about India..."). Keep it grounded, analytical, and respectful—never abusive.
-2. DO NOT SOUND LIKE NEWS: Never write "A new report says", "Today", "Yesterday", "PM X opened", or headline summaries.
-3. EXPOSE THE DOWNSIDE & EFFECT: Explain clearly what is broken or unfair in India AND how it hurts everyday Indian families, students, workers, or small shops (lost cash, debt, poor health, wasted years, higher bills).
-4. USE THE SIMPLEST POSSIBLE WORDS: Write like you are explaining it to a 12-year-old friend. Short words, short sentences (5-12 words). No academic or business jargon.
+YOUR MISSION: Write the BEST possible X post **as a Pakistani talking about Indians**, revealing a **RARELY-KNOWN, CRAZY-TO-HEAR analytical truth** behind this India downside and its hidden effect on ordinary Indians:
+1. NOT EVERYDAY SURFACE TALK: Skip obvious lines everyone repeats ("things cost more", "traffic is bad"). Expose a surprising paradox or hidden mechanism most people have never heard before (e.g., sending 90% of water to exported rice while cities buy tankers, or 34% of federal taxes vanishing into old debt interest before paying one clinic).
+2. PAKISTANI VOICE ABOUT INDIANS: Sound naturally like a Pakistani looking across the border at India and talking about what everyday Indians deal with behind India's loud headlines (vary openings naturally: "Sitting in Pakistan, most people do not know...", "From Pakistan, it is wild to learn...", "As a Pakistani watching India closely, one hidden fact shocks me..."). Keep it grounded, analytical, and respectful—never abusive.
+3. DO NOT SOUND LIKE NEWS: Never write "A new report says", "Today", "Yesterday", "PM X opened", or headline summaries.
+4. USE THE SIMPLEST POSSIBLE WORDS: Explain this mind-blowing analytical truth like you are telling a 12-year-old friend. Short words, short sentences (5-12 words). Zero heavy academic jargon.
 5. USE ACCURATE LATEST DATA: Anchor the middle paragraph in 1 or 2 exact numbers from the Verified Latest India Data above.
 6. END WITH A SHARP QUESTION: Make people stop and reply with their own view.
 
 STRICT POST STRUCTURE (3 parts, separated by double line breaks \\n\\n):
-Line 1: One punchy sentence from a Pakistani perspective exposing this downside facing ordinary Indians (no news intro)
+Line 1: One punchy sentence from a Pakistani perspective revealing a crazy rarely-known India paradox (no news intro)
 \\n\\n
-Paragraph 2: 2-3 short, very simple sentences with accurate latest numbers AND the real effect on everyday Indians (around 50-70 words)
+Paragraph 2: 2-3 short, very simple sentences with accurate latest numbers explaining WHY this happens AND its real shock on everyday Indians (around 50-70 words)
 \\n\\n
 Line 3: One short, thought-provoking question about India/Indians
 
@@ -297,15 +297,15 @@ TOPICS TO AVOID (do not repeat these angles):
 
 Return ONLY valid JSON in this exact format:
 {
-  "topic": "Short plain-English downside headline (not news)",
-  "subtopic": "The specific India downside and everyday effect",
+  "topic": "Short plain-English rarely-known downside headline (not news)",
+  "subtopic": "The specific hidden India paradox and everyday effect",
   "category": "TRENDING",
   "text": "Hook line\\n\\nBody paragraph with real data and effect\\n\\nClosing question"
 }`;
 }
 
 /**
- * Creates a post prompt for a user-specified custom topic grounded in live trends for that topic.
+ * Creates a post prompt for a user-specified custom topic grounded in live trends and rarely-known insider analytics.
  * @param {string} userTopic - What the user wants to write about
  * @param {string[]} avoidList
  * @param {string} liveFactsBrief
@@ -318,26 +318,26 @@ export function createCustomTopicPrompt(userTopic, avoidList = [], liveFactsBrie
 
   return `${topicWantsIndia ? SIMPLE_ENGLISH_RULES : NEUTRAL_CUSTOM_TOPIC_RULES}
 
-# X_BOT — DIRECT CUSTOM TOPIC TREND WRITER (2025-2026)
+# X_BOT — INSIDER CUSTOM TOPIC ANALYTICAL ENGINE (2025-2026)
 
 USER TOPIC: "${userTopic}"
-${liveTrendsBrief ? `\nCURRENT LIVE TRENDS FOR "${userTopic}" (USE THESE REAL SIGNALS — DO NOT WRITE RANDOM GENERIC FILLER):\n${liveTrendsBrief}\n` : ''}
+${liveTrendsBrief ? `\nCURRENT LIVE TRENDS FOR "${userTopic}" (USE THESE REAL SIGNALS — DIG FOR THE HIDDEN INSIDER TWIST, NOT SURFACE SUMMARY):\n${liveTrendsBrief}\n` : ''}
 ${liveFactsBrief ? `\nVERIFIED REFERENCE DATA (USE ONLY IF RELEVANT TO "${userTopic}"):\n${liveFactsBrief}\n` : ''}
-YOUR MISSION: Act like a real person on X who closely follows "${userTopic}" and is writing about **what is actually trending inside "${userTopic}" right now**:
-- NEVER give a random generic summary or definition of "${userTopic}" (never open with vague lines like "People everywhere are talking about ${userTopic}...").
-- Focus on ONE concrete, recognizable 2025-2026 trend inside "${userTopic}" — for example, real workflow shifts, new tools/models changing daily habits, cost or speed breakthroughs, hidden trade-offs, or what builders and everyday users are actually running into right now.
+YOUR MISSION: Act like a sharp insider on X who closely follows "${userTopic}" and is sharing **analytical info about live "${userTopic}" trends that rarely anyone knows and sounds crazy when you first hear it**:
+- NEVER give obvious everyday talk or a generic summary of "${userTopic}" (never say "AI helps write faster" or "People everywhere are talking about ${userTopic}...").
+- Uncover ONE surprising, counter-intuitive 2025-2026 mechanism or hidden trade-off inside "${userTopic}" (for example: compounding error math that breaks long AI workflows, models collapsing when trained on AI web text, 3-year power-transformer shortages throttling data centers, or polished grammar turning into a trust penalty).
 ${topicWantsIndia
     ? '- Because the topic mentions India/Indians, keep the grounded cross-border perspective focused clearly on the topic.'
     : '- CRITICAL TOPIC BOUNDARY: Do NOT mention India, Indians, or Pakistan anywhere in this post. Completely ignore India and Pakistan and stick strictly to what the user asked for.'}
-- NOT a stiff news bulletin — talk directly to readers like a sharp person sharing a real observation on X.
-- Use the SIMPLEST possible words — short sentences (5-12 words), everyday English, zero jargon.
+- NOT a stiff news bulletin — share it like an eye-opening conversation with a smart friend on X.
+- Use the SIMPLEST possible words — short sentences (5-12 words), everyday English, zero academic jargon.
 
 STRICT POST STRUCTURE (3 parts, separated by double line breaks \\n\\n):
-Line 1: One short, scroll-stopping hook sentence naming a concrete current trend inside "${userTopic}"
+Line 1: One short, scroll-stopping hook sentence revealing a surprising or rarely-known analytical twist inside current "${userTopic}" trends
 \\n\\n
-Paragraph 2: 2-3 simple sentences explaining what is actually shifting right now in "${userTopic}" and how it affects real people, work, or money (around 50-70 words)
+Paragraph 2: 2-3 simple sentences explaining the hidden cause behind it and the unexpected impact right now (around 50-70 words)
 \\n\\n
-Line 3: A sharp closing question about this exact trend in "${userTopic}"
+Line 3: A sharp closing question that makes people rethink "${userTopic}"
 
 LENGTH: Strictly 400+ characters (420 to 560 characters ideal). NEVER under 400 and NEVER exceed 600.
 ZERO hashtags. ZERO emojis.
@@ -346,8 +346,8 @@ AVOID: ${avoidStr}
 
 Return ONLY valid JSON:
 {
-  "topic": "Short plain-English trend headline inside ${userTopic.replace(/"/g, "'")}",
-  "subtopic": "Specific current trend explored on ${userTopic.replace(/"/g, "'")}",
+  "topic": "Short plain-English rarely-known trend headline inside ${userTopic.replace(/"/g, "'")}",
+  "subtopic": "Specific surprising insight explored on ${userTopic.replace(/"/g, "'")}",
   "category": "CUSTOM_TOPIC",
   "text": "Hook\\n\\nBody\\n\\nConclusion"
 }`;
@@ -359,118 +359,118 @@ Return ONLY valid JSON:
 ========================================================= */
 
 export const FALLBACK_BANK = [
-  // F1. Youth jobless crisis & wasted years chasing rare clerk posts
+  // F1. 90.4% fresh water pumped to exported crops while tech cities buy water tankers
   {
-    topic: 'Young Indians finish college and still cannot find steady jobs',
-    subtopic: '16% youth jobless rate and years lost chasing rare government posts',
+    topic: 'India sends over 90% of its fresh water to crops while cities buy tanker water',
+    subtopic: 'World Bank 90.4% agricultural water drain starving Indian city taps',
     category: 'TRENDING',
     genreId: 'TRENDING',
-    mainSubject: 'India youth job shortage and gig work trap',
-    specificEventOrIssue: 'World Bank 16.0% youth jobless rate and 12M annual job seekers',
-    centralArgument: 'Too few steady jobs force millions of young Indians into exam coaching or low-pay gig work',
-    analyticalAngle: 'Pakistani perspective on Indian college degrees vs shortage of steady jobs',
-    importantStatistics: ['16.0% youth jobless rate', '12 million new job seekers', '2 million steady jobs'],
-    keywords: ['Pakistan', 'India', 'Indians', 'youth', 'jobs'],
+    mainSubject: 'India groundwater pumping for crops vs urban water tankers',
+    specificEventOrIssue: 'World Bank 90.4% freshwater withdrawal strictly for farming',
+    centralArgument: 'Free farm electricity pumps 90% of fresh water into rice and sugar exports, leaving cities on private tankers',
+    analyticalAngle: 'Pakistani view on India hidden water paradox behind tech city headlines',
+    importantStatistics: ['90.4% fresh water to farms', 'under 10% left for cities'],
+    keywords: ['Pakistan', 'India', 'Indians', 'water', 'tankers'],
     english: {
-      text: 'From Pakistan, you hear huge claims about India, yet 16% of young Indians ages 15 to 24 still lack steady work.\n\nEach year, 12 million young Indians finish college and hunt for real jobs. Yet factories add under 2 million steady posts. Millions waste years chasing rare clerk tests or ride delivery bikes for tiny daily pay.\n\nWhy do loud growth headlines hide how hard life stays for ordinary young Indians?'
+      text: 'Sitting in Pakistan, it is wild to learn India sends 90% of its fresh water to farms yet cities still run dry.\n\nWorld Bank figures show 90.4% of fresh water goes straight to rice and sugar crops pumped with free farm power. That leaves under 10% for every home, school, and shop, forcing city Indians to buy costly tanker water.\n\nWhy drain home groundwater for crop exports while your own cities buy water by the tank?'
     },
-    romanUrdu: { text: 'Pakistan mein baith kar hum India ki taraqqi ke bare daway suntay hain, magar wahan 15 se 24 saal ke 16% nojawan ab bhi be-rozgar hain.\n\nHar saal 1.2 crore Bharti nojawan degree le kar kaam dhoondte hain. Magar karkhanay 20 lakh pakki nokriyan bhi nahi detay. Lakhon nojawan chhoti sarkari poston ke test detay ya delivery bike chalatay hain.\n\nItni bari numayish ke baad bhi aam Bharti nojawanon ke paas pakkay rozgar kyon nahi?' },
-    plainUrdu: { text: 'پاکستان میں بیٹھ کر ہم بھارت کی ترقی کے بڑے دعوے سنتے ہیں، مگر وہاں سولہ فیصد نوجوان اب بھی مستقل کام سے محروم ہیں۔\n\nہر سال ایک کروڑ بیس لاکھ بھارتی نوجوان پڑھائی مکمل کر کے نوکری ڈھونڈتے ہیں۔ مگر کارخانے بیس لاکھ پکی نوکریاں بھی نہیں دیتے۔ لاکھوں نوجوان کلرک کے امتحانوں میں برسوں ضائع کرتے یا معمولی اجرت پر ڈیلیوری کرتے ہیں۔\n\nاتنی چمک دمک کے باوجود عام بھارتی نوجوانوں کے لیے اچھا روزگار اتنا مشکل کیوں ہے؟' }
+    romanUrdu: { text: 'Pakistan mein baith kar yeh jaan kar hairat hoti hai ke India 90% taaza pani kheton ko deta hai aur shehar phir bhi pyasay rehtay hain.\n\nWorld Bank ke mutabiq 90.4% pani chawal aur gannay ki faslon mein muft bijli se lag jata hai. Gharon aur shehron ke liye 10% se kam bachta hai, jis se aam Bharti tanker ka mehnga pani khareedtay hain.\n\nApnay shehron ko pyasa rakh kar itna pani baramad ki faslon par kyon bahaya jata hai?' },
+    plainUrdu: { text: 'پاکستان میں بیٹھ کر یہ جان کر حیرت ہوتی ہے کہ بھارت نوے فیصد سے زیادہ تازہ پانی کھیتوں کو دیتا ہے اور پھر بھی اس کے شہر پیاسے رہتے ہیں۔\n\nورلڈ بینک کے مطابق نوے اعشاریہ چار فیصد تازہ پانی مفت بجلی سے چاول اور گنے کی فصلوں میں لگ جاتا ہے۔ گھروں اور شہروں کے لیے دس فیصد سے کم بچتا ہے، جس سے عام بھارتی ٹینکر کا مہنگا پانی خریدنے پر مجبور ہیں۔\n\nاپنے شہریوں کو ٹینکروں پر لگا کر اتنا زیرِ زمین پانی برآمدی فصلوں میں کیوں بہایا جاتا ہے؟' }
   },
 
-  // F2. Hospital bills wiping out family savings
+  // F2. 34.0% of central tax revenue eaten strictly by old debt interest
   {
-    topic: 'One hospital trip can wipe out an Indian family savings account',
-    subtopic: '43.9% out-of-pocket medical bills pushing Indian families into debt',
+    topic: 'Over 34% of India federal tax cash vanishes paying only old debt interest',
+    subtopic: 'One-third of central tax money paid to bond lenders before funding schools or clinics',
     category: 'TRENDING',
     genreId: 'TRENDING',
-    mainSubject: 'India medical costs and weak public clinics',
-    specificEventOrIssue: 'World Bank data showing 43.9% of health costs paid directly by families',
-    centralArgument: 'Weak public hospitals force ordinary Indians to borrow money for basic medical care',
-    analyticalAngle: 'Pakistani perspective on overcrowded Indian clinics vs private hospital bills',
-    importantStatistics: ['43.9% from family pockets', '3.3% GDP health spending'],
-    keywords: ['Pakistan', 'India', 'Indians', 'hospital', 'bills'],
+    mainSubject: 'India central government debt interest vs public clinic funding',
+    specificEventOrIssue: 'World Bank 34.0% of revenue spent solely on interest payments',
+    centralArgument: 'Over one-third of central taxes disappear into old loan interest before building a single clinic or classroom',
+    analyticalAngle: 'Pakistani perspective on India high indirect consumer taxes vs public service scarcity',
+    importantStatistics: ['34.0% tax paid as debt interest', 'one-third gone to lenders'],
+    keywords: ['Pakistan', 'India', 'Indians', 'tax', 'debt'],
     english: {
-      text: 'Sitting in Pakistan, it is shocking to see how one hospital trip wipes out an ordinary Indian family.\n\nWorld Bank data shows Indians pay almost 44% of all medical bills from their own pockets. Overcrowded public clinics lack doctors, beds, and tests. Working parents must borrow cash or sell home gold just to pay private clinics.\n\nWhy does getting sick still push millions of everyday Indians deep into debt?'
+      text: 'From Pakistan, few people know 34% of India\'s central tax cash pays only interest on old government loans.\n\nWorld Bank data shows lenders take over a third of federal taxes before a single rupee reaches teachers, nurses, or trains. Ordinary Indians still pay heavy taxes on milk, fuel, and soap while public wards stay packed.\n\nHow fast could daily Indian life change if one-third of taxes did not vanish to old debt?'
     },
-    romanUrdu: { text: 'Sarhad ke is paar Pakistan se dekhein toh hairat hoti hai ke India mein aik hospital ka kharch aam khandan ki bachat khatam kar deta hai.\n\nWorld Bank ke mutabiq Bharti log ilaj ke taqreeban 44% kharch apni jaib se detay hain. Sarkari clinic mein aksar doctor aur bistar kam par jatay hain, is liye aam waldain ko qarz lena ya sona bechna parta hai.\n\nAik bimari lakhon aam Bharti gharon ko dobara qarz ke bojh mein kyon dhakel deti hai?' },
-    plainUrdu: { text: 'سرحد کے اس پار پاکستان سے دیکھیں تو حیرت ہوتی ہے کہ بھارت میں اسپتال کا ایک خرچ کسی بھی عام خاندان کی برسوں کی بچت ختم کر دیتا ہے۔\n\nورلڈ بینک کے مطابق بھارتی شہری علاج کے تقریباً چوالیس فیصد اخراجات خود اپنی جیب سے ادا کرتے ہیں۔ سرکاری کلینکوں میں ڈاکٹر اور بستر کم ہونے پر محنت کش والدین کو مہنگا قرض لینا یا گھر کا سونا بیچنا پڑتا ہے۔\n\nایک بیماری لاکھوں عام بھارتی گھرانوں کو دوبارہ قرض کے بوجھ تلے کیوں دبا دیتی ہے؟' }
+    romanUrdu: { text: 'Pakistan se kam log jantay hain ke India ke markazi tax ka 34% hissa sirf puranay qarz ke sood mein chala jata hai.\n\nWorld Bank ke mutabiq school, hospital ya train par aik rupiya kharch honay se pehlay aik tihai tax qarz dene walay le jatay hain. Aam Bharti doodh, tail aur sabun par bhari tax de kar bhi bheed bharay clinic dekhtay hain.\n\nAgar aik tihai tax puranay sood mein na jata toh aam Bharti zindagi kitni behtar hoti?' },
+    plainUrdu: { text: 'پاکستان سے بہت کم لوگ جانتے ہیں کہ بھارت کے مرکزی ٹیکس کا چونتیس فیصد حصہ صرف پرانے سرکاری قرضوں کے سود میں چلا جاتا ہے۔\n\nورلڈ بینک کے مطابق اسکول، نرس یا ٹرین پر ایک روپیہ خرچ ہونے سے پہلے ہی ایک تہائی ٹیکس قرض خواہ لے جاتے ہیں۔ عام بھارتی شہری دودھ، تیل اور صابن پر بھاری روزمرہ ٹیکس دے کر بھی بھیڑ بھرے سرکاری کلینک دیکھتے ہیں۔\n\nاگر اتنا بڑا ٹیکس پرانے سود کی نذر نہ ہوتا تو عام بھارتی زندگی کتنی بہتر ہوتی؟' }
   },
 
-  // F3. Dirty air hurting lungs, schools, and wages
+  // F3. 71.6% of Indian workers hold zero formal contracts or sick pay
   {
-    topic: 'Dirty city air in northern India steals Indian health and paychecks',
-    subtopic: 'Toxic smog above safe WHO limits hurting Indian children and daily workers',
+    topic: 'Over 71% of Indian workers hold zero written contracts or sick pay safety',
+    subtopic: 'World Bank 71.6% vulnerable employment behind India modern tech boom',
     category: 'TRENDING',
     genreId: 'TRENDING',
-    mainSubject: 'Northern India air pollution and Indian family health costs',
-    specificEventOrIssue: 'Live PM2.5 readings reaching 15x WHO safe health limits',
-    centralArgument: 'Bad air shuts schools, slows outdoor work, and forces Indian families to spend cash on medicine',
-    analyticalAngle: 'Pakistani view on shared winter smog hurting Indian cities and daily wages',
-    importantStatistics: ['15 times WHO safe limit', '72% coal power'],
-    keywords: ['Pakistan', 'India', 'Indians', 'Delhi', 'air'],
+    mainSubject: 'Insecure uncontracted work across seven in ten Indian workers',
+    specificEventOrIssue: 'World Bank 2025 figure of 71.6% vulnerable employment in India',
+    centralArgument: 'Over seven in ten Indian workers lack written contracts, paid leave, or steady pensions behind tech headlines',
+    analyticalAngle: 'Pakistani view on India shiny software hype vs 72% insecure daily workforce',
+    importantStatistics: ['71.6% insecure workers', 'zero sick pay or pension'],
+    keywords: ['Pakistan', 'India', 'Indians', 'workers', 'contracts'],
     english: {
-      text: 'Here in Pakistan we fight smog too, and looking across at northern India shows how bad air steals Indian paychecks.\n\nAir sensors across Delhi often hit levels 15 times worse than safe world limits. Schools shut for weeks, outdoor work stops, and kids fill clinics with bad coughs. Everyday Indians lose wages while buying costly inhalers.\n\nHow can ordinary Indians live well when city air hurts their kids every day?'
+      text: 'When we hear tech hype about India in Pakistan, almost nobody mentions 72% of Indian workers hold zero contracts.\n\nWorld Bank 2025 numbers put 71.6% of working Indians in fragile daily jobs with no sick pay, no pension, and no layoff notice. One broken delivery bike or sudden fever cuts family money off overnight.\n\nWhy do shiny India boom stories skip the seven in ten everyday workers who lack basic job safety?'
     },
-    romanUrdu: { text: 'Pakistan mein bhi smog ka masla hai, aur jab hum sarhad paar shumali India ko dekhtay hain toh wahan ki gandi hawa logon ki kamai cheen leti hai.\n\nDelhi ke sensor aksar mehfooz had se 15 guna zyada gandagi dikhatay hain. School hafton band rehtay hain, mazdoori ruk jati hai aur aam Bharti khandanon ki kamai dawai aur doctor par kharch hoti hai.\n\nAam Bharti behtar zindagi kaisay banayein jab bahar ki hawa roz un ke bachon ko bimaar karay?' },
-    plainUrdu: { text: 'پاکستان کی طرح سرحد پار شمالی بھارت کے شہروں میں بھی زہریلی ہوا عام لوگوں کی صحت اور روزگار دونوں چھین لیتی ہے۔\n\nدہلی کے فضائی سینسر اکثر محفوظ عالمی حد سے پندرہ گنا زیادہ آلودگی دکھاتے ہیں۔ اسکول کئی ہفتوں تک بند رہتے ہیں، مزدوری سست پڑتی ہے اور عام بھارتی والدین کی محنت کی کمائی بچوں کی دوائی اور ڈاکٹر پر خرچ ہو جاتی ہے۔\n\nعام بھارتی شہری بہتر زندگی کیسے بنائیں جب باہر کی فضا روز ان کے بچوں کو بیمار کرے؟' }
+    romanUrdu: { text: 'Pakistan mein jab India ki tech taraqqi ke charche hotay hain toh koi nahi batata ke 72% Bharti mazdooron ke paas pakka contract tak nahi.\n\nWorld Bank 2025 ke mutabiq 71.6% kaam karnay walay Bharti bina bemari ki chhutti aur bina pension ke rozana rozgar par hain. Aik bukhar ya bike kharab honay par ghar ki kamai foran ruk jati hai.\n\nChamakdar surkhiyan un saat mein se das Bharti logon ko kyon bhool jati hain?' },
+    plainUrdu: { text: 'پاکستان میں جب بھارت کی ٹیک ترقی کے چرچے ہوتے ہیں تو کوئی یہ نہیں بتاتا کہ بہتر فیصد بھارتی محنت کشوں کے پاس تحریری معاہدہ تک نہیں۔\n\nورلڈ بینک کی دو ہزار پچیس کی فہرست کے مطابق اکہتر اعشاریہ چھ فیصد بھارتی کارکن بیماری کی چھٹی اور پنشن کے بغیر غیر محفوظ کام کرتے ہیں۔ ایک بخار یا بائیک خراب ہونے پر گھر کی آمدنی فوراً رک جاتی ہے۔\n\nچمکدار سرخیاں ان دس میں سے سات عام بھارتی کارکنوں کا حال کیوں چھپا لیتی ہیں؟' }
   },
 
-  // F4. Too many workers stuck in tiny farms
+  // F4. 35.5% of young Indian kids grow stunted while grain exports surge
   {
-    topic: 'Over 41% of Indian workers stay stuck in low-pay farm work',
-    subtopic: 'Too few factory jobs trap rural Indians in small earnings',
+    topic: 'Over 35% of young Indian kids grow stunted even while grain exports surge',
+    subtopic: 'World Bank 35.5% child stunting alongside massive rice and wheat harvests',
     category: 'TRENDING',
     genreId: 'TRENDING',
-    mainSubject: 'India farm dependency and weak factory job growth',
-    specificEventOrIssue: 'World Bank 41.6% agriculture employment share in 2025',
-    centralArgument: 'Because factories add too few jobs, nearly half of Indian workers remain in low-income farming',
-    analyticalAngle: 'Pakistani perspective on high Indian farm headcount vs low family pay',
-    importantStatistics: ['41.6% farm workers', '$2,702 yearly output per person'],
-    keywords: ['Pakistan', 'India', 'Indians', 'farm', 'workers'],
+    mainSubject: 'India child nutrition paradox amid surplus food exports',
+    specificEventOrIssue: 'World Bank 35.5% under-five child stunting rate in India',
+    centralArgument: 'Despite exporting millions of tons of grain, over one in three young Indian kids suffer stunted growth from poor protein diets',
+    analyticalAngle: 'Pakistani observer perspective on India food exports vs one in three stunted kids',
+    importantStatistics: ['35.5% kids under 5 stunted', 'over 1 in 3 children'],
+    keywords: ['Pakistan', 'India', 'Indians', 'kids', 'grain'],
     english: {
-      text: 'As a Pakistani watching India closely, the real gap is seeing over 41% of Indian workers still stuck on tiny farms.\n\nWorld Bank data shows nearly half of India\'s workers rely on small plots that barely pay bills. Cities add too few factory jobs, so one weak rain season or price drop pushes whole villages into loans.\n\nWhy do so many hardworking Indians stay trapped in farm work that cannot pay a fair living?'
+      text: 'As a Pakistani watching India closely, one wild paradox stands out: over 35% of young Indian kids grow stunted.\n\nWorld Bank data shows more than one in three Indian children under five are too short for their age due to weak diets and dirty water. Even as India ships huge piles of grain abroad, early hunger limits future brain growth and adult pay.\n\nHow can a giant grain exporter still leave one in three little kids short on daily food?'
     },
-    romanUrdu: { text: 'Aik Pakistani ki nazar se India ko dekhein toh sab se bari kami yeh dikhti hai ke 41% se zyada Bharti mazdoor ab bhi chhoti kheti par guzara kartay hain.\n\nWorld Bank ke mutabiq taqreeban aadhi Bharti abadi chhotay kheton se juri hai kyonke shehron mein factory nokriyan kam hain. Aik kamzor barish pooray gaon ko qarz mein dooba deti hai.\n\nItnay mehnat-kash Bharti aise kaam mein kyon phansay hain jo ghar ka kharch bhi poora na karay?' },
-    plainUrdu: { text: 'پاکستان سے بھارت کی معیشت کو دیکھیں تو سب سے بڑا خلا یہ نظر آتا ہے کہ اکتالیس فیصد سے زیادہ بھارتی محنت کش آج بھی چھوٹی کھیتی پر گزارا کرتے ہیں۔\n\nورلڈ بینک کے مطابق تقریباً آدھی بھارتی آبادی چھوٹے کھیتوں سے جڑی ہے کیونکہ شہروں میں کارخانوں کی مستقل ملازمتیں بہت کم ہیں۔ ایک کمزور بارش یا فصل سستی ہونے سے پورا گاؤں قرض میں ڈوب جاتا ہے۔\n\nاتنے محنتی بھارتی ایسے کام میں کیوں پھنسے ہیں جو گھر کا خرچ بھی مشکل سے پورا کرے؟' }
+    romanUrdu: { text: 'Aik Pakistani ki nazar se India ko dekhein toh yeh haqeeqat chonkati hai ke wahan 35% se zyada chhotay bachay kamzor nashonuma ka shikar hain.\n\nWorld Bank ke mutabiq teen mein se aik Bharti bacha khalis ghiza aur saaf pani ki kami se qad mein peechay reh jata hai. Bahar anaaj bhejnay ke bawajood bachpan ki bhook un ke mustaqbil ki kamai kam karti hai.\n\nDunya ko anaaj bechnay wala mulk apnay hi teen mein se aik bachay ko poori ghiza kyon nahi de pata?' },
+    plainUrdu: { text: 'پاکستان سے بھارت کو دیکھیں تو ایک حیران کن حقیقت سامنے آتی ہے کہ وہاں پانچ سال سے کم پینتیس فیصد سے زیادہ بچے کمزور نشوونما کا شکار ہیں۔\n\nورلڈ بینک کے مطابق تین میں سے ایک بھارتی بچہ متوازن غذا اور صاف پانی نہ ملنے سے عمر کے حساب سے چھوٹا رہ جاتا ہے۔ باہر اناج بیچنے کے باوجود بچپن کی یہ کمی ان کی مستقبل کی کمائی گھٹا دیتی ہے۔\n\nدنیا کو اناج برآمد کرنے والا ملک اپنے ہی تین میں سے ایک بچے کو پوری غذا کیوں نہیں دے پاتا؟' }
   },
 
-  // F5. Women locked out of paid jobs
+  // F5. Just 1.6 hospital beds per 1,000 people & 43.9% medical bills from pockets
   {
-    topic: 'Two out of three adult women in India are outside paid jobs',
-    subtopic: 'Only 32.4% female workforce participation holds back Indian family incomes',
+    topic: 'India has just 1.6 hospital beds per 1,000 people behind private hospital ads',
+    subtopic: 'World Bank 1.6 beds per 1,000 people forcing 43.9% family out-of-pocket bills',
     category: 'TRENDING',
     genreId: 'TRENDING',
-    mainSubject: 'Low Indian women workforce share and one-paycheck households',
-    specificEventOrIssue: 'World Bank 32.4% female labor force rate in 2025',
-    centralArgument: 'Unsafe transit and lack of safe nearby jobs leave most Indian families relying on a single paycheck',
-    analyticalAngle: 'Pakistani view on India tech image vs low women employment at home',
-    importantStatistics: ['32.4% women in paid work', 'two-thirds left out'],
-    keywords: ['Pakistan', 'India', 'Indians', 'women', 'jobs'],
+    mainSubject: 'Severe public hospital bed scarcity driving Indian household debt',
+    specificEventOrIssue: 'World Bank 1.59 hospital beds per 1,000 people and 43.9% self-paid health bills',
+    centralArgument: 'Having only 1.6 hospital beds per 1,000 citizens forces everyday Indians into costly private clinics paying 44% out of pocket',
+    analyticalAngle: 'Pakistani perspective on India medical tourism image vs 1.6 beds per 1,000 citizens',
+    importantStatistics: ['1.6 beds per 1,000 people', '43.9% paid from pockets'],
+    keywords: ['Pakistan', 'India', 'Indians', 'hospital', 'beds'],
     english: {
-      text: 'When we discuss India\'s tech image in Pakistan, few notice two in three Indian women stay outside paid jobs.\n\nWorld Bank numbers show only 32% of Indian women work for pay today. Unsafe streets, weak night buses, and costly childcare keep millions of skilled women at home. That leaves most homes relying on just one monthly paycheck.\n\nHow much stronger would Indian families be if women had safe travel and fair work?'
+      text: 'Looking across the border from Pakistan, India has just 1.6 hospital beds per 1,000 people behind luxury clinic ads.\n\nWorld Bank figures show packed public wards push ordinary Indians to pay nearly 44% of all medical costs from their own pockets. One sudden surgery forces working parents to pawn home gold or borrow costly app loans.\n\nWhat good is booming private healthcare when one sickness still breaks ordinary Indian savers?'
     },
-    romanUrdu: { text: 'Pakistan mein jab India ki tech tasveer par baat hoti hai toh kam log dekhtay hain ke wahan teen mein se do jawan khawateen paid nokri se bahar hain.\n\nWorld Bank ke mutabiq aaj sirf 32% Bharti khawateen kamai karti hain. Ghair-mehfooz raste aur kamzor transport lakhon parhi likhi auraton ko ghar bitha detay hain aur bojh aik tankhwah par aata hai.\n\nBharti ghar kitnay mazboot hotay agar wahan khawateen ko mehfooz safar aur barabar kaam milta?' },
-    plainUrdu: { text: 'پاکستان میں جب بھارت کی جدید تصویر پر بات ہوتی ہے تو کم لوگ دیکھتے ہیں کہ وہاں تین میں سے دو بالغ خواتین تنخواہ والی ملازمت سے باہر ہیں۔\n\nورلڈ بینک کے مطابق آج صرف بتیس فیصد بھارتی خواتین روزگار سے جڑی ہیں۔ غیر محفوظ راستوں اور کمزور ٹرانسپورٹ کی وجہ سے لاکھوں تعلیم یافتہ خواتین گھر بیٹھنے پر مجبور ہیں اور پورا بوجھ ایک تنخواہ پر آتا ہے۔\n\nبھارتی گھرانے کتنے مضبوط ہوتے اگر وہاں خواتین کو محفوظ سفر اور مناسب روزگار ملتا؟' }
+    romanUrdu: { text: 'Pakistan se sarhad paar dekhein toh India ke mehnge hospital ishteharon ke peechay har hazar logon par sirf 1.6 bistar hain.\n\nWorld Bank ke mutabiq sarkari ward bharay honay ki wajah se aam Bharti ilaj ke taqreeban 44% paise apni jaib se detay hain. Aik achanak operation par waldain ko ghar ka sona girvi rakhna ya mehnga app qarz lena parta hai.\n\nAisi private chamak ka kya faida jab aik bimari aam Bharti gharon ki bachat mita de?' },
+    plainUrdu: { text: 'پاکستان سے سرحد پار دیکھیں تو بھارت کے مہنگے اسپتال اشتہاروں کے پیچھے ہر ایک ہزار شہریوں کے لیے صرف ایک اعشاریہ چھ بستر موجود ہیں۔\n\nورلڈ بینک کے مطابق سرکاری وارڈ بھرے ہونے کے باعث عام بھارتی علاج کے تقریباً چوالیس فیصد اخراجات خود اپنی جیب سے ادا کرتے ہیں۔ ایک اچانک آپریشن پر والدین کو گھر کا سونا بیچنا یا مہنگا قرض لینا پڑتا ہے۔\n\nایسے نجی اسپتالوں کی چمک کا کیا فائدہ جب ایک بیماری عام بھارتی گھر کی پوری بچت مٹا دے؟' }
   },
 
-  // F6. Low average pay and rising family loans
+  // F6. 72.3% coal electricity & 32.4% women workforce paradox
   {
-    topic: 'Big growth headlines hide how little the average Indian earns',
-    subtopic: '$2,702 yearly output per person and rising monthly Indian family loans',
+    topic: 'Coal still makes 72% of India electricity even as toxic air shuts city schools',
+    subtopic: 'World Bank 72.3% coal share keeping northern Indian air up to 15x WHO limits',
     category: 'TRENDING',
     genreId: 'TRENDING',
-    mainSubject: 'Low Indian per-person earnings vs rising living costs and retail loans',
-    specificEventOrIssue: 'World Bank $2,702 GDP per person in 2025 alongside rising household debt',
-    centralArgument: 'Headline growth masks flat Indian family incomes, pushing city homes into monthly loans for groceries',
-    analyticalAngle: 'Pakistani perspective on big India GDP numbers vs average Indian pay',
-    importantStatistics: ['$2,702 per person', '₹93 per dollar import pressure'],
-    keywords: ['Pakistan', 'India', 'Indians', 'income', 'loans'],
+    mainSubject: 'India coal power lock-in driving hazardous city smog and lost workdays',
+    specificEventOrIssue: 'World Bank 72.3% electricity from coal and toxic northern air readings',
+    centralArgument: 'Despite green energy headlines, coal generates 72% of India electricity and drives toxic smog that steals school weeks and outdoor wages',
+    analyticalAngle: 'Pakistani view on shared winter smog and India 72% coal power trap',
+    importantStatistics: ['72.3% coal power', '15 times WHO safe limit'],
+    keywords: ['Pakistan', 'India', 'Indians', 'coal', 'air'],
     english: {
-      text: 'From Pakistan, India\'s big GDP headlines look huge, yet they hide how little the average Indian still earns.\n\nWorld Bank figures put yearly output at just $2,702 per person across India. Yet city rent, milk, cooking oil, and school fees climb while office pay stalls. More Indian families now use quick phone loans just for groceries.\n\nIs India\'s boom built on real pay, or on ordinary Indians borrowing tomorrow\'s cash?'
+      text: 'Here in Pakistan people see India\'s solar headlines, yet coal still supplies 72.3% of all Indian electricity.\n\nWorld Bank numbers reveal why winter smog around Delhi climbs up to 15 times over safe world limits. Heavy coal smoke shuts schools for weeks, cuts outdoor wages, and makes families spend tight paychecks on lung medicine.\n\nCan clean energy ads ever fix Indian city lungs while three-fourths of power stays on coal?'
     },
-    romanUrdu: { text: 'Pakistan se India ki bari maashi surkhiyan bohat baray nazar aati hain, magar yeh chhupa leti hain ke aam Bharti aaj bhi kitna kam kamata hai.\n\nWorld Bank ke mutabiq India mein fi kas salana paidawar sirf 2,702 dollar hai. Magar shehr ka kiraya, doodh aur school fees barh rahi hain, jis se aam log rashan ke liye bhi phone se chhotay qarz le rahay hain.\n\nKya India ki khareedari barhti kamai se chal rahi hai ya aam log kal ka paisa udhar le rahay hain?' },
-    plainUrdu: { text: 'پاکستان سے بھارت کے بڑے معاشی اعداد بہت شاندار لگتے ہیں، مگر یہ چھپا لیتے ہیں کہ عام بھارتی آج بھی کتنا کم کماتا ہے۔\n\nورلڈ بینک کے مطابق بھارت میں فی کس سالانہ پیداوار صرف دو ہزار سات سو دو ڈالر ہے۔ دوسری طرف کرایہ، دودھ اور اسکول فیس مسلسل بڑھ رہی ہے، جس سے عام بھارتی گھرانے روزمرہ راشن کے لیے بھی چھوٹے قرضے لے رہے ہیں۔\n\nکیا بھارت کی خریداری بڑھتی آمدنی سے چل رہی ہے یا عام لوگ کل کا پیسہ ادھار لے رہے ہیں؟' }
+    romanUrdu: { text: 'Pakistan mein hum India ke solar daway suntay hain, magar haqeeqat yeh hai ke wahan ab bhi 72.3% bijli koelay se banti hai.\n\nWorld Bank ke aadad batatay hain ke Delhi aur aas paas ki hawa mehfooz had se 15 guna zyada gandi kyon hoti hai. Koelay ka dhuwan school band karwata hai, mazdoori rokta hai aur logon ki kamai dawai par lagwa deta hai.\n\nJab teen chauthai bijli koelay par chalay toh sirf hara ishtehar shehron ki hawa kaisay saaf karega?' },
+    plainUrdu: { text: 'پاکستان میں ہم بھارت کے سولر دعوے سنتے ہیں، مگر حیرت انگیز حقیقت یہ ہے کہ وہاں آج بھی بہتر اعشاریہ تین فیصد بجلی کوئلے سے بنتی ہے۔\n\nورلڈ بینک کے اعداد بتاتے ہیں کہ دہلی اور آس پاس کی فضا محفوظ حد سے پندرہ گنا زیادہ آلودہ کیوں رہتی ہے۔ کوئلے کا دھواں اسکول بند کرواتا ہے، دیہاڑی روکتا ہے اور عام بھارتیوں کی کمائی پھیپھڑوں کی دوائی پر خرچ کرواتا ہے۔\n\nجب تین چوتھائی بجلی کوئلے پر چل رہی ہو تو صرف سبز اشتہار شہروں کی فضا کیسے صاف کریں گے؟' }
   }
 ];
 
@@ -547,63 +547,67 @@ function generateDynamicFallback(category = 'TRENDING', subtopic = '', excludedT
 
 const AI_TREND_BANK = [
   {
-    subtopic: 'AI agents shifting from simple chat boxes to autonomous workflow tools',
-    text: 'AI is quietly moving past simple chat boxes into smart agents that finish real work steps on their own.\n\nTeams are no longer amazed by clever chat replies that still need human copy and paste. The real shift right now is connecting AI straight into email, files, and calendars so small routines run smoothly while people focus on judgment and catching quiet mistakes.\n\nAre you still only chatting with AI, or have you trusted an agent with real daily tasks yet?'
+    subtopic: 'Why 95% AI agent accuracy collapses to 36% over a 20-step workflow',
+    text: 'A weird math trap explains why autonomous AI agents still break in real office work even when demos look magical.\n\nAt 95% accuracy per single click, a 20-step workflow succeeds only 36% of the time because tiny slips compound fast down the chain. That is why teams in 2026 are shrinking AI agents down to tiny 3-step tasks with hard human checkpoints.\n\nWould you trust an AI agent running 20 steps alone if math guarantees two-thirds fail?'
   },
   {
-    subtopic: 'AI coding helpers speeding up app launches while creating hidden debug debt',
-    text: 'AI coding helpers let one builder ship an app in a weekend, yet they also hide a sneaky trap for teams.\n\nSolo makers draft full screens and tests in minutes instead of weeks, cutting early build costs way down. Still, teams lose hours fixing messy AI code nobody fully grasps, so clear code reading and solid testing habits now matter more than fast typing.\n\nHas AI helped your team ship cleaner software, or just faster bugs to untangle later?'
+    subtopic: 'Model collapse quietly poisoning future AI systems trained on AI web text',
+    text: 'An invisible wall is hitting new AI models right now: training future AI on AI-made text makes models dumber.\n\nResearchers call it model collapse because synthetic training erases rare facts and flattens sharp thinking into dull averages. That strange twist suddenly turned clean pre-2022 human writing, messy forums, and real code logs into rare priceless fuel.\n\nIf the open web keeps filling with AI text, where will tomorrow\'s models learn fresh human ideas?'
   },
   {
-    subtopic: 'AI writing flooding social feeds and making real human voice far rarer',
-    text: 'AI writing tools flood feeds every single hour now, which makes a real human voice worth ten times more.\n\nAnyone can push out smooth, polite posts in seconds, so readers scroll straight past stiff lines that sound like every other account. Writers who stand out right now use AI for quick outlines while keeping their own rough stories, clear opinions, and lived lessons.\n\nCan you spot machine-made posts within three words now, or do some still fool you?'
+    subtopic: 'AI writing flooding the web turned perfect grammar into a bot-detection signal',
+    text: 'AI writing tools flooded feeds so hard this year that clean, textbook grammar now makes readers trust a post less.\n\nSearch filters and sharp readers treat smooth neutral prose as synthetic clutter made with zero lived experience. Ironically, small human quirks, strong weird opinions, and messy first-hand details suddenly beat polished AI writing on reach and trust.\n\nDo you notice yourself scrolling faster past flawless text now because it feels fake?'
   },
   {
-    subtopic: 'Small fast AI models replacing expensive giant models for everyday tasks',
-    text: 'The biggest AI trend this year is not a larger chatbot, it is smaller fast models doing daily work at low cost.\n\nCompanies used to send every tiny sorting or summary task to giant pricey models and watch monthly server bills climb fast. Now lean models run in milliseconds on normal chips while heavy reasoning steps wait for tough calls that truly need extra depth.\n\nDo most everyday tasks even need massive AI models anymore, or is speed beating size now?'
+    subtopic: 'Four-year power transformer waits bottlenecking AI scaling more than chips',
+    text: 'Most people assume computer chips limit AI growth today, yet the real choke point is old-school power transformers.\n\nHeavy reasoning models pull far more electricity per answer than basic search, and giant electrical transformers now face wait lists stretching three to four years. Labs can buy racks of fast silicon yet wait years just to wire steady grid power.\n\nCould boring electrical cables end up deciding which AI labs win faster than chip design?'
+  },
+  {
+    subtopic: 'AI coding speed creating senior review burnout and halting junior hiring',
+    text: 'AI coding helpers let builders type code ten times faster, yet they created a weird crisis nobody saw coming.\n\nTeams ship far more duplicated code that senior engineers must slowly debug, burning out top staff on review duty while firms stop hiring junior devs. Without juniors learning the ropes today, nobody is sure who becomes the senior reviewer five years out.\n\nIf companies stop training junior coders now, where do future senior builders come from?'
   }
 ];
 
 const QUANTUM_TREND_BANK = [
   {
-    subtopic: 'Quantum error correction shifting focus from raw qubit counts to stability',
-    text: 'Quantum computing teams are finally chasing stable error correction instead of bragging about noisy qubit counts.\n\nFor years, extra qubits meant nothing when tiny heat or light shifts broke calculations in split seconds. New logical-qubit tests keep data steady much longer, pushing security teams to upgrade bank and cloud locks years before code-breaking hardware arrives.\n\nDo you think post-quantum locks will arrive in time, or will old systems fall behind first?'
+    subtopic: 'Store-now-decrypt-later spying forcing banks to swap locks before quantum machines arrive',
+    text: 'Spies already steal locked bank and state data today even though code-breaking quantum machines do not exist yet.\n\nSecurity teams call it harvest-now decrypt-later: attackers hoard encrypted files today on cheap drives and wait until stable quantum hardware unlocks them years from now. That crazy race forces banks and cloud apps to replace digital locks right now.\n\nHow many secret files stolen quietly this year will still matter ten years from now?'
   },
   {
-    subtopic: 'Quantum-safe encryption upgrades moving to top priority for banks and cloud apps',
-    text: 'The hottest shift in quantum hardware is quietly forcing banks and cloud apps to replace old digital locks today.\n\nEven before practical quantum machines run full apps, hackers steal locked files now hoping to crack them years later. Tech teams are rolling out quantum-safe keys across login servers and storage backups so private records stay safe decades ahead.\n\nAre software teams upgrading encryption fast enough, or waiting until an urgent scare hits?'
+    subtopic: 'Why 1,000 noisy physical qubits barely equal one usable logical quantum bit',
+    text: 'Wild headline numbers about thousand-qubit quantum chips hide a crazy physics tax almost nobody mentions outside labs.\n\nBecause tiny heat or stray vibrations flip delicate states in split seconds, it takes hundreds of noisy physical qubits just to error-check one stable logical qubit. That is why teams stopped bragging about raw counts and now chase error survival.\n\nDo investors tracking qubit counts realize 99% of a quantum chip only exists to fix errors?'
   }
 ];
 
 const CRYPTO_TREND_BANK = [
   {
-    subtopic: 'Stablecoins quietly becoming global payment rails while hype coins fade',
-    text: 'Quiet dollar stablecoins are winning real-world adoption in crypto faster than loud speculative tokens.\n\nSmall remote teams and cross-border shops care less about wild chart swings and more about moving paychecks in seconds without three bank fees. Regulators are setting clearer reserve rules too, turning boring digital dollars into everyday payment plumbing.\n\nDo you see crypto winning through fast digital payments first, or will price hype stay dominant?'
+    subtopic: 'Stablecoin issuers quietly becoming larger buyers of US debt bills than whole countries',
+    text: 'While retail traders argue over meme coins, digital dollar issuers quietly became huge buyers of government debt bills.\n\nBacking stablecoins one-for-one pushes top crypto firms to hold tens of billions in short Treasury bills, making them larger lenders to Washington than entire mid-sized nations. Boring dollar plumbing now drives real crypto scale more than wild speculation.\n\nDid anyone in 2017 expect crypto to end up helping fund government debt bills?'
   },
   {
-    subtopic: 'Spot ETFs shifting bitcoin ownership toward steady institutional funds',
-    text: 'Bitcoin trading looks very different now that large pension funds and asset managers buy through regulated ETFs.\n\nRetail panic swings matter less on quiet weeks when big funds rebalance portfolios like ordinary stock holdings. Meanwhile, on-chain apps still struggle to explain simple wallet safety to normal savers without scary seed phrases.\n\nHas institutional money made crypto calmer and safer, or taken away its original independent spirit?'
+    subtopic: 'Why over half of all launched tokens die quietly within months of listing',
+    text: 'A shocking pattern hides behind fresh crypto bull headlines: most new tokens never survive their first year alive.\n\nCheap automated launchpads let anyone spin up thousands of lookalike coins per day, slicing retail liquidity into thinner and thinner slivers. Almost all real fee revenue still flows to just a handful of boring blockchains and stablecoin bridges.\n\nWhy do traders keep chasing thousands of fragile new coins when nearly all of them go to zero?'
   }
 ];
 
 const STARTUP_TECH_TREND_BANK = [
   {
-    subtopic: 'Two-person profitable software teams replacing bloated VC-backed startups',
-    text: 'Tiny two-person software teams are quietly outshipping funded startups with thirty employees and heavy meetings.\n\nCheap cloud hosting, off-the-shelf payments, and smart coding helpers let lean founders launch paid tools in days without chasing investors. Users increasingly prefer focused single-purpose apps with clear monthly pricing over clunky bloated platforms.\n\nWould you rather build a small profitable tool solo, or raise outside funding to chase scale?'
+    subtopic: 'Communication links exploding by n(n-1)/2 explaining why 2-person teams beat 30-person startups',
+    text: 'A simple math rule called Brooks\'s Law explains why two-person startups now beat funded teams of thirty.\n\nGoing from two builders to thirty explodes internal chat links from one path to 435 paths, swallowing half the week in sync calls and status docs. With modern cloud tools and code helpers, tiny teams spend almost every hour shipping directly to users.\n\nHave you noticed small focused teams moving three times faster than bloated funded companies?'
   }
 ];
 
 const WORK_CAREER_TREND_BANK = [
   {
-    subtopic: 'Proof-of-work portfolios beating polished resumes in modern tech hiring',
-    text: 'Long polished resumes are losing power as hiring teams look straight at real public work and shipped results.\n\nAutomated screening floods job boards with lookalike applications, leaving managers tired of guessing who can actually solve problems. Workers who share short demos, clear case notes, and practical fixes online get direct messages before roles even open publicly.\n\nHave you seen real portfolio proof beat a formal degree or resume in your field lately?'
+    subtopic: 'Ghost job listings and bot-vs-bot hiring breaking traditional resumes',
+    text: 'A strange hidden loop broke online hiring: half of posted job ads sit empty on purpose as "ghost jobs" to signal growth.\n\nMeanwhile applicants use AI to blast out hundreds of tailored resumes per hour, forcing recruiters to reject 95% with blind keyword filters. That weird stalemate means one short public demo sent directly to a manager beats two hundred blind forms.\n\nHow many online job posts you applied to this year were never meant to hire anyone?'
   }
 ];
 
 const CREATOR_MARKETING_TREND_BANK = [
   {
-    subtopic: 'Small loyal niche audiences beating empty viral view spikes',
-    text: 'Chasing empty viral view spikes is burning out creators faster than ever while small loyal niches quietly thrive.\n\nAlgorithm feeds swap reach overnight, so massive followings mean very little when nobody remembers who wrote the post. Smart writers build tight weekly newsletters and honest replies where a thousand real readers trust what they share.\n\nWould you rather have a million random views once, or a thousand readers who trust every post?'
+    subtopic: 'Why modern feeds ignore subscriber counts and score every post cold in hour one',
+    text: 'Subscriber counts stopped guaranteeing views because modern feeds treat every single post like a fresh cold audition.\n\nInstead of pushing videos straight to followers, algorithms test each upload on a tiny random test group first and check watch time and replies within sixty minutes. That is why unknown creators with 300 followers routinely outdraw dead million-subscriber channels.\n\nDoes building a huge follower count still protect reach, or is every post fighting from zero now?'
   }
 ];
 
@@ -613,14 +617,14 @@ function buildCustomTopicFallback(userTopic, attempt = 1, liveTrendItems = []) {
   const lower = cleanTopic.toLowerCase();
 
   let selectedText = '';
-  let selectedSubtopic = `Current trends in ${shortLabel}`;
+  let selectedSubtopic = `Rarely-known analytical trend in ${shortLabel}`;
 
-  // 1. Specialized trend banks for popular direct custom topics (prevents random/generic posts)
+  // 1. Specialized insider trend banks (rarely-known second-order insights, NOT surface everyday talk)
   if (/\b(ai|artificial intelligence|llm|chatgpt|claude|gemini|openai|agent|copilot)\b/i.test(lower)) {
     let bank = AI_TREND_BANK;
     if (/\b(writing|write|content|copy|blog|post)\b/i.test(lower)) {
-      // Put AI writing trend first when the user specifically mentions AI writing
-      bank = [AI_TREND_BANK[2], AI_TREND_BANK[0], AI_TREND_BANK[1], AI_TREND_BANK[3]];
+      // Put AI writing insider insight first when the user specifically mentions AI writing
+      bank = [AI_TREND_BANK[2], AI_TREND_BANK[1], AI_TREND_BANK[0], AI_TREND_BANK[3], AI_TREND_BANK[4]];
     }
     const chosen = bank[(Math.max(1, attempt) - 1) % bank.length];
     selectedText = chosen.text;
@@ -646,32 +650,32 @@ function buildCustomTopicFallback(userTopic, attempt = 1, liveTrendItems = []) {
     selectedText = chosen.text;
     selectedSubtopic = chosen.subtopic;
   } else if (Array.isArray(liveTrendItems) && liveTrendItems.length > 0) {
-    // 2. Synthesize concrete trend commentary from live RSS headlines for any arbitrary custom topic
+    // 2. Synthesize second-order analytical commentary from live RSS headlines for any arbitrary custom topic
     const trendItem = liveTrendItems[(Math.max(1, attempt) - 1) % liveTrendItems.length];
     const headline = String(trendItem.title || '').replace(/[.!?]+$/, '').trim();
-    const shortHeadline = headline.length > 105 ? `${headline.slice(0, 102)}...` : headline;
-    selectedSubtopic = shortHeadline || `Current shift in ${shortLabel}`;
+    const shortHeadline = headline.length > 96 ? `${headline.slice(0, 93)}...` : headline;
+    selectedSubtopic = shortHeadline || `Hidden bottleneck inside ${shortLabel}`;
     selectedText = [
-      `Anyone following ${shortLabel} closely this month can see one clear trend taking over: ${shortHeadline}.`,
-      `The real story behind ${shortLabel} right now is how fast practical habits and costs are shifting on the ground. Teams and everyday users testing new setups early gain real speed, while folks holding onto older routines find themselves paying more for slower results.`,
-      `Are you adapting early to this shift in ${shortLabel}, or waiting to see how it plays out?`
+      `Most people miss the strange hidden twist behind ${shortLabel} right now: ${shortHeadline}.`,
+      `Digging past surface headlines shows how fast second-order costs and bottlenecks inside ${shortLabel} flip old winners into laggards. When one piece gets ten times cheaper or faster, the scarce bottleneck shifts somewhere nobody priced in a year ago.`,
+      `Where do you think the hidden bottleneck inside ${shortLabel} moves next as this trend accelerates?`
     ].join('\n\n');
   } else {
-    // 3. Offline arbitrary custom topic: distinct non-generic trend angles
+    // 3. Offline arbitrary custom topic: second-order analytical paradoxes (not generic chatter)
     const hooks = [
-      `The biggest shift inside ${shortLabel} right now is moving from loud hype to practical daily results.`,
-      `Watching ${shortLabel} closely this year shows a sharp split between fast adopters and slow teams.`,
-      `Most outsiders still look at ${shortLabel} the old way, while daily tools inside the space already moved on.`
+      `A weird economic paradox inside ${shortLabel}: making one piece far cheaper often doubles spending on the bottleneck next door.`,
+      `Most outsiders watch the noisy surface of ${shortLabel}, missing the silent second-order trap flipping winners upside down.`,
+      `A crazy pattern keeps repeating inside ${shortLabel}: early benchmarks look linear until a hidden limit snaps back hard.`
     ];
     const bodies = [
-      `Early users in ${shortLabel} are cutting wasted steps, trimming weekly costs, and getting real work done with much leaner setups. Meanwhile, people waiting for perfect rules or copying surface tricks end up stuck doing slow manual work while expectations rise.`,
-      `Across small shops and independent builders, ${shortLabel} rewards clear habits, tight feedback, and simple systems that hold up under real pressure. Relying on flashy demos without solving real user pain leaves most projects ignored within weeks.`,
-      `Smart teams working on ${shortLabel} care less about noisy headlines and more about speed, steady trust, and clear value every week. The real edge goes to people testing small improvements daily rather than debating big theory online.`
+      `Economists call it Jevons Paradox—when faster tools cut cost per unit, total demand explodes instead of shrinking, creating new supply bottlenecks nobody prepared for. Teams watching only average prices miss where the real money and leverage silently moved.`,
+      `Whenever a flashy trend in ${shortLabel} becomes dead simple to copy, the cheap layer drops toward zero margin fast. Real power flows straight to the messy, boring chokepoint that cannot be copied overnight by automated tools or weekend clones.`,
+      `Insiders tracking ${shortLabel} look past demo hype to watch maintenance costs, failure rates at scale, and hidden feedback loops. Almost every big shift hits a silent wall where fixing edge cases costs ten times more than building the first version.`
     ];
     const questions = [
-      `Which real change in ${shortLabel} has actually saved you time or money lately?`,
-      `Do you see ${shortLabel} turning practical fast, or is half the market still pure hype?`,
-      `What is the smartest habit around ${shortLabel} that more people should copy right now?`
+      `What is the strangest hidden bottleneck in ${shortLabel} that outsiders keep overlooking?`,
+      `Which boring chokepoint inside ${shortLabel} do you think holds all the real power now?`,
+      `Have you watched a fast trend in ${shortLabel} hit that sudden edge-case wall at real scale?`
     ];
     const idx = (Math.max(1, attempt) - 1) % hooks.length;
     selectedText = `${hooks[idx]}\n\n${bodies[idx]}\n\n${questions[idx]}`;
@@ -1372,22 +1376,22 @@ async function polishWithCloudflareAI(candidate, liveFactsBrief = '', isCustomNe
     : `LENGTH: Strictly 400+ characters (420 to 560 characters ideal, NEVER under 400 and NEVER over 600). ZERO hashtags, ZERO emojis, NO labels.`;
 
   const polishPrompt = isCustomNeutralMode
-    ? `Rewrite this X post so it sounds like a sharp person writing about SPECIFIC LIVE TRENDS inside "${(candidate.topic || '').replace(/"/g, "'")}" using the simplest everyday words.
+    ? `Rewrite this X post so it sounds like a sharp insider revealing a RARELY-KNOWN, CRAZY-TO-HEAR analytical insight inside live trends of "${(candidate.topic || '').replace(/"/g, "'")}" using the simplest everyday words.
 
 CURRENT DRAFT (${currentLen} chars):
 "${candidate.english.text}"
 ${liveFactsBrief ? `\nLIVE TREND SIGNALS TO GROUND THE POST:\n${liveFactsBrief}\n` : ''}
 STRICT REWRITE RULES:
 1. IGNORE INDIA / PAKISTAN: Remove any mention of India, Indians, or Pakistan unless explicitly requested by the topic. Focus 100% on "${(candidate.topic || '').replace(/"/g, "'")}".
-2. NO RANDOM GENERIC FILLER: Remove vague lines like "People everywhere are talking about...". Focus on ONE specific current 2025-2026 trend inside this topic.
+2. NO OBVIOUS EVERYDAY TALK OR GENERIC FILLER: Remove vague clichés ("People everywhere are talking about...", "Tech moves fast"). Focus on ONE crazy, counter-intuitive second-order mechanism inside this topic.
 3. NOT STIFF NEWS: Remove newspaper phrases ("A report says", "Today", "Yesterday", "Latest news").
-4. REAL TRENDS & PRACTICAL EFFECT: Explain what is actually shifting right now in this space and how it affects real people or daily work.
+4. HIDDEN MECHANISM + REAL CONSEQUENCE: Explain WHY this surprising twist happens and what real shock it creates right now.
 5. SIMPLEST POSSIBLE WORDS: Replace every long or fancy word (like infrastructure, disparity, demographic, inflation, macroeconomic, expenditure, deteriorating) with tiny everyday words a 12-year-old uses.
 6. SHORT SENTENCES: 5 to 12 words per sentence.
 7. EXACT 3-PART LAYOUT separated by \\n\\n:
-   Line 1: Punchy hook naming a concrete current trend inside the topic.
+   Line 1: Punchy hook dropping a crazy rarely-known analytical twist inside the topic.
    \\n\\n
-   Paragraph 2: 2-3 simple sentences explaining that trend right now + real everyday impact.
+   Paragraph 2: 2-3 simple sentences explaining why it happens + real impact right now.
    \\n\\n
    Line 3: Short, sharp closing question.
 8. ${lengthInstruction}
@@ -1399,7 +1403,7 @@ Return ONLY valid JSON:
   "category": "CUSTOM_TOPIC",
   "text": "Rewritten hook\\n\\nRewritten body\\n\\nRewritten question"
 }`
-    : `Rewrite this X post so it sounds naturally like **a Pakistani talking about Indians** and India's downsides/real effects, using the simplest words.
+    : `Rewrite this X post so it sounds naturally like **a Pakistani talking about Indians** and revealing a RARELY-KNOWN, CRAZY-TO-HEAR analytical paradox in India, using the simplest words.
 
 CURRENT DRAFT (${currentLen} chars):
 "${candidate.english.text}"
@@ -1408,15 +1412,15 @@ VERIFIED FACTS TO KEEP ACCURATE:
 ${liveFactsBrief || '- Keep the verified numbers accurate.'}
 
 STRICT REWRITE RULES:
-1. PAKISTANI PERSPECTIVE ON INDIANS: Write as a Pakistani looking across the border at India and talking directly about how this hurts everyday Indians (e.g., "From Pakistan, ...", "Sitting in Pakistan...", "Across the border, ordinary Indians..."). Keep it grounded, analytical, and civil—zero hate speech.
-2. NOT NEWS: Remove any newspaper phrases ("A report says", "Today", "Yesterday", "Latest news").
-3. INDIA DOWNSIDE + EFFECT: Keep the clear focus on what is broken in India and how it hurts ordinary Indian families, students, or workers.
+1. PAKISTANI PERSPECTIVE ON INDIANS: Write as a Pakistani looking across the border at India and talking directly about how this hidden paradox hits everyday Indians (e.g., "Sitting in Pakistan, few realize...", "From Pakistan, it is wild to learn...", "As a Pakistani watching India closely..."). Keep it grounded, analytical, and civil—zero hate speech.
+2. NOT OBVIOUS EVERYDAY TALK OR NEWS: Remove obvious surface complaints and newspaper phrases ("A report says", "Today", "Yesterday", "Latest news"). Keep the surprising, counter-intuitive analytical truth front and center.
+3. INDIA PARADOX + REAL SHOCK: Explain WHY the hidden link happens and how it hurts ordinary Indian families, students, or workers.
 4. SIMPLEST POSSIBLE WORDS: Replace every long or fancy word (like infrastructure, disparity, demographic, inflation, macroeconomic, expenditure, deteriorating) with tiny everyday words a 12-year-old uses.
 5. SHORT SENTENCES: 5 to 12 words per sentence.
 6. EXACT 3-PART LAYOUT separated by \\n\\n:
-   Line 1: Punchy hook sentence from a Pakistani angle about India/Indians.
+   Line 1: Punchy hook sentence from a Pakistani angle revealing a crazy rarely-known fact about India/Indians.
    \\n\\n
-   Paragraph 2: 2-3 simple sentences with the accurate latest number + everyday human effect on Indians.
+   Paragraph 2: 2-3 simple sentences with the accurate latest number + hidden mechanism + human effect on Indians.
    \\n\\n
    Line 3: Short, sharp closing question.
 7. ${lengthInstruction}

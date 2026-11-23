@@ -105,6 +105,51 @@ const WORLD_BANK_INDICATORS = [
     topicAngle: 'Small shops in India still struggle to get fair bank loans',
     effect: 'Even with fast phone payments, local shop owners often pay steep informal interest just to buy daily stock.',
     keywords: ['bank', 'loan', 'debt', 'emi', 'credit', 'upi', 'shop', 'business', 'money', 'rbi', 'rupee']
+  },
+  {
+    id: 'ER.H2O.FWAG.ZS',
+    factId: 'water_to_farms',
+    label: 'Fresh water pulled strictly for farming crops',
+    unit: '%',
+    topicAngle: 'India sends over 90% of its fresh water to crops while big cities buy water tankers',
+    effect: 'Free farm power pumps groundwater dry for exported rice and sugar, leaving under 10% for city taps, homes, and factories.',
+    keywords: ['water', 'tanker', 'drought', 'farm', 'rice', 'city', 'cities', 'summer', 'tap', 'groundwater']
+  },
+  {
+    id: 'GC.XPN.INTP.RV.ZS',
+    factId: 'tax_to_debt_interest',
+    label: 'Central tax money eaten just by old loan interest',
+    unit: '%',
+    topicAngle: 'Over one-third of India federal tax cash vanishes paying only old debt interest',
+    effect: 'Before a single rupee pays for schools, trains, or clinics, lenders take 34% of federal taxes while regular people pay steep daily fuel and food taxes.',
+    keywords: ['tax', 'debt', 'loan', 'budget', 'interest', 'revenue', 'spend', 'government', 'school', 'clinic']
+  },
+  {
+    id: 'SL.EMP.VULN.ZS',
+    factId: 'insecure_workers',
+    label: 'Workers in unstable jobs without written contracts',
+    unit: '%',
+    topicAngle: 'Over 71% of Indian workers hold zero steady contracts, sick leave, or pension safety',
+    effect: 'Behind big tech headlines, seven in ten Indians lose income overnight if sickness hits or work slows down.',
+    keywords: ['job', 'jobs', 'worker', 'workers', 'contract', 'gig', 'salary', 'pay', 'workforce', 'pension']
+  },
+  {
+    id: 'SH.STA.STNT.ZS',
+    factId: 'child_stunting',
+    label: 'Young children under age 5 stunted from poor nutrition',
+    unit: '%',
+    topicAngle: 'Over 35% of young Indian kids grow stunted even while India exports millions of tons of grain',
+    effect: 'Lack of protein, eggs, and clean water hurts early brain and body growth for one in three kids, locking in lower adult earnings.',
+    keywords: ['kid', 'kids', 'child', 'children', 'food', 'rice', 'nutrition', 'hunger', 'export', 'health']
+  },
+  {
+    id: 'SH.MED.BEDS.ZS',
+    factId: 'hospital_beds_per_1000',
+    label: 'Hospital beds available per 1,000 people',
+    unit: 'per 1,000',
+    topicAngle: 'India has roughly 1.6 hospital beds per 1,000 people despite booming private clinic ads',
+    effect: 'Severe bed shortages force families out of packed public wards into high-cost private clinics that wipe out home savings.',
+    keywords: ['hospital', 'bed', 'beds', 'clinic', 'doctor', 'health', 'medical', 'ward']
   }
 ];
 
@@ -192,6 +237,66 @@ const BASELINE_SNAPSHOT = {
       topicAngle: 'India still burns coal for most of its daily electricity',
       effect: 'Coal smoke worsens city air, heats up towns, and strains power grids during extreme summer heat.',
       keywords: ['coal', 'power', 'electricity', 'energy', 'solar', 'grid', 'heat', 'climate', 'air']
+    },
+    {
+      factId: 'water_to_farms',
+      indicator: 'ER.H2O.FWAG.ZS',
+      label: 'Fresh water pulled strictly for farming crops',
+      value: 90.4,
+      formattedValue: '90.4%',
+      year: '2022',
+      source: 'World Bank / FAO',
+      topicAngle: 'India sends over 90% of its fresh water to crops while big cities buy water tankers',
+      effect: 'Free farm power pumps groundwater dry for exported rice and sugar, leaving under 10% for city taps, homes, and factories.',
+      keywords: ['water', 'tanker', 'drought', 'farm', 'rice', 'city', 'cities', 'summer', 'tap', 'groundwater']
+    },
+    {
+      factId: 'tax_to_debt_interest',
+      indicator: 'GC.XPN.INTP.RV.ZS',
+      label: 'Central tax money eaten just by old loan interest',
+      value: 34.0,
+      formattedValue: '34.0%',
+      year: '2022',
+      source: 'World Bank / IMF',
+      topicAngle: 'Over one-third of India federal tax cash vanishes paying only old debt interest',
+      effect: 'Before a single rupee pays for schools, trains, or clinics, lenders take 34% of federal taxes.',
+      keywords: ['tax', 'debt', 'loan', 'budget', 'interest', 'revenue', 'spend', 'government']
+    },
+    {
+      factId: 'insecure_workers',
+      indicator: 'SL.EMP.VULN.ZS',
+      label: 'Workers in unstable jobs without written contracts',
+      value: 71.6,
+      formattedValue: '71.6%',
+      year: '2025',
+      source: 'World Bank / ILO',
+      topicAngle: 'Over 71% of Indian workers hold zero steady contracts, sick leave, or pension safety',
+      effect: 'Behind big tech headlines, seven in ten Indians lose income overnight if sickness hits or work slows down.',
+      keywords: ['job', 'jobs', 'worker', 'workers', 'contract', 'gig', 'salary', 'pay', 'workforce']
+    },
+    {
+      factId: 'child_stunting',
+      indicator: 'SH.STA.STNT.ZS',
+      label: 'Young children under age 5 stunted from poor nutrition',
+      value: 35.5,
+      formattedValue: '35.5%',
+      year: '2020',
+      source: 'World Bank / UNICEF',
+      topicAngle: 'Over 35% of young Indian kids grow stunted even while India exports millions of tons of grain',
+      effect: 'Poor daily diets hurt early brain and body growth for one in three kids, locking in lower adult earnings.',
+      keywords: ['kid', 'kids', 'child', 'children', 'food', 'rice', 'nutrition', 'hunger', 'export', 'health']
+    },
+    {
+      factId: 'hospital_beds_per_1000',
+      indicator: 'SH.MED.BEDS.ZS',
+      label: 'Hospital beds available per 1,000 people',
+      value: 1.59,
+      formattedValue: '1.6 per 1,000 people',
+      year: '2021',
+      source: 'World Bank / WHO',
+      topicAngle: 'India has roughly 1.6 hospital beds per 1,000 people despite booming private clinic ads',
+      effect: 'Severe bed shortages force families out of packed public wards into high-cost private clinics.',
+      keywords: ['hospital', 'bed', 'beds', 'clinic', 'doctor', 'health', 'medical', 'ward']
     }
   ],
   airQuality: [],
@@ -235,6 +340,8 @@ export function parseWorldBankIndicator(meta, json) {
     formattedValue = `${num.toFixed(1)}% of GDP`;
   } else if (meta.unit === 'USD/year') {
     formattedValue = `$${Math.round(num).toLocaleString('en-US')}/year`;
+  } else if (meta.unit === 'per 1,000') {
+    formattedValue = `${num.toFixed(1)} per 1,000 people`;
   } else {
     formattedValue = `${num.toFixed(1)}`;
   }
