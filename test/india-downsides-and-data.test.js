@@ -7,7 +7,10 @@ import {
   formatFactsBrief,
   buildDataDrivenDownsideTopics
 } from '../src/integrations/indiaDataService.js';
-import { auditDraftForSimplification } from '../src/utils/simpleEnglish.js';
+import {
+  auditDraftForSimplification,
+  hasSelfAnnouncingLocationCliche
+} from '../src/utils/simpleEnglish.js';
 import {
   FALLBACK_BANK,
   createTrendingPostPrompt,
@@ -134,7 +137,7 @@ test('auditDraftForSimplification detects news tone, jargon words, and sub-400 c
   assert.ok(lenRes.reasons.includes('length_out_of_range:395'));
 });
 
-test('Every FALLBACK_BANK entry (English, Roman Urdu, Plain Urdu) is strictly 400-600 chars, simple, and in Pakistani voice about Indians', () => {
+test('Every FALLBACK_BANK entry (English, Roman Urdu, Plain Urdu) is strictly 400-600 chars, talks about India, and avoids self-announcing Pakistan clichés', () => {
   assert.ok(FALLBACK_BANK.length >= 6);
   for (const item of FALLBACK_BANK) {
     const text = item.english.text;
@@ -142,17 +145,20 @@ test('Every FALLBACK_BANK entry (English, Roman Urdu, Plain Urdu) is strictly 40
     assert.equal(audit.needsPolish, false, `Fallback "${item.topic}" failed audit: ${audit.reasons.join(', ')}`);
     assert.ok(text.length >= 400 && text.length <= 600, `English length ${text.length} out of 400-600 for "${item.topic}"`);
     assert.equal(text.includes('#'), false);
-    assert.ok(/pakistan/i.test(text), `English fallback "${item.topic}" should reflect Pakistani speaker`);
+    assert.equal(hasSelfAnnouncingLocationCliche(text), false, `English fallback "${item.topic}" must not contain "Sitting in Pakistan" style clichés`);
+    assert.equal(/\bpakistan/i.test(text), false, `English fallback "${item.topic}" should avoid literal "Pakistan" location filler`);
     assert.ok(/india/i.test(text), `English fallback "${item.topic}" should talk about India/Indians`);
 
     const ruText = item.romanUrdu?.text || '';
     const puText = item.plainUrdu?.text || '';
     assert.ok(ruText.length >= 400 && ruText.length <= 600, `Roman Urdu length ${ruText.length} out of 400-600 for "${item.topic}"`);
-    assert.ok(/pakistan/i.test(ruText), `Roman Urdu fallback "${item.topic}" should reflect Pakistani speaker`);
+    assert.equal(hasSelfAnnouncingLocationCliche(ruText), false, `Roman Urdu fallback "${item.topic}" must not contain self-announcing clichés`);
+    assert.equal(/\bpakistan/i.test(ruText), false, `Roman Urdu fallback "${item.topic}" should avoid literal "Pakistan" location filler`);
     assert.ok(/india|bharti/i.test(ruText), `Roman Urdu fallback "${item.topic}" should talk about India/Indians`);
 
     assert.ok(puText.length >= 400 && puText.length <= 600, `Plain Urdu length ${puText.length} out of 400-600 for "${item.topic}"`);
-    assert.ok(puText.includes('پاکستان'), `Plain Urdu fallback "${item.topic}" should reflect Pakistani speaker`);
+    assert.equal(hasSelfAnnouncingLocationCliche(puText), false, `Plain Urdu fallback "${item.topic}" must not contain self-announcing clichés`);
+    assert.equal(puText.includes('پاکستان'), false, `Plain Urdu fallback "${item.topic}" should avoid literal "پاکستان" location filler`);
     assert.ok(puText.includes('بھارت') || puText.includes('بھارتی'), `Plain Urdu fallback "${item.topic}" should talk about India/Indians`);
   }
 });
@@ -702,6 +708,87 @@ test('Prompts and offline fallbacks prioritize crazy rarely-known analytical inf
     const indiaPost = await generateEnglishPost('', '');
     assert.ok(/90\.4%|34%|71\.6%|35\.5%|1\.6 hospital beds|72\.3%/.test(indiaPost.english.text));
     assert.ok(indiaPost.english.charCount >= 400 && indiaPost.english.charCount <= 600);
+  } finally {
+    globalThis.fetch = origFetch;
+    if (origToken !== undefined) process.env.CLOUDFLARE_API_TOKEN = origToken; else delete process.env.CLOUDFLARE_API_TOKEN;
+    if (origAcct !== undefined) process.env.CLOUDFLARE_ACCOUNT_ID = origAcct; else delete process.env.CLOUDFLARE_ACCOUNT_ID;
+    config.cloudflareApiToken = origCfConfigToken;
+    config.cloudflareAccountId = origCfConfigAcct;
+    historyStore.posts = savedPosts;
+    historyStore.rebuildIndexes();
+    historyStore.save();
+  }
+});
+
+test('Self-announcing "Sitting in Pakistan" clichés are flagged by audit and stripped in Cloudflare Pass 2', async () => {
+  const clicheSamples = [
+    'Sitting in Pakistan, it is wild to learn India sends 90% of fresh water to crops.\n\nWorld Bank data shows 90.4% goes to farms while cities rely on tankers and lose time and cash.\n\nWhy drain underground water for crop exports while city taps run dry?',
+    'From Pakistan, few people know 34% of India central taxes pay only old debt interest.\n\nWorld Bank figures show lenders take over one-third before building clinics or schools for regular people across towns.\n\nHow fast would Indian daily life change without this heavy debt bill?',
+    'As a Pakistani watching India closely, 72% of Indian workers hold zero written contracts.\n\nWorld Bank 2025 data reveals 71.6% lack sick leave or safety nets when unexpected trouble hits home budgets.\n\nWhy do headline stories skip seven in ten workers?'
+  ];
+
+  for (const sample of clicheSamples) {
+    assert.equal(hasSelfAnnouncingLocationCliche(sample), true);
+    const audit = auditDraftForSimplification(sample);
+    assert.equal(audit.needsPolish, true);
+    assert.ok(audit.reasons.includes('self_announcing_location_cliche'));
+  }
+
+  const origToken = process.env.CLOUDFLARE_API_TOKEN;
+  const origAcct = process.env.CLOUDFLARE_ACCOUNT_ID;
+  const origCfConfigToken = config.cloudflareApiToken;
+  const origCfConfigAcct = config.cloudflareAccountId;
+  const origFetch = globalThis.fetch;
+  const savedPosts = [...historyStore.posts];
+  historyStore.reset();
+
+  process.env.CLOUDFLARE_API_TOKEN = 'test-cf-token';
+  process.env.CLOUDFLARE_ACCOUNT_ID = 'test-cf-account';
+
+  let cfCalls = 0;
+  let pass2UserPrompt = '';
+  globalThis.fetch = async (url, opts) => {
+    const urlStr = String(url);
+    if (urlStr.includes('api.cloudflare.com')) {
+      cfCalls++;
+      const payload = JSON.parse(opts.body);
+      const userMsg = payload.messages?.find(m => m.role === 'user')?.content || '';
+      if (cfCalls === 1) {
+        return new Response(JSON.stringify({
+          success: true,
+          result: {
+            response: JSON.stringify({
+              topic: 'India sends 90% of fresh water to crops',
+              subtopic: 'Farm water drain vs city tankers',
+              category: 'TRENDING',
+              text: 'Sitting in Pakistan, it is wild to learn India sends 90% of fresh water to crops while big cities still buy tanker water.\n\nWorld Bank figures show 90.4% of fresh water goes straight to rice and sugar crops pumped with free farm power, leaving under 10% for homes and shops across crowded towns.\n\nWhy drain home groundwater for exports while city families wait in line for pricey tankers?'
+            })
+          }
+        }), { status: 200, headers: { 'Content-Type': 'application/json' } });
+      }
+      pass2UserPrompt = userMsg;
+      return new Response(JSON.stringify({
+        success: true,
+        result: {
+          response: JSON.stringify({
+            topic: 'India sends 90% of fresh water to crops',
+            subtopic: 'Farm water drain vs city tankers',
+            category: 'TRENDING',
+            text: 'It sounds unreal until you check the numbers: India sends over 90% of fresh water to farms yet big cities still buy tanker water.\n\nWorld Bank figures show 90.4% of fresh water goes straight to rice and sugar crops pumped with free power. That leaves under 10% for homes and schools, forcing millions of ordinary Indians into costly private water lines.\n\nWhy drain groundwater for crop exports while city families buy water by the tank?'
+          })
+        }
+      }), { status: 200, headers: { 'Content-Type': 'application/json' } });
+    }
+    return origFetch(url);
+  };
+
+  try {
+    const post = await generateEnglishPost('India water drain', '', null, true);
+    assert.equal(cfCalls, 2, 'Should trigger Pass 2 rewrite when Pass 1 opens with "Sitting in Pakistan"');
+    assert.ok(pass2UserPrompt.includes('NO LOCATION CLICHÉS'));
+    assert.equal(hasSelfAnnouncingLocationCliche(post.english.text), false);
+    assert.equal(/sitting in pakistan/i.test(post.english.text), false);
+    assert.ok(post.english.charCount >= 400 && post.english.charCount <= 600);
   } finally {
     globalThis.fetch = origFetch;
     if (origToken !== undefined) process.env.CLOUDFLARE_API_TOKEN = origToken; else delete process.env.CLOUDFLARE_API_TOKEN;

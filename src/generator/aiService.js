@@ -23,7 +23,8 @@ import {
   SIMPLE_ENGLISH_RULES,
   NEUTRAL_CUSTOM_TOPIC_RULES,
   checkSimpleEnglish,
-  auditDraftForSimplification
+  auditDraftForSimplification,
+  hasSelfAnnouncingLocationCliche
 } from '../utils/simpleEnglish.js';
 import {
   getLiveIndiaFactsSnapshot,
@@ -61,7 +62,7 @@ function topicExplicitlyMentionsIndia(topic = '') {
   return INDIA_MENTION_REGEX.test(String(topic || ''));
 }
 
-const DEFAULT_PAKISTANI_INDIA_SYSTEM_PROMPT = 'You write high-impact X posts as a Pakistani talking naturally about Indians and India\'s RARELY-KNOWN, CRAZY-TO-HEAR structural paradoxes using the SIMPLEST everyday English (Grade 4-5 words). NEVER repeat obvious everyday talk ("traffic is bad", "prices are high"). Always reveal one shocking hidden link backed by verified numbers (e.g. 90% of water pumped to exported crops while cities buy tankers, or 34% of federal taxes paying only old debt interest). Keep commentary grounded, analytical, and civil (zero hate). NEVER sound like a news report. Every post MUST strictly follow this exact 3-part layout separated by double line breaks (\\n\\n):\nLine 1: One short punchy hook from a Pakistani view dropping a crazy rarely-known fact about India/Indians (1 sentence).\n\\n\\nParagraph 2: 2 to 3 short simple sentences explaining WHY this hidden paradox happens and the shock it causes ordinary Indians (around 50-70 words).\n\\n\\nClosing Line: One short, sharp question that makes people want to reply.\nTotal length MUST be strictly between 400 and 560 characters (never exceed 600). Zero hashtags, zero emojis, no labels. Return ONLY valid JSON.';
+const DEFAULT_PAKISTANI_INDIA_SYSTEM_PROMPT = 'You write high-impact X posts as a candid Pakistani observer talking naturally about Indians and India\'s RARELY-KNOWN, CRAZY-TO-HEAR structural paradoxes using the SIMPLEST everyday English (Grade 4-5 words). NEVER repeat obvious everyday talk ("traffic is bad", "prices are high"). NEVER announce where you sit or label yourself—STRICTLY BAN clichés like "Sitting in Pakistan", "From Pakistan", "Here in Pakistan", "As a Pakistani", or "Looking across the border". Jump straight into one shocking hidden link backed by verified numbers (e.g. 90% of water pumped to exported crops while cities buy tankers, or 34% of federal taxes paying only old debt interest). Keep commentary grounded, analytical, and civil (zero hate). NEVER sound like a news report. Every post MUST strictly follow this exact 3-part layout separated by double line breaks (\\n\\n):\nLine 1: One short punchy hook dropping straight into a crazy rarely-known fact about India/Indians (1 sentence).\n\\n\\nParagraph 2: 2 to 3 short simple sentences explaining WHY this hidden paradox happens and the shock it causes ordinary Indians (around 50-70 words).\n\\n\\nClosing Line: One short, sharp question that makes people want to reply.\nTotal length MUST be strictly between 400 and 560 characters (never exceed 600). Zero hashtags, zero emojis, no labels. Return ONLY valid JSON.';
 
 const CUSTOM_TOPIC_SYSTEM_PROMPT = 'You act as a deep insider on X writing about RARELY-KNOWN, CRAZY-TO-HEAR ANALYTICAL INSIGHTS inside live trends of the exact topic entered by the user, using the SIMPLEST everyday English (Grade 4-5 words). NEVER give obvious everyday chatter or generic definitions ("People everywhere are talking about..."). Instead, reveal a surprising second-order mechanism, hidden math, or counter-intuitive twist inside current 2025-2026 trends (e.g. for "AI", explain why 95% per-step agent math drops to 36% over 20 steps, why AI models training on web AI text lose rare ideas via model collapse, or why 3-4 year power-transformer waits limit AI more than chips). NEVER mention India, Indians, or Pakistan unless the user\'s topic explicitly asks about them. Every post MUST strictly follow this exact 3-part layout separated by double line breaks (\\n\\n):\nLine 1: One short punchy hook revealing a shocking rarely-known twist on a live trend in the user\'s topic (1 sentence).\n\\n\\nParagraph 2: 2 to 3 short simple sentences explaining the hidden reason and real consequence right now (around 50-70 words).\n\\n\\nClosing Line: One short, sharp question that makes people want to reply.\nTotal length MUST be strictly between 400 and 560 characters (never exceed 600). Zero hashtags, zero emojis, no labels. Return ONLY valid JSON.';
 
@@ -276,14 +277,14 @@ ${liveFactsBrief || '- Use verified 2024-2026 official India numbers (World Bank
 
 YOUR MISSION: Write the BEST possible X post **as a Pakistani talking about Indians**, revealing a **RARELY-KNOWN, CRAZY-TO-HEAR analytical truth** behind this India downside and its hidden effect on ordinary Indians:
 1. NOT EVERYDAY SURFACE TALK: Skip obvious lines everyone repeats ("things cost more", "traffic is bad"). Expose a surprising paradox or hidden mechanism most people have never heard before (e.g., sending 90% of water to exported rice while cities buy tankers, or 34% of federal taxes vanishing into old debt interest before paying one clinic).
-2. PAKISTANI VOICE ABOUT INDIANS: Sound naturally like a Pakistani looking across the border at India and talking about what everyday Indians deal with behind India's loud headlines (vary openings naturally: "Sitting in Pakistan, most people do not know...", "From Pakistan, it is wild to learn...", "As a Pakistani watching India closely, one hidden fact shocks me..."). Keep it grounded, analytical, and respectful—never abusive.
+2. NATURAL VOICE — ZERO LOCATION CLICHÉS: Keep a candid Pakistani observer's perspective naturally in your direct, grounded tone about everyday Indians behind India's loud headlines, but NEVER announce yourself with cliché openers like "Sitting in Pakistan...", "From Pakistan...", "Here in Pakistan...", "As a Pakistani...", or "Looking across the border...". Jump STRAIGHT into the shocking fact or paradox. Keep it analytical and respectful—never abusive.
 3. DO NOT SOUND LIKE NEWS: Never write "A new report says", "Today", "Yesterday", "PM X opened", or headline summaries.
 4. USE THE SIMPLEST POSSIBLE WORDS: Explain this mind-blowing analytical truth like you are telling a 12-year-old friend. Short words, short sentences (5-12 words). Zero heavy academic jargon.
 5. USE ACCURATE LATEST DATA: Anchor the middle paragraph in 1 or 2 exact numbers from the Verified Latest India Data above.
 6. END WITH A SHARP QUESTION: Make people stop and reply with their own view.
 
 STRICT POST STRUCTURE (3 parts, separated by double line breaks \\n\\n):
-Line 1: One punchy sentence from a Pakistani perspective revealing a crazy rarely-known India paradox (no news intro)
+Line 1: One punchy sentence dropping straight into a crazy rarely-known India paradox (no news intro, no "Sitting in Pakistan" opener)
 \\n\\n
 Paragraph 2: 2-3 short, very simple sentences with accurate latest numbers explaining WHY this happens AND its real shock on everyday Indians (around 50-70 words)
 \\n\\n
@@ -368,14 +369,14 @@ export const FALLBACK_BANK = [
     mainSubject: 'India groundwater pumping for crops vs urban water tankers',
     specificEventOrIssue: 'World Bank 90.4% freshwater withdrawal strictly for farming',
     centralArgument: 'Free farm electricity pumps 90% of fresh water into rice and sugar exports, leaving cities on private tankers',
-    analyticalAngle: 'Pakistani view on India hidden water paradox behind tech city headlines',
+    analyticalAngle: 'Hidden Indian water paradox behind tech city headlines',
     importantStatistics: ['90.4% fresh water to farms', 'under 10% left for cities'],
-    keywords: ['Pakistan', 'India', 'Indians', 'water', 'tankers'],
+    keywords: ['India', 'Indians', 'water', 'tankers', 'crops'],
     english: {
-      text: 'Sitting in Pakistan, it is wild to learn India sends 90% of its fresh water to farms yet cities still run dry.\n\nWorld Bank figures show 90.4% of fresh water goes straight to rice and sugar crops pumped with free farm power. That leaves under 10% for every home, school, and shop, forcing city Indians to buy costly tanker water.\n\nWhy drain home groundwater for crop exports while your own cities buy water by the tank?'
+      text: 'It sounds unreal until you check the numbers: India sends over 90% of its fresh water to crops while big cities run dry.\n\nWorld Bank figures show 90.4% of fresh water goes straight to rice and sugar crops pumped with free farm power. That leaves under 10% for every home, school, and shop, forcing millions of ordinary Indians to wait in line for pricey private water trucks.\n\nWhy drain underground water for crop exports while city Indians still buy water by the tank?'
     },
-    romanUrdu: { text: 'Pakistan mein baith kar yeh jaan kar hairat hoti hai ke India 90% taaza pani kheton ko deta hai aur shehar phir bhi pyasay rehtay hain.\n\nWorld Bank ke mutabiq 90.4% pani chawal aur gannay ki faslon mein muft bijli se lag jata hai. Gharon aur shehron ke liye 10% se kam bachta hai, jis se aam Bharti tanker ka mehnga pani khareedtay hain.\n\nApnay shehron ko pyasa rakh kar itna pani baramad ki faslon par kyon bahaya jata hai?' },
-    plainUrdu: { text: 'پاکستان میں بیٹھ کر یہ جان کر حیرت ہوتی ہے کہ بھارت نوے فیصد سے زیادہ تازہ پانی کھیتوں کو دیتا ہے اور پھر بھی اس کے شہر پیاسے رہتے ہیں۔\n\nورلڈ بینک کے مطابق نوے اعشاریہ چار فیصد تازہ پانی مفت بجلی سے چاول اور گنے کی فصلوں میں لگ جاتا ہے۔ گھروں اور شہروں کے لیے دس فیصد سے کم بچتا ہے، جس سے عام بھارتی ٹینکر کا مہنگا پانی خریدنے پر مجبور ہیں۔\n\nاپنے شہریوں کو ٹینکروں پر لگا کر اتنا زیرِ زمین پانی برآمدی فصلوں میں کیوں بہایا جاتا ہے؟' }
+    romanUrdu: { text: 'Sun kar yaqeen nahi aata magar haqeeqat yeh hai ke India apna 90% se zyada taaza pani faslon ko deta hai aur baray shehar phir bhi pyasay rehtay hain.\n\nWorld Bank ke mutabiq 90.4% pani chawal aur gannay ki faslon mein muft bijli se lag jata hai. Gharon aur shehron ke liye 10% se kam bachta hai, jis se aam Bharti tanker ka mehnga pani khareednay par majboor hain.\n\nApnay shehron ko pyasa rakh kar itna pani baramad ki faslon par kyon bahaya jata hai?' },
+    plainUrdu: { text: 'سن کر یقین نہیں آتا مگر حقیقت یہ ہے کہ بھارت اپنا نوے فیصد سے زیادہ تازہ پانی کھیتوں کو دیتا ہے اور بڑے شہر پھر بھی پیاسے رہتے ہیں۔\n\nورلڈ بینک کے مطابق نوے اعشاریہ چار فیصد تازہ پانی مفت بجلی سے چاول اور گنے کی فصلوں میں لگ جاتا ہے۔ گھروں اور شہروں کے لیے دس فیصد سے کم بچتا ہے، جس سے عام بھارتی شہری ٹینکر کا مہنگا پانی خریدنے پر مجبور ہیں۔\n\nاپنے شہریوں کو ٹینکروں پر لگا کر اتنا زیرِ زمین پانی برآمدی فصلوں میں کیوں بہایا جاتا ہے؟' }
   },
 
   // F2. 34.0% of central tax revenue eaten strictly by old debt interest
@@ -387,14 +388,14 @@ export const FALLBACK_BANK = [
     mainSubject: 'India central government debt interest vs public clinic funding',
     specificEventOrIssue: 'World Bank 34.0% of revenue spent solely on interest payments',
     centralArgument: 'Over one-third of central taxes disappear into old loan interest before building a single clinic or classroom',
-    analyticalAngle: 'Pakistani perspective on India high indirect consumer taxes vs public service scarcity',
+    analyticalAngle: 'India high indirect consumer taxes vs public service scarcity',
     importantStatistics: ['34.0% tax paid as debt interest', 'one-third gone to lenders'],
-    keywords: ['Pakistan', 'India', 'Indians', 'tax', 'debt'],
+    keywords: ['India', 'Indians', 'tax', 'debt', 'loans'],
     english: {
-      text: 'From Pakistan, few people know 34% of India\'s central tax cash pays only interest on old government loans.\n\nWorld Bank data shows lenders take over a third of federal taxes before a single rupee reaches teachers, nurses, or trains. Ordinary Indians still pay heavy taxes on milk, fuel, and soap while public wards stay packed.\n\nHow fast could daily Indian life change if one-third of taxes did not vanish to old debt?'
+      text: 'Few people know a staggering budget secret in India: 34% of central tax money pays only interest on old loans.\n\nWorld Bank data shows bond lenders take over a third of federal taxes before a single rupee reaches teachers, nurses, or trains. Ordinary Indians still pay heavy taxes on milk, fuel, and soap every day while public wards stay packed.\n\nHow fast could daily Indian life change if one-third of taxes did not vanish to old debt?'
     },
-    romanUrdu: { text: 'Pakistan se kam log jantay hain ke India ke markazi tax ka 34% hissa sirf puranay qarz ke sood mein chala jata hai.\n\nWorld Bank ke mutabiq school, hospital ya train par aik rupiya kharch honay se pehlay aik tihai tax qarz dene walay le jatay hain. Aam Bharti doodh, tail aur sabun par bhari tax de kar bhi bheed bharay clinic dekhtay hain.\n\nAgar aik tihai tax puranay sood mein na jata toh aam Bharti zindagi kitni behtar hoti?' },
-    plainUrdu: { text: 'پاکستان سے بہت کم لوگ جانتے ہیں کہ بھارت کے مرکزی ٹیکس کا چونتیس فیصد حصہ صرف پرانے سرکاری قرضوں کے سود میں چلا جاتا ہے۔\n\nورلڈ بینک کے مطابق اسکول، نرس یا ٹرین پر ایک روپیہ خرچ ہونے سے پہلے ہی ایک تہائی ٹیکس قرض خواہ لے جاتے ہیں۔ عام بھارتی شہری دودھ، تیل اور صابن پر بھاری روزمرہ ٹیکس دے کر بھی بھیڑ بھرے سرکاری کلینک دیکھتے ہیں۔\n\nاگر اتنا بڑا ٹیکس پرانے سود کی نذر نہ ہوتا تو عام بھارتی زندگی کتنی بہتر ہوتی؟' }
+    romanUrdu: { text: 'Bahut kam log India ke budget ka yeh hairat angez raaz jantay hain ke markazi tax ka 34% hissa sirf puranay qarz ke sood mein jata hai.\n\nWorld Bank ke mutabiq school, hospital ya train par aik rupiya kharch honay se pehlay aik tihai tax qarz dene walay le jatay hain. Aam Bharti doodh, tail aur sabun par roz bhari tax de kar bhi bheed bharay clinic dekhtay hain.\n\nAgar aik tihai tax puranay sood mein na jata toh aam Bharti zindagi kitni behtar hoti?' },
+    plainUrdu: { text: 'بہت کم لوگ بھارت کے بجٹ کا یہ حیران کن راز جانتے ہیں کہ مرکزی ٹیکس کا چونتیس فیصد حصہ صرف پرانے سرکاری قرضوں کے سود میں چلا جاتا ہے۔\n\nورلڈ بینک کے مطابق اسکول، نرس یا ٹرین پر ایک روپیہ خرچ ہونے سے پہلے ہی ایک تہائی ٹیکس قرض خواہ لے جاتے ہیں۔ عام بھارتی شہری دودھ، تیل اور صابن پر بھاری روزمرہ ٹیکس دے کر بھی بھیڑ بھرے سرکاری کلینک دیکھتے ہیں۔\n\nاگر اتنا بڑا ٹیکس پرانے سود کی نذر نہ ہوتا تو عام بھارتی زندگی کتنی بہتر ہوتی؟' }
   },
 
   // F3. 71.6% of Indian workers hold zero formal contracts or sick pay
@@ -406,14 +407,14 @@ export const FALLBACK_BANK = [
     mainSubject: 'Insecure uncontracted work across seven in ten Indian workers',
     specificEventOrIssue: 'World Bank 2025 figure of 71.6% vulnerable employment in India',
     centralArgument: 'Over seven in ten Indian workers lack written contracts, paid leave, or steady pensions behind tech headlines',
-    analyticalAngle: 'Pakistani view on India shiny software hype vs 72% insecure daily workforce',
+    analyticalAngle: 'India shiny software hype vs 72% insecure daily workforce',
     importantStatistics: ['71.6% insecure workers', 'zero sick pay or pension'],
-    keywords: ['Pakistan', 'India', 'Indians', 'workers', 'contracts'],
+    keywords: ['India', 'Indians', 'workers', 'contracts', 'jobs'],
     english: {
-      text: 'When we hear tech hype about India in Pakistan, almost nobody mentions 72% of Indian workers hold zero contracts.\n\nWorld Bank 2025 numbers put 71.6% of working Indians in fragile daily jobs with no sick pay, no pension, and no layoff notice. One broken delivery bike or sudden fever cuts family money off overnight.\n\nWhy do shiny India boom stories skip the seven in ten everyday workers who lack basic job safety?'
+      text: 'Behind all the loud software hype in India, almost nobody mentions that 72% of Indian workers hold zero written contracts.\n\nWorld Bank 2025 numbers put 71.6% of working Indians in fragile daily jobs with no sick pay, no pension, and no layoff notice. One broken delivery bike or sudden fever cuts family money off overnight.\n\nWhy do shiny India boom stories skip the seven in ten everyday workers who lack basic job safety?'
     },
-    romanUrdu: { text: 'Pakistan mein jab India ki tech taraqqi ke charche hotay hain toh koi nahi batata ke 72% Bharti mazdooron ke paas pakka contract tak nahi.\n\nWorld Bank 2025 ke mutabiq 71.6% kaam karnay walay Bharti bina bemari ki chhutti aur bina pension ke rozana rozgar par hain. Aik bukhar ya bike kharab honay par ghar ki kamai foran ruk jati hai.\n\nChamakdar surkhiyan un saat mein se das Bharti logon ko kyon bhool jati hain?' },
-    plainUrdu: { text: 'پاکستان میں جب بھارت کی ٹیک ترقی کے چرچے ہوتے ہیں تو کوئی یہ نہیں بتاتا کہ بہتر فیصد بھارتی محنت کشوں کے پاس تحریری معاہدہ تک نہیں۔\n\nورلڈ بینک کی دو ہزار پچیس کی فہرست کے مطابق اکہتر اعشاریہ چھ فیصد بھارتی کارکن بیماری کی چھٹی اور پنشن کے بغیر غیر محفوظ کام کرتے ہیں۔ ایک بخار یا بائیک خراب ہونے پر گھر کی آمدنی فوراً رک جاتی ہے۔\n\nچمکدار سرخیاں ان دس میں سے سات عام بھارتی کارکنوں کا حال کیوں چھپا لیتی ہیں؟' }
+    romanUrdu: { text: 'India ki chamakdar tech surkhiyon ke peechay yeh baat koi nahi batata ke 72% Bharti mazdooron ke paas pakka contract tak nahi hai.\n\nWorld Bank 2025 ke mutabiq 71.6% kaam karnay walay Bharti bina bemari ki chhutti aur bina pension ke rozana rozgar par hain. Aik bukhar ya bike kharab honay par ghar ki kamai foran ruk jati hai.\n\nBari taraqqi ki kahaniyan un saat mein se das aam Bharti logon ko kyon bhool jati hain?' },
+    plainUrdu: { text: 'بھارت کی چمکدار ٹیک سرخیوں کے پیچھے یہ حقیقت کوئی نہیں بتاتا کہ بہتر فیصد بھارتی محنت کشوں کے پاس تحریری معاہدہ تک نہیں ہے۔\n\nورلڈ بینک کی دو ہزار پچیس کی فہرست کے مطابق اکہتر اعشاریہ چھ فیصد بھارتی کارکن بیماری کی چھٹی اور پنشن کے بغیر غیر محفوظ کام کرتے ہیں۔ ایک بخار یا بائیک خراب ہونے پر گھر کی آمدنی فوراً رک جاتی ہے۔\n\nبڑی ترقی کی کہانیاں ان دس میں سے سات عام بھارتی کارکنوں کا حال کیوں چھپا لیتی ہیں؟' }
   },
 
   // F4. 35.5% of young Indian kids grow stunted while grain exports surge
@@ -425,14 +426,14 @@ export const FALLBACK_BANK = [
     mainSubject: 'India child nutrition paradox amid surplus food exports',
     specificEventOrIssue: 'World Bank 35.5% under-five child stunting rate in India',
     centralArgument: 'Despite exporting millions of tons of grain, over one in three young Indian kids suffer stunted growth from poor protein diets',
-    analyticalAngle: 'Pakistani observer perspective on India food exports vs one in three stunted kids',
+    analyticalAngle: 'India food exports vs one in three stunted kids',
     importantStatistics: ['35.5% kids under 5 stunted', 'over 1 in 3 children'],
-    keywords: ['Pakistan', 'India', 'Indians', 'kids', 'grain'],
+    keywords: ['India', 'Indians', 'kids', 'grain', 'food'],
     english: {
-      text: 'As a Pakistani watching India closely, one wild paradox stands out: over 35% of young Indian kids grow stunted.\n\nWorld Bank data shows more than one in three Indian children under five are too short for their age due to weak diets and dirty water. Even as India ships huge piles of grain abroad, early hunger limits future brain growth and adult pay.\n\nHow can a giant grain exporter still leave one in three little kids short on daily food?'
+      text: 'One crazy food paradox in India blows people away: over 35% of young Indian kids grow stunted while grain exports boom.\n\nWorld Bank data shows more than one in three Indian children under five stay too short for their age from weak protein diets and dirty water. Early hunger hurts brain growth and cuts lifetime pay for millions of workers.\n\nHow can a giant grain exporter still leave one in three little kids short on daily food?'
     },
-    romanUrdu: { text: 'Aik Pakistani ki nazar se India ko dekhein toh yeh haqeeqat chonkati hai ke wahan 35% se zyada chhotay bachay kamzor nashonuma ka shikar hain.\n\nWorld Bank ke mutabiq teen mein se aik Bharti bacha khalis ghiza aur saaf pani ki kami se qad mein peechay reh jata hai. Bahar anaaj bhejnay ke bawajood bachpan ki bhook un ke mustaqbil ki kamai kam karti hai.\n\nDunya ko anaaj bechnay wala mulk apnay hi teen mein se aik bachay ko poori ghiza kyon nahi de pata?' },
-    plainUrdu: { text: 'پاکستان سے بھارت کو دیکھیں تو ایک حیران کن حقیقت سامنے آتی ہے کہ وہاں پانچ سال سے کم پینتیس فیصد سے زیادہ بچے کمزور نشوونما کا شکار ہیں۔\n\nورلڈ بینک کے مطابق تین میں سے ایک بھارتی بچہ متوازن غذا اور صاف پانی نہ ملنے سے عمر کے حساب سے چھوٹا رہ جاتا ہے۔ باہر اناج بیچنے کے باوجود بچپن کی یہ کمی ان کی مستقبل کی کمائی گھٹا دیتی ہے۔\n\nدنیا کو اناج برآمد کرنے والا ملک اپنے ہی تین میں سے ایک بچے کو پوری غذا کیوں نہیں دے پاتا؟' }
+    romanUrdu: { text: 'India ka yeh hairat angez tazad sun kar har koi chonk jata hai ke baray anaaj exports ke bawajood 35% se zyada chhotay bachay kamzor hain.\n\nWorld Bank ke mutabiq teen mein se aik Bharti bacha khalis ghiza aur saaf pani ki kami se qad mein peechay reh jata hai. Bachpan ki bhook un ke mustaqbil ki kamai kam karti hai.\n\nDunya ko anaaj bechnay wala mulk apnay hi teen mein se aik bachay ko poori ghiza kyon nahi de pata?' },
+    plainUrdu: { text: 'بھارت کا یہ حیران کن تضاد سن کر ہر کوئی چونک جاتا ہے کہ اناج برآمد کرنے کے باوجود پانچ سال سے کم عمر پینتیس فیصد سے زیادہ بچے کمزور نشوونما کا شکار ہیں۔\n\nورلڈ بینک کے مطابق تین میں سے ایک بھارتی بچہ متوازن غذا اور صاف پانی نہ ملنے سے عمر کے حساب سے چھوٹا رہ جاتا ہے۔ بچپن کی یہ کمی ان کی مستقبل کی کمائی گھٹا دیتی ہے۔\n\nدنیا کو اناج بیچنے والا ملک اپنے ہی تین میں سے ایک معصوم بچے کو پوری غذا کیوں نہیں دے پاتا؟' }
   },
 
   // F5. Just 1.6 hospital beds per 1,000 people & 43.9% medical bills from pockets
@@ -444,17 +445,17 @@ export const FALLBACK_BANK = [
     mainSubject: 'Severe public hospital bed scarcity driving Indian household debt',
     specificEventOrIssue: 'World Bank 1.59 hospital beds per 1,000 people and 43.9% self-paid health bills',
     centralArgument: 'Having only 1.6 hospital beds per 1,000 citizens forces everyday Indians into costly private clinics paying 44% out of pocket',
-    analyticalAngle: 'Pakistani perspective on India medical tourism image vs 1.6 beds per 1,000 citizens',
+    analyticalAngle: 'India medical tourism image vs 1.6 beds per 1,000 citizens',
     importantStatistics: ['1.6 beds per 1,000 people', '43.9% paid from pockets'],
-    keywords: ['Pakistan', 'India', 'Indians', 'hospital', 'beds'],
+    keywords: ['India', 'Indians', 'hospital', 'beds', 'medical'],
     english: {
-      text: 'Looking across the border from Pakistan, India has just 1.6 hospital beds per 1,000 people behind luxury clinic ads.\n\nWorld Bank figures show packed public wards push ordinary Indians to pay nearly 44% of all medical costs from their own pockets. One sudden surgery forces working parents to pawn home gold or borrow costly app loans.\n\nWhat good is booming private healthcare when one sickness still breaks ordinary Indian savers?'
+      text: 'Behind shiny medical tourism ads, India actually has only 1.6 hospital beds for every 1,000 people.\n\nWorld Bank figures show packed public wards push ordinary Indians to pay nearly 44% of all medical costs from their own pockets. One sudden surgery forces working parents to pawn home gold or borrow costly app loans just to pay private clinics.\n\nWhat good is booming private healthcare when one sickness still breaks ordinary Indian savers?'
     },
-    romanUrdu: { text: 'Pakistan se sarhad paar dekhein toh India ke mehnge hospital ishteharon ke peechay har hazar logon par sirf 1.6 bistar hain.\n\nWorld Bank ke mutabiq sarkari ward bharay honay ki wajah se aam Bharti ilaj ke taqreeban 44% paise apni jaib se detay hain. Aik achanak operation par waldain ko ghar ka sona girvi rakhna ya mehnga app qarz lena parta hai.\n\nAisi private chamak ka kya faida jab aik bimari aam Bharti gharon ki bachat mita de?' },
-    plainUrdu: { text: 'پاکستان سے سرحد پار دیکھیں تو بھارت کے مہنگے اسپتال اشتہاروں کے پیچھے ہر ایک ہزار شہریوں کے لیے صرف ایک اعشاریہ چھ بستر موجود ہیں۔\n\nورلڈ بینک کے مطابق سرکاری وارڈ بھرے ہونے کے باعث عام بھارتی علاج کے تقریباً چوالیس فیصد اخراجات خود اپنی جیب سے ادا کرتے ہیں۔ ایک اچانک آپریشن پر والدین کو گھر کا سونا بیچنا یا مہنگا قرض لینا پڑتا ہے۔\n\nایسے نجی اسپتالوں کی چمک کا کیا فائدہ جب ایک بیماری عام بھارتی گھر کی پوری بچت مٹا دے؟' }
+    romanUrdu: { text: 'Mehnge hospital ishteharon ke peechay India ki asli tasveer yeh hai ke har hazar logon par sirf 1.6 sarkari bistar mojood hain.\n\nWorld Bank ke mutabiq ward bharay honay ki wajah se aam Bharti ilaj ke taqreeban 44% paise apni jaib se detay hain. Aik achanak operation par waldain ko ghar ka sona girvi rakhna ya mehnga app qarz lena parta hai.\n\nAisi private chamak ka kya faida jab aik bimari aam Bharti gharon ki bachat mita de?' },
+    plainUrdu: { text: 'مہنگے اسپتال اشتہاروں کے پیچھے بھارت کی اصل تصویر یہ ہے کہ ہر ایک ہزار شہریوں کے لیے صرف ایک اعشاریہ چھ بستر موجود ہیں۔\n\nورلڈ بینک کے مطابق سرکاری وارڈ بھرے ہونے کے باعث عام بھارتی علاج کے تقریباً چوالیس فیصد اخراجات خود اپنی جیب سے ادا کرتے ہیں۔ ایک اچانک آپریشن پر والدین کو گھر کا سونا بیچنا یا مہنگا قرض لینا پڑتا ہے۔\n\nایسے نجی اسپتالوں کی چمک کا کیا فائدہ جب ایک بیماری عام بھارتی گھر کی پوری بچت مٹا دے؟' }
   },
 
-  // F6. 72.3% coal electricity & 32.4% women workforce paradox
+  // F6. 72.3% coal electricity & hazardous city air trap
   {
     topic: 'Coal still makes 72% of India electricity even as toxic air shuts city schools',
     subtopic: 'World Bank 72.3% coal share keeping northern Indian air up to 15x WHO limits',
@@ -463,14 +464,14 @@ export const FALLBACK_BANK = [
     mainSubject: 'India coal power lock-in driving hazardous city smog and lost workdays',
     specificEventOrIssue: 'World Bank 72.3% electricity from coal and toxic northern air readings',
     centralArgument: 'Despite green energy headlines, coal generates 72% of India electricity and drives toxic smog that steals school weeks and outdoor wages',
-    analyticalAngle: 'Pakistani view on shared winter smog and India 72% coal power trap',
+    analyticalAngle: 'India green energy PR vs 72% coal power trap',
     importantStatistics: ['72.3% coal power', '15 times WHO safe limit'],
-    keywords: ['Pakistan', 'India', 'Indians', 'coal', 'air'],
+    keywords: ['India', 'Indians', 'coal', 'air', 'smog'],
     english: {
-      text: 'Here in Pakistan people see India\'s solar headlines, yet coal still supplies 72.3% of all Indian electricity.\n\nWorld Bank numbers reveal why winter smog around Delhi climbs up to 15 times over safe world limits. Heavy coal smoke shuts schools for weeks, cuts outdoor wages, and makes families spend tight paychecks on lung medicine.\n\nCan clean energy ads ever fix Indian city lungs while three-fourths of power stays on coal?'
+      text: 'Loud solar headlines hide a shocking power truth inside India: coal still supplies 72.3% of all Indian electricity.\n\nWorld Bank numbers explain why winter smog around Delhi climbs up to 15 times over safe world limits. Heavy coal smoke shuts schools for weeks, cuts outdoor wages, and makes everyday Indian families spend tight paychecks on lung medicine.\n\nCan clean energy ads ever fix Indian city lungs while three-fourths of power stays on coal?'
     },
-    romanUrdu: { text: 'Pakistan mein hum India ke solar daway suntay hain, magar haqeeqat yeh hai ke wahan ab bhi 72.3% bijli koelay se banti hai.\n\nWorld Bank ke aadad batatay hain ke Delhi aur aas paas ki hawa mehfooz had se 15 guna zyada gandi kyon hoti hai. Koelay ka dhuwan school band karwata hai, mazdoori rokta hai aur logon ki kamai dawai par lagwa deta hai.\n\nJab teen chauthai bijli koelay par chalay toh sirf hara ishtehar shehron ki hawa kaisay saaf karega?' },
-    plainUrdu: { text: 'پاکستان میں ہم بھارت کے سولر دعوے سنتے ہیں، مگر حیرت انگیز حقیقت یہ ہے کہ وہاں آج بھی بہتر اعشاریہ تین فیصد بجلی کوئلے سے بنتی ہے۔\n\nورلڈ بینک کے اعداد بتاتے ہیں کہ دہلی اور آس پاس کی فضا محفوظ حد سے پندرہ گنا زیادہ آلودہ کیوں رہتی ہے۔ کوئلے کا دھواں اسکول بند کرواتا ہے، دیہاڑی روکتا ہے اور عام بھارتیوں کی کمائی پھیپھڑوں کی دوائی پر خرچ کرواتا ہے۔\n\nجب تین چوتھائی بجلی کوئلے پر چل رہی ہو تو صرف سبز اشتہار شہروں کی فضا کیسے صاف کریں گے؟' }
+    romanUrdu: { text: 'Solar bijli ki bari surkhiyan yeh sach chhupa leti hain ke India mein aaj bhi 72.3% bijli koelay se banti hai.\n\nWorld Bank ke aadad batatay hain ke Delhi aur aas paas ki hawa mehfooz had se 15 guna zyada gandi kyon hoti hai. Koelay ka dhuwan school band karwata hai, mazdoori rokta hai aur logon ki kamai dawai par lagwa deta hai.\n\nJab teen chauthai bijli koelay par chalay toh sirf hara ishtehar shehron ki hawa kaisay saaf karega?' },
+    plainUrdu: { text: 'سولر بجلی کی بڑی سرخیاں یہ حیرت انگیز سچ چھپا لیتی ہیں کہ بھارت میں آج بھی بہتر اعشاریہ تین فیصد بجلی کوئلے سے بنتی ہے۔\n\nورلڈ بینک کے اعداد بتاتے ہیں کہ دہلی اور آس پاس کی فضا محفوظ حد سے پندرہ گنا زیادہ آلودہ کیوں رہتی ہے۔ کوئلے کا دھواں اسکول بند کرواتا ہے، دیہاڑی روکتا ہے اور عام بھارتیوں کی کمائی پھیپھڑوں کی دوائی پر خرچ کرواتا ہے۔\n\nجب تین چوتھائی بجلی کوئلے پر چل رہی ہو تو صرف سبز اشتہار شہروں کی فضا کیسے صاف کریں گے؟' }
   }
 ];
 
@@ -864,6 +865,9 @@ export async function generateEnglishPost(customTopic = '', excludedTopic = '', 
         if (validated.english.charCount < MIN_CHARACTERS) {
           throw new Error(`Cloudflare AI post still under ${MIN_CHARACTERS} chars (${validated.english.charCount} chars)`);
         }
+        if (!isCustomNeutralMode && hasSelfAnnouncingLocationCliche(validated.english.text)) {
+          throw new Error(`Cloudflare AI post still contains banned self-announcing location cliché`);
+        }
         if (isCustomNeutralMode && OFF_TOPIC_COUNTRY_REGEX.test(validated.english.text)) {
           throw new Error(`Cloudflare AI custom-topic post mentioned India/Pakistan off-topic`);
         }
@@ -1070,6 +1074,7 @@ RULES:
   Line 3: A short concluding takeaway or closing question in Roman Urdu.
 - Use simple everyday conversational Pakistani words that anyone understands easily.
 - Keep the exact same numbers, facts, and the final question intact.
+- NEVER use cliché self-announcing phrases like "Pakistan mein baith kar", "Pakistan se", "Aik Pakistani ki nazar se", or "Sarhad paar dekhein" — speak straight into the topic.
 - Every sentence must be short and easy to understand.
 - STRICT MINIMUM LENGTH: Must be 400+ characters (420 to 580 characters total, NEVER under 400 and NEVER over 600).
 - ZERO hashtags, ZERO emojis. NEVER use labels like "Hook:" or "Body:".
@@ -1106,11 +1111,11 @@ RULES:
       let res = await callCloudflareAI(prompt, null, translationSystemPrompt);
       if (res && res.text) {
         let entry = formatEntry(res.text);
-        if (!entry.isOverLimit && entry.charCount >= 120 && entry.charCount < MIN_CHARACTERS) {
-          res = await callCloudflareAI(`${prompt}\n\nLENGTH FIX: Your last Roman Urdu draft was only ${entry.charCount} characters. Expand Paragraph 2 slightly with simple everyday words so the total length is strictly 420 to 580 characters (400+ required).`, null, translationSystemPrompt);
+        if (!entry.isOverLimit && ((entry.charCount >= 120 && entry.charCount < MIN_CHARACTERS) || hasSelfAnnouncingLocationCliche(entry.text))) {
+          res = await callCloudflareAI(`${prompt}\n\nLENGTH FIX: Your last Roman Urdu draft was ${entry.charCount} characters or used a banned location opener. Ensure total length is strictly 420 to 580 characters (400+ required) and remove any cliché location opener like "Pakistan mein baith kar" or "Pakistan se".`, null, translationSystemPrompt);
           if (res && res.text) entry = formatEntry(res.text);
         }
-        if (!entry.isOverLimit && entry.charCount >= MIN_CHARACTERS) romanEntry = entry;
+        if (!entry.isOverLimit && entry.charCount >= MIN_CHARACTERS && !hasSelfAnnouncingLocationCliche(entry.text)) romanEntry = entry;
       }
     } catch (error) {
       console.warn('[Roman Urdu Cloudflare AI]', error.message);
@@ -1202,6 +1207,7 @@ RULES:
 - Use simple everyday Pakistani Urdu that an ordinary reader or shopkeeper understands easily.
 - Avoid heavy bookish words or complicated literary terms.
 - Keep the exact same numbers, facts, and the final question intact.
+- NEVER use cliché openers like "پاکستان میں بیٹھ کر", "پاکستان سے", or "سرحد پار دیکھیں" — start straight with the fact.
 - Every sentence must be short and easy to understand.
 - STRICT MINIMUM LENGTH: Must be 400+ characters (420 to 580 characters total, NEVER under 400 and NEVER over 600).
 - ZERO hashtags, ZERO emojis. NEVER use labels.
@@ -1239,11 +1245,11 @@ RULES:
       let res = await callCloudflareAI(prompt, null, translationSystemPrompt);
       if (res && res.text) {
         let entry = formatEntry(res.text);
-        if (!entry.isOverLimit && entry.charCount >= 120 && entry.charCount < MIN_CHARACTERS) {
-          res = await callCloudflareAI(`${prompt}\n\nLENGTH FIX: Your last Urdu draft was only ${entry.charCount} characters. Expand Paragraph 2 slightly in simple everyday Urdu so the total length is strictly 420 to 580 characters (400+ required).`, null, translationSystemPrompt);
+        if (!entry.isOverLimit && ((entry.charCount >= 120 && entry.charCount < MIN_CHARACTERS) || hasSelfAnnouncingLocationCliche(entry.text))) {
+          res = await callCloudflareAI(`${prompt}\n\nLENGTH FIX: Your last Urdu draft was ${entry.charCount} characters or used a banned location opener. Ensure total length is strictly 420 to 580 characters (400+ required) and remove any cliché location opener like "پاکستان میں بیٹھ کر" or "پاکستان سے".`, null, translationSystemPrompt);
           if (res && res.text) entry = formatEntry(res.text);
         }
-        if (!entry.isOverLimit && entry.charCount >= MIN_CHARACTERS) urduEntry = entry;
+        if (!entry.isOverLimit && entry.charCount >= MIN_CHARACTERS && !hasSelfAnnouncingLocationCliche(entry.text)) urduEntry = entry;
       }
     } catch (error) {
       console.warn('[Plain Urdu Cloudflare AI]', error.message);
@@ -1412,13 +1418,13 @@ VERIFIED FACTS TO KEEP ACCURATE:
 ${liveFactsBrief || '- Keep the verified numbers accurate.'}
 
 STRICT REWRITE RULES:
-1. PAKISTANI PERSPECTIVE ON INDIANS: Write as a Pakistani looking across the border at India and talking directly about how this hidden paradox hits everyday Indians (e.g., "Sitting in Pakistan, few realize...", "From Pakistan, it is wild to learn...", "As a Pakistani watching India closely..."). Keep it grounded, analytical, and civil—zero hate speech.
+1. PAKISTANI PERSPECTIVE ON INDIANS (NO LOCATION CLICHÉS): Keep the sharp, candid Pakistani observer tone talking naturally about how this hidden paradox hits everyday Indians, AND STRICTLY REMOVE any literal cliché self-label like "Sitting in Pakistan", "From Pakistan", "Here in Pakistan", "As a Pakistani", or "Looking across the border". Jump straight into the shocking fact! Keep it grounded, analytical, and civil—zero hate speech.
 2. NOT OBVIOUS EVERYDAY TALK OR NEWS: Remove obvious surface complaints and newspaper phrases ("A report says", "Today", "Yesterday", "Latest news"). Keep the surprising, counter-intuitive analytical truth front and center.
 3. INDIA PARADOX + REAL SHOCK: Explain WHY the hidden link happens and how it hurts ordinary Indian families, students, or workers.
 4. SIMPLEST POSSIBLE WORDS: Replace every long or fancy word (like infrastructure, disparity, demographic, inflation, macroeconomic, expenditure, deteriorating) with tiny everyday words a 12-year-old uses.
 5. SHORT SENTENCES: 5 to 12 words per sentence.
 6. EXACT 3-PART LAYOUT separated by \\n\\n:
-   Line 1: Punchy hook sentence from a Pakistani angle revealing a crazy rarely-known fact about India/Indians.
+   Line 1: Punchy hook sentence jumping straight into a crazy rarely-known fact about India/Indians (never "Sitting in Pakistan").
    \\n\\n
    Paragraph 2: 2-3 simple sentences with the accurate latest number + hidden mechanism + human effect on Indians.
    \\n\\n
