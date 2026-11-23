@@ -522,6 +522,159 @@ export const CURATED_STORY_TOPICS = FALLBACK_BANK;
    DYNAMIC FALLBACK ENGINE — ENGAGEMENT TRENDING VERSION
 ========================================================= */
 
+const INDIA_EXTENDED_TREND_BANK = [
+  {
+    topic: '10-minute Indian delivery riders earn pennies after petrol and bike repairs',
+    subtopic: 'App-driven ultra-fast delivery economics draining young Indian riders',
+    category: 'INDIA_TECH_SCAMS_GIG',
+    genreId: 'INDIA_TECH_SCAMS_GIG',
+    mainSubject: 'Indian 10-minute delivery workers vs app company valuations',
+    specificEventOrIssue: 'Rising fuel, fines, and bike repairs cutting rider net daily pay',
+    centralArgument: 'Fast phone delivery apps race traffic while young Indian riders absorb all fuel, bike, and road crash costs alone',
+    analyticalAngle: 'Shiny 10-minute app convenience vs invisible rider debt',
+    importantStatistics: ['10-minute delivery clocks', 'zero sick leave or bike pay'],
+    keywords: ['India', 'Indians', 'riders', 'delivery', 'petrol'],
+    english: {
+      text: 'Behind shiny ten-minute grocery apps in India hides a rough pay trap almost nobody checks closely.\n\nDelivery riders pay for their own fuel, phone data, traffic fines, and bike repairs while rushing dangerous city roads for a few rupees per bag. One sudden slip in rain or fever cuts earnings down to zero with zero sick leave or medical help.\n\nIs saving ten minutes on snack delivery worth pushing young Indian workers into unpaid road risk?'
+    }
+  },
+  {
+    topic: 'Instant phone loan apps trap millions of young Indians in high-fee debt',
+    subtopic: 'Aggressive fintech app lending fees hitting Indian salaried and gig youth',
+    category: 'INDIA_ECONOMY_DEBT',
+    genreId: 'INDIA_ECONOMY_DEBT',
+    mainSubject: 'Digital loan app debt spiral across Indian towns',
+    specificEventOrIssue: 'Quick smartphone loan apps charging steep hidden fees and penalties',
+    centralArgument: 'Easy two-minute credit apps look helpful at payday shortage yet bury everyday Indians under harsh fees and shame calls',
+    analyticalAngle: 'Instant credit apps masking soaring Indian personal debt',
+    importantStatistics: ['two-minute loan traps', 'steep hidden fees'],
+    keywords: ['India', 'Indians', 'loan', 'apps', 'debt'],
+    english: {
+      text: 'Two-minute loan apps on Indian phones look easy on payday, yet millions end up stuck paying far more than they borrowed.\n\nAfter tiny hidden charges and sharp late fines pile up, one small medical bill turns into five app loans chasing one flat salary. When young Indians fall behind by a few days, rude recovery callers start ringing relatives and coworkers.\n\nWhy are millions of working Indians turning to costly phone apps just to reach month end?'
+    }
+  },
+  {
+    topic: 'Indian parents mortgage family savings into exam coaching hubs for tiny seat odds',
+    subtopic: 'Billion-dollar Kota and government exam coaching race draining family budgets',
+    category: 'INDIA_EDUCATION_MIGRATION',
+    genreId: 'INDIA_EDUCATION_MIGRATION',
+    mainSubject: 'Exam coaching factory trap across middle-class Indian families',
+    specificEventOrIssue: 'Private tuition fees soaring as millions chase under 1% top college seats',
+    centralArgument: 'Weak public schools force Indian families to spend years of savings on private coaching hubs where almost everyone loses out',
+    analyticalAngle: 'High coaching spending vs scarcity of decent Indian jobs',
+    importantStatistics: ['under 1% seats won', 'years of family savings'],
+    keywords: ['India', 'Indians', 'coaching', 'exam', 'students'],
+    english: {
+      text: 'A quiet money drain hits millions of Indian homes every year: parents spend life savings on test coaching hubs for tiny odds.\n\nStudents leave home at age sixteen to memorize formulas twelve hours a day because regular schools fail basic prep and steady jobs stay scarce. Even when fewer than one in a hundred win seats, coaching chains still cash massive fees from every hopeful family.\n\nWhy must young Indians risk total family debt just for a fair shot at one decent college seat?'
+    }
+  },
+  {
+    topic: 'Skilled doctors and coders leave India for foreign passports at record pace',
+    subtopic: 'Brain drain of trained Indian professionals seeking cleaner air and steady pay',
+    category: 'INDIA_EDUCATION_MIGRATION',
+    genreId: 'INDIA_EDUCATION_MIGRATION',
+    mainSubject: 'Indian skilled migration and passport renunciation trends',
+    specificEventOrIssue: 'Top Indian engineers and doctors emigrating despite domestic growth slogans',
+    centralArgument: 'Heavy pollution, tax friction, and scarce research funding push India brightest trained builders overseas for good',
+    analyticalAngle: 'Home talent leaving India after public tax funded their degrees',
+    importantStatistics: ['record foreign moves', 'top doctors and engineers'],
+    keywords: ['India', 'Indians', 'passports', 'engineers', 'abroad'],
+    english: {
+      text: 'A silent drain worries planners inside India: thousands of trained doctors, coders, and rich savers hand back Indian passports each year.\n\nFamilies cite dirty city air, crowded clinics, rough taxes, and endless office delays after studying hard in local state colleges. India pays taxes to educate bright young kids, yet foreign economies collect their best working years.\n\nHow long can fast growth slogans ignore why so many educated Indians build their future abroad?'
+    }
+  },
+  {
+    topic: 'Indian tech city rents doubled while starter software pay stayed frozen for years',
+    subtopic: 'Housing cost explosion in Bengaluru and Gurugram squeezing fresh Indian graduates',
+    category: 'INDIA_CITIES_AIR_WATER',
+    genreId: 'INDIA_CITIES_AIR_WATER',
+    mainSubject: 'Soaring rent vs flat entry pay in Indian tech hubs',
+    specificEventOrIssue: 'Ten-month landlord deposits and high rent outpacing fresh graduate wages',
+    centralArgument: 'While India sells global IT dreams, entry tech pay barely rose in fifteen years even as city rent and deposits doubled',
+    analyticalAngle: 'Frozen IT fresher salaries vs runaway Indian metro rent',
+    importantStatistics: ['flat entry salaries', 'six-to-ten month deposits'],
+    keywords: ['India', 'Indians', 'rent', 'software', 'salaries'],
+    english: {
+      text: 'Fresh tech graduates moving to big Indian cities hit a cold math shock: entry pay barely moved in fifteen years while flat rent doubled.\n\nLandlords in tech towns ask huge cash deposits up front before handing over keys to tiny rooms near crowded offices. After paying rent, train fares, and rising grocery bills, young Indian engineers save almost nothing at month end.\n\nHow do big IT bosses expect fresh graduates to build stable lives when starting pay stands frozen?'
+    }
+  },
+  {
+    topic: 'Daily sales taxes on soap, curd, and school items squeeze poor Indian shoppers hard',
+    subtopic: 'Heavy indirect consumption taxes hitting low-income Indian households daily',
+    category: 'INDIA_ECONOMY_DEBT',
+    genreId: 'INDIA_ECONOMY_DEBT',
+    mainSubject: 'GST burden on everyday essentials across poor Indian households',
+    specificEventOrIssue: 'Indirect taxes on milk goods, fuel, and daily shop items taking higher share of low incomes',
+    centralArgument: 'Indirect taxes charge a poor Indian day-laborer the exact same tax rate on soap or snacks as a city billionaire',
+    analyticalAngle: 'Hidden daily tax share paid by poorest Indians on basic goods',
+    importantStatistics: ['same daily tax rate', 'milk, soap, and fuel'],
+    keywords: ['India', 'Indians', 'tax', 'gst', 'food'],
+    english: {
+      text: 'Rich headlines boast rising tax collections inside India, yet few look closely at who pays every rupee on daily groceries.\n\nEvery pack of soap, curd, bike petrol, or kid notebook carries heavy sales taxes that charge a daily wage worker the exact same rate as a rich tycoon. Because poor Indian families spend nearly all they earn on basic goods, indirect tax bites their wallets hardest.\n\nWhy rely so heavily on daily food and soap taxes instead of taxing huge idle wealth cleanly?'
+    }
+  },
+  {
+    topic: 'Shiny Indian expressways flood in first rain while village school roads stay muddy',
+    subtopic: 'Big highway photo-ops vs broken rural local roads and town drains across India',
+    category: 'INDIA_CITIES_AIR_WATER',
+    genreId: 'INDIA_CITIES_AIR_WATER',
+    mainSubject: 'Highway spending vs neglected village roads and city drainage',
+    specificEventOrIssue: 'Monsoon waterlogging shutting down big cities and rural clinics alike',
+    centralArgument: 'Billions flow into high-toll concrete highways while missing storm drains flood city streets and leave rural schools in mud',
+    analyticalAngle: 'Glossy highway ribbon cuts vs flooded neighborhood streets',
+    importantStatistics: ['rising road tolls', 'flooded town streets'],
+    keywords: ['India', 'Indians', 'roads', 'rain', 'village'],
+    english: {
+      text: 'Big new highways win shiny TV praise across India, yet one strong hour of rain still turns major city crossings into muddy lakes.\n\nDrivers pay steep toll gates every few miles while neighborhood storm drains sit choked and rural village clinics remain cut off during monsoon weeks. Fixing basic drains and village school roads lacks flashy cameras, so local streets stay ignored.\n\nWhat good are grand multi-lane roads if regular Indians still wade through knee-deep drain water?'
+    }
+  },
+  {
+    topic: 'Indian college graduates with master degrees flood lines for simple office peon jobs',
+    subtopic: 'Severe mismatch between degree expansion and real factory jobs across India',
+    category: 'INDIA_JOBS_YOUTH',
+    genreId: 'INDIA_JOBS_YOUTH',
+    mainSubject: 'Engineers and MBAs applying for basic clerk and peon openings',
+    specificEventOrIssue: 'Tens of thousands of advanced degree holders competing for low-grade state jobs',
+    centralArgument: 'Degrees multiplied across private Indian colleges while real steady jobs lagged behind, pushing engineers into peon queues',
+    analyticalAngle: 'Private college degrees vs real factory and office job creation',
+    importantStatistics: ['tens of thousands per seat', 'MBAs and engineers'],
+    keywords: ['India', 'Indians', 'graduates', 'jobs', 'college'],
+    english: {
+      text: 'A heartbreaking line forms outside government offices across India whenever a few basic clerk or peon seats open up.\n\nTens of thousands of young Indians holding engineering and master degrees stand for hours hoping to win one modest lifetime paycheck. Private colleges kept selling expensive paper degrees even while local factories failed to create real steady work.\n\nHow many wasted youth years does it take before leaders admit paper degrees cannot replace real jobs?'
+    }
+  },
+  {
+    topic: 'Winter crop smoke and city diesel turn northern Indian mornings hazardous every year',
+    subtopic: 'Repeated air emergency shutting Delhi and northern Indian schools every November',
+    category: 'INDIA_FARM_ENERGY',
+    genreId: 'INDIA_FARM_ENERGY',
+    mainSubject: 'Annual toxic air crisis hitting northern Indian cities and farm belts',
+    specificEventOrIssue: 'Poor farmers burning leftover straw cheaply while diesel traffic traps winter smog',
+    centralArgument: 'Broke farmers lack cheap ways to clear fields before sowing wheat, turning winter city air toxic for millions of Indian kids',
+    analyticalAngle: 'Squeezed farm deadlines fueling winter lung crisis across India',
+    importantStatistics: ['every single winter', 'shut schools and hazy lungs'],
+    keywords: ['India', 'Indians', 'air', 'farmers', 'smoke'],
+    english: {
+      text: 'Every winter turns northern India into a giant gas chamber while leaders trade blame and ordinary kids breathe dirty grey haze.\n\nCash-strapped farmers burn dry rice straw because hiring heavy clearing machines costs money and planting seasons leave only ten tight days. Mixed with truck diesel and factory smoke, poison air shuts schools and sends elderly Indians coughing to clinics.\n\nWhy leave poor farmers stuck burning fields every year instead of paying fast straw pickup?'
+    }
+  },
+  {
+    topic: 'Indian household cash savings hit multi-decade lows as families borrow for basics',
+    subtopic: 'Middle-class Indians dipping into gold and loans to cover school and grocery costs',
+    category: 'INDIA_ECONOMY_DEBT',
+    genreId: 'INDIA_ECONOMY_DEBT',
+    mainSubject: 'Shrinking Indian household net savings and rising gold pledges',
+    specificEventOrIssue: 'Everyday families borrowing against jewelry as salaries lag food and tuition costs',
+    centralArgument: 'Behind fast GDP announcements, ordinary Indian households are saving far less net cash and pawning gold to fund living bills',
+    analyticalAngle: 'GDP growth buzz vs shrinking Indian middle-class savings',
+    importantStatistics: ['lowest net savings share', 'rising gold loans'],
+    keywords: ['India', 'Indians', 'savings', 'gold', 'families'],
+    english: {
+      text: 'Fast economic buzz hides a quiet danger inside ordinary Indian homes: net family cash savings sank to multi-decade lows.\n\nWhen monthly salaries fail to match rising milk prices, private school tuition, and sudden clinic costs, working families quiet down and borrow against home jewelry. More shiny loans on bank sheets do not mean families feel richer when spare cash stays near zero.\n\nCan a country truly brag about big growth while regular Indian households drain savings just to cope?'
+    }
+  }
+];
+
 function generateDynamicFallback(category = 'TRENDING', subtopic = '', excludedTopic = '', avoidList = [], preferredTrend = null) {
   const cleanExcluded = String(excludedTopic || '').toLowerCase().trim();
   const avoidCombined = avoidList.map(a => String(a).toLowerCase());
@@ -573,18 +726,7 @@ function generateDynamicFallback(category = 'TRENDING', subtopic = '', excludedT
     return true;
   };
 
-  // Build extended offline pool: India FALLBACK_BANK first (for offline India baseline tests),
-  // followed by diverse global daily trend entries so consecutive runs never loop back to FALLBACK_BANK[0].
-  const globalDailyOfflineEntries = [
-    ...AI_TREND_BANK.map(e => ({ ...e, topic: e.subtopic, category: 'TECH_AI', genreId: 'TECH_AI', english: { text: e.text } })),
-    ...QUANTUM_TREND_BANK.map(e => ({ ...e, topic: e.subtopic, category: 'TECH_AI', genreId: 'TECH_AI', english: { text: e.text } })),
-    ...CRYPTO_TREND_BANK.map(e => ({ ...e, topic: e.subtopic, category: 'ECONOMY_MARKETS', genreId: 'ECONOMY_MARKETS', english: { text: e.text } })),
-    ...STARTUP_TECH_TREND_BANK.map(e => ({ ...e, topic: e.subtopic, category: 'TECH_AI', genreId: 'TECH_AI', english: { text: e.text } })),
-    ...WORK_CAREER_TREND_BANK.map(e => ({ ...e, topic: e.subtopic, category: 'WORK_CAREERS', genreId: 'WORK_CAREERS', english: { text: e.text } })),
-    ...CREATOR_MARKETING_TREND_BANK.map(e => ({ ...e, topic: e.subtopic, category: 'TECH_AI', genreId: 'TECH_AI', english: { text: e.text } }))
-  ];
-
-  // Rotate within FALLBACK_BANK only if preferredTrend suggests an offset, keeping index 0 first when history is empty
+  // Rotate within FALLBACK_BANK cleanly across India topics, keeping index 0 first when history is empty
   const bankLen = FALLBACK_BANK.length;
   const startIdx = historyStore.posts.length === 0 ? 0 : (historyStore.posts.length % bankLen);
   const rotatedFallbackBank = [
@@ -592,22 +734,24 @@ function generateDynamicFallback(category = 'TRENDING', subtopic = '', excludedT
     ...FALLBACK_BANK.slice(0, startIdx)
   ];
 
-  // Check unused FALLBACK_BANK first, then global daily offline entries
-  for (const item of [...rotatedFallbackBank, ...globalDailyOfflineEntries]) {
+  // Extended India-specific pool so 16+ consecutive offline posts stay 100% India-focused without ever repeating FALLBACK_BANK[0]
+  const allIndiaPool = [...rotatedFallbackBank, ...INDIA_EXTENDED_TREND_BANK];
+
+  for (const item of allIndiaPool) {
     if (isCandidateEligible(item)) {
       return formatCandidate(item, category || item.category || 'TRENDING');
     }
   }
 
-  // If even the expanded banks are exhausted, synthesize a fresh post from preferredTrend instead of repeating FALLBACK_BANK[0]
+  // If all 16 curated India banks were used, synthesize an India-focused post directly from today's preferredTrend
   if (preferredTrend && preferredTrend.topic) {
     const cleanTopic = String(preferredTrend.topic).replace(/[.!?]+$/, '').trim();
-    const shortLabel = cleanTopic.length > 78 ? `${cleanTopic.slice(0, 75)}...` : cleanTopic;
+    const shortLabel = cleanTopic.length > 74 ? `${cleanTopic.slice(0, 71)}...` : cleanTopic;
     const contextHint = String(preferredTrend.context || '').replace(/\s+/g, ' ').trim();
     const bodySentence = contextHint && contextHint.length >= 45
-      ? contextHint.slice(0, 210).replace(/[.!?]+$/, '')
-      : `Behind surface news, sudden shifts in costs and rules quickly push ordinary workers and small builders into brand-new pressure`;
-    const synthesizedText = `${shortLabel} is changing daily habits faster than most headlines show.\n\n${bodySentence}. When one big bottleneck flips overnight, regular households and small teams feel the squeeze in bills, jobs, and daily choices before leaders adjust.\n\nHow do you see ${shortLabel.slice(0, 48).toLowerCase()} affecting normal people next?`;
+      ? contextHint.slice(0, 195).replace(/[.!?]+$/, '')
+      : `Behind headline buzz in India, rising everyday bills and weak public support push ordinary workers into tighter financial trouble`;
+    const synthesizedText = `${shortLabel} keeps squeezing everyday Indian families far harder than loud headlines admit.\n\n${bodySentence}. When basic costs jump faster than wages, small shop owners and working Indian households cut savings and borrow just to manage daily life.\n\nHow long can India spotlight big numbers while regular families carry this hidden daily cost?`;
     const entry = formatEntry(synthesizedText);
     if (entry.charCount >= 380 && entry.charCount <= 600) {
       const meta = extractPostMetadata({
@@ -635,14 +779,13 @@ function generateDynamicFallback(category = 'TRENDING', subtopic = '', excludedT
     }
   }
 
-  // Last-resort rotation across entire combined pool avoiding excluded and locked items
-  const allPool = [...rotatedFallbackBank, ...globalDailyOfflineEntries];
-  const nonExcluded = allPool.find(item => {
+  // Last-resort rotation across entire India pool avoiding excluded and locked items
+  const nonExcluded = allIndiaPool.find(item => {
     const isExcl = cleanExcluded && item.topic.toLowerCase().trim() === cleanExcluded;
     const h = computeNormalizedHash(item.english.text).toLowerCase();
     const isLocked = historyStore.inFlightLocks && historyStore.inFlightLocks.has(h);
     return !isExcl && !isLocked;
-  }) || allPool.find(item => !cleanExcluded || item.topic.toLowerCase().trim() !== cleanExcluded) || FALLBACK_BANK[0];
+  }) || allIndiaPool.find(item => !cleanExcluded || item.topic.toLowerCase().trim() !== cleanExcluded) || FALLBACK_BANK[0];
 
   return formatCandidate(nonExcluded, category || nonExcluded.category || 'TRENDING');
 }

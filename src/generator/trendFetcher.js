@@ -1,15 +1,16 @@
 /**
- * Daily Multi-Source Trend Fetcher — X_BOT Daily Trends Engine
+ * Daily Multi-Topic India Trend Fetcher — X_BOT Engine
  *
- * Researches fresh, diverse trending topics every day across multiple categories
- * so consecutive posts never hammer a single topic or static list.
+ * Keeps the core focus 100% on India realities, downsides & everyday effects
+ * while ensuring EVERY day and EVERY consecutive post covers a completely
+ * NEW India topic across diverse categories (never stuck on a single topic).
  *
  * Source priority:
- *   1. Google Trends Daily RSS (geo=US & geo=IN, real daily trending searches)
- *   2. Fresh Daily Multi-Category RSS (when:2d across Tech/AI, Economy, Work, Climate/Energy, Health, World, India)
- *   3. Daily AI-synthesized trends excluding recently posted topics (Cloudflare Llama 3.3 70B → Gemini)
- *   4. Verified Live Data Angles (World Bank IND, Open-Meteo Live Air Quality, USD/INR FX) — interleaved, never starving live trends
- *   5. Multi-category evergreen fallbacks (rotated & deduplicated)
+ *   1. Google Trends Daily RSS (geo=IN — real daily trending searches in India today)
+ *   2. Fresh Daily Multi-Beat India RSS (hl=en-IN&gl=IN when:2d/3d across Jobs, Debt/Prices, Health/Food, Cities/Water/Air, Tech/Gig/Scams, Farms/Energy, Education)
+ *   3. Daily AI-synthesized India paradoxes & trends excluding recently covered topics
+ *   4. Verified Live India Data Angles (World Bank IND, Open-Meteo Live Air Quality, USD/INR FX) — interleaved, never starving live daily trends
+ *   5. Multi-category evergreen India fallbacks (rotated & deduplicated)
  */
 
 import https from 'https';
@@ -32,26 +33,26 @@ const CACHE_FILE = path.join(DATA_DIR, 'trends_cache.json');
 const CACHE_TTL_HOURS = 3;
 
 const CATEGORY_ORDER = [
-  'TECH_AI',
-  'ECONOMY_MARKETS',
-  'WORK_CAREERS',
-  'CLIMATE_ENERGY',
-  'HEALTH_SOCIETY',
-  'WORLD_GEOPOLITICS',
-  'INDIA_REALITY',
+  'INDIA_JOBS_YOUTH',
+  'INDIA_ECONOMY_DEBT',
+  'INDIA_HEALTH_FOOD',
+  'INDIA_CITIES_AIR_WATER',
+  'INDIA_TECH_SCAMS_GIG',
+  'INDIA_FARM_ENERGY',
+  'INDIA_EDUCATION_MIGRATION',
   'INDIA_DATA'
 ];
 
 const CATEGORY_LABELS = {
-  TECH_AI: 'Tech & AI',
-  ECONOMY_MARKETS: 'Economy & Money',
-  WORK_CAREERS: 'Jobs & Work',
-  CLIMATE_ENERGY: 'Energy & Climate',
-  HEALTH_SOCIETY: 'Health & Life',
-  WORLD_GEOPOLITICS: 'Global Shifts',
-  INDIA_REALITY: 'India Reality',
-  INDIA_DATA: 'India Data',
-  DAILY_TRENDS: 'Daily Trend'
+  INDIA_JOBS_YOUTH: 'India Jobs & Youth',
+  INDIA_ECONOMY_DEBT: 'India Debt & Prices',
+  INDIA_HEALTH_FOOD: 'India Health & Food',
+  INDIA_CITIES_AIR_WATER: 'India Cities, Air & Water',
+  INDIA_TECH_SCAMS_GIG: 'India Tech, Apps & Gig',
+  INDIA_FARM_ENERGY: 'India Farms & Energy',
+  INDIA_EDUCATION_MIGRATION: 'India Exams & Brain Drain',
+  INDIA_DATA: 'India Live Data',
+  DAILY_TRENDS: 'India Daily Trend'
 };
 
 /* =========================================================
@@ -61,7 +62,7 @@ const CATEGORY_LABELS = {
 /**
  * Returns YYYY-MM-DD for the configured timezone (ensures daily cache rollover).
  */
-export function getTodayDateKey(now = new Date(), timeZone = config.scheduleTimezone || 'UTC') {
+export function getTodayDateKey(now = new Date(), timeZone = config.scheduleTimezone || 'Asia/Kolkata') {
   try {
     return new Date(now).toLocaleDateString('en-CA', { timeZone });
   } catch {
@@ -72,7 +73,7 @@ export function getTodayDateKey(now = new Date(), timeZone = config.scheduleTime
 /**
  * Cache is valid ONLY if fetched on today's calendar date AND younger than CACHE_TTL_HOURS.
  */
-export function isCacheValidForToday(cache, now = new Date(), timeZone = config.scheduleTimezone || 'UTC') {
+export function isCacheValidForToday(cache, now = new Date(), timeZone = config.scheduleTimezone || 'Asia/Kolkata') {
   if (!cache || !cache.fetchedAt || !cache.fetchedDate || !Array.isArray(cache.trends) || cache.trends.length === 0) {
     return false;
   }
@@ -145,43 +146,40 @@ function decodeXmlEntities(str = '') {
 
 const NOISE_AND_NEWS_CEREMONY_PATTERN = /\b(lottery|karunya|sambad|satta|matka|dream11|player props|betting odds|ipl score|live score|cricket score|match highlights|box office|horoscope|rashifal|panchang|admit card|exam result|answer key|weather today|gold rate today|petrol price today|bigg boss|bollywood|trailer release|inaugurat|flagged off|platinum jubilee|addresses rally|birthday wishes|wedding|76ers vs|bucks vs|lakers vs|celtics vs|knicks vs|warriors vs|nfl|nba|premier league|champions league|fantasy picks)\b/i;
 
-const INDIA_MENTION_PATTERN = /\b(india|indian|indians|delhi|mumbai|kolkata|bengaluru|bangalore|rupee|rbi|bharti)\b/i;
-
-export function classifyTrendCategory(title = '', context = '', defaultCategory = 'DAILY_TRENDS') {
+export function classifyTrendCategory(title = '', context = '', defaultCategory = 'INDIA_ECONOMY_DEBT') {
   const combined = `${title} ${context}`.toLowerCase();
-  if (/\b(ai|artificial intelligence|llm|openai|chatgpt|claude|gemini|chip|chips|semiconductor|nvidia|robot|software|cyber|cloud|model collapse|gpu|data center)\b/.test(combined)) {
-    return 'TECH_AI';
+  if (/\b(loan apps?|digital scams?|upi fraud|delivery riders?|gig workers?|quick commerce|blinkit|zomato|swiggy|cyber|data centers?|software|ai layoffs?|it layoffs?)\b/.test(combined)) {
+    return 'INDIA_TECH_SCAMS_GIG';
   }
-  if (/\b(job|jobs|hire|hiring|layoff|layoffs|worker|workers|career|resume|remote work|gig|salary|wage|unemploy)\b/.test(combined)) {
-    return 'WORK_CAREERS';
+  if (/\b(jobs?|hires?|hiring|layoffs?|workers?|careers?|resumes?|salary|salaries|wages?|unemploy|youth|graduates?)\b/.test(combined)) {
+    return 'INDIA_JOBS_YOUTH';
   }
-  if (/\b(solar|coal|power grid|electricity|water|tanker|drought|climate|smog|pm2\.5|air quality|battery|ev|oil|energy|transformer)\b/.test(combined)) {
-    return 'CLIMATE_ENERGY';
+  if (/\b(coaching|kota|tuition|exams?|neet|jee|upsc|schools?|colleges?|brain drain|passports?|visas?|emigrat)\b/.test(combined)) {
+    return 'INDIA_EDUCATION_MIGRATION';
   }
-  if (/\b(hospital|health|medical|doctor|medicine|clinic|nutrition|stunt|biotech|vaccine|sleep|mental)\b/.test(combined)) {
-    return 'HEALTH_SOCIETY';
+  if (/\b(hospitals?|health|medical|doctors?|medicines?|clinics?|nutrition|stunt|wards?|beds?|sick|bills?)\b/.test(combined)) {
+    return 'INDIA_HEALTH_FOOD';
   }
-  if (/\b(inflation|debt|tax|interest rate|fed|central bank|rupee|dollar|tariff|bond|bank|credit|gdp|rent|grocery|housing|cost of living)\b/.test(combined)) {
-    return 'ECONOMY_MARKETS';
+  if (/\b(water|tankers?|air pollution|smog|pm2\.5|aqi|floods?|flooding|traffic|rent|rents|housing|metro|power cuts?|blackouts?)\b/.test(combined)) {
+    return 'INDIA_CITIES_AIR_WATER';
   }
-  if (/\b(shipping|red sea|strait|taiwan|minerals|trade war|supply chain|sanction|border|port|china|europe)\b/.test(combined)) {
-    return 'WORLD_GEOPOLITICS';
+  if (/\b(farms?|farmers?|crops?|droughts?|grain|coal|electricity|solar|heatwaves?|stubble|groundwater|villages?)\b/.test(combined)) {
+    return 'INDIA_FARM_ENERGY';
   }
-  if (INDIA_MENTION_PATTERN.test(combined)) {
-    return 'INDIA_REALITY';
+  if (/\b(inflation|debt|tax|taxes|gst|interest|rupee|inr|banks?|credit|emi|prices?|cost of living|savings?|households?)\b/.test(combined)) {
+    return 'INDIA_ECONOMY_DEBT';
   }
   return defaultCategory;
 }
 
 /**
- * Parses Google Trends Daily RSS (`https://trends.google.com/trending/rss?geo=...`)
+ * Parses Google Trends Daily RSS (`https://trends.google.com/trending/rss?geo=IN`)
  */
-export function parseGoogleTrendsRss(xml = '', geo = 'US') {
+export function parseGoogleTrendsRss(xml = '', geo = 'IN') {
   const trends = [];
   const items = String(xml).match(/<item>[\s\S]*?<\/item>/g) || [];
-  const isIndiaGeo = String(geo).toUpperCase() === 'IN';
 
-  for (const item of items.slice(0, 12)) {
+  for (const item of items.slice(0, 14)) {
     const rawTitle = (item.match(/<title><!\[CDATA\[(.*?)\]\]><\/title>/) || item.match(/<title>([\s\S]*?)<\/title>/))?.[1];
     if (!rawTitle) continue;
     const cleanTitle = decodeXmlEntities(rawTitle);
@@ -191,23 +189,22 @@ export function parseGoogleTrendsRss(xml = '', geo = 'US') {
     const newsTitle = decodeXmlEntities((item.match(/<ht:news_item_title>([\s\S]*?)<\/ht:news_item_title>/))?.[1] || '');
     if (newsTitle && NOISE_AND_NEWS_CEREMONY_PATTERN.test(newsTitle)) continue;
 
-    const isIndiaTopic = isIndiaGeo || INDIA_MENTION_PATTERN.test(`${cleanTitle} ${newsTitle}`);
     const contextParts = [
-      `Trending today (${geo}${traffic ? `, ${traffic} searches` : ''})`,
+      `Trending in India today (${geo}${traffic ? `, ${traffic} searches` : ''})`,
       newsTitle ? `Angle: ${newsTitle}` : ''
     ].filter(Boolean);
 
-    const category = classifyTrendCategory(cleanTitle, newsTitle, isIndiaTopic ? 'INDIA_REALITY' : 'DAILY_TRENDS');
-    const topicText = newsTitle && newsTitle.length >= 22 && newsTitle.length <= 115
+    const category = classifyTrendCategory(cleanTitle, newsTitle, 'INDIA_ECONOMY_DEBT');
+    const topicText = newsTitle && newsTitle.length >= 22 && newsTitle.length <= 120
       ? newsTitle
-      : `${cleanTitle}: why this daily trend matters right now`;
+      : `${cleanTitle} in India: hidden cost on ordinary families`;
 
     trends.push({
       topic: topicText,
-      context: contextParts.join('. ') + '. Focus on the hidden second-order mechanism or real everyday impact, not a stiff news summary.',
+      context: contextParts.join('. ') + '. Focus on the hidden structural downside or everyday impact on ordinary Indians, not a stiff news summary.',
       source: `google_trends_${String(geo).toLowerCase()}`,
       category,
-      isIndiaTopic
+      isIndiaTopic: true
     });
   }
 
@@ -215,13 +212,12 @@ export function parseGoogleTrendsRss(xml = '', geo = 'US') {
 }
 
 /**
- * Parses Google News Search RSS for a given daily category config.
+ * Parses Google News India Search RSS for a given India daily category config.
  */
 export function parseDailyCategoryRss(xml = '', categoryMeta = {}) {
   const trends = [];
   const items = String(xml).match(/<item>[\s\S]*?<\/item>/g) || [];
-  const category = categoryMeta.category || 'DAILY_TRENDS';
-  const defaultIndia = Boolean(categoryMeta.isIndiaTopic);
+  const category = categoryMeta.category || 'INDIA_ECONOMY_DEBT';
 
   for (const item of items.slice(0, 10)) {
     const rawTitle = (item.match(/<title><!\[CDATA\[(.*?)\]\]><\/title>/) || item.match(/<title>([\s\S]*?)<\/title>/))?.[1];
@@ -239,15 +235,14 @@ export function parseDailyCategoryRss(xml = '', categoryMeta = {}) {
       continue;
     }
 
-    const isIndiaTopic = defaultIndia || INDIA_MENTION_PATTERN.test(cleanTitle);
     const resolvedCategory = classifyTrendCategory(cleanTitle, publisher, category);
 
     trends.push({
       topic: cleanTitle,
-      context: `Live daily trend${publisher ? ` (${publisher})` : ''}: ${cleanTitle}. Explain the surprising hidden cause or everyday consequence—never write like a news bulletin.`,
-      source: categoryMeta.source || 'daily_rss_trend',
+      context: `Live India daily trend${publisher ? ` (${publisher})` : ''}: ${cleanTitle}. Explain the surprising hidden cause and real effect on everyday Indians—never write like a news bulletin.`,
+      source: categoryMeta.source || 'daily_rss_india',
       category: resolvedCategory,
-      isIndiaTopic
+      isIndiaTopic: true
     });
   }
 
@@ -255,83 +250,74 @@ export function parseDailyCategoryRss(xml = '', categoryMeta = {}) {
 }
 
 /* =========================================================
-   LIVE DAILY FETCHERS
+   LIVE DAILY INDIA FETCHERS (MULTI-CATEGORY)
 ========================================================= */
 
 const DAILY_CATEGORY_QUERIES = [
   {
-    category: 'TECH_AI',
-    source: 'daily_rss_tech_ai',
-    isIndiaTopic: false,
-    hl: 'en-US',
-    gl: 'US',
-    ceid: 'US:en',
-    query: '(AI OR semiconductors OR cybersecurity OR cloud OR automation) (shift OR bottleneck OR cost OR breakthrough) when:2d'
-  },
-  {
-    category: 'ECONOMY_MARKETS',
-    source: 'daily_rss_economy',
-    isIndiaTopic: false,
-    hl: 'en-US',
-    gl: 'US',
-    ceid: 'US:en',
-    query: '(inflation OR "cost of living" OR debt OR "interest rates" OR housing OR tariffs) impact when:2d'
-  },
-  {
-    category: 'WORK_CAREERS',
-    source: 'daily_rss_work',
-    isIndiaTopic: false,
-    hl: 'en-US',
-    gl: 'US',
-    ceid: 'US:en',
-    query: '(layoffs OR hiring OR "job market" OR "remote work" OR "entry level" OR skills) trend when:3d'
-  },
-  {
-    category: 'CLIMATE_ENERGY',
-    source: 'daily_rss_energy',
-    isIndiaTopic: false,
-    hl: 'en-US',
-    gl: 'US',
-    ceid: 'US:en',
-    query: '("power grid" OR electricity OR solar OR water crisis OR "data center power") when:3d'
-  },
-  {
-    category: 'HEALTH_SOCIETY',
-    source: 'daily_rss_health',
-    isIndiaTopic: false,
-    hl: 'en-US',
-    gl: 'US',
-    ceid: 'US:en',
-    query: '("healthcare costs" OR "medical bills" OR food prices OR nutrition OR burnout) when:3d'
-  },
-  {
-    category: 'INDIA_REALITY',
-    source: 'india_issue_signal',
+    category: 'INDIA_JOBS_YOUTH',
+    source: 'daily_rss_india_jobs',
     isIndiaTopic: true,
     hl: 'en-IN',
     gl: 'IN',
     ceid: 'IN:en',
-    query: 'India (jobs OR "household debt" OR "air pollution" OR "water crisis" OR "medical bills" OR rupee) when:3d'
+    query: 'India (jobs OR layoffs OR unemployment OR "youth jobless" OR salary OR graduate) when:2d'
+  },
+  {
+    category: 'INDIA_ECONOMY_DEBT',
+    source: 'daily_rss_india_economy',
+    isIndiaTopic: true,
+    hl: 'en-IN',
+    gl: 'IN',
+    ceid: 'IN:en',
+    query: 'India ("household debt" OR inflation OR GST OR tax OR "cost of living" OR rupee) when:2d'
+  },
+  {
+    category: 'INDIA_HEALTH_FOOD',
+    source: 'daily_rss_india_health',
+    isIndiaTopic: true,
+    hl: 'en-IN',
+    gl: 'IN',
+    ceid: 'IN:en',
+    query: 'India ("hospital bills" OR healthcare OR "food prices" OR "child nutrition" OR medicines) when:3d'
+  },
+  {
+    category: 'INDIA_CITIES_AIR_WATER',
+    source: 'daily_rss_india_cities',
+    isIndiaTopic: true,
+    hl: 'en-IN',
+    gl: 'IN',
+    ceid: 'IN:en',
+    query: 'India ("water crisis" OR "air pollution" OR smog OR flooding OR "traffic gridlock" OR rent) when:3d'
+  },
+  {
+    category: 'INDIA_TECH_SCAMS_GIG',
+    source: 'daily_rss_india_tech_gig',
+    isIndiaTopic: true,
+    hl: 'en-IN',
+    gl: 'IN',
+    ceid: 'IN:en',
+    query: 'India ("loan apps" OR "digital scam" OR "gig workers" OR "delivery riders" OR "IT layoffs") when:3d'
+  },
+  {
+    category: 'INDIA_EDUCATION_MIGRATION',
+    source: 'daily_rss_india_education',
+    isIndiaTopic: true,
+    hl: 'en-IN',
+    gl: 'IN',
+    ceid: 'IN:en',
+    query: 'India (farmers OR "crop loss" OR coaching OR "exam stress" OR "brain drain" OR passport) when:3d'
   }
 ];
 
 async function fetchGoogleTrendsDaily() {
-  const geos = ['US', 'IN'];
-  const settled = await Promise.allSettled(
-    geos.map(async (geo) => {
-      const url = `https://trends.google.com/trending/rss?geo=${geo}`;
-      const xml = await fetchUrl(url, 4500);
-      return parseGoogleTrendsRss(xml, geo);
-    })
-  );
-
-  const combined = [];
-  for (const r of settled) {
-    if (r.status === 'fulfilled' && Array.isArray(r.value)) {
-      combined.push(...r.value.slice(0, 4));
-    }
+  try {
+    const url = 'https://trends.google.com/trending/rss?geo=IN';
+    const xml = await fetchUrl(url, 4500);
+    return parseGoogleTrendsRss(xml, 'IN').slice(0, 6);
+  } catch {
+    return [];
   }
-  return combined;
 }
 
 async function fetchDailyCategoryTrends() {
@@ -353,7 +339,7 @@ async function fetchDailyCategoryTrends() {
 }
 
 /* =========================================================
-   SOURCE 3 — DAILY AI TREND SYNTHESIS (NEVER DEAD CODE)
+   SOURCE 3 — DAILY AI INDIA TREND SYNTHESIS
 ========================================================= */
 
 async function callCloudflareForTrends(prompt) {
@@ -365,10 +351,10 @@ async function callCloudflareForTrends(prompt) {
   return new Promise((resolve, reject) => {
     const body = JSON.stringify({
       messages: [
-        { role: 'system', content: 'You surface fresh, varied daily trends across AI/Tech, Economy, Jobs, Energy/Climate, Health, World Shifts, and India. Never repeat old themes. Return only valid JSON.' },
+        { role: 'system', content: 'You research fresh, varied daily India reality trends and structural downsides across jobs, household debt, health, city water/air, gig workers, coaching/brain drain, and farming. Never repeat previously posted topics. Return only valid JSON.' },
         { role: 'user', content: prompt }
       ],
-      max_tokens: 700,
+      max_tokens: 750,
       temperature: 0.75
     });
     const options = {
@@ -413,7 +399,7 @@ async function callGeminiForTrends(prompt) {
   return new Promise((resolve, reject) => {
     const body = JSON.stringify({
       contents: [{ parts: [{ text: prompt }] }],
-      generationConfig: { temperature: 0.75, maxOutputTokens: 700 }
+      generationConfig: { temperature: 0.75, maxOutputTokens: 750 }
     });
     const model = process.env.GEMINI_MODEL || 'gemini-2.5-flash';
     const options = {
@@ -456,35 +442,34 @@ async function fetchAITrends(excludeTopics = []) {
   const now = new Date();
   const dateStr = now.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
   const excludeList = Array.isArray(excludeTopics) && excludeTopics.length > 0
-    ? excludeTopics.slice(-15).map(t => `- ${t}`).join('\n')
+    ? excludeTopics.slice(-20).map(t => `- ${t}`).join('\n')
     : '- None yet';
 
   const prompt = `Today is ${dateStr}.
 
-Give 8 BRAND-NEW, DIVERSE trending discussion topics for X right now — ONE topic from EACH of these 8 different domains so every post covers a completely different trend:
-1. TECH_AI (hidden AI economics, chips, coding tools, agent reliability, energy demands)
-2. ECONOMY_MARKETS (inflation, household debt, currency pressure, housing, credit traps)
-3. WORK_CAREERS (ghost jobs, AI hiring filters, skill gaps, gig pay)
-4. CLIMATE_ENERGY (grid bottlenecks, water stress, heat impact, clean energy shifts)
-5. HEALTH_SOCIETY (medical bills, ultra-processed food, sleep/attention loss, medicine access)
-6. WORLD_GEOPOLITICS (shipping routes, mineral supply chains, tariffs, global manufacturing shifts)
-7. INDIA_REALITY (surprising structural truth affecting everyday families, jobs, or cities in India)
-8. TECH_AI or ECONOMY_MARKETS (a fresh surprising 2025-2026 paradox)
+Give 7 BRAND-NEW, COMPLETELY DIFFERENT trending topics specifically about INDIA and ORDINARY INDIANS — one topic from EACH of these 7 different India sectors so every single post explores a brand new angle:
+1. INDIA_JOBS_YOUTH (engineer jobless crisis, frozen entry IT pay, peon applications by PhDs/MBAs, contract work)
+2. INDIA_ECONOMY_DEBT (household net savings falling, GST on daily goods, instant loan apps, federal debt interest, city rent squeeze)
+3. INDIA_HEALTH_FOOD (private clinic bills, hospital bed scarcity, child nutrition vs food exports, counterfeit medicines)
+4. INDIA_CITIES_AIR_WATER (tanker mafias, metro gridlock, urban monsoon flooding, winter smog shutting schools, summer grid blackouts)
+5. INDIA_TECH_SCAMS_GIG (10-minute delivery riders after fuel/repairs, digital payment arrest scams, deepfake extortion)
+6. INDIA_FARM_ENERGY (groundwater collapse under paddy fields, farm debt, village roads vs highway tolls, coal electricity lock-in)
+7. INDIA_EDUCATION_MIGRATION (Kota coaching factory stress, paper leaks, wealthy & skilled Indians renouncing passports)
 
 Rules:
-- NEVER write generic surface chatter ("prices are high", "AI is growing fast").
-- Every topic must spotlight a surprising, counter-intuitive mechanism or real-world consequence.
-- DO NOT repeat or overlap with any of these recently covered topics:
+- EVERY topic MUST be specifically about India or ordinary Indians.
+- Spotlight a rarely-known structural paradox or real everyday consequence — NEVER generic obvious news headlines.
+- NEVER repeat or overlap with any of these recently covered India topics:
 ${excludeList}
 
 Return ONLY valid JSON:
 {
   "trends": [
     {
-      "topic": "Specific, plain-English surprising trend headline",
-      "category": "TECH_AI | ECONOMY_MARKETS | WORK_CAREERS | CLIMATE_ENERGY | HEALTH_SOCIETY | WORLD_GEOPOLITICS | INDIA_REALITY",
-      "isIndiaTopic": false,
-      "context": "1-2 simple sentences on the hidden cause and real everyday impact"
+      "topic": "Specific plain-English India topic headline",
+      "category": "INDIA_JOBS_YOUTH | INDIA_ECONOMY_DEBT | INDIA_HEALTH_FOOD | INDIA_CITIES_AIR_WATER | INDIA_TECH_SCAMS_GIG | INDIA_FARM_ENERGY | INDIA_EDUCATION_MIGRATION",
+      "isIndiaTopic": true,
+      "context": "1-2 simple sentences explaining the hidden cause and real effect on ordinary Indians"
     }
   ]
 }`;
@@ -495,130 +480,127 @@ Return ONLY valid JSON:
       const cat = CATEGORY_ORDER.includes(t.category)
         ? t.category
         : classifyTrendCategory(t.topic, t.context || '');
-      const isIndiaTopic = typeof t.isIndiaTopic === 'boolean'
-        ? t.isIndiaTopic
-        : (cat === 'INDIA_REALITY' || INDIA_MENTION_PATTERN.test(t.topic));
       return {
         topic: t.topic.trim(),
         context: String(t.context || '').trim(),
         source,
         category: cat,
-        isIndiaTopic
+        isIndiaTopic: true
       };
     });
 
   try {
     const result = await callCloudflareForTrends(prompt);
     if (result?.trends && Array.isArray(result.trends) && result.trends.length >= 2) {
-      const normalized = normalizeAiList(result.trends, 'ai_cloudflare_daily_trends');
-      console.log(`[TrendFetcher] ✓ Cloudflare AI: synthesized ${normalized.length} diverse daily trends`);
+      const normalized = normalizeAiList(result.trends, 'ai_cloudflare_india_daily');
+      console.log(`[TrendFetcher] ✓ Cloudflare AI: synthesized ${normalized.length} fresh India topics`);
       return normalized;
     }
   } catch (e) {
-    console.warn(`[TrendFetcher] Cloudflare AI daily trends failed: ${e.message}`);
+    console.warn(`[TrendFetcher] Cloudflare AI daily India trends failed: ${e.message}`);
   }
 
   try {
     const result = await callGeminiForTrends(prompt);
     if (result?.trends && Array.isArray(result.trends) && result.trends.length >= 2) {
-      const normalized = normalizeAiList(result.trends, 'ai_gemini_daily_trends');
-      console.log(`[TrendFetcher] ✓ Gemini: synthesized ${normalized.length} diverse daily trends`);
+      const normalized = normalizeAiList(result.trends, 'ai_gemini_india_daily');
+      console.log(`[TrendFetcher] ✓ Gemini: synthesized ${normalized.length} fresh India topics`);
       return normalized;
     }
   } catch (e) {
-    console.warn(`[TrendFetcher] Gemini daily trends failed: ${e.message}`);
+    console.warn(`[TrendFetcher] Gemini daily India trends failed: ${e.message}`);
   }
 
   return [];
 }
 
 /* =========================================================
-   SOURCE 5 — DIVERSE MULTI-CATEGORY EVERGREEN FALLBACKS
+   SOURCE 5 — DIVERSE MULTI-CATEGORY EVERGREEN INDIA FALLBACKS
 ========================================================= */
 
 const EVERGREEN_FALLBACKS = [
   {
-    topic: 'Four-year power transformer waits are slowing AI data centers faster than chip shortages',
-    context: 'Heavy AI reasoning uses far more power per answer, and giant electrical transformers now face multi-year grid wait lists.',
-    source: 'fallback_daily_trend',
-    category: 'TECH_AI',
-    isIndiaTopic: false
-  },
-  {
-    topic: 'Global shipping detours around Africa quietly add weeks and fuel costs to everyday groceries',
-    context: 'When narrow sea lanes face disruption, container ships reroute thousands of miles and pass freight bills down to shoppers.',
-    source: 'fallback_daily_trend',
-    category: 'WORLD_GEOPOLITICS',
-    isIndiaTopic: false
-  },
-  {
-    topic: 'Ghost job ads and AI resume bots broke online hiring for ordinary applicants',
-    context: 'Firms leave empty listings up to signal growth while applicants mass-apply with bots, leaving 95% of resumes unread.',
-    source: 'fallback_daily_trend',
-    category: 'WORK_CAREERS',
-    isIndiaTopic: false
+    topic: '10-minute delivery riders in India earn thin pay after bike repairs and fuel',
+    context: 'App-based delivery workers race dangerous city traffic to cover fuel, EMI, and fines while platforms market instant convenience.',
+    source: 'fallback_india_trend',
+    category: 'INDIA_TECH_SCAMS_GIG',
+    isIndiaTopic: true
   },
   {
     topic: 'India sends over 90% of its fresh water to crops while big cities buy tanker water',
     context: 'World Bank figures show 90.4% of fresh water goes to thirsty rice and sugar fields with free farm power, leaving under 10% for homes.',
-    source: 'fallback_india_downside',
-    category: 'INDIA_REALITY',
+    source: 'fallback_india_trend',
+    category: 'INDIA_CITIES_AIR_WATER',
     isIndiaTopic: true
   },
   {
-    topic: 'Stablecoin issuers now hold more US government debt bills than many mid-sized nations',
-    context: 'Digital dollar backing one-for-one pushes crypto firms into tens of billions of short-term Treasury debt.',
-    source: 'fallback_daily_trend',
-    category: 'ECONOMY_MARKETS',
-    isIndiaTopic: false
-  },
-  {
-    topic: 'Over 34% of India federal tax cash vanishes paying only old debt interest',
-    context: 'World Bank data shows one-third of central tax money goes straight to bond lenders before funding one school or clinic.',
-    source: 'fallback_india_downside',
-    category: 'INDIA_REALITY',
+    topic: 'Instant phone loan apps trap young Indian earners in steep hidden debt',
+    context: 'Quick digital loan apps charge crushing fees and hound late borrowers through phone contacts when paychecks run short.',
+    source: 'fallback_india_trend',
+    category: 'INDIA_ECONOMY_DEBT',
     isIndiaTopic: true
   },
   {
-    topic: 'Modern feeds ignore follower counts and test every single post cold in the first hour',
-    context: 'Algorithms judge watch time and replies from tiny random test groups rather than pushing uploads to subscribers.',
-    source: 'fallback_daily_trend',
-    category: 'TECH_AI',
-    isIndiaTopic: false
+    topic: 'Millions of Indian students spend family savings inside crowded coaching factories',
+    context: 'Parents mortgage property and pay steep coaching fees in hubs like Kota for tests where fewer than 1% win seats.',
+    source: 'fallback_india_trend',
+    category: 'INDIA_EDUCATION_MIGRATION',
+    isIndiaTopic: true
   },
   {
     topic: 'Over 71% of Indian workers hold zero written contracts or sick pay safety',
     context: 'World Bank 2025 data puts 71.6% of workers in fragile jobs where one sickness or broken bike cuts off income overnight.',
-    source: 'fallback_india_downside',
-    category: 'INDIA_REALITY',
+    source: 'fallback_india_trend',
+    category: 'INDIA_JOBS_YOUTH',
     isIndiaTopic: true
-  },
-  {
-    topic: 'Rare earth mineral refining relies overwhelmingly on one country despite EV battery booms',
-    context: 'Electric motors and clean power gear depend on minerals cleaned in concentrated overseas refineries.',
-    source: 'fallback_daily_trend',
-    category: 'CLIMATE_ENERGY',
-    isIndiaTopic: false
-  },
-  {
-    topic: 'Over 35% of young Indian kids grow stunted while grain warehouses export record harvests',
-    context: 'Lack of daily protein and clean water leaves one in three young children under-nourished despite huge rice and wheat exports.',
-    source: 'fallback_india_downside',
-    category: 'HEALTH_SOCIETY',
-    isIndiaTopic: true
-  },
-  {
-    topic: 'AI models trained on AI-generated web text lose rare facts through model collapse',
-    context: 'Recycling synthetic web text flattens sharp ideas into dull averages, making pre-2022 human writing rare priceless fuel.',
-    source: 'fallback_daily_trend',
-    category: 'TECH_AI',
-    isIndiaTopic: false
   },
   {
     topic: 'India has just 1.6 hospital beds per 1,000 people behind booming private clinic ads',
-    context: 'Crowded public wards push ordinary families to pay 43.9% of all medical costs directly from their own pockets.',
-    source: 'fallback_india_downside',
-    category: 'HEALTH_SOCIETY',
+    context: 'Crowded public wards push ordinary Indian families to pay 43.9% of all medical costs directly from their own pockets.',
+    source: 'fallback_india_trend',
+    category: 'INDIA_HEALTH_FOOD',
+    isIndiaTopic: true
+  },
+  {
+    topic: 'Indian highway tolls keep jumping while village clinic and school roads stay unpaved',
+    context: 'Massive cash pours into glossy expressways for car owners while rural towns still struggle with flooded dirt lanes.',
+    source: 'fallback_india_trend',
+    category: 'INDIA_FARM_ENERGY',
+    isIndiaTopic: true
+  },
+  {
+    topic: 'Over 34% of India federal tax cash vanishes paying only old debt interest',
+    context: 'World Bank data shows one-third of central tax money goes straight to bond lenders before funding one school or clinic.',
+    source: 'fallback_india_trend',
+    category: 'INDIA_ECONOMY_DEBT',
+    isIndiaTopic: true
+  },
+  {
+    topic: 'Skilled Indians and wealthy families leave for foreign passports in record waves',
+    context: 'Doctors, coders, and business owners move abroad seeking cleaner air, steady rules, and safer careers for their kids.',
+    source: 'fallback_india_trend',
+    category: 'INDIA_EDUCATION_MIGRATION',
+    isIndiaTopic: true
+  },
+  {
+    topic: 'Indian tech city rents doubled while entry IT starting salaries stayed frozen',
+    context: 'Young engineers arriving in Bengaluru or Gurugram spend half their monthly pay on small flats and long traffic jams.',
+    source: 'fallback_india_trend',
+    category: 'INDIA_CITIES_AIR_WATER',
+    isIndiaTopic: true
+  },
+  {
+    topic: 'Over 35% of young Indian kids grow stunted while grain warehouses export harvests',
+    context: 'Lack of daily protein and clean water leaves one in three young children under-nourished despite huge rice and wheat exports.',
+    source: 'fallback_india_trend',
+    category: 'INDIA_HEALTH_FOOD',
+    isIndiaTopic: true
+  },
+  {
+    topic: 'Coal still supplies 72% of India power while winter smoke shuts city schools',
+    context: 'Coal plants and crop smoke push hazardous northern air up to 15 times safe limits every winter.',
+    source: 'fallback_india_trend',
+    category: 'INDIA_FARM_ENERGY',
     isIndiaTopic: true
   }
 ];
@@ -630,7 +612,7 @@ const EVERGREEN_FALLBACKS = [
 function significantWords(text = '') {
   return normalizeText(text)
     .split(/\s+/)
-    .filter(w => w.length >= 4);
+    .filter(w => w.length >= 4 && w !== 'india' && w !== 'indian' && w !== 'indians');
 }
 
 function topicsOverlap(topicA = '', topicB = '') {
@@ -650,8 +632,8 @@ function topicsOverlap(topicA = '', topicB = '') {
 }
 
 /**
- * Deduplicates and round-robin interleaves trends across categories so consecutive
- * items always span completely different topics and themes.
+ * Deduplicates and round-robin interleaves India trends across categories so
+ * consecutive posts always pick genuinely new India topics across fresh sectors.
  */
 export function interleaveTrendsByCategory(rawTrends = [], options = {}) {
   const maxItems = Number(options.maxItems) || 24;
@@ -667,27 +649,22 @@ export function interleaveTrendsByCategory(rawTrends = [], options = {}) {
       continue;
     }
     const category = raw.category || classifyTrendCategory(topic, raw.context || '');
-    const isIndiaTopic = typeof raw.isIndiaTopic === 'boolean'
-      ? raw.isIndiaTopic
-      : (category === 'INDIA_REALITY' || category === 'INDIA_DATA' || INDIA_MENTION_PATTERN.test(topic));
 
     deduped.push({
       ...raw,
       topic,
       category,
-      isIndiaTopic
+      isIndiaTopic: true
     });
   }
 
-  // Group into category buckets while preserving freshness order inside each bucket
   const buckets = new Map();
   for (const item of deduped) {
-    const key = item.category || 'DAILY_TRENDS';
+    const key = item.category || 'INDIA_ECONOMY_DEBT';
     if (!buckets.has(key)) buckets.set(key, []);
     buckets.get(key).push(item);
   }
 
-  // Rotate starting category order by daySeed so every new day opens with a different sector
   const baseOrder = [...CATEGORY_ORDER, ...Array.from(buckets.keys()).filter(k => !CATEGORY_ORDER.includes(k))];
   const liveOrder = baseOrder.filter(k => buckets.has(k));
   if (liveOrder.length === 0) return [];
@@ -695,7 +672,7 @@ export function interleaveTrendsByCategory(rawTrends = [], options = {}) {
   const rot = daySeed % liveOrder.length;
   const rotatedKeys = [...liveOrder.slice(rot), ...liveOrder.slice(0, rot)];
 
-  // Keep live daily trends ahead of slower macro INDIA_DATA when interleaving
+  // Live daily India news/trends always interleave ahead of slower static INDIA_DATA
   const orderedKeys = [
     ...rotatedKeys.filter(k => k !== 'INDIA_DATA'),
     ...rotatedKeys.filter(k => k === 'INDIA_DATA')
@@ -719,7 +696,7 @@ export function interleaveTrendsByCategory(rawTrends = [], options = {}) {
 }
 
 /**
- * Pure selector picking ONE genuinely unused trending topic while actively
+ * Pure selector picking ONE genuinely unused India trending topic while actively
  * rotating away from recent topics, seed topics, and recently posted categories.
  */
 export function selectBestUnusedTrend(trends = [], usedTopics = [], options = {}) {
@@ -742,7 +719,6 @@ export function selectBestUnusedTrend(trends = [], usedTopics = [], options = {}
   const candidates = trends.filter(t => t && t.topic && !isTopicUsed(t.topic));
 
   if (candidates.length > 0) {
-    // 1. Prefer a live daily trend (not static fallback) in a DIFFERENT category from the last 1-2 posts
     const lastCat = recentCategories[0] || '';
     const recentTwoCats = new Set(recentCategories.slice(0, 2));
 
@@ -764,7 +740,6 @@ export function selectBestUnusedTrend(trends = [], usedTopics = [], options = {}
     return candidates[0];
   }
 
-  // Fallback rotation: skip anything explicitly avoided in this generation cycle
   const nonAvoided = trends.filter(t => t && t.topic && !avoidTopics.some(a => topicsOverlap(t.topic, a)));
   if (nonAvoided.length > 0) {
     return nonAvoided[rotationOffset % nonAvoided.length];
@@ -778,21 +753,20 @@ export function selectBestUnusedTrend(trends = [], usedTopics = [], options = {}
 ========================================================= */
 
 /**
- * Returns a fresh, diverse array of today's trending topics interleaved across categories.
+ * Returns a fresh, diverse array of today's India trending topics interleaved across categories.
  */
 export async function getTrendingTopics(forceRefresh = false) {
   if (!forceRefresh) {
     const cached = readCache();
     if (cached) {
-      console.log(`[TrendFetcher] Using today's cached trends (${cached.trends.length} topics, date ${cached.fetchedDate})`);
+      console.log(`[TrendFetcher] Using today's cached India trends (${cached.trends.length} topics, date ${cached.fetchedDate})`);
       return cached.trends;
     }
   }
 
-  console.log('[TrendFetcher] Fetching fresh daily trends across live sources...');
-  const recentUsed = historyStore.getRecentSeedTopics(20);
+  console.log('[TrendFetcher] Fetching fresh daily India trends across live sources...');
+  const recentUsed = historyStore.getRecentSeedTopics(25);
 
-  // Fetch live daily feeds + India data in parallel so latency stays fast
   const [googleTrendsRes, dailyRssRes, aiTrendsRes, indiaSnapshotRes] = await Promise.allSettled([
     fetchGoogleTrendsDaily(),
     fetchDailyCategoryTrends(),
@@ -821,7 +795,6 @@ export async function getTrendingTopics(forceRefresh = false) {
     }
   }
 
-  // Always place fresh daily live trends BEFORE static macro data and evergreen fallbacks
   const combined = [
     ...liveTrends,
     ...macroDataTrends,
@@ -832,15 +805,15 @@ export async function getTrendingTopics(forceRefresh = false) {
 
   if (final.length > 0) {
     writeCache(final);
-    console.log(`[TrendFetcher] ✓ Prepared ${final.length} diverse daily trends (${liveTrends.length} live signals)`);
+    console.log(`[TrendFetcher] ✓ Prepared ${final.length} diverse India topics (${liveTrends.length} live signals)`);
   }
 
   return final.length > 0 ? final : EVERGREEN_FALLBACKS.slice(0, 8);
 }
 
 /**
- * Picks ONE unused trending topic from today's list, rotating categories and
- * forcing a refresh automatically if all cached daily topics were already covered.
+ * Picks ONE unused India trending topic from today's list, rotating categories and
+ * auto-refreshing if all cached topics have been used.
  */
 export async function pickUnusedTrendingTopic(usedTopics = [], forceRefresh = false, options = {}) {
   const trends = await getTrendingTopics(forceRefresh);
@@ -855,7 +828,6 @@ export async function pickUnusedTrendingTopic(usedTopics = [], forceRefresh = fa
     ...recentSeedHistory
   ]));
 
-  // Check if at least one live/non-exhausted trend remains in today's cache
   const hasUnusedInList = trends.some(t =>
     t && t.topic &&
     !historyStore.hasSeenTopic(t.topic) &&
@@ -864,7 +836,7 @@ export async function pickUnusedTrendingTopic(usedTopics = [], forceRefresh = fa
   );
 
   if (!hasUnusedInList && !forceRefresh) {
-    console.log('[TrendFetcher] All cached daily trends have been covered. Refreshing fresh trends...');
+    console.log('[TrendFetcher] All cached India trends have been covered. Refreshing fresh India topics...');
     return pickUnusedTrendingTopic(usedTopics, true, options);
   }
 
@@ -879,18 +851,18 @@ export async function pickUnusedTrendingTopic(usedTopics = [], forceRefresh = fa
   );
 
   const chosen = selected || EVERGREEN_FALLBACKS[historyStore.posts.length % EVERGREEN_FALLBACKS.length];
-  console.log(`[TrendFetcher] Selected trend [${chosen.category || 'DAILY_TRENDS'}]: "${chosen.topic}" (source: ${chosen.source})`);
+  console.log(`[TrendFetcher] Selected India trend [${chosen.category || 'INDIA_ECONOMY_DEBT'}]: "${chosen.topic}" (source: ${chosen.source})`);
   return chosen;
 }
 
 /**
- * Formats today's diverse trending topics as a WhatsApp-friendly list string.
+ * Formats today's diverse India trending topics as a WhatsApp-friendly list string.
  */
 export function formatTrendsForWhatsApp(trends) {
   if (!trends || trends.length === 0) return '⚠️ No trending topics available right now.';
-  const lines = [`📈 *Today's Trending Topics — Diverse Daily Mix*\n`];
+  const lines = [`📈 *Today's India Trending Topics — Fresh Mix*\n`];
   trends.slice(0, 8).forEach((t, i) => {
-    const label = CATEGORY_LABELS[t.category] || 'Daily Trend';
+    const label = CATEGORY_LABELS[t.category] || 'India Trend';
     lines.push(`*${i + 1}. [${label}]* ${t.topic}`);
     if (t.context) lines.push(`   _${t.context.slice(0, 100)}${t.context.length > 100 ? '...' : ''}_`);
     lines.push('');
@@ -905,16 +877,6 @@ export function formatTrendsForWhatsApp(trends) {
 
 const INDIA_OR_PAKISTAN_NOISE_REGEX = /\b(india|indian|indians|pakistan|pakistani|pakistanis)\b/i;
 
-/**
- * Fetches fresh global English trend signals specifically about a user's custom topic
- * (e.g. "ai" -> live AI trends like AI agents, coding copilots, compute costs, AI writing)
- * so generated posts reflect what is actually trending in that domain right now.
- * Never throws; returns [] cleanly if offline or network is blocked.
- *
- * @param {string} topic
- * @param {{ excludeRegionalNoise?: boolean, timeoutMs?: number }} [options]
- * @returns {Promise<Array<{ title: string, publisher: string, source: string }>>}
- */
 export async function fetchCustomTopicTrends(topic = '', options = {}) {
   const cleanTopic = String(topic || '').replace(/\s+/g, ' ').trim();
   if (!cleanTopic) return [];
@@ -966,13 +928,6 @@ export async function fetchCustomTopicTrends(topic = '', options = {}) {
   }
 }
 
-/**
- * Formats live custom-topic trend items into a concise prompt brief.
- *
- * @param {string} topic
- * @param {Array<{ title: string, publisher?: string }>} items
- * @returns {string}
- */
 export function formatCustomTrendsBrief(topic = '', items = []) {
   if (!Array.isArray(items) || items.length === 0) return '';
   const cleanTopic = String(topic || '').trim();
