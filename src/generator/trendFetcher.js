@@ -435,3 +435,85 @@ export function formatTrendsForWhatsApp(trends) {
   lines.push(`_Reply *3* to write about a custom topic instead._`);
   return lines.join('\n');
 }
+
+/* =========================================================
+   CUSTOM TOPIC LIVE TREND SIGNALS (GLOBAL / TOPIC-SPECIFIC)
+========================================================= */
+
+const INDIA_OR_PAKISTAN_NOISE_REGEX = /\b(india|indian|indians|pakistan|pakistani|pakistanis)\b/i;
+
+/**
+ * Fetches fresh global English trend signals specifically about a user's custom topic
+ * (e.g. "ai" -> live AI trends like AI agents, coding copilots, compute costs, AI writing)
+ * so generated posts reflect what is actually trending in that domain right now.
+ * Never throws; returns [] cleanly if offline or network is blocked.
+ *
+ * @param {string} topic
+ * @param {{ excludeRegionalNoise?: boolean, timeoutMs?: number }} [options]
+ * @returns {Promise<Array<{ title: string, publisher: string, source: string }>>}
+ */
+export async function fetchCustomTopicTrends(topic = '', options = {}) {
+  const cleanTopic = String(topic || '').replace(/\s+/g, ' ').trim();
+  if (!cleanTopic) return [];
+
+  const excludeRegionalNoise = options.excludeRegionalNoise !== false && !INDIA_OR_PAKISTAN_NOISE_REGEX.test(cleanTopic);
+  const timeoutMs = Number(options.timeoutMs) || 4500;
+
+  try {
+    const query = `${cleanTopic} trends OR latest when:14d`;
+    const url = `https://news.google.com/rss/search?q=${encodeURIComponent(query)}&hl=en-US&gl=US&ceid=US:en`;
+    const xml = await fetchUrl(url, timeoutMs);
+    const items = xml.match(/<item>[\s\S]*?<\/item>/g) || [];
+    const results = [];
+    const seen = new Set();
+
+    for (const item of items.slice(0, 14)) {
+      const rawTitle = (item.match(/<title><!\[CDATA\[(.*?)\]\]><\/title>/) || item.match(/<title>([\s\S]*?)<\/title>/))?.[1];
+      if (!rawTitle) continue;
+
+      let cleanTitle = decodeXmlEntities(rawTitle);
+      let publisher = '';
+      const dashIdx = cleanTitle.lastIndexOf(' - ');
+      if (dashIdx > 15) {
+        publisher = cleanTitle.slice(dashIdx + 3).trim();
+        cleanTitle = cleanTitle.slice(0, dashIdx).trim();
+      }
+
+      if (cleanTitle.length < 18) continue;
+      if (NOISE_AND_NEWS_CEREMONY_PATTERN.test(cleanTitle)) continue;
+      if (excludeRegionalNoise && INDIA_OR_PAKISTAN_NOISE_REGEX.test(cleanTitle)) continue;
+
+      const dedupKey = cleanTitle.toLowerCase().slice(0, 48);
+      if (seen.has(dedupKey)) continue;
+      seen.add(dedupKey);
+
+      results.push({
+        title: cleanTitle,
+        publisher,
+        source: 'custom_topic_live_rss'
+      });
+
+      if (results.length >= 5) break;
+    }
+
+    return results;
+  } catch (err) {
+    console.warn(`[TrendFetcher] Custom topic live trend lookup skipped (${cleanTopic}): ${err.message}`);
+    return [];
+  }
+}
+
+/**
+ * Formats live custom-topic trend items into a concise prompt brief.
+ *
+ * @param {string} topic
+ * @param {Array<{ title: string, publisher?: string }>} items
+ * @returns {string}
+ */
+export function formatCustomTrendsBrief(topic = '', items = []) {
+  if (!Array.isArray(items) || items.length === 0) return '';
+  const cleanTopic = String(topic || '').trim();
+  const lines = items.slice(0, 5).map(it => `- ${it.title}${it.publisher ? ` (${it.publisher})` : ''}`);
+  return `LIVE TRENDS RIGHT NOW AROUND "${cleanTopic}":\n${lines.join('\n')}`;
+}
+

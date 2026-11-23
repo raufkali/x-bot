@@ -147,7 +147,7 @@ app.post('/webhook', async (req, res) => {
 // ============================================================
 app.post('/trigger', async (req, res) => {
   try {
-    const customTopic = req.body?.topic || '';
+    const customTopic = req.body?.topic || req.body?.customTopic || '';
     const timeoutMs = Number(req.body?.timeoutMs || req.query?.timeout || 300000);
 
     console.log(`\n⚡ [/trigger] Request received for topic: "${customTopic || 'Auto'}"`);
@@ -165,7 +165,7 @@ app.post('/trigger', async (req, res) => {
 // Endpoint to trigger a new post and send it immediately without waiting
 // ============================================================
 app.post('/generate', async (req, res) => {
-  const customTopic = req.body?.topic || '';
+  const customTopic = req.body?.topic || req.body?.customTopic || '';
   const caller = req.headers['user-agent']?.includes('GitHub')
     ? 'GitHub Actions'
     : (req.headers['user-agent'] || 'Direct API');

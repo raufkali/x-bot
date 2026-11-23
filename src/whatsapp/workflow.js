@@ -378,22 +378,23 @@ ${versionObj.hashtags || ''}`).trim();
         return { action: 'AWAITING_CUSTOM_TOPIC', message: askMsg };
       }
 
-      // Direct topic input without pressing 3 first (ignore short greetings/wake-ups so "Hi"/"Hello there!" still shows menu)
-      const normalizedWords = input.replace(/[^\p{L}\p{N}\s]/gu, ' ').trim().split(/\s+/).filter(Boolean);
-      const isGreetingOrWake = /^(?:hi+|he+y+|hello(?:\s+there|\s+bot|\s+assistant)?|yo|sup|salam|assalam(?:\s*o?\s*alaikum)?|asalam|aoa|good\s+(?:morning|afternoon|evening|night)|how\s+are\s+you|menu|help|status|wake(?:\s+up)?|ok|okay|thanks|thank\s+you|\?+)$/i.test(
-        input.replace(/[!?.]+$/g, '').trim()
+      // Direct topic input without pressing 3 first (ignore greetings/wake-ups/menu commands so "Hi"/"Hello there!" still shows menu, while even short topics like "ai" trigger directly)
+      const strippedInput = input.replace(/[!?.]+$/g, '').trim();
+      const isGreetingOrWake = /^(?:hi+|he+y+|hello(?:\s+there|\s+bot|\s+assistant)?|yo|sup|salam|assalam(?:\s*o?\s*alaikum)?|asalam|aoa|good\s+(?:morning|afternoon|evening|night)|how\s+are\s+you|menu|help|status|wake(?:\s+up)?|ok|okay|thanks|thank\s+you|please|\?+)$/i.test(
+        strippedInput
       );
-      const looksLikeDirectCustomTopic = !isGreetingOrWake && (
-        normalizedWords.length >= 2 ||
-        (this.status === 'AWAITING_GENERATE' && input.length >= 4 && !/^(?:\d+|yes|no|cancel|back)$/.test(input))
+      const isMenuOrControlWord = /^(?:\d+|yes|no|y|n|cancel|back|exit|quit|sleep|stop|new|generate|start|trend|trends|trending|view trends|custom|custom topic|write about a custom topic)$/i.test(
+        strippedInput
       );
+      const hasTopicLetters = /[\p{L}]{2,}/u.test(strippedInput);
+      const looksLikeDirectCustomTopic = !isGreetingOrWake && !isMenuOrControlWord && hasTopicLetters;
 
       if (looksLikeDirectCustomTopic) {
         const directTopic = rawInput.trim();
         console.log(ansi.emeraldText(`\n✍️ [WhatsApp Action] Owner typed custom topic directly: "${directTopic}"`));
         if (whatsappClient.isConfigured() && fromNumber) {
           try {
-            await whatsappClient.sendText(fromNumber, `✍️ Writing a post about: *"${directTopic}"*\n⚡ Generating... Please wait.`);
+            await whatsappClient.sendText(fromNumber, `✍️ Writing about current trends in: *"${directTopic}"*\n⚡ Generating... Please wait.`);
           } catch (e) {}
         }
         return await this.generateAndSend(directTopic, '', null, true);

@@ -43,21 +43,23 @@ export const VIRAL_COMMENTARY_RULES = `EDITORIAL VOICE & STYLE (PAKISTANI OBSERV
 
 export const SIMPLE_ENGLISH_RULES = VIRAL_COMMENTARY_RULES;
 
-export const NEUTRAL_CUSTOM_TOPIC_RULES = `EDITORIAL VOICE & STYLE (DIRECT CUSTOM TOPIC — SIMPLEST WORDS):
+export const NEUTRAL_CUSTOM_TOPIC_RULES = `EDITORIAL VOICE & STYLE (DIRECT CUSTOM TOPIC — ACT LIKE A HUMAN WRITING ABOUT LIVE TRENDS IN THAT TOPIC):
 - Focus 100% on the exact custom topic entered by the user.
 - NEVER bring up India, Indians, or Pakistan unless the user's topic explicitly asks about them.
-- Core Topic Rule (NOT A STIFF NEWS BULLETIN):
+- Trend-Writer Persona (NO RANDOM OR GENERIC FILLER):
+  * Act like a real person on X who follows this field closely and writes about ONE specific, current 2025-2026 trend inside the topic — never a broad textbook summary or random generic chatter ("People everywhere are talking about...").
+  * Example: If the user types "AI", write about a concrete current AI trend (such as AI tools turning into autonomous agents, AI coding helpers changing how software is built, synthetic AI writing flooding feeds vs human voice, or small fast models beating big pricey models) — NOT a generic definition of "AI".
   * NEVER open with robotic news clichés ("According to a recent report...", "Yesterday...", "Breaking news...").
-  * Talk clearly about why this topic matters right now (2025-2026 trends, real-world shifts, benefits, downsides, and practical impact on ordinary people, workers, creators, or businesses).
+  * Talk clearly about what is actually shifting right now in this space and how it changes real daily work, habits, money, or decisions.
 - Language Rule (SIMPLEST POSSIBLE WORDS — GRADE 4-5 LEVEL):
   * Use tiny, everyday words that anyone understands on first read.
   * Short, crisp sentences (5 to 12 words each).
   * BANNED COMPLEX WORDS (swap for simple words): infrastructure, macroeconomic, disparity, demographic, exacerbate, deteriorating, adversely, expenditure, sustainability, bureaucratic, proliferation.
 - Data & Accuracy Rule:
-  * Ground the middle paragraph in accurate 2025-2026 facts or real practical examples related strictly to the user's topic. Never invent fake statistics.
+  * Ground the middle paragraph in accurate 2025-2026 trends, live signals provided in the prompt, or concrete real-world examples strictly inside the user's topic. Never invent fake statistics.
 - Structure (STRICT 3-PART LAYOUT separated by double line breaks \\n\\n):
-  * Line 1 (Hook): One punchy sentence directly about the user's topic.
-  * Paragraph 2 (Core Trend + Real Effect): 2 to 3 short simple sentences explaining what is happening right now and how it affects everyday life or work.
+  * Line 1 (Hook): One punchy sentence naming a concrete current trend or tension inside the user's topic.
+  * Paragraph 2 (Specific Trend + Real Effect): 2 to 3 short simple sentences explaining what is actually happening right now in that trend and how it affects real people or daily work.
   * Line 3 (Closing Question): One short, sharp question that makes people want to reply.
 - ZERO emojis, ZERO hashtags, NO bullet points, NO labels like "Hook:" or "Body:".
 - Target length: Strictly 400+ characters (420 to 560 characters ideal, NEVER under 400 and NEVER over 600).`;

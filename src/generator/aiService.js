@@ -40,7 +40,12 @@ import {
   extractPostMetadata,
   computeNormalizedHash
 } from '../db/historyStore.js';
-import { pickUnusedTrendingTopic, getTrendingTopics } from './trendFetcher.js';
+import {
+  pickUnusedTrendingTopic,
+  getTrendingTopics,
+  fetchCustomTopicTrends,
+  formatCustomTrendsBrief
+} from './trendFetcher.js';
 
 let categoryRotationIndex = 0;
 
@@ -58,7 +63,7 @@ function topicExplicitlyMentionsIndia(topic = '') {
 
 const DEFAULT_PAKISTANI_INDIA_SYSTEM_PROMPT = 'You write high-impact X posts as a Pakistani talking naturally about Indians and India\'s real downsides and how they hurt ordinary people across the border, using the SIMPLEST everyday English (Grade 4-5 words). Keep commentary grounded, analytical, and civil (zero hate). NEVER sound like a news report. Use ONLY verified latest numbers provided in the prompt. Every post MUST strictly follow this exact 3-part layout separated by double line breaks (\\n\\n):\nLine 1: One short punchy hook from a Pakistani point of view exposing an India downside affecting Indians (1 sentence).\n\\n\\nParagraph 2: 2 to 3 short simple sentences with real latest data AND the everyday effect on Indian families, students, or workers (around 50-70 words).\n\\n\\nClosing Line: One short, sharp question that makes people want to reply.\nTotal length MUST be strictly between 400 and 560 characters (never exceed 600). Zero hashtags, zero emojis, no labels. Return ONLY valid JSON.';
 
-const CUSTOM_TOPIC_SYSTEM_PROMPT = 'You write high-impact X posts focused 100% on the exact custom topic entered by the user, using the SIMPLEST everyday English (Grade 4-5 words). NEVER mention India, Indians, or Pakistan unless the user\'s topic explicitly asks about them. Focus on current 2025-2026 trends, real facts, and how this topic affects everyday work or life. Every post MUST strictly follow this exact 3-part layout separated by double line breaks (\\n\\n):\nLine 1: One short punchy hook directly about the user\'s topic (1 sentence).\n\\n\\nParagraph 2: 2 to 3 short simple sentences with real current trends or facts and practical impact (around 50-70 words).\n\\n\\nClosing Line: One short, sharp question that makes people want to reply.\nTotal length MUST be strictly between 400 and 560 characters (never exceed 600). Zero hashtags, zero emojis, no labels. Return ONLY valid JSON.';
+const CUSTOM_TOPIC_SYSTEM_PROMPT = 'You act as a sharp, observant person on X writing about SPECIFIC LIVE TRENDS inside the exact topic entered by the user, using the SIMPLEST everyday English (Grade 4-5 words). NEVER write random generic filler or a textbook definition ("People everywhere are talking about..."). Instead, pick one concrete 2025-2026 trend inside that topic (e.g. if the user asks about "AI", write about AI agents doing real tasks, AI coding tools creating bug traps, or AI writing flooding feeds vs real human voice) and explain what is shifting right now. NEVER mention India, Indians, or Pakistan unless the user\'s topic explicitly asks about them. Every post MUST strictly follow this exact 3-part layout separated by double line breaks (\\n\\n):\nLine 1: One short punchy hook naming a concrete current trend inside the user\'s topic (1 sentence).\n\\n\\nParagraph 2: 2 to 3 short simple sentences about what is actually happening in that trend right now and its practical impact (around 50-70 words).\n\\n\\nClosing Line: One short, sharp question that makes people want to reply.\nTotal length MUST be strictly between 400 and 560 characters (never exceed 600). Zero hashtags, zero emojis, no labels. Return ONLY valid JSON.';
 
 /* =========================================================
    TEXT FORMATTING AND VALIDATION
@@ -300,36 +305,39 @@ Return ONLY valid JSON in this exact format:
 }
 
 /**
- * Creates a post prompt for a user-specified custom topic (ignores trends).
+ * Creates a post prompt for a user-specified custom topic grounded in live trends for that topic.
  * @param {string} userTopic - What the user wants to write about
  * @param {string[]} avoidList
  * @param {string} liveFactsBrief
+ * @param {string} liveTrendsBrief
  * @returns {string}
  */
-export function createCustomTopicPrompt(userTopic, avoidList = [], liveFactsBrief = '') {
+export function createCustomTopicPrompt(userTopic, avoidList = [], liveFactsBrief = '', liveTrendsBrief = '') {
   const avoidStr = avoidList.length > 0 ? avoidList.slice(0, 15).join('\n• ') : 'None';
   const topicWantsIndia = topicExplicitlyMentionsIndia(userTopic);
 
   return `${topicWantsIndia ? SIMPLE_ENGLISH_RULES : NEUTRAL_CUSTOM_TOPIC_RULES}
 
-# X_BOT — DIRECT CUSTOM TOPIC ENGINE (2025-2026)
+# X_BOT — DIRECT CUSTOM TOPIC TREND WRITER (2025-2026)
 
 USER TOPIC: "${userTopic}"
+${liveTrendsBrief ? `\nCURRENT LIVE TRENDS FOR "${userTopic}" (USE THESE REAL SIGNALS — DO NOT WRITE RANDOM GENERIC FILLER):\n${liveTrendsBrief}\n` : ''}
 ${liveFactsBrief ? `\nVERIFIED REFERENCE DATA (USE ONLY IF RELEVANT TO "${userTopic}"):\n${liveFactsBrief}\n` : ''}
-YOUR MISSION: Write the BEST, most engaging X post strictly about "${userTopic}":
-- Focus 100% on "${userTopic}" — its latest 2025-2026 trends, practical reality, benefits, risks, or everyday effects.
+YOUR MISSION: Act like a real person on X who closely follows "${userTopic}" and is writing about **what is actually trending inside "${userTopic}" right now**:
+- NEVER give a random generic summary or definition of "${userTopic}" (never open with vague lines like "People everywhere are talking about ${userTopic}...").
+- Focus on ONE concrete, recognizable 2025-2026 trend inside "${userTopic}" — for example, real workflow shifts, new tools/models changing daily habits, cost or speed breakthroughs, hidden trade-offs, or what builders and everyday users are actually running into right now.
 ${topicWantsIndia
     ? '- Because the topic mentions India/Indians, keep the grounded cross-border perspective focused clearly on the topic.'
     : '- CRITICAL TOPIC BOUNDARY: Do NOT mention India, Indians, or Pakistan anywhere in this post. Completely ignore India and Pakistan and stick strictly to what the user asked for.'}
-- NOT a stiff news bulletin — talk directly to readers like a sharp friend on X.
+- NOT a stiff news bulletin — talk directly to readers like a sharp person sharing a real observation on X.
 - Use the SIMPLEST possible words — short sentences (5-12 words), everyday English, zero jargon.
 
 STRICT POST STRUCTURE (3 parts, separated by double line breaks \\n\\n):
-Line 1: One short, scroll-stopping hook sentence directly about "${userTopic}"
+Line 1: One short, scroll-stopping hook sentence naming a concrete current trend inside "${userTopic}"
 \\n\\n
-Paragraph 2: 2-3 simple sentences covering what is trending right now around "${userTopic}" and how it affects real people or daily work (around 50-70 words)
+Paragraph 2: 2-3 simple sentences explaining what is actually shifting right now in "${userTopic}" and how it affects real people, work, or money (around 50-70 words)
 \\n\\n
-Line 3: A sharp closing question directly about "${userTopic}"
+Line 3: A sharp closing question about this exact trend in "${userTopic}"
 
 LENGTH: Strictly 400+ characters (420 to 560 characters ideal). NEVER under 400 and NEVER exceed 600.
 ZERO hashtags. ZERO emojis.
@@ -338,8 +346,8 @@ AVOID: ${avoidStr}
 
 Return ONLY valid JSON:
 {
-  "topic": "Short plain-English headline strictly about ${userTopic.replace(/"/g, "'")}",
-  "subtopic": "Specific angle explored on ${userTopic.replace(/"/g, "'")}",
+  "topic": "Short plain-English trend headline inside ${userTopic.replace(/"/g, "'")}",
+  "subtopic": "Specific current trend explored on ${userTopic.replace(/"/g, "'")}",
   "category": "CUSTOM_TOPIC",
   "text": "Hook\\n\\nBody\\n\\nConclusion"
 }`;
@@ -537,30 +545,142 @@ function generateDynamicFallback(category = 'TRENDING', subtopic = '', excludedT
   return formatCandidate(nonExcluded, category || 'TRENDING');
 }
 
-function buildCustomTopicFallback(userTopic, attempt = 1) {
+const AI_TREND_BANK = [
+  {
+    subtopic: 'AI agents shifting from simple chat boxes to autonomous workflow tools',
+    text: 'AI is quietly moving past simple chat boxes into smart agents that finish real work steps on their own.\n\nTeams are no longer amazed by clever chat replies that still need human copy and paste. The real shift right now is connecting AI straight into email, files, and calendars so small routines run smoothly while people focus on judgment and catching quiet mistakes.\n\nAre you still only chatting with AI, or have you trusted an agent with real daily tasks yet?'
+  },
+  {
+    subtopic: 'AI coding helpers speeding up app launches while creating hidden debug debt',
+    text: 'AI coding helpers let one builder ship an app in a weekend, yet they also hide a sneaky trap for teams.\n\nSolo makers draft full screens and tests in minutes instead of weeks, cutting early build costs way down. Still, teams lose hours fixing messy AI code nobody fully grasps, so clear code reading and solid testing habits now matter more than fast typing.\n\nHas AI helped your team ship cleaner software, or just faster bugs to untangle later?'
+  },
+  {
+    subtopic: 'AI writing flooding social feeds and making real human voice far rarer',
+    text: 'AI writing tools flood feeds every single hour now, which makes a real human voice worth ten times more.\n\nAnyone can push out smooth, polite posts in seconds, so readers scroll straight past stiff lines that sound like every other account. Writers who stand out right now use AI for quick outlines while keeping their own rough stories, clear opinions, and lived lessons.\n\nCan you spot machine-made posts within three words now, or do some still fool you?'
+  },
+  {
+    subtopic: 'Small fast AI models replacing expensive giant models for everyday tasks',
+    text: 'The biggest AI trend this year is not a larger chatbot, it is smaller fast models doing daily work at low cost.\n\nCompanies used to send every tiny sorting or summary task to giant pricey models and watch monthly server bills climb fast. Now lean models run in milliseconds on normal chips while heavy reasoning steps wait for tough calls that truly need extra depth.\n\nDo most everyday tasks even need massive AI models anymore, or is speed beating size now?'
+  }
+];
+
+const QUANTUM_TREND_BANK = [
+  {
+    subtopic: 'Quantum error correction shifting focus from raw qubit counts to stability',
+    text: 'Quantum computing teams are finally chasing stable error correction instead of bragging about noisy qubit counts.\n\nFor years, extra qubits meant nothing when tiny heat or light shifts broke calculations in split seconds. New logical-qubit tests keep data steady much longer, pushing security teams to upgrade bank and cloud locks years before code-breaking hardware arrives.\n\nDo you think post-quantum locks will arrive in time, or will old systems fall behind first?'
+  },
+  {
+    subtopic: 'Quantum-safe encryption upgrades moving to top priority for banks and cloud apps',
+    text: 'The hottest shift in quantum hardware is quietly forcing banks and cloud apps to replace old digital locks today.\n\nEven before practical quantum machines run full apps, hackers steal locked files now hoping to crack them years later. Tech teams are rolling out quantum-safe keys across login servers and storage backups so private records stay safe decades ahead.\n\nAre software teams upgrading encryption fast enough, or waiting until an urgent scare hits?'
+  }
+];
+
+const CRYPTO_TREND_BANK = [
+  {
+    subtopic: 'Stablecoins quietly becoming global payment rails while hype coins fade',
+    text: 'Quiet dollar stablecoins are winning real-world adoption in crypto faster than loud speculative tokens.\n\nSmall remote teams and cross-border shops care less about wild chart swings and more about moving paychecks in seconds without three bank fees. Regulators are setting clearer reserve rules too, turning boring digital dollars into everyday payment plumbing.\n\nDo you see crypto winning through fast digital payments first, or will price hype stay dominant?'
+  },
+  {
+    subtopic: 'Spot ETFs shifting bitcoin ownership toward steady institutional funds',
+    text: 'Bitcoin trading looks very different now that large pension funds and asset managers buy through regulated ETFs.\n\nRetail panic swings matter less on quiet weeks when big funds rebalance portfolios like ordinary stock holdings. Meanwhile, on-chain apps still struggle to explain simple wallet safety to normal savers without scary seed phrases.\n\nHas institutional money made crypto calmer and safer, or taken away its original independent spirit?'
+  }
+];
+
+const STARTUP_TECH_TREND_BANK = [
+  {
+    subtopic: 'Two-person profitable software teams replacing bloated VC-backed startups',
+    text: 'Tiny two-person software teams are quietly outshipping funded startups with thirty employees and heavy meetings.\n\nCheap cloud hosting, off-the-shelf payments, and smart coding helpers let lean founders launch paid tools in days without chasing investors. Users increasingly prefer focused single-purpose apps with clear monthly pricing over clunky bloated platforms.\n\nWould you rather build a small profitable tool solo, or raise outside funding to chase scale?'
+  }
+];
+
+const WORK_CAREER_TREND_BANK = [
+  {
+    subtopic: 'Proof-of-work portfolios beating polished resumes in modern tech hiring',
+    text: 'Long polished resumes are losing power as hiring teams look straight at real public work and shipped results.\n\nAutomated screening floods job boards with lookalike applications, leaving managers tired of guessing who can actually solve problems. Workers who share short demos, clear case notes, and practical fixes online get direct messages before roles even open publicly.\n\nHave you seen real portfolio proof beat a formal degree or resume in your field lately?'
+  }
+];
+
+const CREATOR_MARKETING_TREND_BANK = [
+  {
+    subtopic: 'Small loyal niche audiences beating empty viral view spikes',
+    text: 'Chasing empty viral view spikes is burning out creators faster than ever while small loyal niches quietly thrive.\n\nAlgorithm feeds swap reach overnight, so massive followings mean very little when nobody remembers who wrote the post. Smart writers build tight weekly newsletters and honest replies where a thousand real readers trust what they share.\n\nWould you rather have a million random views once, or a thousand readers who trust every post?'
+  }
+];
+
+function buildCustomTopicFallback(userTopic, attempt = 1, liveTrendItems = []) {
   const cleanTopic = String(userTopic || 'your topic').replace(/\s+/g, ' ').trim();
-  const shortLabel = cleanTopic.length > 72 ? `${cleanTopic.slice(0, 69)}...` : cleanTopic;
-  const hooks = [
-    `People everywhere are talking about ${shortLabel}, yet most miss what really matters right now.`,
-    `Everyone is watching ${shortLabel} grow fast today, and the biggest shift is only just starting.`,
-    `If you follow ${shortLabel} closely, you can already see how fast daily habits are changing.`
-  ];
-  const bodies = [
-    `New tools and fresh ideas around ${shortLabel} are changing how everyday people learn, write, and finish daily work faster than ever. Those who test these shifts early save hours each week, while anyone waiting too long falls behind on speed, reach, and real results.`,
-    `Across small teams and solo creators, ${shortLabel} is turning slow manual tasks into quick daily wins with less cost and fewer delays. At the same time, copying others blindly creates noisy content that readers scroll right past without caring.`,
-    `Smart builders using ${shortLabel} focus on clear human voice, real usefulness, and simple words that hold attention. The real edge does not come from hype alone, because audiences still reward honest ideas that solve an actual problem.`
-  ];
-  const questions = [
-    `How are you using ${shortLabel} in your own work today, and what actually works best?`,
-    `Do you think ${shortLabel} helps real creators stand out, or just adds more noise online?`,
-    `What is the biggest win or risk you see with ${shortLabel} over the next year?`
-  ];
-  const idx = (Math.max(1, attempt) - 1) % hooks.length;
-  const rawText = `${hooks[idx]}\n\n${bodies[idx]}\n\n${questions[idx]}`;
-  const entry = formatEntry(rawText);
+  const shortLabel = cleanTopic.length > 68 ? `${cleanTopic.slice(0, 65)}...` : cleanTopic;
+  const lower = cleanTopic.toLowerCase();
+
+  let selectedText = '';
+  let selectedSubtopic = `Current trends in ${shortLabel}`;
+
+  // 1. Specialized trend banks for popular direct custom topics (prevents random/generic posts)
+  if (/\b(ai|artificial intelligence|llm|chatgpt|claude|gemini|openai|agent|copilot)\b/i.test(lower)) {
+    let bank = AI_TREND_BANK;
+    if (/\b(writing|write|content|copy|blog|post)\b/i.test(lower)) {
+      // Put AI writing trend first when the user specifically mentions AI writing
+      bank = [AI_TREND_BANK[2], AI_TREND_BANK[0], AI_TREND_BANK[1], AI_TREND_BANK[3]];
+    }
+    const chosen = bank[(Math.max(1, attempt) - 1) % bank.length];
+    selectedText = chosen.text;
+    selectedSubtopic = chosen.subtopic;
+  } else if (/\bquantum\b/i.test(lower)) {
+    const chosen = QUANTUM_TREND_BANK[(Math.max(1, attempt) - 1) % QUANTUM_TREND_BANK.length];
+    selectedText = chosen.text;
+    selectedSubtopic = chosen.subtopic;
+  } else if (/\b(crypto|bitcoin|btc|eth|blockchain|web3|defi|stablecoin)\b/i.test(lower)) {
+    const chosen = CRYPTO_TREND_BANK[(Math.max(1, attempt) - 1) % CRYPTO_TREND_BANK.length];
+    selectedText = chosen.text;
+    selectedSubtopic = chosen.subtopic;
+  } else if (/\b(startup|saas|software|coding|developer|programming|tech)\b/i.test(lower)) {
+    const chosen = STARTUP_TECH_TREND_BANK[(Math.max(1, attempt) - 1) % STARTUP_TECH_TREND_BANK.length];
+    selectedText = chosen.text;
+    selectedSubtopic = chosen.subtopic;
+  } else if (/\b(remote|work|job|jobs|career|freelanc|hiring|resume)\b/i.test(lower)) {
+    const chosen = WORK_CAREER_TREND_BANK[(Math.max(1, attempt) - 1) % WORK_CAREER_TREND_BANK.length];
+    selectedText = chosen.text;
+    selectedSubtopic = chosen.subtopic;
+  } else if (/\b(creator|youtube|tiktok|social media|newsletter|marketing|seo)\b/i.test(lower)) {
+    const chosen = CREATOR_MARKETING_TREND_BANK[(Math.max(1, attempt) - 1) % CREATOR_MARKETING_TREND_BANK.length];
+    selectedText = chosen.text;
+    selectedSubtopic = chosen.subtopic;
+  } else if (Array.isArray(liveTrendItems) && liveTrendItems.length > 0) {
+    // 2. Synthesize concrete trend commentary from live RSS headlines for any arbitrary custom topic
+    const trendItem = liveTrendItems[(Math.max(1, attempt) - 1) % liveTrendItems.length];
+    const headline = String(trendItem.title || '').replace(/[.!?]+$/, '').trim();
+    const shortHeadline = headline.length > 105 ? `${headline.slice(0, 102)}...` : headline;
+    selectedSubtopic = shortHeadline || `Current shift in ${shortLabel}`;
+    selectedText = [
+      `Anyone following ${shortLabel} closely this month can see one clear trend taking over: ${shortHeadline}.`,
+      `The real story behind ${shortLabel} right now is how fast practical habits and costs are shifting on the ground. Teams and everyday users testing new setups early gain real speed, while folks holding onto older routines find themselves paying more for slower results.`,
+      `Are you adapting early to this shift in ${shortLabel}, or waiting to see how it plays out?`
+    ].join('\n\n');
+  } else {
+    // 3. Offline arbitrary custom topic: distinct non-generic trend angles
+    const hooks = [
+      `The biggest shift inside ${shortLabel} right now is moving from loud hype to practical daily results.`,
+      `Watching ${shortLabel} closely this year shows a sharp split between fast adopters and slow teams.`,
+      `Most outsiders still look at ${shortLabel} the old way, while daily tools inside the space already moved on.`
+    ];
+    const bodies = [
+      `Early users in ${shortLabel} are cutting wasted steps, trimming weekly costs, and getting real work done with much leaner setups. Meanwhile, people waiting for perfect rules or copying surface tricks end up stuck doing slow manual work while expectations rise.`,
+      `Across small shops and independent builders, ${shortLabel} rewards clear habits, tight feedback, and simple systems that hold up under real pressure. Relying on flashy demos without solving real user pain leaves most projects ignored within weeks.`,
+      `Smart teams working on ${shortLabel} care less about noisy headlines and more about speed, steady trust, and clear value every week. The real edge goes to people testing small improvements daily rather than debating big theory online.`
+    ];
+    const questions = [
+      `Which real change in ${shortLabel} has actually saved you time or money lately?`,
+      `Do you see ${shortLabel} turning practical fast, or is half the market still pure hype?`,
+      `What is the smartest habit around ${shortLabel} that more people should copy right now?`
+    ];
+    const idx = (Math.max(1, attempt) - 1) % hooks.length;
+    selectedText = `${hooks[idx]}\n\n${bodies[idx]}\n\n${questions[idx]}`;
+  }
+
+  const entry = formatEntry(selectedText);
   const meta = extractPostMetadata({
     topic: cleanTopic,
-    subtopic: `Current trends and practical impact of ${shortLabel}`,
+    subtopic: selectedSubtopic,
     genreId: 'CUSTOM_TOPIC',
     category: 'CUSTOM_TOPIC',
     text: entry.text
@@ -662,8 +782,23 @@ export async function generateEnglishPost(customTopic = '', excludedTopic = '', 
 
   const isCustomNeutralMode = Boolean(isUserForcedTopic && !topicExplicitlyMentionsIndia(chosenTopic));
 
-  // Gather live verified India statistics ONLY when generating India-focused posts (or custom topics explicitly mentioning India)
+  // Gather live verified India statistics ONLY when generating India-focused posts.
+  // For custom topics, fetch live topic-specific trend signals instead so posts reflect current real trends in that domain.
   let liveFactsBrief = '';
+  let customTrendItems = [];
+  let liveTrendsBrief = '';
+
+  if (isUserForcedTopic && chosenTopic) {
+    try {
+      customTrendItems = await fetchCustomTopicTrends(chosenTopic, {
+        excludeRegionalNoise: isCustomNeutralMode
+      });
+      liveTrendsBrief = formatCustomTrendsBrief(chosenTopic, customTrendItems);
+    } catch (e) {
+      console.warn(`[Pipeline] Custom topic trend fetch notice: ${e.message}`);
+    }
+  }
+
   if (!isCustomNeutralMode) {
     try {
       const liveSnapshot = await getLiveIndiaFactsSnapshot();
@@ -681,9 +816,14 @@ export async function generateEnglishPost(customTopic = '', excludedTopic = '', 
     // On retries, slightly vary the topic framing to get a fresh angle
     const attemptTopic = attempt === 1 ? chosenTopic : `${chosenTopic} — angle ${attempt}`;
 
-    // Build the right prompt: 100% custom topic (ignoring India) vs India downsides engine
+    // Build the right prompt: custom topic trend-writer (ignoring India) vs India downsides engine
     const prompt = isUserForcedTopic
-      ? createCustomTopicPrompt(attempt === 1 ? chosenTopic : `${chosenTopic} (${attempt === 2 ? 'practical trends and impact' : `fresh angle ${attempt}`})`, avoidList, liveFactsBrief)
+      ? createCustomTopicPrompt(
+          attempt === 1 ? chosenTopic : `${chosenTopic} (${attempt === 2 ? 'current real-world trends and impact' : `fresh trend angle ${attempt}`})`,
+          avoidList,
+          liveFactsBrief,
+          liveTrendsBrief
+        )
       : createTrendingPostPrompt(attemptTopic, trendContext, avoidList, liveFactsBrief);
     const activeSystemPrompt = isCustomNeutralMode ? CUSTOM_TOPIC_SYSTEM_PROMPT : DEFAULT_PAKISTANI_INDIA_SYSTEM_PROMPT;
 
@@ -693,7 +833,7 @@ export async function generateEnglishPost(customTopic = '', excludedTopic = '', 
     /* ---------------- TIER 1. CLOUDFLARE WORKERS AI (PRIMARY + 2-PASS POLISH/EXPAND) ---------------- */
     if (cfToken && cfAccountId && !candidate) {
       try {
-        console.log(`[Cloudflare AI] Generating post for ${isCustomNeutralMode ? 'custom topic' : 'India downside topic'}: "${chosenTopic}"...`);
+        console.log(`[Cloudflare AI] Generating post for ${isCustomNeutralMode ? 'custom topic trends' : 'India downside topic'}: "${chosenTopic}"...`);
         const res = await callWithSimplify(callCloudflareAI, prompt, null, activeSystemPrompt);
         // Allow shorter Pass 1 drafts (120+ chars) so Pass 2 can expand them cleanly to 400+ chars
         let validated = validateAIResponse(res, chosenTopic, chosenCategory, '', 120);
@@ -704,7 +844,11 @@ export async function generateEnglishPost(customTopic = '', excludedTopic = '', 
         if (audit.needsPolish || validated.english.charCount < MIN_CHARACTERS || offTopicCountryDrift) {
           console.log(`[Cloudflare AI] Pass 2 polish triggered (${[...audit.reasons, ...(offTopicCountryDrift ? ['off_topic_country_mention'] : [])].join(', ')})...`);
           try {
-            const polished = await polishWithCloudflareAI(validated, liveFactsBrief, isCustomNeutralMode);
+            const polished = await polishWithCloudflareAI(
+              validated,
+              isCustomNeutralMode ? (liveTrendsBrief || liveFactsBrief) : liveFactsBrief,
+              isCustomNeutralMode
+            );
             if (polished) {
               validated = polished;
             }
@@ -778,10 +922,10 @@ export async function generateEnglishPost(customTopic = '', excludedTopic = '', 
       }
     }
 
-    /* ---------------- TIER 5. FALLBACK (CUSTOM-TOPIC AWARE OR INDIA BANK) ---------------- */
+    /* ---------------- TIER 5. FALLBACK (CUSTOM-TOPIC TREND BANK OR INDIA BANK) ---------------- */
     if (!candidate) {
       const fallback = isCustomNeutralMode
-        ? buildCustomTopicFallback(chosenTopic, attempt)
+        ? buildCustomTopicFallback(chosenTopic, attempt, customTrendItems)
         : generateDynamicFallback(chosenCategory, '', cleanExcluded, avoidList);
       if (fallback) {
         candidate = fallback;
@@ -877,13 +1021,15 @@ export async function generateEnglishPost(customTopic = '', excludedTopic = '', 
     }
   }
 
-  // If all retry attempts collided with history, guarantee a fresh post via fallback bank
-  const guaranteedFallback = generateDynamicFallback(chosenCategory, '', cleanExcluded, avoidList);
+  // If all retry attempts collided with history, guarantee a fresh post appropriate to the mode
+  const guaranteedFallback = isCustomNeutralMode
+    ? buildCustomTopicFallback(chosenTopic, MAX_ATTEMPTS + 1, customTrendItems)
+    : generateDynamicFallback(chosenCategory, '', cleanExcluded, avoidList);
   if (guaranteedFallback) {
     console.log(`[Pipeline] Retries exhausted. Serving guaranteed fresh fallback: "${guaranteedFallback.topic}"`);
     return {
       ...guaranteedFallback,
-      provider: 'Engagement Fallback Bank'
+      provider: isCustomNeutralMode ? 'Custom Topic Fallback' : 'Engagement Fallback Bank'
     };
   }
 
@@ -1226,24 +1372,25 @@ async function polishWithCloudflareAI(candidate, liveFactsBrief = '', isCustomNe
     : `LENGTH: Strictly 400+ characters (420 to 560 characters ideal, NEVER under 400 and NEVER over 600). ZERO hashtags, ZERO emojis, NO labels.`;
 
   const polishPrompt = isCustomNeutralMode
-    ? `Rewrite this X post so it stays 100% focused on the user's custom topic ("${(candidate.topic || '').replace(/"/g, "'")}") using the simplest everyday words.
+    ? `Rewrite this X post so it sounds like a sharp person writing about SPECIFIC LIVE TRENDS inside "${(candidate.topic || '').replace(/"/g, "'")}" using the simplest everyday words.
 
 CURRENT DRAFT (${currentLen} chars):
 "${candidate.english.text}"
-
+${liveFactsBrief ? `\nLIVE TREND SIGNALS TO GROUND THE POST:\n${liveFactsBrief}\n` : ''}
 STRICT REWRITE RULES:
 1. IGNORE INDIA / PAKISTAN: Remove any mention of India, Indians, or Pakistan unless explicitly requested by the topic. Focus 100% on "${(candidate.topic || '').replace(/"/g, "'")}".
-2. NOT STIFF NEWS: Remove newspaper phrases ("A report says", "Today", "Yesterday", "Latest news").
-3. REAL TRENDS & PRACTICAL EFFECT: Explain what is actually happening around this topic and how it affects real people or daily work.
-4. SIMPLEST POSSIBLE WORDS: Replace every long or fancy word (like infrastructure, disparity, demographic, inflation, macroeconomic, expenditure, deteriorating) with tiny everyday words a 12-year-old uses.
-5. SHORT SENTENCES: 5 to 12 words per sentence.
-6. EXACT 3-PART LAYOUT separated by \\n\\n:
-   Line 1: Punchy hook sentence directly about the topic.
+2. NO RANDOM GENERIC FILLER: Remove vague lines like "People everywhere are talking about...". Focus on ONE specific current 2025-2026 trend inside this topic.
+3. NOT STIFF NEWS: Remove newspaper phrases ("A report says", "Today", "Yesterday", "Latest news").
+4. REAL TRENDS & PRACTICAL EFFECT: Explain what is actually shifting right now in this space and how it affects real people or daily work.
+5. SIMPLEST POSSIBLE WORDS: Replace every long or fancy word (like infrastructure, disparity, demographic, inflation, macroeconomic, expenditure, deteriorating) with tiny everyday words a 12-year-old uses.
+6. SHORT SENTENCES: 5 to 12 words per sentence.
+7. EXACT 3-PART LAYOUT separated by \\n\\n:
+   Line 1: Punchy hook naming a concrete current trend inside the topic.
    \\n\\n
-   Paragraph 2: 2-3 simple sentences with real trends/facts + everyday impact.
+   Paragraph 2: 2-3 simple sentences explaining that trend right now + real everyday impact.
    \\n\\n
    Line 3: Short, sharp closing question.
-7. ${lengthInstruction}
+8. ${lengthInstruction}
 
 Return ONLY valid JSON:
 {

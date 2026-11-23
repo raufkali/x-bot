@@ -16,6 +16,10 @@ import {
   generateRomanUrduFromEnglish,
   generatePlainUrduFromEnglish
 } from '../src/generator/aiService.js';
+import {
+  fetchCustomTopicTrends,
+  formatCustomTrendsBrief
+} from '../src/generator/trendFetcher.js';
 import { historyStore } from '../src/db/historyStore.js';
 import { whatsappWorkflow } from '../src/whatsapp/workflow.js';
 import { config } from '../src/config.js';
@@ -518,6 +522,145 @@ test('WhatsApp directly generates a topic-focused post when owner types custom t
     whatsappWorkflow.status = 'IDLE';
     whatsappWorkflow.menuState = 'DEFAULT';
     config.ownerPhoneNumber = origOwner;
+    if (origToken !== undefined) process.env.CLOUDFLARE_API_TOKEN = origToken; else delete process.env.CLOUDFLARE_API_TOKEN;
+    if (origAcct !== undefined) process.env.CLOUDFLARE_ACCOUNT_ID = origAcct; else delete process.env.CLOUDFLARE_ACCOUNT_ID;
+    config.cloudflareApiToken = origCfConfigToken;
+    config.cloudflareAccountId = origCfConfigAcct;
+    historyStore.posts = savedPosts;
+    historyStore.rebuildIndexes();
+    historyStore.save();
+  }
+});
+
+test('Short topic "ai" in WhatsApp triggers direct AI trends post (never generic boilerplate or menu fallback)', async () => {
+  const origToken = process.env.CLOUDFLARE_API_TOKEN;
+  const origAcct = process.env.CLOUDFLARE_ACCOUNT_ID;
+  const origCfConfigToken = config.cloudflareApiToken;
+  const origCfConfigAcct = config.cloudflareAccountId;
+  const origOwner = config.ownerPhoneNumber;
+  const origFetch = globalThis.fetch;
+  const savedPosts = [...historyStore.posts];
+  historyStore.reset();
+
+  delete process.env.CLOUDFLARE_API_TOKEN;
+  delete process.env.CLOUDFLARE_ACCOUNT_ID;
+  config.cloudflareApiToken = '';
+  config.cloudflareAccountId = '';
+  config.ownerPhoneNumber = '923001234567';
+
+  // Keep network blocked/offline to verify offline AI trends fallback cleanly
+  globalThis.fetch = async () => {
+    throw new Error('Offline mode');
+  };
+
+  whatsappWorkflow.currentPendingPost = null;
+  whatsappWorkflow.status = 'IDLE';
+  whatsappWorkflow.menuState = 'DEFAULT';
+
+  try {
+    // Single 2-letter topic "ai" straight from IDLE must NOT show welcome menu; must write about live AI trends
+    const aiRes = await whatsappWorkflow.handleOwnerReply('ai', config.ownerPhoneNumber);
+    assert.equal(aiRes.success, true);
+    assert.equal(aiRes.post.category, 'CUSTOM_TOPIC');
+    assert.equal(aiRes.post.topic, 'ai');
+    assert.ok(aiRes.post.english.charCount >= 400 && aiRes.post.english.charCount <= 600);
+    assert.equal(auditDraftForSimplification(aiRes.post.english.text).needsPolish, false);
+    assert.equal(/people everywhere are talking about/i.test(aiRes.post.english.text), false);
+    assert.ok(/\b(agent|agents|coding|model|models|writing)\b/i.test(aiRes.post.english.text));
+    assert.equal(/\b(india|indian|indians|pakistan|pakistani)\b/i.test(aiRes.post.english.text), false);
+
+    // Distinct custom topic "The Future of Quantum Computing" must NOT share generic template text with AI
+    whatsappWorkflow.currentPendingPost = null;
+    whatsappWorkflow.status = 'AWAITING_GENERATE';
+    const qRes = await whatsappWorkflow.handleOwnerReply('The Future of Quantum Computing', config.ownerPhoneNumber);
+    assert.equal(qRes.success, true);
+    assert.ok(qRes.post.english.charCount >= 400 && qRes.post.english.charCount <= 600);
+    assert.ok(/quantum/i.test(qRes.post.english.text));
+    assert.equal(auditDraftForSimplification(qRes.post.english.text).needsPolish, false);
+  } finally {
+    globalThis.fetch = origFetch;
+    whatsappWorkflow.currentPendingPost = null;
+    whatsappWorkflow.status = 'IDLE';
+    whatsappWorkflow.menuState = 'DEFAULT';
+    config.ownerPhoneNumber = origOwner;
+    if (origToken !== undefined) process.env.CLOUDFLARE_API_TOKEN = origToken; else delete process.env.CLOUDFLARE_API_TOKEN;
+    if (origAcct !== undefined) process.env.CLOUDFLARE_ACCOUNT_ID = origAcct; else delete process.env.CLOUDFLARE_ACCOUNT_ID;
+    config.cloudflareApiToken = origCfConfigToken;
+    config.cloudflareAccountId = origCfConfigAcct;
+    historyStore.posts = savedPosts;
+    historyStore.rebuildIndexes();
+    historyStore.save();
+  }
+});
+
+test('fetchCustomTopicTrends feeds live topic trends into Cloudflare prompt and fallback synthesis', async () => {
+  const origToken = process.env.CLOUDFLARE_API_TOKEN;
+  const origAcct = process.env.CLOUDFLARE_ACCOUNT_ID;
+  const origCfConfigToken = config.cloudflareApiToken;
+  const origCfConfigAcct = config.cloudflareAccountId;
+  const origFetch = globalThis.fetch;
+  const savedPosts = [...historyStore.posts];
+  historyStore.reset();
+
+  const mockRssXml = `<?xml version="1.0" encoding="UTF-8"?>
+  <rss><channel>
+    <item><title>AI coding agents take over multi-step developer workflows - TechCrunch</title></item>
+    <item><title>Small fast reasoning models cut enterprise AI bills in half - The Verge</title></item>
+    <item><title>India announces local AI festival dates - Example News</title></item>
+  </channel></rss>`;
+
+  process.env.CLOUDFLARE_API_TOKEN = 'test-cf-token';
+  process.env.CLOUDFLARE_ACCOUNT_ID = 'test-cf-account';
+
+  let capturedPrompt = '';
+  globalThis.fetch = async (url, opts) => {
+    const urlStr = String(url);
+    if (urlStr.includes('news.google.com/rss/search')) {
+      return new Response(mockRssXml, { status: 200, headers: { 'Content-Type': 'application/xml' } });
+    }
+    if (urlStr.includes('api.cloudflare.com')) {
+      const payload = JSON.parse(opts.body);
+      capturedPrompt = payload.messages?.find(m => m.role === 'user')?.content || '';
+      return new Response(JSON.stringify({
+        success: true,
+        result: {
+          response: JSON.stringify({
+            topic: 'AI coding agents are shifting daily developer work',
+            subtopic: 'Tool-using AI coding agents',
+            category: 'CUSTOM_TOPIC',
+            text: 'AI coding agents are taking over multi-step software tasks while devs focus on hard design calls.\n\nInstead of only answering chat questions, modern coding tools edit files, run test suites, and fix small bugs cleanly on their own. Teams using these tools ship features faster, yet senior review still catches sneaky logic slips before code goes live.\n\nDo you trust AI agents to touch real project files yet, or keep them in chat?'
+          })
+        }
+      }), { status: 200, headers: { 'Content-Type': 'application/json' } });
+    }
+    throw new Error(`Unexpected URL: ${urlStr}`);
+  };
+
+  try {
+    const items = await fetchCustomTopicTrends('ai');
+    assert.equal(items.length, 2, 'Should keep 2 global AI trend items and filter out India mention');
+    assert.ok(items[0].title.includes('AI coding agents'));
+    const brief = formatCustomTrendsBrief('ai', items);
+    assert.ok(brief.includes('LIVE TRENDS RIGHT NOW AROUND "ai"'));
+
+    const aiPost = await generateEnglishPost('ai', '', null, true);
+    assert.ok(capturedPrompt.includes('LIVE TRENDS RIGHT NOW AROUND "ai"'));
+    assert.ok(capturedPrompt.includes('AI coding agents take over multi-step developer workflows'));
+    assert.equal(aiPost.category, 'CUSTOM_TOPIC');
+    assert.ok(aiPost.english.charCount >= 400);
+    assert.equal(/\b(india|indian|indians|pakistan|pakistani)\b/i.test(aiPost.english.text), false);
+
+    // Arbitrary topic with live RSS headlines while offline should synthesize headline-grounded trend post
+    delete process.env.CLOUDFLARE_API_TOKEN;
+    delete process.env.CLOUDFLARE_ACCOUNT_ID;
+    config.cloudflareApiToken = '';
+    config.cloudflareAccountId = '';
+    const arbPost = await generateEnglishPost('solid state batteries', '', null, true);
+    assert.equal(arbPost.provider, 'Custom Topic Fallback');
+    assert.ok(arbPost.english.charCount >= 400 && arbPost.english.charCount <= 600);
+    assert.ok(arbPost.english.text.includes('AI coding agents take over multi-step developer workflows'));
+  } finally {
+    globalThis.fetch = origFetch;
     if (origToken !== undefined) process.env.CLOUDFLARE_API_TOKEN = origToken; else delete process.env.CLOUDFLARE_API_TOKEN;
     if (origAcct !== undefined) process.env.CLOUDFLARE_ACCOUNT_ID = origAcct; else delete process.env.CLOUDFLARE_ACCOUNT_ID;
     config.cloudflareApiToken = origCfConfigToken;
